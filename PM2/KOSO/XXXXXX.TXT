@@ -1,0 +1,5465 @@
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "SCNGIRL.TXT"
+
+
+;**************
+;	全会話テスト
+;**************
+
+*ALL_TEST
+
+S_BYOUKI=0		CHO_BYOUKI
+S_BYOUKI=20		CHO_BYOUKI
+S_BYOUKI=50		CHO_BYOUKI
+S_BYOUKI=80		CHO_BYOUKI
+
+S_HIKOUKA=0		CHO_HIKOUKA
+S_HIKOUKA=20	CHO_HIKOUKA
+S_HIKOUKA=50	CHO_HIKOUKA
+S_HIKOUKA=80	CHO_HIKOUKA
+
+URA_FATHER=0	CHO_FATHER
+URA_FATHER=20	CHO_FATHER
+URA_FATHER=50	CHO_FATHER
+URA_FATHER=80	CHO_FATHER
+
+URA_STEWARD=0	CHO_STEWARD
+URA_STEWARD=20	CHO_STEWARD
+URA_STEWARD=50	CHO_STEWARD
+URA_STEWARD=80	CHO_STEWARD
+
+URA_MOTHER_LOVE=0	CHO_MOTHER_LOVE
+URA_MOTHER_LOVE=20	CHO_MOTHER_LOVE
+URA_MOTHER_LOVE=50	CHO_MOTHER_LOVE
+URA_MOTHER_LOVE=80	CHO_MOTHER_LOVE
+
+URA_KILL_MONSTR=0	CHO_KILL_MONSTR
+URA_KILL_MONSTR=1	CHO_KILL_MONSTR
+URA_KILL_MONSTR=10	CHO_KILL_MONSTR
+URA_KILL_MONSTR=50	CHO_KILL_MONSTR
+
+B_SHINKOH=0			CHO_SHINKOH
+B_SHINKOH=30		CHO_SHINKOH
+B_SHINKOH=80		CHO_SHINKOH
+B_SHINKOH=200		CHO_SHINKOH
+
+B_KANJUSEI=0		CHO_KANJUSEI
+B_KANJUSEI=30		CHO_KANJUSEI
+B_KANJUSEI=80		CHO_KANJUSEI
+B_KANJUSEI=200		CHO_KANJUSEI
+
+B_STRESS=0			CHO_STRESS
+B_STRESS=30			CHO_STRESS
+B_STRESS=60			CHO_STRESS
+B_STRESS=100		CHO_STRESS
+
+
+V_SENTOH=0		SENSHI_SENTOH
+V_SENTOH=30		SENSHI_SENTOH
+V_SENTOH=60		SENSHI_SENTOH
+V_SENTOH=90		SENSHI_SENTOH
+V_KOUGEKI=0		SENSHI_KOUGEKI
+V_KOUGEKI=30	SENSHI_KOUGEKI
+V_KOUGEKI=60	SENSHI_KOUGEKI
+V_KOUGEKI=90	SENSHI_KOUGEKI
+V_BOUGYO=0		SENSHI_BOUGYO
+V_BOUGYO=30		SENSHI_BOUGYO
+V_BOUGYO=60		SENSHI_BOUGYO
+V_BOUGYO=90		SENSHI_BOUGYO
+
+
+V_MAHOGIJUTSU=0		MAHO_MAHOGI
+V_MAHOGIJUTSU=30	MAHO_MAHOGI
+V_MAHOGIJUTSU=60	MAHO_MAHOGI
+V_MAHOGIJUTSU=90	MAHO_MAHOGI
+V_MARYOKU=0			MAHO_MARYOKU
+V_MARYOKU=30		MAHO_MARYOKU
+V_MARYOKU=60		MAHO_MARYOKU
+V_MARYOKU=90		MAHO_MARYOKU
+V_KOHMARYOKU=0		MAHO_KOHMAR
+V_KOHMARYOKU=30		MAHO_KOHMAR
+V_KOHMARYOKU=60		MAHO_KOHMAR
+V_KOHMARYOKU=90		MAHO_KOHMAR
+
+
+V_REIGI=0			SYAKOH_REIGI
+V_REIGI=30			SYAKOH_REIGI
+V_REIGI=60			SYAKOH_REIGI
+V_REIGI=90			SYAKOH_REIGI
+V_GEIJYUTSU=0		SYAKOH_GEIJ
+V_GEIJYUTSU=30		SYAKOH_GEIJ
+V_GEIJYUTSU=60		SYAKOH_GEIJ
+V_GEIJYUTSU=90		SYAKOH_GEIJ
+V_WAJYUTU=0			SYAKOH_WAJYU
+V_WAJYUTU=30		SYAKOH_WAJYU
+V_WAJYUTU=60		SYAKOH_WAJYU
+V_WAJYUTU=90		SYAKOH_WAJYU
+
+
+V_RYOURI=0			KAJI_RYOURI
+V_RYOURI=30			KAJI_RYOURI
+V_RYOURI=60			KAJI_RYOURI
+V_RYOURI=90			KAJI_RYOURI
+V_SOUJISENTAKU=0	KAJI_SOUJISE
+V_SOUJISENTAKU=30	KAJI_SOUJISE
+V_SOUJISENTAKU=60	KAJI_SOUJISE
+V_SOUJISENTAKU=90	KAJI_SOUJISE
+V_KIDATE=0			KAJI_KIDATE
+V_KIDATE=30			KAJI_KIDATE
+V_KIDATE=60			KAJI_KIDATE
+V_KIDATE=90			KAJI_KIDATE
+
+
+IRND = 1	;名前の場合
+SAIKIN_SONOTA_TEST
+
+
+IRND = 2	;血液型の場合
+P_BLOOD = 0
+SAIKIN_SONOTA_TEST
+P_BLOOD = 1
+SAIKIN_SONOTA_TEST
+P_BLOOD = 2
+SAIKIN_SONOTA_TEST
+P_BLOOD = 3
+SAIKIN_SONOTA_TEST
+
+
+IRND = 3	;誕生日の場合
+SAIKIN_SONOTA_TEST
+
+
+IRND = 4	;子宮名の場合
+P_SHIKYU = 0
+C8 = 12
+	SAIKIN_SONOTA_TEST
+	P_SHIKYU++
+LOOP C8
+
+
+IRND = 5	;身長の場合
+P_SHINCHO = 14000	;身長150ｾﾝﾁ未満の場合
+SAIKIN_SONOTA_TEST
+P_SHINCHO =15000	;150ｾﾝﾁ以上163ｾﾝﾁ未満
+SAIKIN_SONOTA_TEST
+P_SHINCHO =16300	;163ｾﾝﾁ以上170ｾﾝﾁ未満
+SAIKIN_SONOTA_TEST
+P_SHINCHO =17000	;身長170ｾﾝﾁ以上の場合
+SAIKIN_SONOTA_TEST
+
+
+IRND = 6	;体重の場合
+P_TAIJYU = 4400		;45ｷﾛ未満の場合
+SAIKIN_SONOTA_TEST
+P_TAIJYU =4500		;45ｷﾛ以上，52ｷﾛ未満
+SAIKIN_SONOTA_TEST
+P_TAIJYU =5200		;52ｷﾛ以上の場合
+SAIKIN_SONOTA_TEST
+
+
+IRND = 7	;着衣の場合
+SAIKIN_SONOTA_TEST
+
+
+IRND = 8	;バストの大中小タイプの分類の場合
+URA_BREAST_TYPE = 3		;大
+B_IROKE = 120			;色気が１２０以上の場合
+SAIKIN_SONOTA_TEST
+B_IROKE = 110 			;色気が１２０未満の場合
+SAIKIN_SONOTA_TEST
+
+URA_BREAST_TYPE = 2		;中
+B_IROKE = 120			;色気が１２０以上の場合
+SAIKIN_SONOTA_TEST
+B_IROKE = 110			;色気が１２０未満の場合
+SAIKIN_SONOTA_TEST
+
+URA_BREAST_TYPE = 1		;小
+B_IROKE = 120			;色気が１２０以上の場合
+SAIKIN_SONOTA_TEST
+B_IROKE = 110			;色気が１２０未満の場合
+SAIKIN_SONOTA_TEST
+
+
+IRND = 9	;ヒップの大中小タイプの分類の場合
+URA_HIP_TYPE = 3		;大
+SAIKIN_SONOTA_TEST
+URA_HIP_TYPE = 2		;中
+SAIKIN_SONOTA_TEST
+URA_HIP_TYPE = 1		;小
+SAIKIN_SONOTA_TEST
+
+
+IRND = 10	;父との関係の場合
+URA_FATHER=0
+SAIKIN_SONOTA_TEST
+URA_FATHER=30
+SAIKIN_SONOTA_TEST
+URA_FATHER=60
+SAIKIN_SONOTA_TEST
+URA_FATHER=90
+SAIKIN_SONOTA_TEST
+
+
+IRND = 11	;執事との関係の場合
+URA_STEWARD = 0
+SAIKIN_SONOTA_TEST
+URA_STEWARD = 50
+SAIKIN_SONOTA_TEST
+URA_STEWARD = 80
+SAIKIN_SONOTA_TEST
+
+
+IRND =12	;母性の場合
+URA_MOTHER_LOVE=0
+SAIKIN_SONOTA_TEST
+URA_MOTHER_LOVE=30
+SAIKIN_SONOTA_TEST
+URA_MOTHER_LOVE=80
+SAIKIN_SONOTA_TEST
+
+
+IRND =13	;モンスター殺戮数の場合
+URA_KILL_MONSTR = 0
+SAIKIN_SONOTA_TEST
+URA_KILL_MONSTR = 1
+SAIKIN_SONOTA_TEST
+URA_KILL_MONSTR = 10
+SAIKIN_SONOTA_TEST
+URA_KILL_MONSTR = 50
+SAIKIN_SONOTA_TEST
+
+
+LOAD("MAINLOOP")
+
+;;FLAG_HIKOUKA=0
+;;FLAG_BYOUKI=0
+;;B_STRESS = 22
+;;WWPROF(2)			: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "EESTAF.TXT"
+
+
+PARC(2,8,  52)			; ﾃｷｽﾄ編集右端ｶｯﾄ
+EDTX(5)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの行数ｶｳﾝﾀ
+SCRL_LENG_0N = DX * 17 / 2 + 20 	; ｽｸﾛｰﾙ0送り設定
+PARC(2,11, 17)			; ﾃｷｽﾄ行間ｾｯﾄ
+PARC(2,5,  0,280)		; ﾃｷｽﾄ位置ｾｯﾄ
+PARC(2,9,  4,SCRL_LENG_0N,2)	; ｽｸﾛｰﾙ送り設定
+PARC(2,10, 10,78,54,284)		; ｽｸﾛｰﾙview設定
+EFC(21)			; 割り込みＦ・Ｉ(ﾌｪｰﾄﾞｲﾝ)
+PARC(2,7)		; ｴﾝﾃﾞｨﾝｸﾞ･ﾃｷｽﾄ表示2.ｽｸﾛｰﾙ
+RET
+
+
+
+;EFC(16)			; ノーマルカラー
+;;;;
+;;PIC(19,ccode,color,contrast,brightness)	;パレットセット
+;C1 = 8  C2 = 8
+;	PIC(19,C2,0,0,100)
+;	C2++
+;LOOP C1
+
+
+PTBK(0)
+PTLD("ENDPALET")
+*LLL
+PTPLT(1,0)		; パーツパレットセット
+EFC(16)			; ノーマルカラー
+SLCTBAK(1)SLCT("1")
+PTBK(0)
+PTPLT(0,0)		; パーツパレットセット
+EFC(16)			; ノーマルカラー
+SLCTBAK(1)SLCT("2")
+IF (ISLCT=-1)LOAD("TEST")
+GOTO LLL
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "BBCTOOL3.TXT"
+
+
+VVVVVV	PROC	NEAR
+	MOV	AX,UPCOLOR
+	MOV	BX,100
+	MUL	BX
+	MOV	UPPER,AX
+
+	MOV	AX,100
+	SUB	AX,CLRCNS	; contrast.
+	MUL	UPCOLOR
+	MOV	UNDER,AX
+
+	MOV	AX,CLRVEW	; color.
+	CMP	AX,60
+	JL	C1SETCLR_C1
+	CMP	AX,120
+	JL	C1SETCLR_C2
+	CMP	AX,180
+	JL	C1SETCLR_C3
+	CMP	AX,240
+	JL	C1SETCLR_C4
+	CMP	AX,300
+	JL	C1SETCLR_C5
+	JMP	C1SETCLR_C6
+C1SETCLR_C1:
+	MOV	CX,CLRVEW	; color.
+	JMP	C1SETCLR_5
+C1SETCLR_C2:
+	MOV	CX,120
+	SUB	CX,CLRVEW	; color.
+	JMP	C1SETCLR_5
+C1SETCLR_C3:
+	MOV	CX,CLRVEW	; color.
+	SUB	CX,120
+	JMP	C1SETCLR_5
+C1SETCLR_C4:
+	MOV	CX,240
+	SUB	CX,CLRVEW	; color.
+	JMP	C1SETCLR_5
+C1SETCLR_C5:
+	MOV	CX,CLRVEW	; color.
+	SUB	CX,240
+	JMP	C1SETCLR_5
+C1SETCLR_C6:
+	MOV	CX,360
+	SUB	CX,CLRVEW	; color.
+C1SETCLR_5:
+	MOV	AX,CLRCNS	; contrast.
+	MUL	CX
+	MUL	UPCOLOR
+	DIV60N
+	ADD	AX,UNDER
+	MOV	SLIDE,AX
+
+	MOV	AX,UPPER
+	MUL	CLRBRI		; brightness.
+	DIV100N
+	MOV	UPPER,AX
+
+	MOV	AX,UNDER
+	MUL	CLRBRI		; brightness.
+	DIV100N
+	MOV	UNDER,AX
+
+	MOV	AX,SLIDE
+	MUL	CLRBRI		; brightness.
+	DIV100N
+	MOV	SLIDE,AX
+
+	MOV	BX,UPPER
+	MOV	CX,UNDER
+	MOV	DX,SLIDE
+
+	MOV	AX,CLRVEW	; color.
+	CMP	AX,60
+	JL	C1SETCLR_C1S
+	CMP	AX,120
+	JL	C1SETCLR_C2S
+	CMP	AX,180
+	JL	C1SETCLR_C3S
+	CMP	AX,240
+	JL	C1SETCLR_C4S
+	CMP	AX,300
+	JL	C1SETCLR_C5S
+	JMP	C1SETCLR_C6S
+C1SETCLR_C1S:
+	MOV	CRED,BX
+	MOV	CBLUE,CX
+	MOV	CGREEN,DX
+	JMP	C1SETCLR_SET
+C1SETCLR_C2S:
+	MOV	CGREEN,BX
+	MOV	CBLUE,CX
+	MOV	CRED,DX
+	JMP	C1SETCLR_SET
+C1SETCLR_C3S:
+	MOV	CGREEN,BX
+	MOV	CRED,CX
+	MOV	CBLUE,DX
+	JMP	C1SETCLR_SET
+C1SETCLR_C4S:
+	MOV	CBLUE,BX
+	MOV	CRED,CX
+	MOV	CGREEN,DX
+	JMP	C1SETCLR_SET
+C1SETCLR_C5S:
+	MOV	CBLUE,BX
+	MOV	CGREEN,CX
+	MOV	CRED,DX
+	JMP	C1SETCLR_SET
+C1SETCLR_C6S:
+	MOV	CRED,BX
+	MOV	CGREEN,CX
+	MOV	CBLUE,DX
+	JMP	C1SETCLR_SET
+C1SETCLR_SET:
+
+PRV	"CBLUE =",CBLUE
+PRV	"CRED  =",CRED
+PRV	"CGREEN=",CGREEN
+
+	MOV	AX,CBLUE		;
+	CWD				;
+	DIV100N2			; AX = AX / 100
+	MOV	CBLUE,AX		;
+
+	MOV	AX,CRED			;
+	CWD				;
+	DIV100N2			; AX = AX / 100
+	MOV	CRED,AX			;
+
+	MOV	AX,CGREEN		;
+	CWD				;
+	DIV100N2			; AX = AX / 100
+	MOV	CGREEN,AX		;
+
+	MOV	AX,CLRCDE		;
+	MOV	CRNUM,AX		; CRNUM = CLRCDE
+
+C1SETCLR_ANALOG:
+	PR	"("
+	MOV	DX,CRNUM	; color code.
+	CALL	DECSTR
+	CALL	PRINT
+	PR	","
+	MOV	DX,CBLUE	; blue  value (0-15)
+	CALL	DECSTR
+	CALL	PRINT
+	PR	","
+	MOV	DX,CRED		; red   value (0-15)
+	CALL	DECSTR
+	CALL	PRINT
+	PR	","
+	MOV	DX,CGREEN	; green value (0-15)
+	CALL	DECSTR
+	CALL	PRINT
+	PR	")"
+	LF
+
+C1SETCLR_EXIT:
+	RET
+VVVVVV	ENDP
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "SCNCASTL.TXT"
+
+
+;**************
+;	全メッセージ・テスト
+;**************
+
+*ALL_MESS_TEST
+
+;**************
+
+;《気品／5》人脈値がアップ．人脈最大値は30まで．
+
+WWWW(1)
+
+TXOPEN(2)
+TXFACE("F080")
+V_REIGI=1				;礼儀作法
+S_JINMYAKU[1]=1			;人脈
+B_KIHIN=5				;気品
+SLC_MONBAN				;門番
+
+WWWW(2)
+
+TXOPEN(2)
+TXFACE("F080")
+V_REIGI=10				;礼儀作法
+S_JINMYAKU[1]=1			;人脈
+B_KIHIN=5				;気品
+SLC_MONBAN				;門番
+
+WWWW(3)
+
+TXOPEN(2)
+TXFACE("F080")
+V_REIGI=10				;礼儀作法
+S_JINMYAKU[1]=1			;人脈
+B_KIHIN=1				;気品
+SLC_MONBAN				;門番
+
+WWWW(4)
+
+TXOPEN(2)
+TXFACE("F080")
+V_REIGI=10				;礼儀作法
+S_JINMYAKU[1]=30		;人脈
+B_KIHIN=5				;気品
+SLC_MONBAN				;門番
+
+;**************
+
+;《気品／8》人脈値がアップ．最大値は50まで．
+
+WWWW(5)
+
+V_REIGI=1				;礼儀作法
+S_JINMYAKU[2]=30		;人脈
+B_KIHIN=8				;気品
+SLC_KONOEKISI			;近衛騎士
+
+WWWW(6)
+
+V_REIGI=70				;礼儀作法
+S_JINMYAKU[2]=30		;人脈
+B_KIHIN=8				;気品
+SLC_KONOEKISI			;近衛騎士
+
+WWWW(7)
+
+V_REIGI=70				;礼儀作法
+S_JINMYAKU[2]=30		;人脈
+B_KIHIN=1				;気品
+SLC_KONOEKISI			;近衛騎士
+
+WWWW(8)
+
+V_REIGI=70				;礼儀作法
+S_JINMYAKU[2]=50		;人脈
+B_KIHIN=1				;気品
+SLC_KONOEKISI			;近衛騎士
+
+;**************
+
+;《色気／5》人脈値がアップ．最大値は100まで．
+
+WWWW(9)
+
+V_REIGI=70				;礼儀作法
+S_JINMYAKU[3]=50		;人脈
+B_IROKE=5				;色気
+SLC_SHOGUN				;将軍
+
+WWWW(10)
+
+V_REIGI=120				;礼儀作法
+S_JINMYAKU[3]=50		;人脈
+B_IROKE=5				;色気
+SLC_SHOGUN				;将軍
+
+WWWW(11)
+
+V_REIGI=120				;礼儀作法
+S_JINMYAKU[3]=50		;人脈
+B_IROKE=1				;色気
+SLC_SHOGUN				;将軍
+
+WWWW(12)
+
+V_REIGI=120				;礼儀作法
+S_JINMYAKU[3]=100		;人脈
+B_IROKE=5				;色気
+SLC_SHOGUN				;将軍
+
+;**************
+
+;《知力／10》人脈値アップ．最大値は120まで．
+
+WWWW(13)
+
+V_REIGI=120				;礼儀作法
+S_JINMYAKU[4]=100		;人脈
+B_CHINOH=10				;知能
+SLC_DAIJIN				;大臣
+
+WWWW(14)
+
+V_REIGI=180				;礼儀作法
+S_JINMYAKU[4]=100		;人脈
+B_CHINOH=10				;知能
+SLC_DAIJIN				;大臣
+
+WWWW(15)
+
+V_REIGI=180				;礼儀作法
+S_JINMYAKU[4]=100		;人脈
+B_CHINOH=1				;知能
+SLC_DAIJIN				;大臣
+
+WWWW(16)
+
+V_REIGI=180				;礼儀作法
+S_JINMYAKU[4]=120		;人脈
+B_CHINOH=10				;知能
+SLC_DAIJIN				;大臣
+
+;**************
+
+;《信仰／10》人脈値がアップ．最大値は120まで．
+
+WWWW(17)
+
+V_REIGI=180				;礼儀作法
+S_JINMYAKU[5]=100		;人脈
+B_SHINKOH=10			;信仰
+SLC_SHISAI				;司教
+
+WWWW(18)
+
+V_REIGI=220				;礼儀作法
+S_JINMYAKU[5]=100		;人脈
+B_SHINKOH=10			;信仰
+SLC_SHISAI				;司教
+
+WWWW(19)
+
+V_REIGI=220				;礼儀作法
+S_JINMYAKU[5]=100		;人脈
+B_SHINKOH=1				;信仰
+SLC_SHISAI				;司教
+
+WWWW(20)
+
+V_REIGI=220				;礼儀作法
+S_JINMYAKU[5]=120		;人脈
+B_SHINKOH=10			;信仰
+SLC_SHISAI				;司教
+
+;**************
+
+;《話術／10》人脈値がアップ．最大値は120まで．
+
+WWWW(21)
+
+V_REIGI=220				;礼儀作法
+S_JINMYAKU[6]=100		;人脈
+V_WAJYUTU=10			;話術
+SLC_HIME				;寵姫
+
+WWWW(22)
+
+V_REIGI=250				;礼儀作法
+S_JINMYAKU[6]=100		;人脈
+V_WAJYUTU=10			;話術
+SLC_HIME				;寵姫
+
+WWWW(23)
+
+V_REIGI=250				;礼儀作法
+S_JINMYAKU[6]=100		;人脈
+V_WAJYUTU=1				;話術
+SLC_HIME				;寵姫
+
+WWWW(24)
+
+V_REIGI=250				;礼儀作法
+S_JINMYAKU[6]=120		;人脈
+V_WAJYUTU=1				;話術
+SLC_HIME				;寵姫
+
+;**************
+
+;《気だて／10》人脈値がアップ．最大値は160まで．
+
+WWWW(25)
+
+V_REIGI=250				;礼儀作法
+S_JINMYAKU[7]=120		;人脈
+V_KIDATE=10				;気だて
+SLC_OHUHI				;王妃
+
+WWWW(26)
+
+V_REIGI=300				;礼儀作法
+S_JINMYAKU[7]=120		;人脈
+V_KIDATE=10				;気だて
+SLC_OHUHI				;王妃
+
+WWWW(27)
+
+V_REIGI=300				;礼儀作法
+S_JINMYAKU[7]=120		;人脈
+V_KIDATE=1				;気だて
+SLC_OHUHI				;王妃
+
+WWWW(28)
+
+V_REIGI=300				;礼儀作法
+S_JINMYAKU[7]=160		;人脈
+V_KIDATE=1				;気だて
+SLC_OHUHI				;王妃
+
+;**************
+
+;《戦士名声／10》人脈値がアップ．最大値は300まで．
+
+WWWW(29)
+
+V_REIGI=300				;礼儀作法
+S_JINMYAKU[8]=160		;人脈
+H_SENSHI=10				;戦士評価
+SLC_KOKUOH				;国王
+
+WWWW(30)
+
+V_REIGI=350				;礼儀作法
+S_JINMYAKU[8]=160		;人脈
+H_SENSHI=10				;戦士評価
+SLC_KOKUOH				;国王
+
+WWWW(31)
+
+V_REIGI=350				;礼儀作法
+S_JINMYAKU[8]=160		;人脈
+H_SENSHI=1				;戦士評価
+SLC_KOKUOH				;国王
+
+WWWW(32)
+
+V_REIGI=350				;礼儀作法
+S_JINMYAKU[8]=160		;人脈
+H_SENSHI=1				;戦士評価
+SLC_KOKUOH				;国王
+
+;**************
+
+WWWW(33)
+
+TXOPEN(2)
+TXFACE("F080")
+V_WAJYUTU = 50			;話術
+SLC_DOUKESI				;道化師
+
+WWWW(34)
+
+TXOPEN(2)
+TXFACE("F080")
+V_WAJYUTU = 100			;話術
+B_KANJUSEI=20			;感受性
+H_SYAKOH=20				;社交評価
+SLC_DOUKESI				;道化師
+
+WWWW(35)
+
+TXOPEN(2)
+TXFACE("F080")
+V_WAJYUTU = 100			;話術
+B_KANJUSEI=20			;感受性
+H_SYAKOH=12				;社交評価
+SLC_DOUKESI				;道化師
+
+WWWW(36)
+
+TXOPEN(2)
+TXFACE("F080")
+V_WAJYUTU = 100			;話術
+B_KANJUSEI=20			;感受性
+H_SYAKOH=0				;社交評価
+SLC_DOUKESI				;道化師
+
+WWWW(37)
+
+TXOPEN(2)
+TXFACE("F080")
+V_WAJYUTU = 100			;話術
+B_KANJUSEI=0			;感受性
+H_SYAKOH=0				;社交評価
+SLC_DOUKESI				;道化師
+
+;**************
+
+SLC_BUKAN				;青年武官
+
+RET
+
+
+;**************
+;**************
+
+*WWWW
+C2 = AX
+TXLC(5,20,180,0)
+TXOPEN(5)
+テストＮｏTXPOINT(C2)
+TIMER1(60)
+WAIT1
+TXCLOSE(5)
+RET
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "RPGRUN.TXT"
+
+IF ( S_WORKS = 0 )					; 0=東部 森林地帯
+	RUN_MUSYA[1]++					;「東」実行回数
+	;*;WWMUSYA(1,1,10,24,13,12,127)	; start.
+	;*;WWMUSYA(1,1,68,10,10,10,127)	; start.宝
+	WWMUSYA(1,1,0,50,4,10,127)		; start.<===
+	WWMUSYA(12,3)					; 3=right.
+
+IF ( S_WORKS = 1 )					; 1=西部 砂漠地帯
+	RUN_MUSYA[2]++					;「西」実行回数
+	;*;WWMUSYA(1,2,1,2,11,8,127)	; start.
+	;;WWMUSYA(1,2,160,55,24,8,127)	; start.
+	WWMUSYA(1,2,172,26,24,8,127)	; start.<===
+	WWMUSYA(12,2)					; 2=left.
+	IF ( E_ETC[27] ! 0 )			;精霊が消えた月
+		IF ( E_ETC[27] ! VAL_MONTH )
+			IF ( E_ETC[25] = 0 )	;
+				E_ETC[25] = 1		;精霊の泉枯れた
+
+	IF ( E_ETC[25] = 1 )			;精霊の泉枯れた
+		WWMUSYA(19,1)				;マップの修正
+
+IF ( S_WORKS = 2 )					; 2=南部 水郷地帯
+	RUN_MUSYA[3]++					;「南」実行回数
+	;*;WWMUSYA(1,3,88,0,13,12,127)	; start.
+	WWMUSYA(1,3,48,0,13,2,127)		; start.<===
+	WWMUSYA(12,0)					; 0=front.
+
+IF ( S_WORKS = 3 )					; 3=北部 氷山地帯
+	RUN_MUSYA[4]++					;「北」実行回数
+	;*;WWMUSYA(1,4,52,56,13,15,63)	; start.
+	;*;WWMUSYA(1,6,3,80,13,20,43)	; start.武神テスト
+	;*;WWMUSYA(1,5,3,0,13,0,63)		; マップ再ロード武神テスト
+	;*;WWMUSYA(1,5,34,0,13,8,63)	; マップ再ロード宝テスト
+	WWMUSYA(1,4,88,56,13,15,63)		; start.<===
+	WWMUSYA(12,1)					; 1=back.
+	IF ( E_ETC[30] ! 0 )			;武神の祠閉鎖
+		E_ETC[34]=1					;祠閉鎖に山岳警備隊
+
+
+
+
+;*;
+;;B_KANJUSEI=0	;感受性
+;IDBG[1]=1		;人間ｴﾝｶｳﾝﾄのｽｷｯﾌﾟ
+;IDBG[2]=1		;ﾓﾝｽﾀｰｴﾝｶｳﾝﾄのｽｷｯﾌﾟ
+;SCH_NOW=0		;
+;V_SENTOH	= 500			; 戦闘技術
+;V_KOUGEKI	= 500			; 攻撃力
+;V_BOUGYO	= 500			; 防御力
+;*;E_ETC[30]=0		;武神の祠閉鎖;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;*;E_ETC[31]=0		;武神に勝った;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;*;E_ETC[32]=0		;北の武神への階段が消える
+;*;RUN_MONTH[55]=0	;
+;*;
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "SSEV022.TXT"
+
+*ANIME_OPEN
+;;WWANIME(14,1)				;anime window open.(no frame open)
+WWANIME(1,1)				;anime window open.
+WWANIME(3,1,"G002B")		;pictuer load.
+
+;;4=左のひげ,10=牧師
+;C2 = 4
+;C1 = 5
+;	RANDAM(7)
+;	C3 = IRND +11
+;	C4 = 5
+;		IF ( C3 >= 19 ) C3 -= 6
+;		IF ( CHAR_SEQ_TBL[C3]=0 )
+;			CHAR_SEQ_TBL[C3] = C2
+;			GOTO BG_RND_SEQS_NEXT
+;		C3++
+;	LOOP C4
+;	*BG_RND_SEQS_NEXT
+;	C2++
+;LOOP C1
+;C3 = 173-79
+;C2 = 14
+;C1 = 5
+;	C5 = CHAR_SEQ_TBL[C2]
+;	BLCY[C5] = C3
+;	C2++
+;	C3++
+;LOOP C1
+
+
+;;;;;;;;;;;;;;;;
+;*LOOOOP
+;	BG_ANIME_LOCSET;;;;;;;;;;;;;;
+;	ANIME_BG_CHAR(200)		;BG chara put.
+;	;SLCTBAK(1)
+;	;SLCTX("reload,retry")
+;	;IF (ISLCT=0)LOAD("SSEV022,SSBT02")
+;	;IF (ISLCT=1)GOTO LOOOOP
+;GOTO LOOOOP
+;;;;;;;;;;;;;;;;
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "SSBFIN.TXT"
+
+;**************
+;	name set.
+;**************
+
+*ENTRY_NAME_SET
+STR_ENTRY_NAME[2]="ホルスト・ハイムマン"
+
+STR_ENTRY_NAME[3]="バンバン・ビザロ"
+
+STR_ENTRY_NAME[4]="カールフォックス"
+STR_ENTRY_NAME[5]="ミィーア"
+STR_ENTRY_NAME[6]="ダムダム"
+STR_ENTRY_NAME[7]="フランソワ・モーレ"
+STR_ENTRY_NAME[8]="ﾄﾞン＝レオ・ジョナサン"
+STR_ENTRY_NAME[9]="タオ・ランファン"
+STR_ENTRY_NAME[10]="カタナ・テラー"
+STR_ENTRY_NAME[11]="ナターシャ・ドリプシコワ"
+STR_ENTRY_NAME[12]="サラーム・ナセル"
+STR_ENTRY_NAME[13]="チャン・クーロン"
+STR_ENTRY_NAME[14]="ジェニファー・ザ・クィーン"
+STR_ENTRY_NAME[15]="マッスル・ハルバル"
+STR_ENTRY_NAME[16]="剣士レフトール"
+STR_ENTRY_NAME[17]="アニータ・カサンドラ"
+STR_ENTRY_NAME[18]="ウェンデｨｰ・ラキシス"
+
+STR_ENTRY_NAME[1]="12345678123456781234567812345678.."
+SI = NAME_FIRST
+STRCOPY(STR_ENTRY_NAME[1])
+STRLEN(NAME_FIRST)
+C2 = STR_ENTRY_NAME[1] + AX
+SI = "･"
+STRCOPY(C2)
+C2 = C2 + 1
+SI = NAME_FAMILY
+STRCOPY(C2)
+RET
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "SCNSYUGO.TXT"
+
+*DDISK_SAVE
+ERR_DISK = 0
+FLG_EXIT = 0
+SLCT("１,２,３,４,５,やめる")
+IF ( ISLCT=5 )( ISLCT=-1 )
+	FLG_EXIT = 1
+IF ( ISLCT>=0  ISLCT<5 )
+	C1 = ISLCT + 1
+	FFDISK(1,C1)		; データセーブ
+	ERR_DISK = AX
+RET
+
+*DDISK_LOAD
+ERR_DISK = 0
+FLG_EXIT = 0
+C3 = 5  C2 = 1
+	FFDISK(3,C2)	;データチェック
+	C1 = SI
+	PRV("AX:") PRV(",YR:",BX) PRV(",MH:",CX) PRV(",WK:",DX) PRV(",DT:",C1) PR(",") PRINT(DI) LLF
+	C2++
+LOOP C3
+SLCT("１,２,３,４,５,やめる")
+IF ( ISLCT=5 )( ISLCT=-1 )
+	FLG_EXIT = 1
+IF ( ISLCT>=0  ISLCT<5 )
+	C1 = ISLCT + 1
+	FFDISK(2,C1)		; データロード
+	ERR_DISK = AX
+RET
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "OPENING.TXT"
+
+PIC(16,15,2,1)	; 標準文字設定
+
+PIC(15,28, 40,"　　　仮データ　　　　")
+
+PIC(15,28, 80,"　　　地上に都あり。　　　　")
+PIC(15,28,110,"王は威を誇り、民は富に驕る。")
+
+PIC(15,28,150,"　上は天を軽んじて祭らず。　")
+PIC(15,28,180,"　下は酒色に耽りて励まず。　")
+
+PIC(15,28,220,"　天帝、これが故に怒り、　　")
+PIC(15,28,250,"　勅を発して魔王を召す。　　")
+
+PIC(15,28,290,"　　魔王は地下王なり。　　　")
+PIC(15,28,320,"天命受け、地上を討たんとす。")
+
+;**************
+;	6
+;**************
+
+*OPENING_06N
+PTBK(0)
+PTLD("OPN06L")
+PTLA("OPN06R")
+WAIT1XX
+TXCLOSE(11)
+TIMER1(30)
+WAIT1XX
+TIMER1(60)
+EFC(7)		; ブラックアウト
+PTBK(0)
+PTX(0,0,0)
+PTX(40,0,1)
+PTBK(16)PTPLT(5,0)EFC(16)	;ノーマルカラー
+WAIT1XX
+
+IF ( TYPE_SYUGO=1 )
+	TIMER1(60)
+	BACK_SAVE			;画面待避
+	EDTX(1)				;ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	SHOWTEXT
+	TIMER1(120)
+	EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	TIMER1(30)	BACK_LOAD	WAIT1XX
+	SHOWTEXT
+	TIMER1(120)
+	EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	TIMER1(30)	BACK_LOAD	WAIT1XX
+	SHOWTEXT
+
+IF ( TYPE_SYUGO=2 )
+	TIMER1(60)
+	BACK_SAVE			;画面待避
+	EDTX(1)				;ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	SHOWTEXT
+	TIMER1(120)
+	EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	TIMER1(30)	BACK_LOAD	WAIT1XX
+	SHOWTEXT
+	TIMER1(120)
+	EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	TIMER1(30)	BACK_LOAD	WAIT1XX
+	SHOWTEXT
+
+IF ( TYPE_SYUGO=3 )
+	TIMER1(60)
+	BACK_SAVE			;画面待避
+	EDTX(1)				;ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	SHOWTEXT
+	TIMER1(120)
+	EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	TIMER1(30)	BACK_LOAD	WAIT1XX
+	SHOWTEXT
+	TIMER1(120)
+	EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	TIMER1(30)	BACK_LOAD	WAIT1XX
+	SHOWTEXT
+
+IF ( TYPE_SYUGO=1 )
+	TIMER1(120)
+	EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	TIMER1(30)
+	BACK_LOAD
+	WAIT1XX
+	SHOWTEXT
+
+IF ( TYPE_SYUGO=2 )
+	TIMER1(120)
+	EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊＊＊
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	TIMER1(30)
+	BACK_LOAD
+	WAIT1XX
+	SHOWTEXT
+
+IF ( TYPE_SYUGO=3 )
+	TIMER1(120)
+	EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	@G
+	「＊＊＊＊＊＊＊
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@@
+	WAIT1XX
+	TIMER1(30)
+	BACK_LOAD
+	WAIT1XX
+	SHOWTEXT
+
+
+TIMER1(120)
+WAIT1XX
+
+BACK_LOAD
+
+EFC(1)		; F.O
+GRPCLS
+EFC(16)		;ノーマルカラー
+
+TIMER1(60)
+EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+@G
+そして１年が過ぎた・・・・・・
+@@
+WAIT1XX
+SHOWTEXT
+TIMER1(120)
+RET
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "EECALC.TXT"
+
+;	1=「自然科学」
+;	2=「詩文」
+;	3=「神学」
+;	4=「軍学」
+;	5=「剣術」
+;	6=「格闘術」
+;	7=「魔法」
+;	8=「礼儀作法」
+;	9=「絵画」
+;	10=「舞踊」
+;	11=「武者修行に出す」
+;
+;	1=「家の手伝い」
+;	2=「子守」
+;	3=「宿屋」
+;	4=「農場」
+;	5=「教会」
+;	6=「料理屋」
+;	7=「木コリ」
+;	8=「髪結い」
+;	9=「左官」
+;	10=「狩人」
+;	11=「墓守」
+;	12=「家庭教師」
+;	13=「酒場」
+;	14=「ヤミ酒場」
+;	15=「夜の殿堂」
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "MAINLP.TXT"		\KOSO10
+
+; ****************************************************
+;	 vram scroll.
+; ****************************************************
+
+VRMSCROLL	PROC	NEAR
+	MOV	CX,5			;5=ARA005
+	MOV	DX,0			; plean number.
+	CALL	GET_VRAM_SEGMENT	; get vram segment.
+	MOV	SOUDATASEG,DX		; source data segment.
+
+	MOV	CX,0			;0=ARAVRM : ＶＲＡＭプレーン
+	MOV	DX,1			; plean number.
+	CALL	GET_VRAM_SEGMENT	; get vram segment.
+	MOV	DESDATASEG,DX		; destination data segment.
+
+	MOV	CX,5			;5=ARA005
+	MOV	DX,3			;3=SSSOU0 : visual data segment plean.
+	CALL	VRAMASSIGN		; vram assign.
+
+	MOV	CX,0			;0=ARAVRM : ＶＲＡＭプレーン
+	MOV	DX,2			;2=SSDES0 : visual data segment plean.
+	CALL	VRAMASSIGN		; vram assign.
+
+	MOV	VX1,0			; point x1.
+	MOV	VY1,0			; point y1.
+	MOVX	VX2,ROLL_V_SIZ_X	; scroll vram size x.
+	MOVX	VY2,ROLL_V_SIZ_Y	; scroll vram size y.
+	MOVX	VX3,ROLL_V_PNT_X	; scroll vram point x.
+	MOVX	VY3,ROLL_V_PNT_Y	; scroll vram point y.
+
+	MOV	CX,ROLL_COUNT		; scroll count.
+VRMSCROLL_LOOP:				;
+	PUSH	CX			;
+	MOV	AX,ROLL_WTIME1		; scroll wait time.
+	CALLE	TMVSET			; V-SYNC timer set.
+
+;;	CALLE	MOVEVR			; vram to vram move.
+
+	MOV	DX,SOUDATASEG	; source data segment.
+	MOVX	ES,DESDATASEG	; destination data segment.
+	CALLE	MOV1VR		; vram to vram move 1 plean.
+
+	ADDX	VY1,ROLL_STEP	; scroll step.
+
+	CALLE	TMVEWT		; V-SYNC timer end wait.
+	POP	CX		;
+	LOOP	VRMSCROLL_LOOP
+
+	RET
+VRMSCROLL	ENDP
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "EETNMT.TXT"
+
+;**************
+;	職業の絵
+;**************
+
+*PICWORKING
+PICWORKLOAD(WORKS_NUM)	;職業
+EFC(1)		; F･O
+PTMF(20,0,0)
+EFC(0)		; F･I
+RET
+
+*PICWORKLOAD
+C1 = AX
+PTBK(0)
+IF( C1 = 1 )PLXX("Z001")
+IF( C1 = 2 )PLXX("Z002")
+IF( C1 = 3 )PLXX("Z003")
+IF( C1 = 4 )PLXX("Z004")
+IF( C1 = 5 )PLXX("Z005")
+IF( C1 = 6 )PLXX("Z006")
+IF( C1 = 7 )PLXX("Z007")
+IF( C1 = 8 )PLXX("Z008")
+IF( C1 = 9 )PLXX("Z009")
+IF( C1 = 10 )PLXX("Z010")
+IF( C1 = 11 )PLXX("Z011")
+IF( C1 = 12 )PLXX("Z012")
+IF( C1 = 13 )PLXX("Z013")
+IF( C1 = 14 )PLXX("Z014")
+IF( C1 = 15 )PLXX("Z015")
+IF( C1 = 16 )PLXX("Z016")
+IF( C1 = 17 )PLXX("Z017")
+IF( C1 = 18 )PLXX("Z018")
+IF( C1 = 19 )PLXX("Z019")
+IF( C1 = 20 )PLXX("Z020")
+IF( C1 = 21 )PLXX("Z021")
+IF( C1 = 22 )PLXX("Z022")
+IF( C1 = 23 )PLXX("Z023")
+IF( C1 = 24 )PLXX("Z009")
+IF( C1 = 25 )PLXX("Z010")
+IF( C1 = 26 )PLXX("Z011")
+IF( C1 = 27 )PLXX("Z012")
+IF( C1 = 28 )PLXX("Z013")
+IF( C1 = 29 )PLXX("Z014")
+IF( C1 = 30 )PLXX("Z015")
+IF( C1 = 31 )PLXX("Z016")
+IF( C1 = 32 )PLXX("Z017")
+IF( C1 = 33 )PLXX("Z018")
+IF( C1 = 34 )PLXX("Z019")
+IF( C1 = 35 )PLXX("Z020")
+IF( C1 = 36 )PLXX("Z021")
+IF( C1 = 37 )PLXX("Z022")
+IF( C1 = 38 )PLXX("Z024")
+IF( C1 = 39 )PLXX("Z025")
+IF( C1 = 40 )PLXX("Z026")
+IF( C1 = 41 )PLXX("Z027")
+IF( C1 = 42 )PLXX("Z028")
+IF( C1 = 43 )PLXX("Z029")
+IF( C1 = 44 )PLXX("Z030")
+IF( C1 = 45 )PLXX("Z031")
+IF( C1 = 46 )PLXX("Z032")
+IF( C1 = 47 )PLXX("Z033")
+IF( C1 = 48 )PLXX("Z034")
+IF( C1 = 49 )PLXX("Z035")
+IF( C1 = 50 )PLXX("Z036")
+IF( C1 = 51 )PLXX("Z037")
+IF( C1 = 52 )PLXX("Z039")
+IF( C1 = 53 )PLXX("Z041")
+IF( C1 = 54 )PLXX("Z040")
+IF( C1 = 55 )PLXX("Z042")
+IF( C1 = 56 )PLXX("Z043")
+IF( C1 = 57 )PLXX("Z045")
+IF( C1 = 58 )PLXX("Z046")
+IF( C1 = 59 )PLXX("Z047")
+IF( C1 = 60 )PLXX("Z048")
+IF( C1 = 61 )PLXX("Z049")
+IF( C1 = 62 )PLXX("Z050")
+IF( C1 = 63 )PLXX("Z051")
+IF( C1 = 64 )PLXX("Z052")
+IF( C1 = 65 )PLXX("Z053")
+IF( C1 = 66 )PLXX("Z054")
+IF( C1 = 67 )PLXX("Z055")
+IF( C1 = 68 )PLXX("Z057")
+IF( C1 = 69 )PLXX("Z056")
+IF( C1 = 70 )PLXX("Z058")
+IF( C1 = 71 )PLXX("Z059")
+IF( C1 = 72 )PLXX("Z062")
+IF( C1 = 73 )PLXX("Z063")
+IF( C1 = 74 )PLXX("Z060")
+RET
+*PLXX
+IF ( FLAG_PTLD=0 )	PTLD
+IF ( FLAG_PTLD!0 )	TXT
+RET
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "EEWORK.TXT"
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "EEGIRL.TXT"
+
+;..........1         2         3         4         5         6         7
+;+123456789+123456789+123456789+123456789+123456789+123456789+123456789+123456789
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "JOB010.TXT"
+
+ALOCCNT[2]	=16
+.FILM2[16]=13,14,13,14,13, 14,13,14,13,  17,18, 17,18, 17,18, 17
+
+*WORKS1_RIGHT
+FILM0[0]=13
+FILM0[1]=14
+FILM2[0]=13
+FILM2[1]=14
+FILM2[2]=13
+FILM2[3]=14
+FILM2[4]=13
+FILM2[5]=14
+FILM2[6]=13
+FILM2[7]=14
+FILM2[8]=13
+FILM2[9]=14
+ALOCF[0] = 0
+RET
+
+*WORKS1_LEFT
+FILM0[0]=15
+FILM0[1]=16
+FILM2[0]=15
+FILM2[1]=16
+FILM2[2]=15
+FILM2[3]=16
+FILM2[4]=15
+FILM2[5]=16
+FILM2[6]=15
+FILM2[7]=16
+FILM2[8]=15
+FILM2[9]=16
+ALOCF[0] = 1
+RET
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "MAINEVNT.TXT"
+
+;;B_STRESS=205
+;;S_JINMYAKU=300
+;;P_TAIJYU	+=	8000	; 体重
+;;B_KANJUSEI	+=	1000	; 感受性
+;*;FRAME_GIRL
+;*;LOAD("EVNT039")
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;P_NENREI = 14			;年齢
+;;H_SENSHI=220			;戦士評価
+;;H_MAHO=190			;魔法評価
+;;H_SYAKOH=160			;社交評価
+;;H_KAJI=140			;家事評価
+;;SCHED_SECTION[0]=0	;スケジュール項目
+;;SCH_NOW=1				;
+;;FRAME_GIRL			;
+;;LOAD("RUNNING")		;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;	家出フレーム表示
+
+*FREAM_NO_GIRL
+WWFRAME(100)					;100=現在表示中の枠番号
+IF ( AX = 1 )					;AX : 現在表示中の枠番号
+	IF ( FLAG_STAT_CHNG!0 )		;月次処理のｽﾃｰﾀｽの変化あり
+		WWPROF(2)				;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+	WWGIRL(4)					;girl clear.
+	RET
+WWFRAME(1)				;
+CLENDER(1)				;
+WWPROF(1)				:
+RET
+
+WWFRAME(100)			;100=現在表示中の枠番号
+IF ( AX ! 1 )			;AX : 現在表示中の枠番号
+	PALET_SET(0)		;
+	WWFRAME(1)			;
+	CLENDER(1)			;
+	WWPROF(1)			:
+	WWGIRL(3)			;girl quick put.
+	MESS_MONTH_CHG		;状態変更メッセージ
+	RET
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "PARAINIT.TXT"
+
+;;CLENDER(1)			;カレンダー・表示
+;;CLENDER(3)			;カレンダー・更新処理
+;;LOAD("SCNVACAN")
+;;PALET_SET(0)
+;;FLAG_HIKOUKA	= 1		;状態・非行化
+;;FLAG_BYOUKI	= 1		;状態・病気
+;;LOAD("TEST")
+;;H_SENSHI= 400			;戦士評価
+;;H_MAHO	= 300		;魔法評価
+;;H_SYAKOH= 200			;社交評価
+;;H_KAJI	= 100		;家事評価
+;;S_HIKOUKA	= 100		;非行化指数(%)
+;;B_IROKE = 300			;色気
+;;B_MORALS = 100		;モラル
+;;P_NENREI = 15			;年齢
+;;VAL_YEAR = 1210+5		;年
+;;DBGFLAG_CONSOLE=1		;デバッグＷＲＩＴＥをＤＯＳコンソールへ
+;;INLINECOMPDBG=1		;コンパイル状況をデバッグＷＲＩＴＥへ
+;;V_GEIJYUTSU	= 60	;芸術
+;;
+;;VAL_YEAR	= 1219;1216	;年
+;;VAL_MONTH	= 5;3		;月
+;;VAL_DAY		= 31	;日
+;;P_BORTHMONTH	= 4		;誕生月
+;;P_BORTHDAY		= 2	;誕生日
+;;P_BORTHMONTH[1]	= 4	;誕生月
+;;P_BORTHDAY[1]	= 2		;誕生日
+;;CLENDER(5,P_BORTHYEAR,P_BORTHMONTH,P_BORTHDAY)	;年齢の計算
+;;P_NENREI = DX			;年齢
+;;CLENDER(5,P_BORTHYEAR[1],P_BORTHMONTH[1],P_BORTHDAY[1])	;年齢の計算
+;;P_NENREI[1] = DX		;年齢
+;;
+;;URA_FATHER=100		;父との関係
+;;V_SENTOH=75			;戦闘技術が70以上のとき
+;;E_ETC[15]=30			;追い剥ぎ回数
+;;
+;;S_HIKOUKA = 100		;非行化指数(%)
+;;FLAG_HIKOUKA= 1		;状態・非行化
+;;B_TAIRYOKU	=	5					;体力
+;;B_STRESS	=	B_TAIRYOKU / 2 + 5		;ストレス
+;;
+;;B_TAIRYOKU	= 300		;体力
+;;V_KOUGEKI	= 400			;攻撃力
+;;V_SENTOH	= 100			;戦闘技術
+;;H_SENSHI=299
+
+;;VAL_MONTH=9 VAL_DAY=30	;収穫祭前夜
+
+;;URA_BREAST_TYPE=3		;バストの大中小タイプの分類 1=小,2=中,3=大
+;;URA_HIP_TYPE=3		;ヒップの大中小タイプの分類 1=小,2=中,3=大
+;;P_SHINCHO	= 14800		;身長
+;;P_TAIJYU	= 8020		;体重
+;;IDBG[2] = 1			;ﾓﾝｽﾀｰｴﾝｶｳﾝﾄのｽｷｯﾌﾟ
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "WIDGRAP.ASM"
+
+;	表示タイプ１
+;	体力, 筋力, 知能, 気品, 色気, モラル, 信仰, 因業, 感受性, ストレス
+;
+;	表示タイプ２
+;	戦士評価, 魔法評価, 社交評価, 家事評価
+;
+;	表示タイプ３
+;	戦闘技術, 攻撃力,防御力, 魔法技術, 魔力, 抗魔力
+;
+;	表示タイプ４
+;	礼儀作法, 芸術, 話術, 料理 掃除洗濯, 気だて
+;
+;	表示タイプ５（ＧＯＬＤ）
+;	娘の所持金, 私の所持金
+;
+;	表示タイプ６（プロフィール）
+;	名前, 名前(family), 血液型, 年齢, 誕生日, 誕生年, 子宮名, 守護星
+;
+;	表示タイプ７（プロポーション）
+;	身長, 体重, バスト, ウエスト, ヒップ
+;
+;	表示タイプ８（通常ステータス）
+;	病気指数(%), 非行化指数(%), 人脈, 状態・病気, 状態・非行化
+;	状態・恋愛, 健康管理
+;
+;	表示タイプ９（長い名前パラメータ）
+;	debug用
+;
+;	表示タイプ10
+;	武器と防具
+;
+;	表示タイプ11
+;	フェイス
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "USERTOOL.ASM"
+
+; ****************************************************
+;	シフトＪＩＳチェック
+;	-I- DX : character code.
+;	-O- AX : 0=normal,1=shift jis code.
+; ****************************************************
+
+SJISCK	PROC	NEAR
+	MOV	AX,0
+	CMP	DL,081H
+	JB	SJISCK3
+	CMP	DL,09FH
+	JNBE	SJISCK3
+	MOV	AX,1		; shift jis code.
+	RET
+SJISCK3:
+	CMP	DL,0E0H
+	JB	SJISCK9
+	CMP	DL,0FCH
+	JNBE	SJISCK9
+	MOV	AX,1		; shift jis code.
+SJISCK9:
+	RET
+SJISCK	ENDP
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "PARACALC.ASM"
+
+;	戦士評価は《戦闘技術＋攻撃力＋防御力》
+;	H_SENSHI = V_SENTOH + V_KOUGEKI + V_BOUGYO
+
+	MOV	AX,V_SENTOH
+	ADD	AX,V_KOUGEKI
+	ADD	AX,V_BOUGYO
+	MOV	H_SENSHI,AX
+
+;	魔法評価は《魔法技術＋魔力＋抗魔力》
+;	H_MAHO   = V_MAHOGIJUTSU + V_MARYOKU + V_KOHMARYOKU
+
+	MOV	AX,V_MAHOGIJUTSU
+	ADD	AX,V_MARYOKU
+	ADD	AX,V_KOHMARYOKU
+	MOV	H_MAHO,AX
+
+;	社交評価は《礼儀作法＋芸術＋話術》
+;	H_SYAKOH = V_REIGI + V_GEIJYUTSU + V_WAJYUTU
+
+	MOV	AX,V_REIGI
+	ADD	AX,V_GEIJYUTSU
+	ADD	AX,V_WAJYUTU
+	MOV	H_SYAKOH,AX
+
+;	家事評価は《料理＋掃除洗濯＋気だて》
+;	H_KAJI   = V_RYOURI + V_SOUJISENTAKU + V_KIDATE
+
+	MOV	AX,V_RYOURI
+	ADD	AX,V_SOUJISENTAKU
+	ADD	AX,V_KIDATE
+	MOV	H_KAJI,AX
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "SSDANC.TXT"
+
+;	　技術点・・・
+;		Ｘ＝（体力値の芸術値％）－（体力値の病気指数％）
+;		技術点＝Ｘの＋－３０％の範囲の乱数．
+
+P1X100(R_TAIRYOKU,R_GEIJYUTSU)
+C1 = AX
+P1X100(R_TAIRYOKU,R_BYOUKI)
+C2 = C1 - AX
+IRNDPAR(C2,30)		; +-%の乱数
+C2 = AX
+SEQ_POINT_TECH[SEQ_PLAYER_PNT] = C2		;技術点
+
+;	　芸術点・・・
+;		Ｘ＝（色気値の芸術値％）－（色気値の病気指数％）
+;		芸術点＝Ｘの＋－３０％の範囲の乱数．
+
+P1X100(R_IROKE,R_GEIJYUTSU)
+C1 = AX
+P1X100(R_IROKE,R_BYOUKI)
+C2 = C1 - AX
+IRNDPAR(C2,30)		; +-%の乱数
+C2 = AX
+SEQ_POINT_ARTS[SEQ_PLAYER_PNT] = C2		;芸術点
+
+;	　総合点・・・
+;		技術点＋芸術点＋大臣の人脈値
+
+C1 = SEQ_POINT_TECH[SEQ_PLAYER_PNT]
+C2 = SEQ_POINT_ARTS[SEQ_PLAYER_PNT]
+SEQ_POINT_TOTAL[SEQ_PLAYER_PNT] = C1 + C2
+IF ( NN_CHALENG=1 )	;娘
+	SEQ_GIRL_P_TOTAL = SEQ_POINT_TOTAL[SEQ_PLAYER_PNT]
+	SEQ_POINT_TOTAL[SEQ_PLAYER_PNT] += S_JINMYAKU[4]	;人脈・大臣
+
+;PRV(":",SEQ_POINT_TECH[SEQ_PLAYER_PNT])	LLF
+;PRV(":",SEQ_POINT_ARTS[SEQ_PLAYER_PNT])	LLF
+;PRV(":",SEQ_POINT_TOTAL[SEQ_PLAYER_PNT])	LLF
+
+RET
+
+*GIRL_NAME_SET
+GR_FULL_NAME = "12345678123456781234567812345678.."
+SI = NAME_FIRST
+STRCOPY(GR_FULL_NAME)
+STRLEN(NAME_FIRST)
+C2 = NAME_FIRST + AX
+SI = "･"
+STRCOPY(C2)
+C2 = C2 + 1
+SI = NAME_FAMILY
+STRCOPY(C2)
+RET
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "SSBATL.TXT"
+
+;SLCTX("娘勝ち,敵勝ち")
+;IF (ISLCT=0)
+;	CMN_VIC_FLG=1	;勝敗 1=娘勝ち,2=敵勝ち
+;IF (ISLCT=1)
+;	CMN_VIC_FLG=2	;勝敗 1=娘勝ち,2=敵勝ち
+
+
+
+PTLD("FRMSYUKL")
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+PTX(40,0,0)
+
+WWTOUR(1)		;トーナメント表
+WAITU
+C1 = 8  C2 = 1
+	WWTOUR(2,1,C2,3) : エレメントの設定
+	C2++
+	WAITU
+LOOP C1
+C1 = 8  C2 = 1
+	RANDAM(2)
+	WWTOUR(2,1,C2,IRND) : エレメントの設定
+	C2++
+	WAITU
+LOOP C1
+C1 = 4  C2 = 1
+	WWTOUR(2,2,C2,3) : エレメントの設定
+	C2++
+	WAITU
+LOOP C1
+C1 = 4  C2 = 1
+	RANDAM(2)
+	WWTOUR(2,2,C2,IRND) : エレメントの設定
+	C2++
+	WAITU
+LOOP C1
+C1 = 2  C2 = 1
+	WWTOUR(2,3,C2,3) : エレメントの設定
+	C2++
+	WAITU
+LOOP C1
+C1 = 2  C2 = 1
+	RANDAM(2)
+	WWTOUR(2,3,C2,IRND) : エレメントの設定
+	C2++
+	WAITU
+LOOP C1
+WWTOUR(2,4,1,3) : エレメントの設定
+WAITU
+RANDAM(2)
+WWTOUR(2,4,1,IRND) : エレメントの設定
+WAITU
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "SCNKYUSO.TXT"
+
+	IF ( XSLCT_PAIR = 0 )	;父がつきそう場合を選んだ場合
+		IGRP_TBL1[0]="私のお金"	IGRP_TBL3[0]=GOLD_GIRL	; 所持金
+		IGRP_CNT=1
+		IGRP_X=4
+		IGRP_Y=340
+		GOLDOPEN(1,2)		; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "WIDSCHED.ASM"
+
+	MOV	AX,WD_DAY_MONTH_X	; window 月 start x.
+	MOV	BX,WD_DAY_MONTH_Y	; window 月 start y.
+	CALL_w	VTXPOR			; vram text print OR.
+
+	MOV	AX,WD_DAY_YEAR_X	; window 年 start x.
+	MOV	BX,WD_DAY_YEAR_Y	; window 年 start y.
+	CALL_w	VTXPOR			; vram text print OR.
+
+STR_WEEK	DW	WEEK0,WEEK1,WEEK2,WEEK3,WEEK4,WEEK5,WEEK6
+WEEK0	DB	"Sun",0
+WEEK1	DB	"Mon",0
+WEEK2	DB	"Tue",0
+WEEK3	DB	"Wed",0
+WEEK4	DB	"Thu",0
+WEEK5	DB	"Fri",0
+WEEK6	DB	"Sat",0
+
+STR_MONTH	LABEL	WORD
+	DW	NAME_M_1
+	DW	NAME_M_2
+	DW	NAME_M_3
+	DW	NAME_M_4
+	DW	NAME_M_5
+	DW	NAME_M_6
+	DW	NAME_M_7
+	DW	NAME_M_8
+	DW	NAME_M_9
+	DW	NAME_M_10
+	DW	NAME_M_11
+	DW	NAME_M_12
+NAME_M_1	DB	"1 JANUARY",0
+NAME_M_2	DB	"2 FEBRUARY",0
+NAME_M_3	DB	"3 MARCH",0
+NAME_M_4	DB	"4 APRIL",0
+NAME_M_5	DB	"5 MAY",0
+NAME_M_6	DB	"6 JUNE",0
+NAME_M_7	DB	"7 JULY",0
+NAME_M_8	DB	"8 AUGUST",0
+NAME_M_9	DB	"9 SEPTEMBER",0
+NAME_M_10	DB	"10 OCTOBER",0
+NAME_M_11	DB	"11 NOVEMBER",0
+NAME_M_12	DB	"12 DECEMBER",0
+
+; ****************************************************
+;	曜日を描く
+; ****************************************************
+
+DRAW_WEEK	PROC	NEAR
+	MOVX	XX1,WD_DAY_WEEK_X	; window 曜日 start x.
+	MOVX	YY1,WD_DAY_WEEK_Y	; window 曜日 start y.
+
+	MOV	AX,0			; グラフ文字表示サイズ
+	CALL_w	VTXSIZ			; character size set.
+
+	MOV	AX,15			; グラフ文字表示色
+	CALL_w	VTXCOL			; character color set.
+
+	MOV	BX,0
+	MOV	CX,7
+DRAW_WEEK_LOOP:
+	PUSH	CX
+	PUSH	BX
+
+	PUSH	BX
+	CMP	BX,0
+	JE	DRAW_WEEK_5
+	MOV	AX,15			; グラフ文字表示色
+	CALL_w	VTXCOL			; character color set.
+	JMP	DRAW_WEEK_6		;
+DRAW_WEEK_5:
+	MOV	AX,3			; グラフ文字表示色
+	CALL_w	VTXCOL			; character color set.
+DRAW_WEEK_6:
+	POP	BX
+
+	MOV	SI,STR_WEEK[BX]		; week.
+	MOV	AX,XX1			; start point.
+	MOV	BX,YY1			; start point.
+	CALL_w	VTXPOR			; vram text print OR.
+
+	ADD	XX1,4
+	POP	BX
+	INC	BX
+	INC	BX
+	POP	CX
+	LOOP	DRAW_WEEK_LOOP
+	RET
+DRAW_WEEK	ENDP
+
+; ****************************************************
+;	年月を書く
+; ****************************************************
+
+DRAW_MONTH_YEAR	PROC	NEAR
+	MOV	AX,0			; グラフ文字表示サイズ
+	CALL_w	VTXSIZ			; character size set.
+
+	MOV	AX,15			; グラフ文字表示色
+	CALL_w	VTXCOL			; character color set.
+
+	MOV	BX,SET_MONTH		; 月
+	DEC	BX			; -1
+	SHL	BX,1			; word pointer.
+	MOV	SI,STR_MONTH[BX]	; month.
+	MOV	AX,WD_DAY_MONTH_X	; window 月 start x.
+	MOV	BX,WD_DAY_MONTH_Y	; window 月 start y.
+	CALL_w	VTXPOR			; vram text print OR.
+
+	MOV	DX,SET_YEAR		; 年
+	CALL_w	DECSTR			; val DX to dec string.
+	CALL_w	STRZTS			; zero to space. "00123" - > "  123"
+
+	MOV	AX,WD_DAY_YEAR_X	; window 年 start x.
+	MOV	BX,WD_DAY_YEAR_Y	; window 年 start y.
+	CALL_w	VTXPOR			; vram text print OR.
+
+	RET
+DRAW_MONTH_YEAR	ENDP
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "PARAMETR.ASM"
+
+PUBLIC	PARA_BASEVALUE_TOP		; parameter basevalue top.
+PUBLIC	PARA_BASEVALUE_END		; parameter basevalue end.
+
+PUBLIC	PARA_TECHVALUE_TOP		; parameter technical value top.
+PUBLIC	PARA_TECHVALUE_END		; parameter technical value end.
+
+PUBLIC	PARA_MONEY_TOP			; parameter money top.
+PUBLIC	PARA_MONEY_END			; parameter money end.
+
+PUBLIC	PARA_PROFILE_TOP		; parameter profile top.
+PUBLIC	PARA_PROFILE_END		; parameter profile top.
+
+PUBLIC	PARA_BATLE_STATUS_TOP		; parameter batle status top.
+PUBLIC	PARA_BATLE_STATUS_END		; parameter batle status end.
+
+PUBLIC	PARA_STATUS_TOP			; parameter status top.
+PUBLIC	PARA_STATUS_END			; parameter status end.
+
+PUBLIC	PARA_COUNTER_TOP		; parameter counter top.
+PUBLIC	PARA_COUNTER_END		; parameter counter end.
+
+PUBLIC	PARA_URA_VALUE_TOP		; parameter ura value top.
+PUBLIC	PARA_URA_VALUE_END		; parameter ura value end.
+
+PUBLIC	PARA_EVENT_TOP			; parameter event top.
+PUBLIC	PARA_EVENT_END			; parameter event end.
+
+PUBLIC	PARA_CALENDAR_TOP		; parameter calendar top.
+PUBLIC	PARA_CALENDAR_END		; parameter calendar end.
+
+
+PUBLIC	PARA_BASEVALUE_LEN		; parameter basevalue len.
+PUBLIC	PARA_TECHVALUE_LEN		; parameter technical value len.
+PUBLIC	PARA_MONEY_LEN			; parameter money len.
+PUBLIC	PARA_PROFILE_LEN		; parameter profile len.
+PUBLIC	PARA_BATLE_STATUS_LEN		; parameter batle status len.
+PUBLIC	PARA_STATUS_LEN			; parameter status len.
+PUBLIC	PARA_COUNTER_LEN		; parameter counter len.
+PUBLIC	PARA_URA_VALUE_LEN		; parameter ura value len.
+PUBLIC	PARA_EVENT_LEN			; parameter event len.
+PUBLIC	PARA_CALENDAR_LEN		; parameter calendar len.
+
+EXTRN	PARA_BASEVALUE_LEN:WORD		; parameter basevalue len.
+EXTRN	PARA_TECHVALUE_LEN:WORD		; parameter technical value len.
+EXTRN	PARA_MONEY_LEN:WORD		; parameter money len.
+EXTRN	PARA_PROFILE_LEN:WORD		; parameter profile len.
+EXTRN	PARA_BATLE_STATUS_LEN:WORD	; parameter batle status len.
+EXTRN	PARA_STATUS_LEN:WORD		; parameter status len.
+EXTRN	PARA_COUNTER_LEN:WORD		; parameter counter len.
+EXTRN	PARA_URA_VALUE_LEN:WORD		; parameter ura value len.
+EXTRN	PARA_EVENT_LEN:WORD		; parameter event len.
+EXTRN	PARA_CALENDAR_LEN:WORD		; parameter calendar len.
+
+;*;PUBLIC GOLD_MINE			; 私の所持金
+;*;GOLD_MINE	DW	100		; 私の所持金
+
+;*;PUBLIC	B_UP_TAIRYOKU			; 増強・体力
+;*;PUBLIC	B_UP_KINRYOKU			; 増強・筋力
+;*;PUBLIC	B_UP_CHINOH			; 増強・知能
+;*;PUBLIC	B_UP_KIHIN			; 増強・気品
+;*;PUBLIC	B_UP_IROKE			; 増強・色気
+
+;*;B_UP_TAIRYOKU	DW	0		; 増強・体力
+;*;B_UP_KINRYOKU	DW	0		; 増強・筋力
+;*;B_UP_CHINOH	DW	0		; 増強・知能
+;*;B_UP_KIHIN	DW	0		; 増強・気品
+;*;B_UP_IROKE	DW	0		; 増強・色気
+
+;*;PUBLIC	V_UP_SENTOH			; 増強・戦闘技術
+;*;PUBLIC	V_UP_KOUGEKI			; 増強・攻撃力
+;*;PUBLIC	V_UP_BOUGYO			; 増強・防御力
+;*;PUBLIC	V_UP_MAHOGIJUTSU 		; 増強・魔法技術
+;*;PUBLIC	V_UP_MARYOKU			; 増強・魔力
+;*;PUBLIC	V_UP_KOHMARYOKU			; 増強・抗魔力
+
+;*;V_UP_SENTOH	DW	0		; 増強・戦闘技術
+;*;V_UP_KOUGEKI	DW	0		; 増強・攻撃力
+;*;V_UP_BOUGYO	DW	0		; 増強・防御力
+;*;V_UP_MAHOGIJUTSU DW	0		; 増強・魔法技術
+;*;V_UP_MARYOKU	DW	0		; 増強・魔力
+;*;V_UP_KOHMARYOKU	DW	0		; 増強・抗魔力
+
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "VMUSCOR.ASM"
+
+;	カーソル・プレーンモード
+;	-I- AX : 0=normal put,1=two side put.
+
+MSCPLNMDE	PROC	NEAR
+	CMP	MUSFLG,0		; 0=マウスＯＦＦ
+	JNE	MSCPLNMDE_CURON		;
+
+	MOV	PLEAN_MODE,AX		; プレーンモード 0=片面,1=両面
+
+	RET
+MSCPLNMDE_CURON:
+	MOV	MUSFLG,0		; 0=マウスＯＦＦ
+
+	PUSH	AX
+	CALL	XVRAM_LOAD		; ＶＲＡＭ戻す
+	POP	AX
+
+	MOV	PLEAN_MODE,AX		; プレーンモード 0=片面,1=両面
+
+	MOV	MUSFLG,2		; 2=マウスカーソル書換中(割込防止)
+
+	CALL	MUSRED			; マウス読み込み
+	CALL	ADJMOV			; 移動量調整
+
+	MOV	CURX,AX			;
+	MOV	CURY,BX			;
+
+	MOV	AX,SELNUM		; 選択カーソル番号
+	CALL	MSCCHG			; マウスカーソル選択
+
+	CALL	XVRAM_SAVE		; ＶＲＡＭ退避
+
+	CALL	XVRAM_PUT		; ＶＲＡＭカーソルＰＵＴ
+
+	MOV	MUSFLG,1		; 1=マウスカーソル表示中
+
+	RET
+MSCPLNMDE	ENDP
+
+;	カーソル・プレーンモード
+;	-I- AX : 0=normal put,1=two side put.
+
+MSCPLNMDE	PROC	NEAR
+	MOV	PLEAN_MODE,AX		; プレーンモード 0=片面,1=両面
+	RET
+MSCPLNMDE	ENDP
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "WIDCLEND.ASM"
+
+CL_DSPCLR	DW	4;10		; 文字表示色
+CL_DSPCLR2	DW	15		; 日付文字表示色
+CL_DSPCSZ	DW	0		; 文字表示サイズ
+DSPVAL		DW	0		; 内容表示値
+
+; ****************************************************
+;	表示値ワイド表示
+;	-I- DSPVAL : 表示値
+;	    XX1    : Ｘ座標
+;	    YY1    : Ｙ座標
+; ****************************************************
+
+WIDVAL_WIDE	PROC	NEAR
+	MOV	DI,OFFSET STR_VAL_BUFF	; 表示値文字列バッファ
+
+	MOV	DX,DSPVAL		; 表示値
+	CALL_w	DECSTR			; dec -> string.
+	CALL_w	STRZTS			; zero to space. "00123" - > "  123"
+
+	MOV	AX,DS:[SI][3]		; "00012"->"12"
+	MOV	DS:[DI],AX		;
+	MOV	DS:[DI][2],BYTE PTR 0	; 2ｹﾀ
+
+	MOV	AX,CL_DSPCLR2		; 日付文字表示色
+	CALL_w	MITCOL			; mini string color.
+
+	MOV	AX,XX1			; 表示Ｘ位置
+	MOV	BX,YY1			; 表示Ｙ位置
+	MOV	SI,OFFSET STR_VAL_BUFF	; 表示値文字列バッファ
+	CALL_w	MBTPRN			; BIG string. (null=end of string)
+	RET
+WIDVAL_WIDE	ENDP
+
+
+; ****************************************************
+;	文字列表示
+;	-I- DS:[SI]   : 文字列バッファ
+;	    XX1       : Ｘ座標
+;	    YY1       : Ｙ座標
+;	    CL_DSPCLR : 文字表示色
+;	    CL_DSPCSZ : 文字表示サイズ
+; ****************************************************
+
+STRING_PUT	PROC	NEAR
+	PUSH	SI
+
+	MOV	AX,CL_DSPCLR2		; 日付文字表示色
+	CALL_w	MITCOL			; mini string color.
+
+	MOV	AX,XX1			; Ｘ座標
+	MOV	BX,YY1			; Ｙ座標
+	CALL_w	MGXPRN			; GAINAX mini string.
+	;CALL_w	MGXPRNP			; GAINAX mini string.(put)
+
+	POP	SI
+	RET
+STRING_PUT	ENDP
+
+
+
+	CALL	WID_DSP_CLEAR		; 文字の消去
+; ****************************************************
+;	文字の消去
+; ****************************************************
+
+WID_DSP_CLEAR	PROC	NEAR
+	MOV	AX,DSP_WID_X		; ウインドウ表示位置Ｘ
+	MOV	BX,DSP_WID_Y		; ウインドウ表示位置Ｙ
+	ADD	AX,1			; 曜日・表示位置Ｘ
+	ADD	BX,4			; 曜日・表示位置Ｙ
+	MOV	WDX1,AX			; 表示位置Ｘ
+	MOV	WDY1,BX			; 表示位置Ｙ
+	MOV	WDX2,14			; 大きさＸ
+	MOV	WDY2,8*7		; 大きさＹ
+	CALL_w	WID_FLAME_CLENDER_BOX	; WINDOWS/フレーム・カレンダー・BOX
+	RET
+WID_DSP_CLEAR	ENDP
+
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "WIDFREAM.ASM"
+
+
+; ****************************************************
+;	WINDOWS/フレーム・ﾏﾙﾁｱｲﾃﾑ・TYPE 1 ON
+;	-I- WDX1 : 表示位置Ｘ
+;	    WDY1 : 表示位置Ｙ
+; ****************************************************
+
+FUNC_L	WID_FLAME_MULT_TYP1_ON
+	MOV	WDX2,WD_TYP1_SIZE_X	; フレーム・ﾏﾙﾁｱｲﾃﾑ・TYPE 1 サイズＸ
+	MOV	WDY2,WD_TYP1_SIZE_Y	; フレーム・ﾏﾙﾁｱｲﾃﾑ・TYPE 1 サイズＹ
+
+	MOV	AX,WDX1			; 表示位置Ｘ
+	MOV	BX,WDY1			; 表示位置Ｙ
+	MOV	CX,AX			; x.
+	MOV	DX,BX			; y.
+	DEC	DX			; -1
+	ADD	DX,WDY2			; サイズＹ
+
+	MOV	VX1,AX			; start point.
+	MOV	VY1,BX			; start point.
+	MOV	VX2,CX			; end point.
+	MOV	VY2,DX			; end point.
+	CALL	JI_TEXT			; テキスト地色
+
+	MOV	AX,WDX2			; サイズＸ
+	DEC	AX			; -1
+	ADD	VX1,AX			; start point.
+	ADD	VX2,AX			; end point.
+	CALL	JI_TEXT			; テキスト地色
+
+	CALL	WID_GAWA_2T		; フレームの側 その２
+	RET
+FEND	WID_FLAME_MULT_TYP1_ON
+
+
+
+
+WD_SML_IV_SZ_X	EQU	25+2	; フレーム・小イベントサイズＸ
+WD_SML_IV_SZ_Y	EQU	128+16	; フレーム・小イベントサイズＹ
+WD_LGE_IV_SZ_X	EQU	35+2	; フレーム・大イベントサイズＸ
+WD_LGE_IV_SZ_Y	EQU	180+16	; フレーム・大イベントサイズＹ
+
+;;	MOV	WDX2,WD_SML_IV_SZ_X	; フレーム・小イベントサイズＸ
+;;	MOV	WDY2,WD_SML_IV_SZ_Y	; フレーム・小イベントサイズＹ
+;;	CALL	BASE_FLAME		; フレーム１
+;;	RET
+
+;;	MOV	WDX2,WD_LGE_IV_SZ_X	; フレーム・大イベントサイズＸ
+;;	MOV	WDY2,WD_LGE_IV_SZ_Y	; フレーム・大イベントサイズＹ
+;;	CALL	BASE_FLAME		; フレーム１
+;;	RET
+
+
+;	WINDOWS/フレーム・守護星ﾌｪｲｽ
+;*;	MOV	WDX2,14			; 大きさＸ
+;*;	MOV	WDY2,156		; 大きさＹ
+;*;	CALL	BASE_FLAME		; フレーム１
+;*;	RET
+
+
+;;	MOV	WDX2,14			; 大きさＸ
+;;	MOV	WDY2,120		; 大きさＹ
+;;	CALL	BASE_FLAME		; フレーム１
+;;
+;;	ADD	WDX1,1			; 表示位置Ｘ
+;;	ADD	WDY1,8			; 表示位置Ｙ
+;;
+;;	MOV	AX,WDX1			; 表示位置Ｘ
+;;	SHL	AX,1			;
+;;	SHL	AX,1			; * 8
+;;	SHL	AX,1			;
+;;	MOV	VX1,AX			; line dot point x.
+;;	ADD	AX,12*8			;
+;;	DEC	AX			;
+;;	MOV	VX2,AX			; line dot point x.
+;;	MOV	AX,WDY1			; line dot point y.
+;;	DEC	AX			;
+;;	MOV	VY1,AX			; line dot point y.
+;;	MOVX	VCOL,W_COL7		; WINDOWS/カラー・テキスト地色１
+;;
+;;	DEC	VX1			; line dot point x.
+;;	INC	VX2			; line dot point x.
+;;	MOV	CX,1			; 太さ
+;;	CALL_w	DLINEH			; 水平ライン描画
+;;
+;;	ADD	VY1,104+1		;
+;;	MOVX	VCOL,W_COL6		; WINDOWS/カラー・テキスト地色１
+;;	MOV	CX,1			; 太さ
+;;	CALL_w	DLINEH			; 水平ライン描画
+;;
+;;	MOV	AX,WDX1			; line dot point x.
+;;	SHL	AX,1			;
+;;	SHL	AX,1			; * 8
+;;	SHL	AX,1			;
+;;;*;	DEC	AX			;
+;;	MOV	VX1,AX			; line dot point x.
+;;	MOV	AX,WDY1			; start line point y1.
+;;	MOV	VY1,AX			; start line point y1.
+;;	ADD	AX,104			;
+;;	MOV	VY2,AX			; end line point y2.
+;;	MOVX	VCOL,W_COL7		; WINDOWS/カラー・テキスト地色１
+;;	MOV	CX,1			; 太さ
+;;	CALL_w	DLINEV			; 垂直ライン描画
+;;
+;;	ADD	VX1,12*8+1		;
+;;	MOVX	VCOL,W_COL6		; WINDOWS/カラー・テキスト地色１
+;;	MOV	CX,1			; 太さ
+;;	CALL_w	DLINEV			; 垂直ライン描画
+;;
+;;	RET
+
+; ****************************************************
+;	WINDOWS/フレーム・カレンダー・BOX
+;	-I- WDX1 : 表示位置Ｘ
+;	    WDY1 : 表示位置Ｙ
+;	    WDX2 : 大きさＸ
+;	    WDY2 : 大きさＹ
+; ****************************************************
+
+FUNC_L	WID_FLAME_CLENDER_BOX
+	MOV	AX,WDX1			; 表示位置Ｘ
+	MOV	BX,WDY1			; 表示位置Ｙ
+	MOV	VX1,AX			; start point.
+	MOV	VY1,BX			; start point.
+	ADD	AX,WDX2			; 大きさＸ
+	ADD	BX,WDY2			; 大きさＹ
+	DEC	AX			;
+	DEC	BX			;
+	MOV	VX2,AX			; end point.
+	MOV	VY2,BX			; end point.
+
+	CALL	JI_TEXT			; テキスト地色
+	RET
+FEND	WID_FLAME_CLENDER_BOX
+
+; ****************************************************
+;	WINDOWS/フレーム・カレンダー
+;	-I- WDX1 : 表示位置Ｘ
+;	    WDY1 : 表示位置Ｙ
+; ****************************************************
+
+FUNC_L	WID_FLAME_CLENDER
+	MOV	WDX2,17			; 大きさＸ
+	MOV	WDY2,8*8		; 大きさＹ
+	CALL	BASE_FLAME		; フレーム１
+	RET
+FEND	WID_FLAME_CLENDER
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "EVNT050.TXT"
+
+; "EVNT050.TXT"
+;
+; 50 拾い物
+;【 概　要 】武者修行の道中に，落し物を拾う．
+;【 いつ？ 】武者修行実行中．全マップで発生．
+;【発生条件】１０歩移動ごとに判定．感受性値が高いほど拾いやすい．
+;【 効　果 】
+;	拾う確率は下記の通り．
+;		感受性			拾う確率
+;		０～４９		０％
+;		５０～１４９	４％
+;		１５０～２４９	６％
+;		２５０～３４９	１０％
+;		４００以上		２０％
+;	また，拾うものは下記の通り．
+;		お金			６０％（金額は１０～１００Ｇ）
+;		快癒丸			２０％
+;		投げ焙碌		１０％
+;		妖精の蜜		　５％
+;		漆黒のウロコ	　５％
+;
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.DAY_COUNTER		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+DAY_COUNTER	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+.ITEM_KOUKA[2]		;効果
+.ITEM_ATTRBUTE[2]	;種別
+
+RUN_MONTH[50]++				;「拾い物」実行回数
+
+STRSCLEAR
+
+TXLC(1,17,280,0)		; text window locate.
+TXLC(2,28,130,1)		; text window locate.
+TXLC(3,13,260,2)		; text window locate.
+WWIVENT(5,1,19,40)		; ivent window locate.
+
+EVNT050
+
+WWMUSYA(9)				; 戦闘後データロード
+WWMUSYA(8,1)			; 再描画
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = DAY_COUNTER	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+IF ( S_WORKS = 0 )	LOAD("RPGLOP,RPG000")		; 0=東部 森林地帯
+IF ( S_WORKS = 1 )	LOAD("RPGLOP,RPG001")		; 1=西部 砂漠地帯
+IF ( S_WORKS = 2 )	LOAD("RPGLOP,RPG002")		; 2=南部 水郷地帯
+IF ( S_WORKS = 3 )	LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+TXOPEN(1)致命的エラーWAITU
+
+;************************************
+;	拾い物
+;************************************
+
+*EVNT050
+RANDAM(100)
+IF ( AX>=40 )		;お金			６０％
+	GIRLACTION_GOLD
+	RET
+IF ( AX>=20 )		;快癒丸			２０％
+	TK_KAIYU
+	GIRLACTION		;もの
+	RET
+IF ( AX>=10 )		;投げ焙碌		１０％
+	TK_HOUROKU
+	GIRLACTION		;もの
+	RET
+IF ( AX>=5 )		;妖精の蜜		　５％
+	TK_HONEY
+	GIRLACTION		;もの
+	RET
+IF ( AX>=0 )		;漆黒のウロコ	　５％
+	TK_UROKO
+	GIRLACTION		;もの
+	RET
+
+;**************
+;	おかね
+;**************
+
+*GIRLACTION_GOLD
+
+TXOPEN(1)
+TXA(NAME_FIRST)はお金を拾った！
+WWMUSYA(7)					; ノーマルモード
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(0)					;娘・普通
+「＊＊＊＊＊＊＊＊＊＊」
+IRAND999X(900)				;乱数９９９範囲指定（金額は１０～１００Ｇ）
+C1 = 10 + AX				;娘の所持金
+GOLD_GIRL = GOLD_GIRL + C1	;娘の所持金
+TXA(NAME_FIRST)はTXGOLD(C1)を手に入れた．
+@P
+TXCLOSE(3)
+
+RET
+
+
+;**************
+;	もの
+;**************
+
+*GIRLACTION
+
+TXOPEN(1)
+SHOW_PRESENT
+TXA(NAME_FIRST)はTXA(ITEMID_TBL1[0])を拾った！
+WWMUSYA(7)					; ノーマルモード
+@P
+TXCLOSE(1)
+
+IF ( ITEM_MAX >= ITEM_DIM )		; 所有アイテム数
+	TXOPEN(3)		;アイテムの所持限界を越えている場合
+	TXGIRL(0)		;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXOPEN(1)
+	TXA(NAME_FIRST)はTXA(ITEMID_TBL1[0])を放り投げた・・・
+	@P
+	TXCLOSE(1)
+	ITEMPRN(2)	; マルチアイテム復帰
+	RET
+;アイテムの所持限界内の場合
+TXOPEN(3)
+TXGIRL(0)		;娘・普通
+「＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXOPEN(1)
+TXA(NAME_FIRST)はTXA(ITEMID_TBL1[0])を手に入れた．
+@P
+TXCLOSE(1)
+ITEMPRN(2)		; マルチアイテム復帰
+TAKE_PRESENT
+RET
+
+
+;**************
+;	拾い物
+;**************
+
+;		快癒丸			２０％
+;		投げ焙碌		１０％
+;		妖精の蜜		　５％
+;		漆黒のウロコ	　５％
+
+;快癒丸
+
+*TK_KAIYU
+ITEMID_TBL1[0]="快癒丸"
+ITEMID_TBL2[0]=16			;ＩＣＯＮ
+ITEMID_TBL3[0]=30			;金
+ITEMID_TBL4[0]="ＨＰ回復"
+ITEMID_TBL5[0]=0			;
+ITEMID_TBL6[0]=""			;
+ITEMID_TBL7[0]=0			;
+ITEM_KOUKA[0]=""
+ITEM_ATTRBUTE[0]=0			;種別
+RET
+
+;投げ焙碌
+
+*TK_HOUROKU
+ITEMID_TBL1[0]="投げ焙碌"
+ITEMID_TBL2[0]=17			;ＩＣＯＮ
+ITEMID_TBL3[0]=100			;金
+ITEMID_TBL4[0]="攻撃用"
+ITEMID_TBL5[0]=0			;
+ITEMID_TBL6[0]=""			;
+ITEMID_TBL7[0]=0			;
+ITEM_KOUKA[0]=""
+ITEM_ATTRBUTE[0]=0			;種別
+RET
+
+;妖精の蜜
+
+*TK_HONEY
+ITEMID_TBL1[0]="妖精の蜜"
+ITEMID_TBL2[0]=42				;ＩＣＯＮ
+ITEMID_TBL3[0]=200				;金
+ITEMID_TBL4[0]="色気+10"
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEM_KOUKA[0]="B_IROKE+10"
+ITEM_ATTRBUTE[0]=4000			;4000番台=効能有
+RET
+
+;漆黒のウロコ
+
+*TK_UROKO
+ITEMID_TBL1[0]="漆黒のウロコ"
+ITEMID_TBL2[0]=26				;ＩＣＯＮ
+ITEMID_TBL3[0]=500				;金
+ITEMID_TBL4[0]="防御+3"
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEM_KOUKA[0]="V_BOUGYO+3"
+ITEM_ATTRBUTE[0]=4000			;4000番台=効能有
+RET
+
+*TAKE_PRESENT
+BX=ITEMID_TBL2[0]		;ＩＣＯＮ
+CX=ITEMID_TBL3[0]		;定価
+DX=ITEM_ATTRBUTE[0]		;種別
+SI=ITEMID_TBL1[0]		;所有アイテム名前 string
+DI=ITEM_KOUKA[0]		;所有アイテム効果 string
+BP=ITEMID_TBL4[0]		;所有アイテム説明 string
+ITEM_INST(1)
+RET
+
+*SHOW_PRESENT
+ITEMID_CNT=1				; アイテムＩＤ数
+ITEMPRN(3,24,100)			; マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)				; マルチアイテム表示
+RET
+
+;
+;	end of "EVNT050.TXT"
+;
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "RPGLOP.TXT"
+
+IF (AX=01) LOAD("RPGMNS,RPZ01N")	;北
+IF (AX=02) LOAD("RPGMNS,RPZ02N")	;北・東
+IF (AX=03) LOAD("RPGMNS,RPZ03N")	;北
+IF (AX=04) LOAD("RPGMNS,RPZ04N")	;北
+IF (AX=05) LOAD("RPGMNS,RPZ05N")	;北
+IF (AX=06) LOAD("RPGMNS,RPZ06N")	;北
+IF (AX=07) LOAD("RPGMNS,RPZ07N")	;北
+IF (AX=08) LOAD("RPGMNS,RPZ08N")	;東
+IF (AX=09) LOAD("RPGMNS,RPZ09N")	;東
+IF (AX=10) LOAD("RPGMNS,RPZ10N")	;東
+IF (AX=11) LOAD("RPGMNS,RPZ11N")	;東
+IF (AX=12) LOAD("RPGMNS,RPZ12N")	;東
+IF (AX=13) LOAD("RPGMNS,RPZ13N")	;東・西・南
+IF (AX=14) LOAD("RPGMNS,RPZ14N")	;西
+IF (AX=15) LOAD("RPGMNS,RPZ15N")	;西
+IF (AX=16) LOAD("RPGMNS,RPZ16N")	;西
+IF (AX=17) LOAD("RPGMNS,RPZ17N")	;西
+IF (AX=18) LOAD("RPGMNS,RPZ18N")	;西
+IF (AX=19) LOAD("RPGMNS,RPZ19N")	;西
+IF (AX=20) LOAD("RPGMNS,RPZ20N")	;西
+IF (AX=21) LOAD("RPGMNS,RPZ21N")	;西
+IF (AX=22) LOAD("RPGMNS,RPZ22N")	;南
+IF (AX=23) LOAD("RPGMNS,RPZ23N")	;南
+IF (AX=24) LOAD("RPGMNS,RPZ24N")	;南
+IF (AX=25) LOAD("RPGMNS,RPZ25N")	;南
+
+*CHECK_M_NORTH
+RANDAM(7)
+IF (IRND=1) LOAD("RPGMNS,RPZ01N")	;北
+IF (IRND=2) LOAD("RPGMNS,RPZ02N")	;北・東
+IF (IRND=3) LOAD("RPGMNS,RPZ03N")	;北
+IF (IRND=4) LOAD("RPGMNS,RPZ04N")	;北
+IF (IRND=5) LOAD("RPGMNS,RPZ05N")	;北
+IF (IRND=6) LOAD("RPGMNS,RPZ06N")	;北
+IF (IRND=7) LOAD("RPGMNS,RPZ07N")	;北
+
+*CHECK_M_EAST
+RANDAM(7)
+IF (IRND=1) LOAD("RPGMNS,RPZ02N")	;北・東
+IF (IRND=2) LOAD("RPGMNS,RPZ08N")	;東
+IF (IRND=3) LOAD("RPGMNS,RPZ09N")	;東
+IF (IRND=4) LOAD("RPGMNS,RPZ10N")	;東
+IF (IRND=5) LOAD("RPGMNS,RPZ11N")	;東
+IF (IRND=6) LOAD("RPGMNS,RPZ12N")	;東
+IF (IRND=7) LOAD("RPGMNS,RPZ13N")	;東・西・南
+
+*CHECK_M_WEST
+RANDAM(9)
+IF (IRND=1) LOAD("RPGMNS,RPZ13N")	;東・西・南
+IF (IRND=2) LOAD("RPGMNS,RPZ14N")	;西
+IF (IRND=3) LOAD("RPGMNS,RPZ15N")	;西
+IF (IRND=4) LOAD("RPGMNS,RPZ16N")	;西
+IF (IRND=5) LOAD("RPGMNS,RPZ17N")	;西
+IF (IRND=6) LOAD("RPGMNS,RPZ18N")	;西
+IF (IRND=7) LOAD("RPGMNS,RPZ19N")	;西
+IF (IRND=8) LOAD("RPGMNS,RPZ20N")	;西
+IF (IRND=9) LOAD("RPGMNS,RPZ21N")	;西
+
+*CHECK_M_SOUTH
+RANDAM(5)
+IF (IRND=1) LOAD("RPGMNS,RPZ13N")	;東・西・南
+IF (IRND=2) LOAD("RPGMNS,RPZ22N")	;南
+IF (IRND=3) LOAD("RPGMNS,RPZ23N")	;南
+IF (IRND=4) LOAD("RPGMNS,RPZ24N")	;南
+IF (IRND=5) LOAD("RPGMNS,RPZ25N")	;南
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "MUSYAE.ASM"
+
+PUBLIC	MOUSE_READ			; マウス読み込み
+
+; ****************************************************
+;	マウス読み込み
+;	-O- AX : Ｘ座標
+;	    BX : Ｙ座標
+;	    DH : 左ボタン（1：ＯＦＦ／0：ＯＮ）
+;	    DL : 右ボタン（1：ＯＦＦ／0：ＯＮ）
+;	    SI : mouse locate direction x(+-)
+;	    DI : mouse locate direction y(+-)
+; ****************************************************
+
+MOUSE_READ	PROC	NEAR
+	MOV	BX,7			; マウス読み込み
+	CALL	MAIN_FUNCTION_INTER	; main function inter.
+	MOV	AX,CX			; Ｘ座標
+	RET
+MOUSE_READ	ENDP
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "VIEWMAP.ASM"
+
+	MOV	ES,BUF_ATTR_SEG		; attribute buffer segment.
+	MOV	DI,BUF_ATTR_OFS		; attribute buffer offset.
+
+	ADD	DI,40*69 + 16 + 40*6
+
+	MOV	AX,0
+	STOSW
+
+	MOV	ES,BUF_MAP_SEG		; map buffer segment.
+	MOV	DI,BUF_MAP_OFS		; map buffer offset.
+
+	ADD	DI,40*2*69 +16*2
+
+	MOV	AX,56H
+	STOSW
+	INC	AX
+	STOSW
+
+	ADD	DI,40*2-4
+
+	MOV	AX,66H
+	STOSW
+	INC	AX
+	STOSW
+
+	ADD	DI,40*2-4
+
+	MOV	AX,76H
+	STOSW
+	INC	AX
+	STOSW
+
+	ADD	DI,40*2-4
+
+	MOV	AX,06H + 80H
+	STOSW
+	INC	AX
+	STOSW
+
+	ADD	DI,40*2-4
+
+	MOV	AX,16H + 80H
+	STOSW
+	INC	AX
+	STOSW
+
+	ADD	DI,40*2-4
+
+	MOV	AX,26H + 80H
+	STOSW
+	INC	AX
+	STOSW
+
+	ADD	DI,40*2-4
+
+	MOV	AX,36H + 80H
+	STOSW
+	INC	AX
+	STOSW
+
+	RET
+
+;*;EXTRN	MOUSE_READ:NEAR			; マウス読み込み
+;*;	CALL	MOUSE_READ		; マウス読み込み
+;*;;*;	CMP	DH,0			; 左ボタン（1：ＯＦＦ／0：ＯＮ）
+;*;;*;	JE	MAP_MOVE_EXIT		;
+;*;	CMP	DL,0			; 右ボタン（1：ＯＦＦ／0：ＯＮ）
+;*;	JE	MAP_MOVE_EXIT		;
+;*;	MOV	MOUSE_DIR_X,SI		; x direction step.
+;*;	MOV	MOUSE_DIR_Y,DI		; y direction step.
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "RPG000.TXT"
+
+*IVMONSTER
+TXLC(7,1,290,0)			; text window locate.
+TXLC(8,45,290,0)		; text window locate.
+TXOPEN(8)				;
+TXOPEN(7)				;
+WWMUSYA(7)				; ノーマルモード
+@7 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@8 「＊＊」
+PTBK(4)					; パーツバンク設定
+PTMD(0)					; ＰＵＴモード設定
+PTLD("M021")			; パーツロード
+PTMF(MNSTR_X,MNSTR_Y,0)	; ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄPUT
+@P						;
+GRAPINIT				;
+GRAPSHOW				;
+@P						;
+GR_CLOSE				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(8)				;
+TXCLOSE(7)				;
+@P						;
+WWMUSYA(9)				; 戦闘後データロード
+WWMUSYA(8,1)			; 再描画
+WWMUSYA(6)				; ＲＰＧモード
+RET
+
+*GRAPINIT
+W_HP = W_HP_MAX		; ＨＰ
+W_MP = W_MP_MAX		; ＭＰ
+RET
+
+*GRAPSHOW
+GR_OPEN				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR
+IGRP_TBL1[0]="ＨＰ"	IGRP_TBL3[0]=W_HP	; ＨＰ
+IGRP_TBL1[1]="ＭＰ"	IGRP_TBL3[1]=W_MP	; ＭＰ
+IGRP_CNT=2
+IGRP_X=1
+IGRP_Y=248
+GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+STRSCLEAR
+IGRP_TBL1[0]="ＨＰ"	IGRP_TBL3[0]=W_HP	; ＨＰ
+IGRP_TBL1[1]="ＭＰ"	IGRP_TBL3[1]=W_MP	; ＭＰ
+IGRP_CNT=2
+IGRP_X=55
+IGRP_Y=248
+GRPOPEN(1,2)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+RET
+
+	;TXOPEN(1)
+	;TXA(NAME_FIRST)はキャンプを張ろうかどうか迷ったが，やめにした．
+	;@P
+	;TXCLOSE(1)
+
+;;;WWMUSYA(1,1,107,2,6,8,127)	; start.
+;;;WWMUSYA(5,19,50,14,9,1)	; map relocate. 
+;;;WWMUSYA(5,100,72,16,6,2)	; map relocate. 
+;;;WWMUSYA(5,107,2,6,8,1)	; map relocate. 
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "RPG001.TXT"
+
+;;;WWMUSYA(5,19,50,14,9,1)		; map relocate. 
+;;;WWMUSYA(5,100,72,16,6,2)		; map relocate. 
+;;;WWMUSYA(5,107,2,6,8,1)		; map relocate. 
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "RPG002.TXT"
+
+;;WWMUSYA(1,3,48,40,13,5,127)		; start.
+;;WWMUSYA(1,3,133,106,8,9,127)		; start.
+;;WWMUSYA(1,3,94,49,14,5,127)		; start.
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "RPG003.TXT"
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "TRG000.TXT"
+
+;ゆらぎアニメ
+	IF ( SLCANM=0 ) 	;0=訓練中
+		ALOCC[SLCANM]++
+		RANDAM(12)
+		IF (IRND=1)
+			ALOCC[SLCANM]=0
+
+	IF ( SLCANM=1 )( SLCANM=2 )	;1=訓練ミス／病気,2=サボリ
+		RANDAM(2)
+		IF (IRND=1)
+			ALOCC[SLCANM]++
+
+;初期設定
+.X_TAIRYOKU	=0		; 体力
+.W_TAIRYOKU	=0		; 体力
+.X_KINRYOKU	=0		; 筋力
+.W_KINRYOKU	=0		; 筋力
+.X_CHINOH	=0		; 知能
+.W_CHINOH	=0		; 知能
+.X_KIHIN	=0		; 気品
+.W_KIHIN	=0		; 気品
+.X_IROKE	=0		; 色気
+.W_IROKE	=0		; 色気
+.X_MORALS	=0		; モラル
+.W_MORALS	=0		; モラル
+.X_SHINKOH	=0		; 信仰
+.W_SHINKOH	=0		; 信仰
+.X_INGYO	=0		; 因業
+.W_INGYO	=0		; 因業
+.X_KANJUSEI	=0		; 感受性
+.W_KANJUSEI	=0		; 感受性
+.X_STRESS	=0		; ストレス
+.W_STRESS	=0		; ストレス
+
+.X_SENTOH		=0	; 戦闘技術
+.W_SENTOH		=0	; 戦闘技術
+.X_KOUGEKI		=0	; 攻撃力
+.W_KOUGEKI		=0	; 攻撃力
+.X_BOUGYO		=0	; 防御力
+.W_BOUGYO		=0	; 防御力
+.X_MAHOGIJUTSU	=0	; 魔法技術
+.W_MAHOGIJUTSU	=0	; 魔法技術
+.X_MARYOKU		=0	; 魔力
+.W_MARYOKU		=0	; 魔力
+.X_KOHMARYOKU	=0	; 抗魔力
+.W_KOHMARYOKU	=0	; 抗魔力
+
+.X_REIGI		=0	; 礼儀作法
+.W_REIGI		=0	; 礼儀作法
+.X_GEIJYUTSU	=0	; 芸術
+.W_GEIJYUTSU	=0	; 芸術
+.X_WAJYUTU		=0	; 話術
+.W_WAJYUTU		=0	; 話術
+.X_RYOURI		=0	; 料理
+.W_RYOURI		=0	; 料理
+.X_SOUJISENTAKU	=0	; 掃除洗濯
+.W_SOUJISENTAKU	=0	; 掃除洗濯
+.X_KIDATE		=0	; 気だて
+.W_KIDATE		=0	; 気だて
+
+; ******************
+;	T001	自然科学
+; ******************
+
+*ANIME_OPEN
+
+DAYLOPMAX=6
+;
+TIMEWAIT1=1
+C1 = 10  C2 = 0  C3 = 38
+	ALOCX[C2] = 0
+	ALOCY[C2] = C3
+	ALOCC[C2] = 0
+	ALOCF[C2] = 0
+	ALOCCNT[C2] = 0
+	C3++
+	C2++
+LOOP C1
+ALOCC[0] = 1
+ALOCF[0] = 1
+WWANIME(1,0)			; anime window open.
+WWANIME(3,0,"T001")		; pictuer load.
+WWANIME(6,0,"T001A")	; anime pattern add load.
+WWANIME(4,0)			; put BG.
+WWANIME(5,0)			; pictuer copy vvram -> CRT.
+TXOPEN(A_TEXT_HDL)
+RET
+
+*ANIME_CLOSE
+WWANIME(2,0)		: anime window close.
+TXCLOSE(A_TEXT_HDL)
+RET
+
+*ANIME_WIDW
+TIMELOPMAX=55
+ANIME_SICK
+IRAND2(1,2)
+SLCANM=AX-1
+ANMT001
+RET
+
+*ANIME_SICK
+IF ( FLAG_BYOUKI ! 0 )		; 状態・病気
+	SLCANM=2
+	ANMT001
+	TIMELOPMAX=50
+IF ( FLAG_HIKOUKA ! 0 )		; 状態・非行化
+	SLCANM=3
+	ANMT001
+	TIMELOPMAX=50
+RET
+
+*ANMT001	;自然科学
+; SLCANM :	0=訓練中,1=訓練ミス,2=病気,3=サボリ
+
+C2 = 10
+	ALOCF[C2] = 0
+LOOP C2
+
+ALOCX[0]=15	;student-a
+ALOCY[0]=35
+ALOCC[0]=10
+ALOCX[1]=22	;student-b
+ALOCY[1]=35
+ALOCC[1]=11
+ALOCX[2]=31	;student-c
+ALOCY[2]=35
+ALOCC[2]=12
+ALOCX[3]=4	;teacher
+ALOCY[3]=34
+ALOCC[3]=8
+
+ALOCX[4]=22	;girl-0
+ALOCY[4]=35
+ALOCC[4]=0
+
+ALOCX[5]=22	;girl-1
+ALOCY[5]=35
+ALOCC[5]=2
+
+ALOCX[6]=22	;girl-1
+ALOCY[6]=35
+ALOCC[6]=4
+
+ALOCX[7]=22	;girl-1
+ALOCY[7]=35
+ALOCC[7]=6
+
+ALOCF[0] = 1	; a
+ALOCF[1] = 0	; b
+ALOCF[2] = 1	; c
+ALOCF[3] = 1	; teacher
+
+;**	訓練中
+
+IF ( SLCANM=0 )
+	TIMELOP=TIMELOPMAX
+		WWANIME(4,0)		; put BG.
+		AT01C01X			;
+		AT01C02X			;
+		AT01C03X			; ok.
+		WWANIME(5,0)		; pictuer copy vvram -> CRT.
+		TIMER1(TIMEWAIT1)
+		WAIT1
+	LOOP TIMELOP
+
+;** 訓練ミス
+
+IF ( SLCANM=1 )
+	TIMELOP=TIMELOPMAX
+		WWANIME(4,0)		; put BG.
+		AT01C01X			;
+		AT01C02X			;
+		AT01C04X			; miss.
+		WWANIME(5,0)		; pictuer copy vvram -> CRT.
+		TIMER1(TIMEWAIT1)
+		WAIT1
+	LOOP TIMELOP
+
+;** 病気
+
+IF ( SLCANM=2 )
+	TIMELOP=TIMELOPMAX
+		WWANIME(4,0)		; put BG.
+		AT01C01X			;
+		AT01C02X			;
+		AT01C05X			; sick.
+		WWANIME(5,0)		; pictuer copy vvram -> CRT.
+		TIMER1(TIMEWAIT1)
+		WAIT1
+	LOOP TIMELOP
+
+;** サボリ
+
+IF ( SLCANM=3 )
+	TIMELOP=TIMELOPMAX
+		WWANIME(4,0)		; put BG.
+		AT01C01X			;
+		AT01C02X			;
+		AT01C06X			; sabori.
+		WWANIME(5,0)		; pictuer copy vvram -> CRT.
+		TIMER1(TIMEWAIT1)
+		WAIT1
+	LOOP TIMELOP
+RET
+
+*AT01C01X
+IF ( ALOCF[0] ! 0 ) APUT(ALOCX[0],ALOCY[0],ALOCC[0])
+IF ( ALOCF[1] ! 0 ) APUT(ALOCX[1],ALOCY[1],ALOCC[1])
+IF ( ALOCF[2] ! 0 ) APUT(ALOCX[2],ALOCY[2],ALOCC[2])
+RET
+
+*AT01C02X
+IF ( ALOCF[3]=0 ) RET
+APUT(ALOCX[3],ALOCY[3],ALOCC[3])
+ALOCCNT[3]++
+IF ( ALOCCNT[3] = 8 )
+	RANDAM(6)
+	ALOCCNT[3] = IRND-1
+	ALOCC[3]++
+	IF ( ALOCC[3] > 9 )
+		ALOCC[3]=8
+RET
+
+*AT01C03X	; ok.
+APUT(ALOCX[4],ALOCY[4],ALOCC[4])	; anime pattern put vvram.
+ALOCCNT[4]++
+IF ( ALOCCNT[4] = 2 )
+	ALOCCNT[4] = 0
+	ALOCC[4]++
+	IF ( ALOCC[4] > 1 )
+		ALOCC[4] = 0
+RET
+
+*AT01C04X	; miss.
+APUT(ALOCX[5],ALOCY[5],ALOCC[5])	; anime pattern put vvram.
+ALOCCNT[5]++
+IF ( ALOCCNT[5] = 12 )
+	ALOCCNT[5] = 0
+	ALOCC[5]++
+	IF ( ALOCC[5] > 3 )
+		ALOCC[5] = 2
+RET
+
+*AT01C05X	; sick.
+APUT(ALOCX[6],ALOCY[6],ALOCC[6])	; anime pattern put vvram.
+ALOCCNT[6]++
+IF ( ALOCC[6] = 5 )
+	RANDAM(7)
+	ALOCCNT[6] = IRND
+	ALOCC[6] = 4
+IF ( ALOCC[6] = 4   ALOCCNT[6] > 10 )
+	ALOCCNT[6] = 0
+	ALOCC[6] = 5
+RET
+
+*AT01C06X	; sabori.
+APUT(ALOCX[7],ALOCY[7],ALOCC[7])	; anime pattern put vvram.
+ALOCCNT[7]++
+IF ( ALOCCNT[7] = 4 )
+	ALOCCNT[7] = 0
+	ALOCC[7]++
+	IF ( ALOCC[7] > 7 )
+		ALOCC[7] = 6
+RET
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "JOB000.TXT"
+
+PRV("P_BORTHMONTH=",P_BORTHMONTH)
+PRV(":",VAL_MONTH)
+LLF
+PRV("P_BORTHDAY=",P_BORTHDAY)
+PRV(":",VAL_DAY)
+LLF
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "BBDEBUG.ASM"
+
+; *********************************************************
+;	symbol dump.
+;	-I- STRSYMBOL : symbol string.
+;	    STRSYMLEN : symbol length.
+; *********************************************************
+
+BBDEBUGSYM	PROC	NEAR
+	CMP	DBGFLAG_VALUE,0		; debug flag value.
+	JNE	BBDEBUGSYM_START	;
+	RET
+BBDEBUGSYM_START:
+	LC	22,24
+	PUSH	SI
+	PUSH	AX
+	PR	"%%"
+	MOV	SI,STRSYMBOL		; symbol string.
+	CALL	c_PRINT
+	MOV	AL,"="
+	CALL	c_CHPUT
+	POP	AX
+	POP	SI
+	RET
+BBDEBUGSYM	ENDP
+
+
+
+; *********************************************************
+;	value dump.
+;	-I- SYMSEGM : segment of symbol.
+;	    SYMOFST : offset of symbol.
+; *********************************************************
+
+BBDEBUGVAL	PROC	NEAR
+	CMP	DBGFLAG_VALUE,0		; debug flag value.
+	JNE	BBDEBUGVAL_START	;
+	RET
+BBDEBUGVAL_START:
+	PUSH	ES
+	PUSH	DI
+	PUSH	DX
+	MOV	ES,SYMSEGM		; segment of symbol.
+	MOV	DI,SYMOFST		; offset of symbol.
+	MOV	DX,ES:[DI]		;
+	CALL	c_SIGSTR
+	CMP	BYTE PTR DS:[SI],'+'
+	JNE	BBDEBUGVAL_5
+	INC	SI
+BBDEBUGVAL_5:
+	CALL	c_STRZTS		; zero to space. "00123" - > "  123"
+	CALL	c_STRSPL		; space pless. "  123" - > "123  "
+	CALL	c_PRINT
+;*;	LF
+	POP	DX
+	POP	DI
+	POP	ES
+	RET
+BBDEBUGVAL	ENDP
+
+; *********************************************************
+;	area dump.
+;	-I- ES : segment.
+;	    SI : offset.
+;	    CX : paragraph.
+; *********************************************************
+
+BBAREADUMP	PROC	NEAR
+	JCXZ	BBAREADUMP_EXIT
+BBAREADUMP_LOOP:
+	PUSH	CX
+	PUSH	SI
+
+	PUSH	SI
+	MOV	CX,16
+BBAREADUMP_LOOP2:
+	PUSH	CX
+	PUSH	SI
+	MOV	DX,ES:[SI]
+	CALL	c_HEXSTR
+	ADD	SI,2
+	CALL	c_PRINT
+	MOV	AL,' '
+	CALL	c_CHPUT
+	POP	SI
+	INC	SI
+	POP	CX
+	LOOP	BBAREADUMP_LOOP2
+	POP	SI
+
+	MOV	CX,16
+BBAREADUMP_LOOP3:
+	PUSH	CX
+	PUSH	SI
+	MOV	AL,ES:[SI]
+	CMP	AL,' '
+	JNB	BBAREADUMP_5
+	MOV	AL,'.'
+BBAREADUMP_5:
+	CALL	c_CHPUT
+	POP	SI
+	INC	SI
+	POP	CX
+	LOOP	BBAREADUMP_LOOP3
+
+	MOV	AL,' '
+	CALL	c_CHPUT
+
+	LF
+
+	POP	SI
+	ADD	SI,16
+	POP	CX
+	LOOP	BBAREADUMP_LOOP
+
+BBAREADUMP_EXIT:
+	RET
+BBAREADUMP	ENDP
+
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "BBTEXT.ASM"
+
+; *********************************************************
+;	text load.
+;	-I- SI      : file name.
+;	-O- AX      : 0=normal,1=error.
+; *********************************************************
+
+BBLOAD	PROC	NEAR
+;*;	CALL	BBFLAGNOWTEXT		; 現在テキストファイル名セット
+
+	CALL	TXT_FLNSET		; テキストファイル名セット
+	CALL	BBDEBUGFILE		; filename dump.
+
+	MOV	DX,SEGPLS		; pless/unpless segment.
+	MOV	DI,OFSPLS		; pless/unpless offset.
+	MOV	CX,TEXTPSIZ		; text buffer size.
+	CALL	DISKLD_FAR		; disk load.(far)
+	CMP	AX,0			; 0=normal,1=error.
+	JMPNE	BBLOAD_ERROR		;
+
+	MOV	BX,CX			; data length.(元データ)
+	MOV	DX,SEGPLS		; 元データ
+	MOV	SI,OFSPLS		;
+	MOV	ES,TEXTPSEG		; 復元データ
+	MOV	DI,TEXTPSTARTOFS	;
+	MOV	CX,TEXTPSIZ		; text buffer size.
+	CALL	BBUNLOCK		; テキストデータ復元
+
+	MOV	ES,TEXTPSEG		; text segment pointer.
+	MOV	DI,TEXTPTAG		; text tag offset.
+	MOV	AL,CHR_LF		; LF
+	STOSB				;
+	STOSB				;
+	STOSB				;
+	STOSB				;
+
+	MOVX	ES,DS			;
+	MOV	SI,OFFSET FLTXTNAM	; テキストファイル名セット
+	MOV	DI,FLTEXTNOW		; now text file name.
+	MOV	CX,FLTEXTNOWLEN		; now text file name length.
+	CALLE	c_STRSETZ		; 文字列バッファセット
+
+	MOV	ES,TEXTPSEG		; text segment pointer.
+	MOV	DI,TEXTPSTARTOFS	; text start offset.
+	CALL	TEXTLENGTH		; テキスト長さ
+
+	MOV	TEXTPLEN,CX		; text length.
+
+	MOVX	TEXTPOFS,TEXTPSTARTOFS	; text start offset.
+	CALL	BBNOWNEST		; 現在行のネストレベル
+	CALL	BBJPGET			; jump label get.
+	CALL	BBCOMPNEST		; nest check.
+
+	CALL	BBDEFCLEAR		; define clear.
+	CALL	TEXTSTACKCLR		; text stack push.
+
+	MOVX	TEXTPOFS,TEXTPSTARTOFS	; text start offset.
+
+BBLOAD_EXIT:
+	MOV	AX,0			; 0=normal.
+	RET
+BBLOAD_ERROR:
+	MOV	AX,1			; 1=error.
+	RET
+BBLOAD	ENDP
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "MAINEVNT.TXT"
+
+SCH_NOW=0
+SCHED_SECTION[SCH_NOW]	=0		; スケジュール項目
+SCHED_WORKS[SCH_NOW]	=9		; スケジュール内容
+SCH_STARTDAY[SCH_NOW]	=1		; スケジュール開始日
+SCH_ENDDAY[SCH_NOW]		=10		; スケジュール終了日
+SCH_COUNT=1
+LOAD("RUNNING")
+
+;;E_ETC[19]=1			;お尋ね者・捕縛・バナザード(1=逮捕,2=賞金)
+;;E_ETC[20]=1			;お尋ね者・捕縛・バニスター(1=逮捕,2=賞金)
+;;E_ETC[21]=1			;お尋ね者・捕縛・カスティーヨ(1=逮捕,2=賞金)
+;;E_ETC[22]=30		;お尋ね者・賞金額・バナザード
+;;E_ETC[23]=200		;お尋ね者・賞金額・バニスター
+;;E_ETC[24]=1000		;お尋ね者・賞金額・カスティーヨ
+;;EVENT052			;表彰
+;;
+LOAD("MAINLOOP")
+
+;E_ETC[15]=20	;追い剥ぎ回数
+;E_ETC[16]=10	;前科取り調べ時の追い剥ぎ回数
+;EVENT046			;追い剥ぎの発覚
+
+;	誕生日チェック
+IF ( C7 = 0 )
+	C7 = 1
+	LOAD("MAINEVNT,EVNT042")
+EVENT042
+C7 = 0
+;;FREAM_GIRL			;
+LOAD("MAINLOOP")
+
+;	19 ＩＣＯＮ
+PRF("ティーカップ")
+ITEM_SRCH(1,19)	; ICON search.
+PRV("AX=",AX)	; 0=none,1=search.
+PRV("DX=",DX)	; item record.
+LLF
+LOAD("MAINLOOP")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+C1 = SCH_NOW - 1
+S_SECTION	= SCHED_SECTION[C1]			; スケジュール項目
+S_WORKS	= SCHED_WORKS[C1]			; スケジュール内容
+EVENT026	LOAD("MAINLOOP");;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;LOAD("MAINLOOP");;;;;;;;;;;;;;;;;;;;;
+;H_SENSHI	=400	;戦士評価
+;H_MAHO		=400	;魔法評価
+;H_SYAKOH	=400	;社交評価
+;H_KAJI		=400	;家事評価
+;E_ETC[4]=3	; 技能アップの祝福・戦士評価・回数
+;E_ETC[5]=3	; 技能アップの祝福・魔法評価・回数
+;E_ETC[6]=3	; 技能アップの祝福・社交評価・回数
+;E_ETC[7]=3	; 技能アップの祝福・家事評価・回数
+;LOAD("EVNT015");;;;;;;;;;;;;;;;;;;;;
+
+FREAM_GIRL			;
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "BBCOMPIL.TXT"
+
+PRV "*** COND_CONV DESTDIMTYPE=",DESTDIMTYPE
+CMP DESTDIMTYPE,0
+JE LLL2
+CODE_OUT
+CALLE WID_TEXT_PAUSE
+CODE_IN
+LLL2:
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "SCNVACAN.TXT"
+
+EVENT018		; ムダ使い
+
+;18 ムダ使い
+;【 概　要 】娘が勝手に買物をしてしまう．
+;【 いつ？ 】休息の１旬終了時．
+;【発生条件】非行化指数が１以上で，かつ，所持金が仕立屋，雑貨屋，料理屋のいずれか
+;				で買物出来る額あるときに，《非行化指数％》の確率で発生．
+;【 効　果 】仕立屋，雑貨屋，料理屋のなかから，ランダムにどれか一つ買物をする．
+;				手に入れた品物は，通常の買物同様の効果がある．
+;				持物がいっぱいの場合は，料理屋を選ぶ．
+
+*EVENT018
+IF ( E_ETC[35] = 1 )				;強制的に「ムダ使い」が発生する
+	E_ETC[35] = 0					;強制的に「ムダ使い」が発生する
+	E_ETC[9] = 1					;「無駄遣い」実行中
+	LOAD("KAIMONO")					;買い物
+
+IF ( S_HIKOUKA >= 1 )				; 非行化指数(%)
+	GOLDCMP(200)					; 娘の所持金
+	IF ( AX ! 2 ) 					; 娘の所持金
+		RANDAM(100)					;
+		IF ( IRND <= S_HIKOUKA )	;《非行化指数％》の確率で発生．
+			E_ETC[9] = 1			;「無駄遣い」実行中
+			LOAD("KAIMONO")			;買い物
+RET
+
+
+
+*SSS
+SLCTX("10,11,12,13,14,15,16,17")
+P_NENREI=ISLCT+10
+SLCTX("season 1,2,3,4")
+TM_SEASON=ISLCT+1
+S_STARTDAY=1
+S_ENDDAY=10
+R_VACANCES								; バカンス
+GOTO SSS
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "TEST.TXT"
+
+*TEST_DSKTOOL
+PARC(1,"DSKTOOL.COM",1,0)	; 初期処理
+PARC(2,2)					; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳOPEN
+C1="番号"
+C2="   日　　付"
+C3="     名　　前"
+PARC(2,6,C1,C2,C3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳﾍｯﾀﾞ表示
+C1 = "１２３４５６７８・１２３４５６７８"
+;123456789.123456789.123456789.123456789.
+PARC(2,4,1,1200,12,0,24,C1)
+
+C1 = 10  C2 = 1
+	PARC(2,5,C2)	; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ項目表示
+	C2++
+LOOP C1
+
+C1 = "ととと"
+PARC(2,8,10,C1)		; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ文字表示
+PARC(2,8,11,C1)		; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ文字表示
+PARC(2,8,12,C1)		; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ文字表示
+
+PARC(2,7)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳSLCT
+
+PRV("BX=",BX)
+
+PARC(2,3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+
+RET
+
+;	PARC(2,4,num,year,month,week,day,name)	; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ項目セット
+
+
+
+
+
+*SHOWGIRL
+AGE = 10
+DRESS=2
+C1 = 8
+	BODY = 1
+	C2 = 2
+		BREAST = 0
+		C3 = 2
+			WWGIRL(1,AGE,BODY,FACE,BREAST,DRESS,DAMEG) ; direct put.
+			BREAST++
+		LOOP C3
+		BODY++
+	LOOP C2
+	AGE++
+LOOP C1
+RET
+
+
+*ALLDRESS
+*REPART
+AGE = 10
+C1 = 8
+	BODY = 1
+	C2 = 2
+		BREAST = 0
+		C3 = 2
+			WWGIRL(1,AGE,BODY,FACE,BREAST,DRESS,DAMEG) ; direct put.
+			BREAST++
+		LOOP C3
+		BODY++
+	LOOP C2
+	AGE++
+LOOP C1
+IF(DRESS<6)
+	DRESS++
+	GOTO REPART
+RET
+
+
+TXOPEN(13)
+TXGIRL(1)
+てきすと１３
+TXOPEN(14)
+TXGIRL(2)
+てきすと１４
+TXOPEN(15)
+TXGIRL(3)
+てきすと１５
+TXOPEN(10)
+ナレーション
+@P
+TXCLOSE(10)
+TXCLOSE(15)
+TXCLOSE(14)
+TXCLOSE(13)
+RET
+
+
+
+IF ( ISLCT = 8 )
+	PTLD("CIPBSN")			; パーツロード
+	C1 = 64/2  C2 = 1 C3 = 330
+		TIMER1(4)
+		PTMFX(40,C3,0,0,0,6,C2)	; ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄ範囲PUT
+		WAIT1
+		C2 +=2
+		C3 -=2
+	LOOP C1
+
+IF ( ISLCT = 11 )
+	EFC(18)		; palet10変化割込ON
+	PIC(7,305,356,100,10,10)
+	PIC(7,305,356,112,10,11)
+	SLCT("WAIT")
+	EFC(19)		; palet10変化割込OFF
+
+	PIC(7,90,340,96,20,0)
+
+	PIC(7,100,340,97,17,5)
+	
+	;PIC(6,100,340,112,2,15,128)	;192)
+
+
+	;width=8/y=102
+
+	PIC(7,100,330, 99,1,5)
+	PIC(7,100,300,100,1,10)
+
+	PIC(7,100,300,101,1,5)
+	PIC(7,100,300,102,1,10)
+	PIC(7,100,300,103,1,3)
+	PIC(7,100,300,104,1,15)
+	PIC(7,100,300,105,1,3)
+	PIC(7,100,300,106,3,10)
+	PIC(7,100,300,109,1,5)
+
+	PIC(7,100,300,110,1,10)
+	PIC(7,100,300,111,1,5)
+
+	PIC(7,300,300,102,7,10)
+
+	PIC(7,301,301,100,1,10)
+	PIC(7,301,301,102,7,5)
+	PIC(7,301,301,110,1,10)
+
+	PIC(7,302,304,100,1,4)
+	PIC(7,302,305,102,7,6)
+	PIC(7,302,304,110,1,4)
+
+	PIC(7,305,306,100,1,5)
+	PIC(7,305,306,102,7,6)
+	PIC(7,305,306,110,1,5)
+
+	PIC(7,307,310,100,1,6)
+	PIC(6,307,310,102,7,6,170)	PIC(6,307,310,102,7,0,85)
+	PIC(7,307,310,110,1,6)
+
+	PIC(7,311,316,100,1,0)
+	PIC(6,311,316,102,7,6,170)	PIC(6,311,316,102,7,0,85)
+	PIC(7,311,316,110,1,6)
+
+	PIC(7,316,322,100,1,0)
+	PIC(7,316,322,101,1,6)
+	PIC(7,316,322,102,7,0)
+	PIC(7,316,322,109,1,6)
+	PIC(7,316,322,110,1,6)
+
+	PIC(7,322,336,100,1,0)
+	PIC(7,322,336,101,1,0)
+	PIC(7,322,336,102,7,0)
+	;PIC(6,326,336,104,5,6,170)	PIC(6,326,336,104,5,0,85)
+	PIC(7,322,336,109,1,0)
+	PIC(7,322,336,110,1,6)
+
+
+
+	PIC(6,450,500,200,20,15,85)
+	PIC(6,450,500,370,20,15,85)
+
+
+
+; ******************
+;	J001	家の手伝
+; ******************
+
+*AMINEJ001
+
+.DAYCNT
+.DAYLOP
+.DAYLOPMAX
+.SLCANM
+.TIMELOP
+.TIMELOPMAX
+.TIMEWAIT1
+.GIRX
+.GIRY
+.ALOCX[10]
+.ALOCY[10]
+.ALOCC[10]
+.ALOCF[10]
+.ALOCCNT[10]
+
+DAYLOPMAX=6
+TIMELOPMAX=80
+TIMEWAIT1=3
+
+C1 = 10  C2 = 0  C3 = 38
+	ALOCX[C2] = 0
+	ALOCY[C2] = C3
+	ALOCC[C2] = 0
+	ALOCF[C2] = 0
+	ALOCCNT[C2] = 0
+	C3++
+	C2++
+LOOP C1
+
+ALOCC[0] = 0
+ALOCF[0] = 0
+
+WWANIME(1,0)			; anime window open.
+WWANIME(3,0,"J001")		; pictuer load.
+WWANIME(6,0,"J001A")	; anime pattern add load.
+WWANIME(4,0)			; put BG.
+WWANIME(5,0)			; pictuer copy vvram -> CRT.
+
+DAYCNT=0
+DAYLOP=DAYLOPMAX
+	DAYCNT++
+	CLENDER(3)		; ｶﾚﾝﾀﾞｰ･更新処理
+	CLENDER(2)		; カレンダー・再表示
+
+	SLCANM=DAYCNT-1
+	ANMJ001	;家の手伝
+
+	;GOTO DAYLOOPE
+
+LOOP DAYLOP
+*DAYLOOPE
+WWANIME(2,0)	; anime window close.
+FREE
+RET
+
+
+*ANMJ001	;家の手伝
+; SLCANM :	0=不良,1=病気,2=成功１,3=成功２(皿)
+;			4=失敗１,5=失敗２モップ,6=失敗３皿
+
+C2 = 10
+	ALOCF[C2] = 0
+LOOP C2
+
+;** 不良
+
+	IF ( SLCANM=0 )
+		WWANIME(4,0)		; put BG.
+		ANM09X				;
+		WWANIME(5,0)		; pictuer copy vvram -> CRT.
+		TIMELOP=TIMELOPMAX/2
+			TIMER1(TIMEWAIT1)
+			WAIT1
+		LOOP TIMELOP
+
+;** 病気
+
+	IF ( SLCANM=1 )
+		GIRX=6
+		ANM03X_GO
+		TIMELOP=TIMELOPMAX
+			MOD(TIMELOP,17)
+			IF ( AX = 9 ) GIRX++ ANM08X_GO
+			WWANIME(4,0)		; put BG.
+			ANM03XS
+			ANM04XS
+			ANM08X
+			WWANIME(5,0)		; pictuer copy vvram -> CRT.
+			TIMER1(TIMEWAIT1)
+			WAIT1
+		LOOP TIMELOP
+
+;** 成功１
+
+	IF ( SLCANM=2 )
+		ANM00X_GO
+		TIMELOP=TIMELOPMAX
+			IF ( TIMELOP=40 ) ANM03X_GO
+			WWANIME(4,0)		; put BG.
+			ANM00X
+			ANM01X
+			ANM03X
+			ANM04X
+			WWANIME(5,0)		; pictuer copy vvram -> CRT.
+			TIMER1(TIMEWAIT1)
+			WAIT1
+		LOOP TIMELOP
+
+;** 成功２(皿)
+
+	IF ( SLCANM=3 )
+		ANM06X_GO
+		TIMELOP=TIMELOPMAX
+			WWANIME(4,0)		; put BG.
+			ANM06X
+			WWANIME(5,0)		; pictuer copy vvram -> CRT.
+			TIMER1(TIMEWAIT1)
+			WAIT1
+		LOOP TIMELOP
+
+;** 失敗１
+
+	IF ( SLCANM=4 )
+		ANM00X_GO
+		TIMELOP=TIMELOPMAX
+			C1=TIMELOPMAX - 20
+			C2=TIMELOPMAX - 46
+			C3=TIMELOPMAX - 66
+			IF ( TIMELOP=C1 ) ANM02X_GO
+			IF ( TIMELOP=C2 ) ANM03XS_GO
+			IF ( TIMELOP=C3 ) ANM00X_GO
+			WWANIME(4,0)		; put BG.
+			ANM00X
+			ANM01X
+			ANM02X
+			ANM03XS
+			ANM04XS
+			WWANIME(5,0)		; pictuer copy vvram -> CRT.
+			TIMER1(TIMEWAIT1)
+			WAIT1
+		LOOP TIMELOP
+
+;** 失敗２モップ
+
+	IF ( SLCANM=5 )
+		ANM03X_GO
+		TIMELOP=TIMELOPMAX
+			WWANIME(4,0)		; put BG.
+			IF ( TIMELOP=40 ) ANM05X_GO
+			ANM03X
+			ANM04X
+			ANM05X
+			WWANIME(5,0)		; pictuer copy vvram -> CRT.
+			TIMER1(TIMEWAIT1)
+			WAIT1
+		LOOP TIMELOP
+
+;** 失敗３皿
+
+	IF ( SLCANM=6 )
+		ANM06X_GO
+		TIMELOP=TIMELOPMAX
+			C1 = TIMELOPMAX - 30
+			IF ( TIMELOP=C1 ) ANM07X_GO
+			WWANIME(4,0)		; put BG.
+			ANM06X
+			ANM07X
+			WWANIME(5,0)		; pictuer copy vvram -> CRT.
+			TIMER1(TIMEWAIT1)
+			WAIT1
+		LOOP TIMELOP
+
+RET
+
+
+*ANM00X_GO
+ALOCF[0]=1
+ALOCF[1]=0
+ALOCF[2]=0
+ALOCF[3]=0
+ALOCF[4]=0
+ALOCX[0]=10
+ALOCC[0]=0
+RET
+
+*ANM00X
+IF ( ALOCF[0]=0 ) RET
+APUT(ALOCX[0],ALOCY[0],ALOCC[0])	; anime pattern put vvram.
+ALOCC[0]++
+IF ( ALOCC[0]>1 )
+	ALOCC[0]=0
+ALOCX[0]++
+IF ( ALOCX[0]>=30 )
+	ALOCF[0]=0
+	ALOCF[1]=1
+	ALOCX[1]=ALOCX[0]
+	ALOCC[1]=0
+RET
+
+*ANM01X
+IF ( ALOCF[1]=0 ) RET
+APUT(ALOCX[1],ALOCY[1],ALOCC[1])	; anime pattern put vvram.
+ALOCC[1]++
+IF ( ALOCC[1]>3 )
+	ALOCC[1]=2
+ALOCX[1]--
+IF ( ALOCX[1]<=10 )
+	ALOCF[1]=0
+	ALOCF[0]=1
+	ALOCX[0]=ALOCX[1]
+	ALOCC[0]=0
+RET
+
+*ANM02X_GO
+ALOCF[0]=0
+ALOCF[1]=0
+ALOCF[2]=1
+ALOCX[2]=GIRX
+ALOCC[2]=4
+ALOCCNT[2]=0
+RET
+
+*ANM02X
+IF ( ALOCF[2]=0 ) RET
+APUT(ALOCX[2],ALOCY[2],ALOCC[2])	; anime pattern put vvram.
+ALOCCNT[2]++
+IF ( ALOCCNT[2]=2 )( ALOCCNT[2]=4 )
+	ALOCC[2]++
+	ALOCX[2]++
+IF ( ALOCCNT[2]=6 )( ALOCCNT[2]=8 )
+	ALOCC[2]++
+IF ( ALOCC[2]>7 )
+	ALOCC[2]=6
+;;IF ( ALOCCNT[2]=10 )
+;;	ANM00X
+RET
+
+*ANM03X_GO
+ALOCF[0]=0
+ALOCF[1]=0
+ALOCF[2]=0
+ALOCF[3]=1
+ALOCX[3]=GIRX
+ALOCC[3]=8
+ALOCCNT[3]=0
+RET
+
+*ANM03XS_GO
+ALOCF[0]=0
+ALOCF[1]=0
+ALOCF[2]=0
+ALOCF[3]=1
+ALOCX[3]=GIRX - 2
+ALOCC[3]=8
+ALOCCNT[3]=0
+RET
+
+*ANM03X
+IF ( ALOCF[3]=0 ) RET
+APUT(ALOCX[3],ALOCY[3],ALOCC[3])	; anime pattern put vvram.
+ALOCC[3]++
+IF ( ALOCC[3]>9 )
+	ALOCC[3]=8
+ALOCX[3]++
+IF ( ALOCX[3]>32 )
+	ALOCF[3]=0
+	ALOCF[4]=1
+	ALOCX[4]=ALOCX[3]
+	ALOCC[4]=10
+RET
+
+*ANM04X
+IF ( ALOCF[4]=0 ) RET
+APUT(ALOCX[4],ALOCY[4],ALOCC[4])	; anime pattern put vvram.
+ALOCC[4]++
+IF ( ALOCC[4]>11 )
+	ALOCC[4]=10
+ALOCX[4]--
+IF ( ALOCX[4]<6 )
+	ALOCF[4]=0
+	ALOCF[3]=1
+	ALOCX[3]=ALOCX[4]
+	ALOCC[3]=8
+RET
+
+*ANM03XS
+IF ( ALOCF[3]=0 ) RET
+APUT(ALOCX[3],ALOCY[3],ALOCC[3])	; anime pattern put vvram.
+ALOCC[3]++
+ALOCCNT[3]++
+IF ( ALOCC[3]>9 )
+	ALOCC[3]=8
+MOD (ALOCCNT[3],4)		; 余り
+IF ( AX=0 )( AX=1 ) ALOCX[3]++
+IF ( AX=2 )( AX=3 ) ALOCX[3]--
+IF ( ALOCCNT[3]=8 )
+	ALOCF[3]=0
+	ALOCF[4]=1
+	ALOCX[4]=ALOCX[3]+4
+	ALOCC[4]=10
+	ALOCCNT[3]=0
+	ALOCCNT[4]=0
+RET
+
+*ANM04XS
+IF ( ALOCF[4]=0 ) RET
+APUT(ALOCX[4],ALOCY[4],ALOCC[4])	; anime pattern put vvram.
+ALOCC[4]++
+ALOCCNT[4]++
+IF ( ALOCC[4]>11 )
+	ALOCC[4]=10
+MOD(ALOCCNT[4],4)		; 余り
+IF ( AX=0 )( AX=1 ) ALOCX[4]++
+IF ( AX=2 )( AX=3 ) ALOCX[4]--
+IF ( ALOCCNT[4]=8 )
+	ALOCF[4]=0
+	ALOCF[3]=1
+	ALOCX[3]=ALOCX[4]-4
+	ALOCC[3]=8
+	ALOCCNT[3]=0
+	ALOCCNT[4]=0
+RET
+
+*ANM05X_GO
+ALOCF[3]=0
+ALOCF[4]=0
+ALOCF[5]=1
+ALOCX[5]=24
+ALOCC[5]=12
+ALOCCNT[5]=0
+RET
+
+*ANM05X
+IF ( ALOCF[5]=0 ) RET
+APUT(ALOCX[5],ALOCY[5],ALOCC[5])	; anime pattern put vvram.
+ALOCCNT[5]++
+ALOCC[5]++
+IF ( ALOCC[5]>13 )
+	ALOCC[5]=12
+IF ( ALOCCNT[5]=10 )
+	ANM03X
+RET
+
+*ANM06X_GO
+ALOCF[6]=1
+ALOCCNT[6]=0
+ALOCC[6]=14
+ALOCX[6]=31
+RET
+
+*ANM06X
+IF ( ALOCF[6]=0 ) RET
+APUT(ALOCX[6],ALOCY[6],ALOCC[6])	; anime pattern put vvram.
+ALOCCNT[6]++
+MOD(ALOCCNT[6],12)		; 余り
+IF ( AX <= 7 ) ALOCC[6]=14
+IF ( AX >  7 ) ALOCC[6]=15
+RET
+
+*ANM07X_GO
+ALOCF[6]=0
+ALOCF[7]=1
+ALOCCNT[7]=0
+ALOCC[7]=15
+ALOCX[7]=31
+RET
+
+*ANM07X
+IF ( ALOCF[7]=0 ) RET
+APUT(ALOCX[7],ALOCY[7],ALOCC[7])	; anime pattern put vvram.
+ALOCCNT[7]++
+IF ( ALOCCNT[7] = 1 )
+	ALOCC[7]=16
+	ALOCX[7]++
+IF ( ALOCCNT[7] = 5 )
+	ALOCC[7]=17
+	ALOCX[7]++
+IF ( ALOCCNT[7] = 6 )
+	ALOCC[7]=18
+	ALOCX[7]++
+IF ( ALOCCNT[7] = 12 )
+	ALOCC[7]=19
+RET
+
+*ANM08X_GO
+ALOCF[3]=0
+ALOCF[4]=0
+ALOCF[8]=1
+ALOCCNT[8]=0
+ALOCC[8]=20
+ALOCX[8]=GIRX
+ALOCY[8]=GIRY
+RET
+
+*ANM08X
+IF ( ALOCF[8]=0 ) RET
+APUT(ALOCX[8],ALOCY[8],ALOCC[8])	; anime pattern put vvram.
+ALOCCNT[8]++
+IF ( ALOCCNT[8]=2 )
+	ALOCC[8]=21
+IF ( ALOCCNT[8]=4 )
+	ALOCC[8]=20
+IF ( ALOCCNT[8]=6 )
+	ALOCC[8]=21
+IF ( ALOCCNT[8]=8 )
+	ALOCC[8]=20
+IF ( ALOCCNT[8]=12 )
+	ALOCF[8]=0
+	ALOCF[3]=1
+	ANM03X_GO
+RET
+
+*ANM09X
+APUT(4,38,22)	; anime pattern put vvram.
+RET
+
+*APUT
+; anime pattern put vvram.
+; APUT(ALOCX[0],ALOCY[0],ALOCC[0])
+GIRX=AX
+GIRY=BX
+SI = CX * 2 + 1
+DX = BX
+CX = AX
+AX = 7
+BX = 0
+;	WWANIME(7,0,ALOCX[0],ALOCY[0],ALOCC[0])
+WWANIME	; anime pattern put vvram.
+RET
+
+; ******************
+;	T001	自然科学
+; ******************
+
+*AMINET001
+
+.DAYCNT
+.DAYLOP
+.DAYLOPMAX
+.SLCANM
+.TIMELOP
+.TIMELOPMAX
+.TIMEWAIT1
+.GIRX
+.GIRY
+.ALOCX[10]
+.ALOCY[10]
+.ALOCC[10]
+.ALOCF[10]
+.ALOCCNT[10]
+
+DAYLOPMAX=6
+TIMELOPMAX=80
+TIMEWAIT1=3
+
+C1 = 10  C2 = 0  C3 = 38
+	ALOCX[C2] = 0
+	ALOCY[C2] = C3
+	ALOCC[C2] = 0
+	ALOCF[C2] = 0
+	ALOCCNT[C2] = 0
+	C3++
+	C2++
+LOOP C1
+
+ALOCC[0] = 1
+ALOCF[0] = 1
+
+WWANIME(1,0)			; anime window open.
+WWANIME(3,0,"T001")		; pictuer load.
+WWANIME(6,0,"T001A")	; anime pattern add load.
+WWANIME(4,0)			; put BG.
+WWANIME(5,0)			; pictuer copy vvram -> CRT.
+
+DAYCNT=0
+DAYLOP=DAYLOPMAX
+	DAYCNT++
+	CLENDER(3)		; ｶﾚﾝﾀﾞｰ･更新処理
+	CLENDER(2)		; カレンダー・再表示
+
+	SLCANM=DAYCNT-1
+	ANMT001			;自然科学
+
+	;GOTO DAYLOOPE
+
+LOOP DAYLOP
+*DAYLOOPE
+;;;;;WWANIME(2,0)	; anime window close.
+FREE
+RET
+
+*ANMT001	;自然科学
+; SLCANM :	0=訓練中,1=訓練ミス,2=病気,3=サボリ
+
+C2 = 10
+	ALOCF[C2] = 0
+LOOP C2
+
+ALOCX[0]=15	;student-a
+ALOCY[0]=35
+ALOCC[0]=10
+ALOCX[1]=22	;student-b
+ALOCY[1]=35
+ALOCC[1]=11
+ALOCX[2]=31	;student-c
+ALOCY[2]=35
+ALOCC[2]=12
+ALOCX[3]=4	;teacher
+ALOCY[3]=34
+ALOCC[3]=8
+
+ALOCX[4]=22	;girl-0
+ALOCY[4]=35
+ALOCC[4]=0
+
+ALOCX[5]=22	;girl-1
+ALOCY[5]=35
+ALOCC[5]=2
+
+ALOCX[6]=22	;girl-1
+ALOCY[6]=35
+ALOCC[6]=4
+
+ALOCX[7]=22	;girl-1
+ALOCY[7]=35
+ALOCC[7]=6
+
+ALOCF[0] = 1	; a
+ALOCF[1] = 0	; b
+ALOCF[2] = 1	; c
+ALOCF[3] = 1	; teacher
+
+;**	訓練中
+
+IF ( SLCANM=0 )
+	TIMELOP=TIMELOPMAX
+		WWANIME(4,0)		; put BG.
+		AT01C01X			;
+		AT01C02X			;
+		AT01C03X			; ok.
+		WWANIME(5,0)		; pictuer copy vvram -> CRT.
+		TIMER1(TIMEWAIT1)
+		WAIT1
+	LOOP TIMELOP
+
+;** 訓練ミス
+
+IF ( SLCANM=1 )
+	TIMELOP=TIMELOPMAX
+		WWANIME(4,0)		; put BG.
+		AT01C01X			;
+		AT01C02X			;
+		AT01C04X			; miss.
+		WWANIME(5,0)		; pictuer copy vvram -> CRT.
+		TIMER1(TIMEWAIT1)
+		WAIT1
+	LOOP TIMELOP
+
+;** 病気
+
+IF ( SLCANM=2 )
+	TIMELOP=TIMELOPMAX
+		WWANIME(4,0)		; put BG.
+		AT01C01X			;
+		AT01C02X			;
+		AT01C05X			; sick.
+		WWANIME(5,0)		; pictuer copy vvram -> CRT.
+		TIMER1(TIMEWAIT1)
+		WAIT1
+	LOOP TIMELOP
+
+;** サボリ
+
+IF ( SLCANM=3 )
+	TIMELOP=TIMELOPMAX
+		WWANIME(4,0)		; put BG.
+		AT01C01X			;
+		AT01C02X			;
+		AT01C06X			; sabori.
+		WWANIME(5,0)		; pictuer copy vvram -> CRT.
+		TIMER1(TIMEWAIT1)
+		WAIT1
+	LOOP TIMELOP
+RET
+
+*AT01C01X
+IF ( ALOCF[0] ! 0 ) APUT(ALOCX[0],ALOCY[0],ALOCC[0])
+IF ( ALOCF[1] ! 0 ) APUT(ALOCX[1],ALOCY[1],ALOCC[1])
+IF ( ALOCF[2] ! 0 ) APUT(ALOCX[2],ALOCY[2],ALOCC[2])
+RET
+
+*AT01C02X
+IF ( ALOCF[3]=0 ) RET
+APUT(ALOCX[3],ALOCY[3],ALOCC[3])
+ALOCCNT[3]++
+IF ( ALOCCNT[3] = 8 )
+	RANDAM(6)
+	ALOCCNT[3] = IRND-1
+	ALOCC[3]++
+	IF ( ALOCC[3] > 9 )
+		ALOCC[3]=8
+RET
+
+*AT01C03X	; ok.
+APUT(ALOCX[4],ALOCY[4],ALOCC[4])	; anime pattern put vvram.
+ALOCCNT[4]++
+IF ( ALOCCNT[4] = 2 )
+	ALOCCNT[4] = 0
+	ALOCC[4]++
+	IF ( ALOCC[4] > 1 )
+		ALOCC[4] = 0
+RET
+
+*AT01C04X	; miss.
+APUT(ALOCX[5],ALOCY[5],ALOCC[5])	; anime pattern put vvram.
+ALOCCNT[5]++
+IF ( ALOCCNT[5] = 12 )
+	ALOCCNT[5] = 0
+	ALOCC[5]++
+	IF ( ALOCC[5] > 3 )
+		ALOCC[5] = 2
+RET
+
+*AT01C05X	; sick.
+APUT(ALOCX[6],ALOCY[6],ALOCC[6])	; anime pattern put vvram.
+ALOCCNT[6]++
+IF ( ALOCC[6] = 5 )
+	RANDAM(7)
+	ALOCCNT[6] = IRND
+	ALOCC[6] = 4
+IF ( ALOCC[6] = 4   ALOCCNT[6] > 10 )
+	ALOCCNT[6] = 0
+	ALOCC[6] = 5
+RET
+
+*AT01C06X	; sabori.
+APUT(ALOCX[7],ALOCY[7],ALOCC[7])	; anime pattern put vvram.
+ALOCCNT[7]++
+IF ( ALOCCNT[7] = 4 )
+	ALOCCNT[7] = 0
+	ALOCC[7]++
+	IF ( ALOCC[7] > 7 )
+		ALOCC[7] = 6
+RET
+
+
+
+*ANIMETEST
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR
+IGRP_TBL1[0]="体力"	IGRP_TBL3[0]=B_TAIRYOKU		; 体力
+IGRP_TBL1[1]="筋力"	IGRP_TBL3[1]=B_KINRYOKU		; 筋力
+IGRP_TBL1[2]="知能"	IGRP_TBL3[2]=B_CHINOH		; 知能
+IGRP_CNT=3
+IGRP_X=52
+IGRP_Y=192
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+WWANIME(1,0)
+WWANIME(3,0,"T001BG")	; pictuer load.
+WWANIME(6,0,"T001")		; anime pattern add load.
+WWANIME(4,0)			; put BG.
+WWANIME(5,0)			; pictuer copy vvram -> CRT.
+TIMER1(60)
+WAIT1
+
+ANM_XX=4
+ANM_XX2=0
+ANM_YY=40
+ANM_YY2=44
+
+C1 = 40
+	WWANIME(4,0)					; put BG.
+	WWANIME(7,0,ANM_XX,ANM_YY,1)	; anime pattern put vvram.
+	WWANIME(7,0,ANM_XX2,ANM_YY2,3)	; anime pattern put vvram.
+	WWANIME(5,0)					; pictuer copy vvram -> CRT.
+	ANM_XX++
+	RANDAM(2) ANM_XX2+=AX
+	TIMER1(5)
+	WAIT1
+	WWANIME(4,0)					; put BG.
+	WWANIME(7,0,ANM_XX,ANM_YY,3)	; anime pattern put vvram.
+	WWANIME(7,0,ANM_XX2,ANM_YY2,1)	; anime pattern put vvram.
+	WWANIME(5,0)					; pictuer copy vvram -> CRT.
+	ANM_XX++
+	RANDAM(2) ANM_XX2+=AX
+	TIMER1(5)
+	WAIT1
+	IF ( ANM_XX >= 39 ) ANM_XX=0
+	IF ( ANM_XX2 >= 39 ) ANM_XX2=0
+LOOP C1
+
+WWANIME(4,0)						; put BG.
+WWANIME(7,0,ANM_XX,ANM_YY,5)		; anime pattern put vvram.
+WWANIME(7,0,ANM_XX2,ANM_YY2,3)		; anime pattern put vvram.
+RANDAM(2) ANM_XX2+=AX				;
+WWANIME(5,0)						; pictuer copy vvram -> CRT.
+ANM_XX++
+TIMER1(5)
+WAIT1
+
+WWANIME(4,0)						; put BG.
+WWANIME(7,0,ANM_XX,ANM_YY,7)		; anime pattern put vvram.
+WWANIME(7,0,ANM_XX2,ANM_YY2,3)		; anime pattern put vvram.
+RANDAM(2) ANM_XX2+=AX				;
+WWANIME(5,0)						; pictuer copy vvram -> CRT.
+ANM_XX++
+TIMER1(5)
+WAIT1
+
+C1 = 10
+	WWANIME(4,0)					; put BG.
+	WWANIME(7,0,ANM_XX,ANM_YY,9)	; anime pattern put vvram.
+	WWANIME(7,0,ANM_XX2,ANM_YY2,3)	; anime pattern put vvram.
+	RANDAM(2) ANM_XX2+=AX			;
+	WWANIME(5,0)					; pictuer copy vvram -> CRT.
+	TIMER1(5)
+	WAIT1
+	WWANIME(4,0)					; put BG.
+	WWANIME(7,0,ANM_XX,ANM_YY,11)	; anime pattern put vvram.
+	WWANIME(7,0,ANM_XX2,ANM_YY2,3)	; anime pattern put vvram.
+	RANDAM(2) ANM_XX2+=AX			;
+	WWANIME(5,0)					; pictuer copy vvram -> CRT.
+	TIMER1(5)
+	WAIT1
+	IF ( ANM_XX2 >= 39 ) ANM_XX2=0
+LOOP C1
+
+WWANIME(2,0)
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+RET
+
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "WIDMULT.ASM"
+
+
+	MOV	SI,0			;
+	MOV	CX,CMDEXP_CNT		; 拡張コマンド数
+WIDOPEN_LOOP2:				;
+	PUSH	CX			;
+	PUSH	SI			;
+	INC	COUNTER			; counter.
+	CALL	LOC_XY			; location xy.
+	POP	SI			;
+	MOV	WIDEXP_X[SI],AX		; window expand x.
+	MOV	WIDEXP_Y[SI],BX		; window expand y.
+	INC	SI			;
+	INC	SI			;
+	POP	CX			;
+	LOOP	WIDOPEN_LOOP2		;
+
+
+;*;WID1LOCX	LABEL	WORD		; window start point x.
+;*;		DW	2,20,38,56
+;*;		DW	2,20,38,56
+;*;		DW	2,20,38,56
+;*;
+;*;WID1LOCY	LABEL	WORD		; window start point y.
+;*;		DW	180,	192,	200,	195
+;*;		DW	180+64,	192+64,	200+64,	195+64
+;*;		DW	180+64*2,192+64*2,200+64*2,195+64*2
+
+;*;WID1LOCX	LABEL	WORD		; window start point x.
+;*;		DW	2,17,32,47,62
+;*;		DW	2,17,32,47,62
+;*;		DW	2,17,32,47,62
+;*;
+;*;WID1LOCY	LABEL	WORD		; window start point y.
+;*;		DW	180,	192,	200,	195,	188
+;*;		DW	180+64,	192+64,	200+64,	195+64,	188+64
+;*;		DW	180+64*2,192+64*2,200+64*2,195+64*2,188+64*2
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "WIDANIME.ASM"
+
+BACKSAVE_BANK EQU	5		; 背景退避用パーツ番号
+					; #5 通常パターンバッファ後半
+
+; ****************************************************
+;	背景をロード
+;	-I- BACKPAT : 背景退避用パーツ番号
+; ****************************************************
+
+BACKLOAD	PROC	NEAR
+	MOV_ID2	SSGR0,ARAVRM		;
+
+	MOV	DX,BACKSAVE_BANK	 ; 背景退避用パーツ番号
+	CALL_w	C1PATBNK		; バンクチェンジ
+
+	MOV	CX,BACKPAT		; 背景退避用パーツ番号
+	CALL_w	C1PATPUT		; パーツＰＵＴ
+
+	MOV	DX,NORMAL_BANK		; 通常のパーツバンク番号
+	CALL_w	C1PATBNK		; バンクチェンジ
+	RET
+BACKLOAD	ENDP
+
+
+; ****************************************************
+;	背景をセーブ
+;	-I- WIDBAKXP : 背景退避エリア左上座標Ｘ
+;	    WIDBAKYP : 背景退避エリア左上座標Ｙ
+;	    WIDBAKXL : 背景退避エリアサイズＸ
+;	    WIDBAKYL : 背景退避エリアサイズＹ
+;	-O- BACKPAT  : 背景退避用パーツ番号
+; ****************************************************
+
+BACKSAVE	PROC	NEAR
+	MOV_ID2	SSGR0,ARAVRM	;
+
+	MOV	DX,BACKSAVE_BANK ; 背景退避用パーツ番号
+	CALL_w	C1PATBNK	; バンクチェンジ
+
+	CALL_w	C1PATCLR	; パーツセットクリア
+
+	MOV	AX,WIDBAKXP	; 背景退避エリア左上座標Ｘ
+	MOV	VRX,AX		; ＶＲＡＭ　Ｘ座標
+	MOV	AX,WIDBAKYP	; 背景退避エリア左上座標Ｙ
+	MOV	VRY,AX		; ＶＲＡＭ　Ｙ座標
+	MOV	AX,WIDBAKXL	; 背景退避エリアサイズＸ
+	MOV	VRLENX,AX	; Ｘ方向長さ
+	MOV	AX,WIDBAKYL	; 背景退避エリアサイズＹ
+	MOV	VRLENY,AX	; Ｙ方向長さ
+	CALL_w	C1PATGTA	; パーツＧＥＴ圧縮無し
+
+	MOV	DX,NORMAL_BANK	; 通常のパーツバンク番号
+	CALL_w	C1PATBNK	; バンクチェンジ
+
+	MOV	BACKPAT,0	; 背景退避用パーツ番号
+	RET
+BACKSAVE	ENDP
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "VIEWMAP.ASM"
+
+
+; ****************************************************
+;	put chip on char.(VGA)
+;	-I- DI : put address.
+;	    AX : chip number.
+;		bit   FEDCBA98.76543210
+;		          ----  -------
+;		           |       |
+;		           |       +--- chip(0-127)
+;		           +------------ bank(0-7)
+;
+; ****************************************************
+
+PUT_ON_CHAR_VGA	PROC	NEAR
+	MOV	BL,AH			;
+	MOV	BH,0			;
+	SHL	BX,1			;
+	MOV	CX,BUF_BANK_OFS[BX]	; bank buffer offset.
+	MOV	DX,BUF_BANK_SEG[BX]	; bank buffer segment.
+
+	AND	AX,0FFH			;
+	SHL	AX,1			;
+	SHL	AX,1			;
+	SHL	AX,1			;
+	SHL	AX,1			;
+	SHL	AX,1			;
+	SHL	AX,1			; *32*4
+	SHL	AX,1			;
+	ADD	CX,AX			;
+
+	MOV	SI,CX			;
+	ADD	SI,CHAR_MASK_CHP_OFST	; char mask chip offset.
+	CALL	PUT_MASKPUT_VGA		;
+	RET
+PUT_ON_CHAR_VGA	ENDP
+
+
+; ****************************************************
+;	put mask chip.(VGA)
+;	-I- DI : put address.
+;	    DX : chip number.
+;		bit   FEDCBA.987.6543210
+;		      ------ --- -------
+;		        |     |     |
+;		        |     |     +--- chip(0-127)
+;		        |     +--------- bank(0-7)
+;		        +--------------- mask chip(0-64)
+;
+; ****************************************************
+
+PUT_MASKCHIP_VGA	PROC	NEAR
+	MOV	CX,DX
+	AND	CX,0FC00H		;
+	SHR	CX,1			; dx >> 10 * 32*4
+	SHR	CX,1			;
+	SHR	CX,1			;
+	ADD	CX,BUF_BANK_OFS[4]	; bank buffer offset.
+	MOV	DX,BUF_BANK_SEG[4]	; bank buffer segment.
+
+	MOV	SI,CX			; bank buffer address.
+	ADD	SI,MASK_CHP1_OFST	; mask chip offset.
+
+	CALL	PUT_MASKPUT_VGA		; mask put.(VGA)
+	RET
+PUT_MASKCHIP_VGA	ENDP
+
+
+; ****************************************************
+;	mask put.(VGA)
+;	-I- DI    : put address.
+;	    DX:CX : bank buffer address.
+;	    DX:SI : mask offset address.
+; ****************************************************
+
+PUT_MASKPUT_VGA	PROC	NEAR
+	PUSH	DS
+
+	MOV	BX,ARAVRM[8]		; vram width.
+	SUB	BX,2			;
+
+	MOV	AX,ARAVRM[0]		;
+	AND	AX,VRAM_BANK_SEGA	; vram bank mask.
+	MOV	ES,AX			;
+
+	MOV	DS,DX			;
+	MOV	DX,DI			; start address.
+
+	MOV	AX,0803H		; data rotate/funtion select.(AND)
+	OUTVGAW	3CEH,AX			; address prot.
+
+	MOV	AH,1111B		; vram plean select.
+	MOV	AL,2			; map mask.
+	OUTVGAW	3C4H,AX			; sequence registar.
+
+REPT	16
+	MOV	AL,ES:[DI]		; rach.
+	MOVSB				;
+	MOV	AL,ES:[DI]		; rach.
+	MOVSB				;
+	ADD	DI,BX			;
+ENDM
+
+	MOV	AX,1003H		; data rotate/funtion select.(OR)
+	OUTVGAW	3CEH,AX			; address prot.
+
+	MOV	AH,0001B		; vram plean select.
+	MOV	AL,2			; map mask.
+	OUTVGAW	3C4H,AX			; sequence registar.
+
+	MOV	SI,CX			; bank buffer address.
+
+	MOV	DI,DX			; start address.
+REPT	16
+	MOV	AL,ES:[DI]		;
+	MOVSB				;
+	MOV	AL,ES:[DI]		;
+	MOVSB				;
+	ADD	DI,BX			;
+ENDM
+	MOV	AH,0010B		; vram plean select.
+	MOV	AL,2			; map mask.
+	OUTVGAW	3C4H,AX			; sequence registar.
+
+	MOV	DI,DX			; start address.
+REPT	16
+	MOV	AL,ES:[DI]		;
+	MOVSB				;
+	MOV	AL,ES:[DI]		;
+	MOVSB				;
+	ADD	DI,BX			;
+ENDM
+	MOV	AH,0100B		; vram plean select.
+	MOV	AL,2			; map mask.
+	OUTVGAW	3C4H,AX			; sequence registar.
+
+	MOV	DI,DX			; start address.
+REPT	16
+	MOV	AL,ES:[DI]		;
+	MOVSB				;
+	MOV	AL,ES:[DI]		;
+	MOVSB				;
+	ADD	DI,BX			;
+ENDM
+	MOV	AH,1000B		; vram plean select.
+	MOV	AL,2			; map mask.
+	OUTVGAW	3C4H,AX			; sequence registar.
+
+	MOV	DI,DX			; start address.
+REPT	16
+	MOV	AL,ES:[DI]		;
+	MOVSB				;
+	MOV	AL,ES:[DI]		;
+	MOVSB				;
+	ADD	DI,BX			;
+ENDM
+	MOV	AX,0003H		; data rotate/funtion select.(PSET)
+	OUTVGAW	3CEH,AX			; address prot.
+
+	POP	DS
+	RET
+PUT_MASKPUT_VGA	ENDP
+
+
+; ****************************************************
+;	put chip on char.
+;	-I- DI : put address.
+;	    AX : chip number.
+;		bit   FEDCBA98.76543210
+;		          ----  -------
+;		           |       |
+;		           |       +--- chip(0-127)
+;		           +------------ bank(0-7)
+;
+; ****************************************************
+
+PUT_ON_CHAR	PROC	NEAR
+	MOV	BL,AH			;
+	MOV	BH,0			;
+	SHL	BX,1			;
+	MOV	CX,BUF_BANK_OFS[BX]	; bank buffer offset.
+	MOV	DX,BUF_BANK_SEG[BX]	; bank buffer segment.
+
+	AND	AX,0FFH			;
+	SHL	AX,1			;
+	SHL	AX,1			;
+	SHL	AX,1			;
+	SHL	AX,1			;
+	SHL	AX,1			;
+	SHL	AX,1			; *32*4
+	SHL	AX,1			;
+	ADD	CX,AX			;
+
+	MOV	SI,CX			;
+	ADD	SI,CHAR_MASK_CHP_OFST	; char mask chip offset.
+	CALL	PUT_MASKPUT		;
+	RET
+PUT_ON_CHAR	ENDP
+
+
+; ****************************************************
+;	put mask chip.
+;	-I- DI : put address.
+;	    DX : chip number.
+;		bit   FEDCBA.987.6543210
+;		      ------ --- -------
+;		        |     |     |
+;		        |     |     +--- chip(0-127)
+;		        |     +--------- bank(0-7)
+;		        +--------------- mask chip(0-64)
+;
+; ****************************************************
+
+PUT_MASKCHIP	PROC	NEAR
+	MOV	CX,DX
+	AND	CX,0FC00H		;
+	SHR	CX,1			; dx >> 10 * 32*4
+	SHR	CX,1			;
+	SHR	CX,1			;
+	ADD	CX,BUF_BANK_OFS[4]	; bank buffer offset.
+	MOV	DX,BUF_BANK_SEG[4]	; bank buffer segment.
+
+	MOV	SI,CX			; bank buffer address.
+	ADD	SI,MASK_CHP1_OFST	; mask chip offset.
+
+	CALL	PUT_MASKPUT		; mask put.(VGA)
+	RET
+PUT_MASKCHIP	ENDP
+
+
+; ****************************************************
+;	mask put.
+;	-I- DI    : put address.
+;	    DX:CX : bank buffer address.
+;	    DX:SI : mask offset address.
+; ****************************************************
+
+PUT_MASKPUT	PROC	NEAR
+	PUSH	DS
+
+	PUSH	ARAVRM[6]		;
+	PUSH	ARAVRM[4]		;
+	PUSH	ARAVRM[2]		;
+	PUSH	ARAVRM[0]		;
+
+	PUSH	ARAVRM[6]		;
+	PUSH	ARAVRM[4]		;
+	PUSH	ARAVRM[2]		;
+	PUSH	ARAVRM[0]		;
+
+	MOV	BX,ARAVRM[8]		; vram width.
+
+	MOV	DS,DX			;
+	MOV	DX,DI			; start address.
+
+	POP	ES			;
+	MOV	DI,DX			; start address.
+REPT	16
+	LODSW				;
+	AND	ES:[DI],AX		;
+	ADD	DI,BX			;
+ENDM
+	POP	ES			;
+	MOV	DI,DX			; start address.
+REPT	16
+	LODSW				;
+	AND	ES:[DI],AX		;
+	ADD	DI,BX			;
+ENDM
+	POP	ES			;
+	MOV	DI,DX			; start address.
+REPT	16
+	LODSW				;
+	AND	ES:[DI],AX		;
+	ADD	DI,BX			;
+ENDM
+	POP	ES			;
+	MOV	DI,DX			; start address.
+REPT	16
+	LODSW				;
+	AND	ES:[DI],AX		;
+	ADD	DI,BX			;
+ENDM
+
+	MOV	SI,CX			; bank buffer address.
+
+	POP	ES			;
+	MOV	DI,DX			; start address.
+REPT	16
+	LODSW				;
+	OR	ES:[DI],AX		;
+	ADD	DI,BX			;
+ENDM
+	POP	ES			;
+	MOV	DI,DX			; start address.
+REPT	16
+	LODSW				;
+	OR	ES:[DI],AX		;
+	ADD	DI,BX			;
+ENDM
+	POP	ES			;
+	MOV	DI,DX			; start address.
+REPT	16
+	LODSW				;
+	OR	ES:[DI],AX		;
+	ADD	DI,BX			;
+ENDM
+	POP	ES			;
+	MOV	DI,DX			; start address.
+REPT	16
+	LODSW				;
+	OR	ES:[DI],AX		;
+	ADD	DI,BX			;
+ENDM
+	POP	DS
+	RET
+PUT_MASKPUT	ENDP
+
+
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "KS2LOOP.ASM"
+
+; *********************************************************
+;	test 01.
+; *********************************************************
+
+TEST01	PROC	NEAR
+
+CODE_OUT
+	MOV	DX,1			; 1=説明テキスト window
+	CALLE	WID_TEXT_OPEN		; WINDOWS/テキストウインドウＯＰＥＮ
+	MOV	DX,2			; 1=説明テキスト window
+	CALLE	WID_TEXT_OPEN		; WINDOWS/テキストウインドウＯＰＥＮ
+	MOV	DX,3			; 1=説明テキスト window
+	CALLE	WID_TEXT_OPEN		; WINDOWS/テキストウインドウＯＰＥＮ
+
+KS22LOOP_LOOP:
+	MOV	DX,1			; 1=説明テキスト window
+	CALLE	WID_TEXT_STRIME		; WINDOWS/テキストウインドウ選択
+
+	STRS	SI,"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」＊＊＊＊"
+	CALLE	WID_TEXT_PRINT		; WINDOWS/テキストウインドウ表示
+
+	MOV	DX,2			; 1=説明テキスト window
+	CALLE	WID_TEXT_STRIME		; WINDOWS/テキストウインドウ選択
+	STRS	SI,"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」＊＊＊＊＊"
+	CALLE	WID_TEXT_PRINT		; WINDOWS/テキストウインドウ表示
+
+	MOV	DX,3			; 1=説明テキスト window
+	CALLE	WID_TEXT_STRIME		; WINDOWS/テキストウインドウ選択
+	STRS	SI,"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」＊＊＊＊＊＊＊"
+	CALLE	WID_TEXT_PRINT		; WINDOWS/テキストウインドウ表示
+
+	MOV	DX,1			; 1=説明テキスト window
+	CALLE	WID_TEXT_STRIME		; WINDOWS/テキストウインドウ選択
+	STRS	SI,"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+	CALLE	WID_TEXT_PRINT		; WINDOWS/テキストウインドウ表示
+
+	;PUBLIC	WID_TEXT_PAUSE		; WINDOWS/テキストウインドウＰＡＵＳＥ
+
+	MOVX	ES,DS
+	STRS	BX,"繰り返し,おわり"
+	CALLE	WIDSLC2			; WINDOWS/セレクト・ウインドウ（簡易）
+
+	CMP	WIDSNM,1		; セレクト・ウインドウ／ユーザ選択番号
+	JMPNE	KS22LOOP_LOOP		;
+
+CODE_IN
+	RET
+TEST01	ENDP
+
+
+;	test 02.
+
+TEST02	PROC	NEAR
+
+CODE_OUT
+;*;	MOVX	ES,DS
+;*;	STRS	BX,"自然科学,詩文,神学,軍学,剣術,格闘術,魔法,礼法,絵画,舞踊"
+;*;	CALLE	WIDSLC2			; WINDOWS/セレクト・ウインドウ（簡易）
+;*;
+;*;	MOVX	ES,DS
+;*;	STRS	BX,"門番,衛騎士,将軍,大臣,司祭,寵姫,王妃,国王,道化師"
+;*;	CALLE	WIDSLC2			; WINDOWS/セレクト・ウインドウ（簡易）
+
+KS2LOOP_LOOP:
+	MOVX	ES,DS
+	STRS	BX,"TYPE-1,TYPE-2,TYPE-3,おわり"
+	CALLE	WIDSLC2			; WINDOWS/セレクト・ウインドウ（簡易）
+
+	CMP	WIDSNM,3		; セレクト・ウインドウ／ユーザ選択番号
+	JE	KS2LOOP_END		;
+	CMP	WIDSNM,-1		; セレクト・ウインドウ／ユーザ選択番号
+	JE	KS2LOOP_END		;
+
+	MOV	DX,WIDSNM		; セレクト・ウインドウ／ユーザ選択番号
+	INC	DX			;
+	PUSH	DX			; ウインドウＯＰＥＮタイプ
+
+	MOV	ITEMID_CNT,15		; アイテムＩＤ数
+
+	MOV	CX,15			;
+	MOV	DX,1
+	MOV	BX,0			;
+TEST_LOOP1:				;
+	PUSH	DX			;
+	PUSH	CX			;
+	PUSH	BX			;
+	STRS	ITEMID_TBL1[BX],"名前"	; アイテムＩＤテーブル／名前ＩＤ
+	MOV	ITEMID_TBL2[BX],1	; アイテムＩＤテーブル／ＩＣＯＮ
+	MOV	ITEMID_TBL3[BX],999	; アイテムＩＤテーブル／金
+	STRS	ITEMID_TBL4[BX],"筋力"	; アイテムＩＤテーブル／文字ＩＤ１
+	MOV	ITEMID_TBL5[BX],111	; アイテムＩＤテーブル／パラメータ値１
+	STRS	ITEMID_TBL6[BX],"体力"	; アイテムＩＤテーブル／文字ＩＤ２
+	MOV	ITEMID_TBL7[BX],222	; アイテムＩＤテーブル／パラメータ値２
+	POP	BX			;
+	POP	CX			;
+	POP	DX			;
+	INC	DX			;
+	INC	BX			;
+	INC	BX			;
+	LOOP	TEST_LOOP1		;
+
+	;*;MOV	DX,2;1			; ウインドウＯＰＥＮタイプ
+	POP	DX			; ウインドウＯＰＥＮタイプ
+	CALLE	WIDMULT			; WINDOWS/マルチアイテム
+
+	JMP	KS2LOOP_LOOP
+
+KS2LOOP_END:
+CODE_IN
+	RET
+TEST02	ENDP
+
+
+;	test 03.
+
+TEST03	PROC	NEAR
+CODE_OUT
+	MOV CX,8
+	MOV DX,1
+LL1:
+	PUSH CX
+	PUSH DX
+
+	PUSH	DX
+	CALLE	DSKWID_OPEN		; ディスク・ウインドウＯＰＥＮ
+	STRS	SI,"ABCDEFGH123456"
+	CALLE	DSKWID_PATH_NM_SET	; ディスク・パス名セット
+	POP	DX			; 検索ディスクＩＤ
+	CALLE	DSKWID_SET_MESSAGE	; ディスク・セットメッセージ
+
+	STRS	SI,"テスト中１２３４５６７８９０"
+	CALLE	DSKWID_FNAME_PRINT	; ディスク・ファイル名表示
+
+	CALLE	DSKWID_USERWAIT		; ディスク・ユーザ待ち
+
+	CALLE	DSKWID_CLOSE		; ディスク・ウインドウＣＬＯＳＥ
+	MOV	AX,60*1
+	CALLE	TMVWAT			; V-SYNC timer wait.
+
+	POP	DX
+	POP	CX
+	INC	DX
+	LOOP	LL1
+CODE_IN
+	RET
+TEST03	ENDP
+
+MOV	VX1,320
+MOV	VY1,200
+MOV	VX2,320
+MOV	VY2,10
+MOV	VCOL,14
+
+CODE_OUT
+LLL0:
+INC	VCOL
+CMP	VCOL,16
+JL	LLL001
+MOV	VCOL,1
+LLL001:
+
+	MOV	CX,30
+LLL1:
+	PUSH	CX
+	CALL	XXLINE
+	ADD	VX2,10
+	POP	CX
+LOOP LLL1
+	MOV	CX,38
+LLL2:
+	PUSH	CX
+	CALL	XXLINE
+	ADD	VY2,10
+	POP	CX
+LOOP LLL2
+
+	MOV	CX,60
+LLL3:
+	PUSH	CX
+	CALL	XXLINE
+	SUB	VX2,10
+	POP	CX
+LOOP LLL3
+
+	MOV	CX,38
+LLL4:
+	PUSH	CX
+	CALL	XXLINE
+	SUB	VY2,10
+	POP	CX
+LOOP LLL4
+
+	MOV	CX,30
+LLL5:
+	PUSH	CX
+	CALL	XXLINE
+	ADD	VX2,10
+	POP	CX
+LOOP LLL5
+
+JMP LLL0
+
+XXLINE:
+	;MOVX	GX1,VX1
+	;MOVX	GY1,VY1
+	;MOVX	GX2,VX2
+	;MOVX	GY2,VY2
+	;MOVX	GCLR,VCOL
+	;MOV	GMODE,1	; disply mode.
+	;CALLE	GDCLIN
+	;RET
+	CALLE	XLINE
+	RET
+; -i- GX1,GY1 : start point.
+;     GX2,GY2 : end point.
+;     GCLR    : color.
+;     GMODE   : disply mode.
+;
+;GDCLIN	PROC	NEAR
+;	PUBLIC	GX1
+;	PUBLIC	GY1
+;	PUBLIC	GX2
+;	PUBLIC	GY2
+;	PUBLIC	GMODE
+;	PUBLIC	GCODE
+;	PUBLIC	GCLR
+;	PUBLIC	GRD
+;
+
+CODE_IN
+
+
+
+
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "RUNNING.TXT"
+
+
+;S_HIKOUKA = 31	; 失敗時（非行化指数３０以上）
+;B_STRESS=200
+;B_STRESS=0
+;B_SHINKOH = 100		; 信仰
+;V_RYOURI = 100			; 料理
+;B_KINRYOKU	= 100		; 筋力
+;V_GEIJYUTSU = 200		; 芸術
+;B_CHINOH = 100			; 知能
+;V_SENTOH = 70		;戦闘技術が70以上のとき
+
+;B_STRESS = 0;100			; ストレス
+;B_TAIRYOKU = 100		; 体力
+;B_IROKE = 100			; 色気
+;SCH_NOW=0
+
+
+
+;***************************************
+;
+;
+;***************************************
+
+NOW_COUNT = RUN_KITAERU[]
+CK_LVL(NOW_COUNT)			;レベルチェック
+NOW_LEVEL = AX				;レベル
+
+IF ( NOW_LEVEL = 0 )
+	USE_GOLD	=10						;授業料
+IF ( NOW_LEVEL = 1 )
+	USE_GOLD	=15						;授業料
+IF ( NOW_LEVEL = 2 )
+	USE_GOLD	=20						;授業料
+IF ( NOW_LEVEL = 3 )
+	USE_GOLD	=25						;授業料
+
+
+IF ( NOW_COUNT = 0 )	;１回目
+
+IF ( NOW_COUNT ! 0 )	;２回目以降
+
+DAY_COUNTER	= S_ENDDAY[SCH_NOW] - S_STARTDAY[SCH_NOW] + 1	; 日付カウンタ
+LOOP DAY_COUNTER
+
+;授業終了時
+
+IF ( FLAG_NO_PAY ! 0 )		;授業料が払えない
+
+RUN_KITAERU[0]++		;「娘を鍛える」実行回数
+RUN_KITAERU[]++
+CK_LVL(RUN_KITAERU[])	;レベルチェック
+
+IF ( AX > NOW_LEVEL )	;レベル
+
+	IF ( AX = 1 )		;中級レベルにレベルアップ
+	IF ( AX = 2 )		;上級レベルにレベルアップ
+	IF ( AX = 3 )		;ﾏｽﾀｰレベルにレベルアップ
+RET
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "RUNNING2.TXT"
+
+;***************************************
+;
+;
+;***************************************
+
+TXOPEN(1)
+TXA(NAME_FIRST)は今日から，
+@P
+
+TXOPEN(2)
+
+GUARA_BASE	=0						; 基本給
+GUARA_ALL	=0						; バイト料合計
+WORK_DAYS	=0						; 仕事日数
+SUCCESS_DAYS=0						; 成功日数
+
+CK_GUARA(RUN_ARBEIT[],GUARA_BASE)	; バイト料
+FLAG_UP		= AX					; 待遇アップ
+GUARA_ONE	= DX					; バイト料
+
+IF ( GRA_ARBEIT[] = FLAG_UP )		; 待遇
+
+	IF ( RUN_ARBEIT[] = 0 )			;１回目
+
+	IF ( RUN_ARBEIT[] ! 0 )			;２回目以降
+
+IF ( GRA_ARBEIT[] ! FLAG_UP )		; 待遇
+
+	GRA_ARBEIT[] = FLAG_UP			; 待遇
+
+	IF ( FLAG_UP = 1 )				; 待遇アップ１回目
+	IF ( FLAG_UP ! 1 )				; 待遇アップ２回目以降
+@P
+TXCLOSE(2)
+
+DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+	CLENDER(3)						; カレンダー・更新処理
+	CLENDER(2)						; カレンダー・再表示
+
+	B_STRESS += 2					; ストレス
+
+	RUN_ARBEIT[0]++					;「娘を働かせる」実行回数
+	RUN_ARBEIT[]++
+	WORK_DAYS++						; 仕事日数
+
+	IRAN999X(B_STRESS)				; ストレス
+	C1 = B_TAIRYOKU - IRND			; 体力
+
+	IF ( C1 >= 5 )					; 体力５ 成功
+		@1
+		SUCCESS_DAYS++				; 成功日数
+		GUARA_ALL += GUARA_ONE		; バイト料合計
+
+	IF ( C1 < 5 )					; 体力５ 失敗
+		@1
+
+LOOP DAY_COUNTER
+
+TXCLOSE(1)
+
+GOLD_GIRL	+= GUARA_ALL			; バイト料合計
+
+TXOPEN(2)
+IF ( SUCCESS_DAYS = WORK_DAYS )		; バイト終了時（パーフェクト）
+	GUARA_ALL   += GUARA_ONE			; バイト料
+
+	GOLD_GIRL	+= GUARA_ALL			; バイト料合計
+
+	TXPOINT(SUCCESS_DAYS)
+	TXGOLD(GUARA_ALL)
+
+IF ( SUCCESS_DAYS < WORK_DAYS   SUCCESS_DAYS > 0 );（失敗があった場合）
+	GOLD_GIRL	+= GUARA_ALL			; バイト料合計
+
+IF ( SUCCESS_DAYS = 0 )			; バイト終了時（全滅）
+
+@P
+TXCLOSE(2)
+
+RET
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "MAINLOOP.TXT"
+
+;【 概　要 】執事がプレイヤーに助言する．
+;【 いつ？ 】一ヶ月の最初・スケジュール決定して，終了コマンド選択時．
+;【発生条件】以下の条件で執事は助言を発します．
+;【 効　果 】執事が１～８の条件に適した助言や意志表明をする．
+;　　助言後，セレクトウィンドウが表示され，予定を変更するかどうか選べる．
+;
+
+
+;	服装のﾁｪｯｸ
+;		服		   体形	年齢
+;43=普段着				--
+;44=夏物の服			--
+;45=冬物の服			--
+;46=木綿のドレス		--
+;47=シルクのドレス	*	13
+;48=レザーのドレス	*	14
+;49=トゲトゲの服	*	13
+;50=傾国のローブ		15
+;51=見えないドレス		--
+;52=悪魔のドレス	*	14
+;53=龍のレオタード	*	15
+
+
+
+;;PARC(1,"DSKTOOL.COM",1,0)	; 初期処理<==========================
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;FFDISK(2,1)	; データロード
+;;C1=1		;機能
+;;C2=0		;第何試合(1-n)
+;;C3=0		;組み合せ番号(1-n)
+;;C4=0		;勝敗 1=娘勝ち,2=敵勝ち
+;;LOAD("SSTOUR")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;PRV("NOW_MONTH_ATR=",NOW_MONTH_ATR)
+
+
+*MAINSTART
+STRSCLEAR
+IF ( NOW_MONTH_ATR=2 )				; 2=運命の日
+	SI = "エンディング,街に行く,健康管理,守護星に祈る,持ち物,ステータス,プロフィール,なんでも屋,test"
+	MMM_GIRL =999
+	MMM_CASTL=999
+	MMM_NANDEMO=7
+	MMM_TEST =8
+	GOTO MAIN_SLCT
+
+IF ( E_ETC[36]=VAL_MONTH  E_ETC[37]=VAL_YEAR )		;最新の「お城へ行く」
+	IF ( E_ETC[38]=VAL_YEAR  E_ETC[39]=VAL_MONTH )	;最新の「娘と話す」
+		SI = "スケジュール,街に行く,健康管理,守護星に祈る,持ち物,ステータス,プロフィール,なんでも屋,test"
+		MMM_GIRL =999
+		MMM_CASTL=999
+		MMM_NANDEMO=7
+		MMM_TEST =8
+		GOTO MAIN_SLCT
+	SI = "スケジュール,街に行く,健康管理,守護星に祈る,持ち物,ステータス,プロフィール,娘と話す,なんでも屋,test"
+	MMM_GIRL =7
+	MMM_CASTL=999
+	MMM_NANDEMO=8
+	MMM_TEST =9
+	GOTO MAIN_SLCT
+IF ( E_ETC[38]=VAL_YEAR  E_ETC[39]=VAL_MONTH )		;最新の「娘と話す」
+	SI = "スケジュール,街に行く,健康管理,守護星に祈る,持ち物,ステータス,プロフィール,お城へ行く,なんでも屋,test"
+	MMM_GIRL =999
+	MMM_CASTL=7
+	MMM_NANDEMO=8
+	MMM_TEST =9
+	GOTO MAIN_SLCT
+SI = "スケジュール,街に行く,健康管理,守護星に祈る,持ち物,ステータス,プロフィール,娘と話す,お城へ行く,なんでも屋,test"
+MMM_GIRL =7
+MMM_CASTL=8
+MMM_NANDEMO=9
+MMM_TEST =10
+GOTO MAIN_SLCT
+
+
+*MAIN_SLCT
+;SLCTX
+SLCT
+IF ( RUN_MONTH[0] <=1 )		TXF(3)		;乱数初期化
+IF( ISLCT=0  VAL_MONTH=9  VAL_DAY=30 ) ; 収穫祭前夜
+	SCHEDULE_SYU
+	IF ( FLAG_GO_SCHEDULE=1 )
+		LOAD("SSRUNS")
+	GOTO MAINSTART
+IF( ISLCT=0 )
+	IF ( NOW_MONTH_ATR=1 )	;1=一番最初の日
+		SCHEDULE_1ST
+	IF ( NOW_MONTH_ATR=2 )	;2=運命の日
+		LOAD_ENDING
+	IF ( NOW_MONTH_ATR=3 )	;3=一番最後の月
+		SCHEDULE_FIN
+	IF ( NOW_MONTH_ATR=0 )	;0=通常
+		SCHEDULE
+	IF ( NOW_MONTH_ATR=4 )( NOW_MONTH_ATR=5 )( NOW_MONTH_ATR=6 )
+		SCHEDULE
+
+	IF ( FLAG_GO_SCHEDULE=1 )
+		SCH_NOW=0				; スケジュール実行中項目
+		E_ETC[11]=0				;「道場破り」で「剣術」の稽古が出来ない
+		LOAD("RUNNING")
+	GOTO MAINSTART
+IF( ISLCT= 1 )
+	PLAY(10)	;P10 街
+	LOAD("KAIMONO")
+IF( ISLCT= 2 )			LOAD("SCNKENKO")
+IF( ISLCT= 3 )			LOAD("SCNSYUGO")
+IF( ISLCT= 4 )			MOCHIMONO	GOTO MAINSTART
+IF( ISLCT= 5 )			SSTATUS		GOTO MAINSTART
+IF( ISLCT= 6 )			PROFILES	GOTO MAINSTART
+IF( ISLCT= MMM_GIRL)    TALKGIRL	GOTO MAINSTART
+IF( ISLCT= MMM_CASTL)   LOAD("SCNCASTL")
+IF( ISLCT= MMM_NANDEMO) LOAD("TEST02")
+IF( ISLCT= MMM_TEST)    LOAD("TEST")
+IF( ISLCT=-1 )			SLEEP		GOTO MAINSTART
+
+GOTO MAINSTART
+
+
+;;;;;;;;;;;;;;;;;;;
+
+IF ( FLAG_BYOUKI ! 0 )					;病気状態の場合
+	STRSCLEAR
+	C2 = 0
+	BP="安静"			TBLSET4S(81)
+	BP="ｻﾅﾄﾘｳﾑ"			TBLSET4S(82)
+	ITEMID_CNT=C2		;アイテムＩＤ数
+	ITEMSLCT(4)			;マルチアイテム選択
+	I_WORKS = ISITM+3		;選択
+
+IF ( FLAG_BYOUKI=0  FLAG_HIKOUKA=0 )	;平常状態（恋愛状態含む）の場合
+	STRSCLEAR
+	C2 = 0
+	;BP="自由行動"	TBLSET4S(79)
+	;BP="バカンス"	TBLSET4S(80)
+	BP="自由行動"	TBLSET3(79,0)
+	BP="バカンス"	TBLSET3(80,E_ETC[81])	;ﾊﾞｶﾝｽの値段
+	ITEMID_CNT=C2		;アイテムＩＤ数
+	ITEMSLCT(3)			;マルチアイテム選択
+	I_WORKS = ISITM		;選択
+
+IF ( FLAG_BYOUKI = 0  FLAG_HIKOUKA ! 0 )	;非行化状態の場合
+	STRSCLEAR
+	C2 = 0
+	BP="自由行動"	TBLSET4S(79)
+	BP="バカンス"	TBLSET4S(80)
+	BP="監視"		TBLSET4S(83)
+	ITEMID_CNT=C2		;アイテムＩＤ数
+	ITEMSLCT(4)			;マルチアイテム選択
+	I_WORKS = ISITM		;選択
+
+;*;STRSCLEAR
+;*;IGRP_TBL1[0]="娘のお金"
+;*;IGRP_TBL3[0]=GOLD_GIRL
+;*;IGRP_CNT=1
+;*;IGRP_X=2
+;*;IGRP_Y=340
+;*;GOLDOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+
+C1 = 5
+	WWFRAME(C1)
+	TIMER1(60)
+	WAIT1
+LOOP C1
+
+
+
+
+TXOPEN(1)
+スケジュール
+SCHD_OPEN(1,3,31,7)		; ｽｹｼﾞｭｰﾙ･ｳｲﾝﾄﾞｳ OPEN
+
+GRPCLS
+RANDAM(15)
+GG_LINE(320,200,510,390,IRND) RANDAM(15)
+
+@P
+.XX1=320
+.YY1=200
+.XX2=320
+.YY2=10
+.TIM=0
+
+*START
+GRPCLS
+C1 = 300
+	ZZZZ
+	TIMER1(TIM)
+	GG_LINE(XX1,YY1,XX2,YY2,IRND) RANDAM(15)
+	XX2  +=  1
+	WAIT1
+LOOP C1
+C1 = 380
+	ZZZZ
+	TIMER1(TIM)
+	GG_LINE(XX1,YY1,XX2,YY2,IRND) RANDAM(15)
+	YY2  +=  1
+	WAIT1
+LOOP C1
+
+C1 = 600
+	ZZZZ
+	TIMER1(TIM)
+	GG_LINE(XX1,YY1,XX2,YY2,IRND) RANDAM(15)
+	XX2  -=  1
+	WAIT1
+LOOP C1
+C1 = 380
+	ZZZZ
+	TIMER1(TIM)
+	GG_LINE(XX1,YY1,XX2,YY2,IRND) RANDAM(15)
+	YY2  -=  1
+	WAIT1
+LOOP C1
+C1 = 300
+	ZZZZ
+	TIMER1(TIM)
+	GG_LINE(XX1,YY1,XX2,YY2,IRND) RANDAM(15)
+	XX2  +=  1
+	WAIT1
+LOOP C1
+
+@P
+
+GOTO START
+
+*ZZZZ
+;@P
+;GRPCLS
+RET
+
+
+
+
+PRV("VAL_YEAR=",VAL_YEAR)
+PRV("VAL_MONTH=",VAL_MONTH)
+PRV("VAL_WEEK=",VAL_WEEK)
+PRV("VAL_DAY=",VAL_DAY)
+
+PRV("NXT_M_YEAR=",NXT_M_YEAR)
+PRV("NXT_M_MONTH=",NXT_M_MONTH)
+PRV("NXT_M_ENDDAY=",NXT_M_ENDDAY)
+PRV("NXT_M_SWEEK=",NXT_M_SWEEK)
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+;trash "vz console"
+
+GREP -ONW \" *.ASM | MIFIND -C3 -R [亜-腕]+		;日本語のメッセージ探し
+
+
+;
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;	** T R A S H    L I S T **
+;
+; END.
+

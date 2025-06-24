@@ -1,0 +1,36 @@
+
+初版	PM2.EXE   191871  93-04-23  22:24
+
+
+
+
+(1) ９８版プリメ１不具合(リリース２)
+
+	;V98DSPST ASM      3471 93-05-18   12:46	386VRの不具合
+	;WIDGRAP  ASM     37879 93-06-18    2:48	ﾊﾟﾗﾒｰﾀ表示０以下カット
+	;GETARG.OBJを削除
+	;6/18 削ったエリア
+	;"KS2MAIN.ASM"
+	; CALLE	c_GETARG　の周辺
+	;"KS2TBL.ASM"
+	; 587: LBLADRS_DIM	EQU	200 ;512 ; jump address table dimension.
+	;"DUMMY.ASM"
+	; PRF	"**** DUMMY ****"
+	;"ZBGATE.ASM"
+	; GETARGの呼び出しカット
+	; MACHINE_SETカット
+	;"MACHINE.ASM"
+	; PUBLIC	MACHINE_SET	; machine set. をカット
+
+(2)シナリオ不具合
+
+	EETN03.TXT(93-04-23 9:11)
+	790行  TXGIRK(1)  ->  TXGIRL(1)
+
+(3)シンボルテーブル変更
+
+	BBSYMBL  ASM     30988 93-07-19   13:16
+	172:	TC	TXGIRK			; EETN03.TXT 790行  TXGIRK(1)->TXGIRL(1)
+	583:	TA_CODE01	TXGIRL		; EETN03.TXT 790行  TXGIRK(1)->TXGIRL(1)
+
+
