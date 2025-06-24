@@ -1,0 +1,102 @@
+AS	=	ML
+ASFLAGS	=/VM /I. /Zm /c /Fo$@
+CPY	=	COPY
+RAMDISK	=	E:
+
+..\EXEC\KS2MAIN.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\KS2LOOP.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\KS2TBL.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\ZBGATE.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\USERTOOL.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\MESSAGE.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBTEXT.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBUNLOCK.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBDEFINE.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBASYS.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBCOMPIL.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBASYS.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBJUMP.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBSYMBL.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBSYMSCH.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBDEBUG.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBLOOP.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBCTOOL.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBCTOOL2.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\BBCTOOL3.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\CHILD.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\DMUSIC.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\DSOUND.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\DUMMY.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+

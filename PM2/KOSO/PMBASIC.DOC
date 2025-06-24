@@ -1,0 +1,1351 @@
+
+
+＊２個テキストマージロード
+
+	LOAD("filenm1,filenm2")
+
+＊変数定義
+
+	.MYVALUE			;
+	.ABCD				;
+	.XYZ=10				; 初期化付き
+	.ABCTBL[10]			; 配列
+	.XYZTBL[6]=11,22,33,44,55,66	; 初期化付き配列
+	.II.JJ.KK.LL.MM.NN		; 連続技！
+
+＊文字列
+	文字スタックの許す限り確保します。
+
+		AX="ひひひひひーい"
+		BX="ホッホッホッ"
+
+	関数の引数内は１つの文字列しか許されません。
+
+		可	SUB1("AAAA",C1,C2)
+
+		不可	SUB2("AAAA","BBB",C1,C2)
+
+	文字列はＢＡＳＩＣのようにガーベージ・コレクション
+	を行いませんので、いっぱいになる前に次の命令で
+	クリアしてください。
+
+		STRSCLEAR	; 文字列スタッククリア
+
+
+＊コメント
+
+	;
+		;
+			;
+	:
+		:
+			:
+
+＊配列の制限
+
+	１次元配列のみ
+	使える箇所は、計算式、ＩＦ、関数の引数のみ
+
+
+＊ＩＦの制限
+
+	オペレーションの両辺は次の形式のみ高速な実行が有効です。
+
+	IF ( <変数> )
+	IF ( <配列> )
+	IF ( <変数> <オペレーション> <定数> )
+	IF ( <変数> <オペレーション> <変数> )
+	IF ( <配列> <オペレーション> <定数> )
+	IF ( <配列> <オペレーション> <変数> )
+	IF ( <配列> <オペレーション> <配列> )
+
+	・およびＯＲとＡＮＤで上記の式を組み合せたとき
+
+	配列でも添字が定数の場合は、自動的に変数に
+	置き換えられるので、注意して下さい。
+
+	IF ( C1 )		高速
+	IF ( C1[DX] )		高
+	IF ( C1 = 2 )	 	高
+	IF ( C1 = C2 )		高
+	IF ( C1 = C2 )( C1[C5] = C2[C8] )	高
+	IF ( C1[AX] = C2 )	高
+	IF ( C1[AX] = C2[SI] )	高
+	IF ( 1 = 1 )		不可　左辺が定数
+	IF ( 1 = C2 )		不可　左辺が定数
+	IF ( C1 = C2[BX] )	不可　右辺のみが配列
+	IF ( C1 = C2[2] )	高　　右辺の配列は変数に置き換えられる
+	IF ( C1[2] = C2[SI] )	不可　左辺が変数に置き換えられ、右辺のみが配列
+
+
+＊ファンクション括弧
+
+	SUBROUTINE ( n1, n2, n3, n4, n5, n6, n7, n8 )
+		は
+	AX=n1 BX=n2 CX=n3 DX=n4 SI=n5 DI=n6 BP=n7 ES=n8 SUBROUTINE
+		と同じ意味
+
+	LOCATE(10,20)
+		は
+	AX=10 BX=20 LOCATE
+		と同じ意味
+
+＊計算式
+	括弧は使えません
+	式の順序は四則に関係無く、左から解きます。
+
+	C1 = C2 + C3 - C4 * C5 / C6
+
+	C1 = C2
+	C1 ++
+	C1 --
+
+	C1 = 111
+
+	C1 = C1 + 111
+
+	C1 += 111	; C1 = C1 + 111
+
+	C1 -= 111	; C1 = C1 - 111
+
+	C1 *= 100	; C1 = C1 * 100
+
+	C1 /= 100	; C1 = C1 / 100
+
+
+＊ダイレクト・コマンド
+
+	@1	テキストウインドウの１へ
+	@2	テキストウインドウの２へ
+	@3	テキストウインドウの３へ
+	@P	メッセージ待ち
+	@C	テキストウインドウクリア
+	@L	改行
+	@G	ﾃｷｽﾄ編集ﾊﾞｯﾌｧへの取込開始(@@で取り込み終了)
+	@@	何もしない（文末に付けると改行無し）
+	"	ダブルクォーテーションで囲うと英字表示モード
+
+＊ファンクション
+
+	ABS(value)		; 絶対値
+				; -o- AX : 絶対値
+
+	MOD(dest,sour)		; 余り
+				; -o- AX : value.
+
+	P1X100(value,x100)	; 百分率
+				; AX = value * x100 / 100
+				; -i- value (AX): source value.
+				;     x100  (BX): %
+				; -o- AX        : value.
+
+	P100PAR(value,base)	; 百分率を求める
+				; AX = 100 / base * value
+				; -i- value (AX): source value.
+				;     base  (BX): 100% value.
+				; -o- AX        : parcent.
+
+	GOLDADD(value)		; 所持金へ加算
+				; -I- value (AX) : add value.
+
+	GOLDSUB(value)		; 所持金から減算
+				; -I- value (AX) : sub value.
+
+	GOLDCMP(value)		; 所持金と比較
+				; -I- value (AX) : cmp value.
+				; -O- AX   : 1=same,2=upper,3=under.
+
+	SLCT("str1,str2,str3")	; 単語の選択
+				; -o- ISLCT : user select number.
+				;     DX    : user select number.
+
+	SLCTX("str1,str2,str3")	; 単語の選択
+				; 右ﾎﾞﾀﾝのｷｬﾝｾﾙを無効
+				; -o- ISLCT : user select number.
+				;     DX    : user select number.
+
+	SLCTBAK(backbank)	; SLCTの一時的な退避バンクの変更
+				; SLCT実行後はデフォルトに戻ります。
+				; -i- backbank (AX) : 退避バンク番号
+
+	SLCPOS(function)	; SLCTの位置を設定します
+				; -i- function : ファンクション
+				;	1=RPG時の通常位置
+				;	2=RPG戦闘時の位置
+				;	3=RPG時WWMUSYA(15,..)のマウス位置
+				;	4=メインSLCT発生位置
+				;	5=メインSLCT絵のあたりＸ
+				;	6=SLCTの座標位置指定
+				;	 SLCPOS(6,x,y)
+
+
+	FREE			; システム容量の表示
+
+	END			; 終了
+
+	STRSCLEAR		; 文字列スタッククリア
+
+	STRSTACK("strings")	; 文字列スタックセット
+				; -i- "string"(SI) : セットする文字列
+				; -o- AX           : 0=正常,1=領域が足りない
+				;     BX           : スタック文字列アドレス
+
+	ITEMSLCT(type)		; マルチアイテム選択
+				; -i- type  (AX)    : ウインドウＯＰＥＮタイプ
+				;	   1=道具、武器
+				;	   2=鍛える
+				;	   3=アルバイト・休息
+				;	   4=武者修行など
+				;     ITEMID_TBL1[] : テーブル／名前
+				;     ITEMID_TBL2[] : テーブル／ＩＣＯＮ
+				;     ITEMID_TBL3[] : テーブル／金
+				;     ITEMID_TBL4[] : テーブル／文字１
+				;     ITEMID_TBL5[] : テーブル／ﾊﾟﾗﾒｰﾀ値1
+				;     ITEMID_TBL6[] : テーブル／文字２
+				;     ITEMID_TBL7[] : テーブル／ﾊﾟﾗﾒｰﾀ値2
+				;     ITEMID_CNT    : アイテムＩＤ数
+				; -o- ISITM         : アイテム選択番号
+				;		  : =FFFFH : 指定なし
+				;		  : =-2    : 武器外す
+				;		  : =-3    : 防具外す
+				;
+				; タイプごとの最大数は
+				; "WIDMULT.ASM"のWIDAREA_TBLMAXを参照すること
+				;
+				;RPG時は、マップのロードされているバッファに
+				;ICONがロードされるので充分注意すること。
+				;ICON使用後はマップをRELOADすること。
+
+				; TYPE 1	道具、武器
+				;
+				;		[    ] [　名前　]
+				;		[    ] [ＧＯＬＤ]
+				;		[攻]9999 [技]9999
+				;
+				;		ITEMID_TBL1[] : 名前
+				;		ITEMID_TBL2[] : ＩＣＯＮ
+				;		ITEMID_TBL3[] : 金
+				;		ITEMID_TBL4[] : 文字１
+				;		ITEMID_TBL5[] : パラメータ値１
+				;		ITEMID_TBL6[] : 文字２
+				;		ITEMID_TBL7[] : パラメータ値２
+				;
+				;	TYPE 2	鍛える
+				;
+				;		[    ] [　名前　]
+				;		[    ] [初級][Ｇ]
+				;
+				;		ITEMID_TBL1[] : 名前
+				;		ITEMID_TBL2[] : ＩＣＯＮ
+				;		ITEMID_TBL3[] : 金
+				;		ITEMID_TBL4[] : 文字１
+				;
+				;	TYPE 3	アルバイト
+				;
+				;		[    ] [　名前　]
+				;		[    ] [ＧＯＬＤ]
+				;
+				;		ITEMID_TBL1[] : 名前
+				;		ITEMID_TBL2[] : ＩＣＯＮ
+				;		ITEMID_TBL3[] : 金
+				;
+				;	TYPE 4	休息・武者修行など
+				;
+				;		[    ] [　名前　]
+				;		[    ] [ＧＯＬＤ]
+				;
+				;		ITEMID_TBL1[] : 名前
+				;		ITEMID_TBL2[] : ＩＣＯＮ
+				;		ITEMID_TBL3[] : （金／表示無し）
+				;		ITEMID_TBL4[] : 文字１
+
+	ITEMST(type)		; マルチアイテム選択　: ITEMST(type)
+				; 選択アイテム残して背景復帰
+				; -i- type  (AX)      : ウインドウＯＰＥＮタイプ
+				;    1=道具、武器
+				;    2=鍛える
+				;    3=アルバイト
+				;   99=選択アイテムクリア
+				;     ITEMID_TBL1[] : テーブル／名前
+				;     ITEMID_TBL2[] : テーブル／ＩＣＯＮ
+				;     ITEMID_TBL3[] : テーブル／金
+				;     ITEMID_TBL4[] : テーブル／文字１
+				;     ITEMID_TBL5[] : テーブル／パラメータ値１
+				;     ITEMID_TBL6[] : テーブル／文字２
+				;     ITEMID_TBL7[] : テーブル／パラメータ値２
+				;     ITEMID_CNT    : アイテムＩＤ数
+				; -O- ISITM         : アイテム選択番号
+
+	ITEMPRN(function)	; マルチアイテム表示    : ITEMPRN(function)
+				;	ITEMPRN(1,type)		: マルチアイテム表示
+				;	-i- type  (BX)	: ウインドウＯＰＥＮタイプ
+				;		1=道具、武器
+				;		2=鍛える
+				;		3=アルバイト
+				;		4=休息・武者修行など
+				;		5=道具、武器（任意の位置へ）
+				;	    ITEMID_TBL1[] :テーブル／名前
+				;	    ITEMID_TBL2[] :テーブル／ＩＣＯＮ
+				;	    ITEMID_TBL3[] :テーブル／金
+				;	    ITEMID_TBL4[] :テーブル／文字１
+				;	    ITEMID_TBL5[] :テーブル／ﾊﾟﾗﾒｰﾀ値1
+				;	    ITEMID_TBL6[] :テーブル／文字２
+				;	    ITEMID_TBL7[] :テーブル／ﾊﾟﾗﾒｰﾀ値2
+				;	    ITEMID_CNT    : アイテムＩＤ数
+				;	ITEMPRN(2)	: マルチアイテム復帰
+				;	ITEMPRN(3,x,y)	: マルチアイテム TYPE 5 位置
+				;	ITEMPRN(4,flag)	: マルチアイテムｷｬﾝｾﾙON/OFF
+				;	-i- flag  (BX)  : 1=ｷｬﾝｾﾙON,0=ｷｬﾝｾﾙOFF
+				;	ITEMPRN(4,flag)	: マルチアイテムｷｬﾝｾﾙON/OFF
+				;	-i- flag  (BX)  : 1=ｷｬﾝｾﾙON,0=ｷｬﾝｾﾙOFF
+				;	ITEMPRN(5,flag)	: マルチアイテムﾌｧﾝｸｼｮﾝON/OFF
+				;	-i- flag  (BX)  : 1=ﾌｧﾝｸｼｮﾝON,0=ﾌｧﾝｸｼｮﾝOFF
+				;	ITEMPRN(6,flag) : マルチアイテムｶﾚﾝﾄﾍﾟｰｼﾞON/OFF
+				;	-i- flag  (BX)  : 1=ｶﾚﾝﾄﾍﾟｰｼﾞON,0=ｶﾚﾝﾄﾍﾟｰｼﾞOFF
+				;
+				;RPG時は、マップのロードされているバッファに
+				;ICONがロードされるので充分注意すること。
+				;ICON使用後はマップをRELOADすること。
+
+	GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+				; このｺﾏﾝﾄﾞの実行と共に直後からの
+				; ﾊﾟﾗﾒｰﾀｰｳｲﾝﾄﾞｳの退避が始まる
+
+	GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+				; ﾊﾟﾗﾒｰﾀｰｳｲﾝﾄﾞｳのエリアを復元する
+
+	GR_F			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ function: GR_F
+	GR_F(1,savebank)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+				; -i- savebank (BX) : 背景退避用パーツバンク番号
+				; VVVRAM_TOP+22000 : #2  34,530byte
+				; VVVRAM_TOP+22000 : #9  43,532byte
+				; TEXT_TOP+12800   : #7  19,990byte
+	GR_F(2,"filename")	; フェイス
+				; -i- "filename"(SI) : file name.
+				;     IGRP_X         : グラフＸ
+				;     IGRP_Y         : グラフＹ
+	GR_F(3,"name")		; 名前
+				; -i- "name"(SI)     : 名前
+				;     IGRP_X         : グラフＸ
+				;     IGRP_Y         : グラフＹ
+	GR_F(4,face)		; 娘フェイス
+				; -i- face (BX) : 0=普通 1=嬉しい 2=怒り
+				;	3=悲しい 4=暑い 5=寒い 6=大怪我
+				;	7=苦しい 8=すねる 9=不思議 10=恥らう
+				;	11=不安 12=不愉快 13=妖しい
+				;	14=りりしい 15=驚き 16=ガーン
+				;	17=真剣 18=困り
+				;      IGRP_X         : グラフＸ
+				;      IGRP_Y         : グラフＹ
+	GR_F(5,win_type,handle) : ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ･ﾌﾚｰﾑ無し
+				; -i- win_type (BX): ウインドウタイプ
+				;     handle   (CX): ハンドル番号
+				;     IGRP_TBL1[]  : グラフテーブル／名前
+				;     IGRP_TBL2[]  : グラフテーブル／タイプ
+				;     IGRP_TBL3[]  : グラフテーブル／パラメータ値
+				;     IGRP_CNT     : グラフテーブル数
+				;     IGRP_X       : グラフＸ
+				;     IGRP_Y       : グラフＹ
+	GR_F(6,"name")		; 名前
+				; -i- "name"(SI)   : 名前
+				;     IGRP_X       : グラフＸ
+				;     IGRP_Y       : グラフＹ
+
+	GRPOPEN(win_type,handle); ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+				; -i- win_type (AX): ウインドウタイプ
+				;     handle   (BX): ハンドル番号
+				;     IGRP_TBL1[] :グラフテーブル／名前
+				;     IGRP_TBL2[] :グラフテーブル／タイプ
+				;     IGRP_TBL3[] :グラフテーブル／パラメータ値
+				;     IGRP_CNT    :グラフテーブル数
+				;     IGRP_X      : グラフＸ
+				;     IGRP_Y      : グラフＹ
+
+	GRPUPD(handle,rec,dat)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ 更新
+				; -i- handle  (AX): ハンドル番号
+				;     rec     (BX): パラメータ通し番号
+				;     dat     (CX): パラメータ値
+
+	GOLDOPEN(win_type,handle); ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+				; -i- win_type (AX):ウインドウタイプ
+				;     handle   (BX): ハンドル番号
+				;     IGRP_TBL1[]:グラフテーブル／名前
+				;     IGRP_TBL3[]:グラフテーブル／パラメータ値
+				;     IGRP_CNT   : グラフテーブル数
+				;     IGRP_X     : グラフＸ
+				;     IGRP_Y     : グラフＹ
+
+	GOLDUPD(handle,rec,dat)	; ﾊﾟﾗﾒｰﾀ 所持金 更新
+				; -i- handle  (AX): ハンドル番号
+				;     rec     (BX): パラメータ通し番号
+				;     dat     (CX): パラメータ値
+
+	PROFILE(win_type,handle) ; プロフィール･ｳｲﾝﾄﾞｳ
+				; -i- win_type (AX):ウインドウタイプ
+				;     handle   (BX): ハンドル番号
+				;     IGRP_TBL1[] : グラフテーブル／名前
+				;     IGRP_TBL3[] : グラフテーブル／表示文字列
+				;     IGRP_CNT    : グラフテーブル数
+				;     IGRP_X      : グラフＸ
+				;     IGRP_Y      : グラフＹ
+
+	PROPROPEN(win_type,handle) ;ﾌﾟﾛﾎﾟｰｼｮﾝ･ｳｲﾝﾄﾞｳ
+				;-i- win_type (AX): ウインドウタイプ
+				;  handle   (BX): ハンドル番号
+				;  IGRP_TBL1[]  : グラフテーブル／名前
+				;  IGRP_TBL2[]  : グラフテーブル／タイプ
+				;  IGRP_TBL3[]  : グラフテーブル／パラメータ値
+				;  IGRP_CNT     : グラフテーブル数
+				;  IGRP_X       : グラフＸ
+				;  IGRP_Y       : グラフＹ
+
+	PROPRUPD(handle,rec,dat) ;ﾌﾟﾛﾎﾟｰｼｮﾝ･ｳｲﾝﾄﾞｳ更新
+				; -i- handle  (AX): ハンドル番号
+				;     rec     (BX): パラメータ通し番号
+				;     dat     (CX): パラメータ値
+
+	STATUS(win_type,handle)	; 通常ｽﾃｰﾀｽ･ｳｲﾝﾄﾞｳ
+				;-i- win_type (AX): ウインドウタイプ
+				;    handle   (BX): ハンドル番号
+				;    IGRP_X       : グラフＸ
+				;    IGRP_Y       : グラフＹ
+				;    IGRP_TBL1[] : グラフテーブル／名前
+				;    IGRP_TBL3[] : パラメータ値
+				;	IGRP_TBL3[0] : 病気指数(%)
+				;	IGRP_TBL3[1] : 非行化指数(%)
+				;	IGRP_TBL3[2] : 人脈
+				;	IGRP_TBL3[3] : 1=病気
+				;	IGRP_TBL3[4] : 1=非行化
+				;	IGRP_TBL3[5] : 1=恋愛
+
+	PROLONG(win_type,handle); 長い名前ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+				;-i- win_type (AX):ウインドウタイプ
+				;     handle   (BX): ハンドル番号
+				;     IGRP_TBL1[] : グラフテーブル／名前
+				;     IGRP_TBL3[] : パラメータ値
+				;     IGRP_CNT    : グラフテーブル数
+				;     IGRP_X      : グラフＸ
+				;     IGRP_Y      : グラフＹ
+
+	PRICON(win_type,handle)	; ICONﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+				; -i- win_type (AX):ウインドウタイプ
+				;     handle   (BX): ハンドル番号
+				;     IGRP_TBL1[] : グラフテーブル／名前
+				;     IGRP_TBL2[] : グラフテーブル／ＩＣＯＮ番号
+				;     IGRP_TBL3[] : グラフテーブル／内容
+				;     IGRP_TBL4[] : グラフテーブル／項目名
+				;     IGRP_CNT    : グラフテーブル数
+				;     IGRP_X      : グラフＸ
+				;     IGRP_Y      : グラフＹ
+
+	CLENDER(1)		; カレンダー・表示
+	CLENDER(2)		; カレンダー・再表示
+	CLENDER(3)		; カレンダー・更新処理
+	CLENDER(4)		; カレンダー・翌月の計算
+				; -O- AX : 翌月の年
+				;     BX : 翌月の月
+				;     CX : 翌月の末日
+				;     DX : 翌月の最初の曜日
+	CLENDER(5,year,month,day) ;カレンダー・年齢の計算 -O- DX : 年齢
+	CLENDER(6,x,y)		;カレンダー・セットアップ
+	CLENDER(7)		;カレンダー・月次処理
+				; -O- BX :	1=体形の変化あり
+				;		2=重体->正常
+				;		3=正常->重体
+				;		4=顔の変化のみ
+	CLENDER(8)		;初期状態の整合処理
+	CLENDER(9)		;ﾊﾟﾗﾒｰﾀの整合処理
+	CLENDER(10)		;体形のチェック
+	CLENDER(11)		;カレンダー・今月の計算
+				; -O- AX : 月末の日
+				;     BX : 翌日の日付
+				;     CX : 翌日の曜日
+				;     DX : 0=通常,1=一番最初の日,2=運命の日
+				;          3=一番最後の月,4=１月前,5=２月前
+				;          6=３月前
+	CLENDER(12)		;１旬次処理
+	CLENDER(13)		;訓練技能値計算
+	CLENDER(14)		;パラメータ全クリア
+
+	RANDAM(max)		; 乱数
+				; -i- max   (AX) : 最大値(1-200)
+				; -O- AX  : １からＡＸの数字
+				;     IRND: １からＡＸの数字
+
+	IRAND2(base,max)	; 範囲乱数
+				; -i- base  (AX) : 開始値(1-200)
+				;     max   (BX) : 最大値(1-200)
+				; -O- AX  : ＡＸからＢＸの数字
+
+	IRAND999X(max)		; 乱数９９９範囲指定
+				; -i- max   (AX) : 最大値(0-999)
+				; -O- AX  : ０からＡＸの数字
+				;     IRND: ０からＡＸの数字
+
+	IRNDPAR(value,parcent)	; +-%の乱数
+				; -i- value   (AX) : value.
+				;     parcent (BX) : +-%parcent.
+
+	TIMER1(timer60)		; タイマー１
+				; -i- timer60 : 1/60秒タイマー
+				; 音楽用にはMUSIC(8,timer1)がある
+	TIMER2(timer60)		; タイマー２
+				; -i- timer60 : 1/60秒タイマー
+	WAIT1			; タイマー待ち１
+	WAIT2			; タイマー待ち２
+	TMCHK2			; タイマーチェック２
+				; -O- DX : タイマー値
+	WAITU			; ユーザ待ち
+
+	VALSTR(num)		; 数値を文字列化
+				; -i- num (AX) : 数値
+				; -o- SI       : 文字列
+
+	BORTHDAYSTR(year,month,day); 誕生日を文字列化
+				; -i- year  (AX): 年
+				;     month (BX): 月
+				;     day   (CX): 日
+				; -o- SI        : 文字列
+
+	ITEM_KILL(rec)		; アイテム削除
+				; -i- rec   (AX) : 削除アイテム番号
+
+	ITEM_INST(f,icon,gold,attr,name,prog,help)
+				; アイテム登録
+				; -i- f    (AX) : finction 1=normal.
+				;     icon (BX) : ＩＣＯＮ
+				;     gold (CX) : 値段
+				;     attr (DX) : 種別
+				;     name (SI) : 名前 string
+				;     prog (DI) : 効果 string
+				;     help (BP) : 説明 string
+				; -o- AX : 0=normal,1=table over.
+
+
+	ITEM_SRCH(function)	; アイテム検索
+	ITEM_SRCH(1,ICONnumber) :ICON search.
+	-i- ICONnumber (BX) : ICON number.
+	-o- AX : 0=none,1=search.
+	    DX : item record.
+	ITEM_SRCH(2) :ICON next search.
+	-o- AX : 0=none,1=search.
+	    DX : item record.
+	ITEM_SRCH(3,rec) :attribute get.
+	-i- rec   (BX) : item record.
+	-o- AX : item attribute 0=normal,1=equip,2=arms,3=dress,4=up_param
+	    DX : item equipment.0=normal,1=now equip
+	ITEM_SRCH(4,rec) :equip set.
+	-i- rec   (BX) : item record.
+	ITEM_SRCH(5,attr) :equip clear.
+	-i- attr  (BX) : item attribute 0=normal,1=equip,2=arms,3=dress
+	ITEM_SRCH(6,rec) : equipment chenge.(equip,arms,dress)
+	-i- rec   (BX) : item record.
+
+
+	SCHD_OPEN(day,week,end_day,month,year)
+				; ｽｹｼﾞｭｰﾙ･ｳｲﾝﾄﾞｳ OPEN
+				; -i- day     (AX) : 開始日付
+				;     week    (BX) : 開始曜日
+				;     end_day (CX) : 終了日付
+				;     month   (DX) : 月
+				;     year    (SI) : 年
+
+	SCHD_CLOSE		; ｽｹｼﾞｭｰﾙ･ｳｲﾝﾄﾞｳ CLOSE
+
+	SCHD_ICON(s_day,e_day,icon)
+				; ｽｹｼﾞｭｰﾙ･ｳｲﾝﾄﾞｳ SET ICON
+				; -i- s_day (AX) : 開始日付
+				;     e_day (BX) : 終了日付
+				;     icon  (CX) : ＩＣＯＮ番号
+
+	PALET_SET(rec)		; パレットセット
+				; -i- rec  (AX) : record number.
+				;	 0=PM2_1.ALG	通常
+				;	 1=PM2_E.ALG	ＲＰＧ・東
+				;	 2=PM2_W.ALG	ＲＰＧ・西
+				;	 3=PM2_S.ALG	ＲＰＧ・南
+				;	 4=PM2_N.ALG	ＲＰＧ・北
+				;	 5=PM2_E2.ALG	ＲＰＧ・東・夜
+				;	 6=PM2_W2.ALG	ＲＰＧ・西・夜
+				;	 7=PM2_S2.ALG	ＲＰＧ・南・夜
+				;	 8=PM2_N2.ALG	ＲＰＧ・北・夜
+				;	 9=PM2-V1.ALG	バカンス山・春夏秋
+				;	10=PM2-V2.ALG	バカンス山・冬
+				;	11=PM2-V3.ALG	バカンス海・夏
+				;	12=PM2-V4.ALG	バカンス海・秋
+				;	13=PM2-V5.ALG	バカンス海・冬
+
+	PALET_SETONLY(rec,num)	; ﾊﾟﾚｯﾄﾃｰﾌﾞﾙｾｯﾄのみ
+				; -i- rec  (AX) : record number.
+				;     num  (BX) : table number.
+
+	WWFRAME(function)	; 全画面枠
+				; -i- function (AX) :
+				;	1=娘の部屋
+				;	2=武者修行
+				;	3=「王国芸術祭」
+				;	4=「ダンスパーティー」
+				;	5=「お料理コンクール」
+				;	6=「武闘会」
+				;	7=「バカンス」
+				;	100=現在表示中の枠番号
+				;	-o- AX : 現在表示中の枠番号
+
+
+	WWMUSYA(function)	; 武者修行
+	WWMUSYA(1,maptype,mapx,mapy,girlx,girly,banksw) : start.
+	    maptype     (BX):1=East,2=West,3=South,4=North1,5=North2,6=North3
+	    mapx,mapy   (CX)(DX):map location.
+	    girlx,girly (SI)(DI):girl location.
+	    banksw      (BP)    : load bank bit switch.
+			bit0:bank0, bit1:bank1, bit2:bank2....
+	WWMUSYA(2,timerday,timernight)    : interval.
+	    timerday  (BX) : 昼・経過時間
+	    timernight(CX) : 夜・経過時間
+	WWMUSYA(3,daylight) : normal walk.
+	   daylight   (BX):1=day,2=night,3=day->night,4=night->day,5=continue
+			  :6=ﾊﾟﾚｯﾄ割込みOFF(西マップ)
+			  :7=ﾊﾟﾚｯﾄ割込みON(西マップ)
+	-o- AX : status.0=normal,1=place ivent,2=timeout,3=camp,4=event50.
+	    BX : map locate x.
+	    CX : map locate y.
+	    DX : 娘の向き 0=front,1=back,2=left,3=right.
+	    SI : grand level.
+	    DI : orginal dir x.
+	    BP : orginal dir y.
+	WWMUSYA(4,effect) : effect.
+	    effect   (CX) : 1=穴へ,2=穴から,3=沼へ,4=沼から
+			5=キャンプ,6=キャンプたたむ,7=滝
+			8=上へ,9=下へ,10=上から,11=下から,12=落下
+			13=左へ,14=右へ,15=武神から逃げる
+	WWMUSYA(5,x,y,gx,gy,flag) : map relocate. 
+	    x    (BX) : map location x.
+	    y    (CX) : map location y.
+	    gx   (DX) : girl location x.
+	    gy   (SI) : girl location y.
+	    flag (DI) : 1=全部,2=背景のみ
+	WWMUSYA(6)	: ＲＰＧモード
+	WWMUSYA(7)	: ノーマルモード
+	WWMUSYA(8,flag)	: 再描画
+	    flag (BX) : 1=全部,2=背景のみ
+	WWMUSYA(9)	: 戦闘後データロード
+	WWMUSYA(10,direction,banksw) : マップ再ロード
+	    direction (BX) : map type.
+		1=East,2=West,3=South,4=North1,5=North2,6=North3.
+	    banksw    (CX) : load bank bit switch.
+		bit0:bank0, bit1:bank1, bit2:bank2....
+	WWMUSYA(11,len) : 滝長さ
+	    len    (BX) : 滝長さ
+	WWMUSYA(12,dir) : 娘の向き設定
+	    dir    (BX) : 0=front.1=back,2=left,3=right.
+	WWMUSYA(13,mapx,mapy,girlx,girly,count) : マップシフト
+	    mapx   (BX) : map shift x.
+	    mapy   (CX) : map shift y.
+	    girlx  (DX) : girl shift x.
+	    girly  (SI) : girl shift y.
+	    count  (DI) : shift count.
+	WWMUSYA(14,flag): キャンプ
+	    flag   (BX) : 1=キャンプ張る,2=キャンプをたたむ
+	WWMUSYA(15,"str1,str2,str3",flag) : セレクト
+	    "str1,str2,str3" (SI) : セレクト単語列
+	    flag   (BX) : セレクトアニメON/OFF
+	-o- BX : select number.
+	WWMUSYA(16) : キャンプ後ロード
+	WWMUSYA(17) : ステータス
+	-o-  AX : map type.
+		1=East,2=West,3=South,4=North1,5=North2,6=North3.
+	     BX : map locate x.
+	     CX : map locate y.
+	WWMUSYA(18,daylight) : 昼<->夜操作
+	-i- daylight  (BX) : 1=day,2=night,3=day->night,4=night->day.
+	WWMUSYA(19,function) : マップの修正
+	-i- function  (BX) :
+			1=西の泉が枯れた
+			2=北の守護星現れる
+			3=北の守護星への階段が消える
+			4=北の武神への階段が消える
+			5=宝箱OPEN.1
+			6=宝箱OPEN.2
+			7=宝箱OPEN.3
+			8=宝箱OPEN.4
+			9=宝箱OPEN.5
+			10=宝箱CLOSE.1
+			11=宝箱CLOSE.2
+			12=宝箱CLOSE.3
+			13=宝箱CLOSE.4
+			14=宝箱CLOSE.5
+	WWMUSYA(20,function) : 守護星のセット
+	-i- function (BX) : 守護星
+	WWMUSYA(21)          : マップデータのみ再ロード
+	WWMUSYA(22)          : 全モードクリア
+	WWMUSYA(23)          : 残り時間
+	-o- BX : 残り時間
+	WWMUSYA(24)          : 残りクリア
+
+
+	WWGIRL(function)	; 娘
+	WWGIRL(1,age,body,face,breast,dress,dameg) ; direct put.
+		;	age	(BX):年齢
+		;	body	(CX):体形　1=細,2=太
+		;	face	(DX):表情　1=基本,2=非行,3=病気,4=元気,5=色気
+		;	breast	(SI):胸大　0=無,1=有
+		;	dress	(DI):服  0=裸
+		;		1=服・普段着,2=服・夏物の服,3=服・冬物の服
+		;		4=服・木綿のドレス,5=服・シルクのドレス
+		;		6=服・レーザーのドレス,7=服・トゲトゲの服
+		;		8=服・傾国のローブ,9=服・見えないドレス
+		;		10=服・悪魔のドレス,11=服・龍のレオタード
+		;	dameg	(BP):重病　0=normal,1=重病
+	WWGIRL(2)	; girl put.
+	WWGIRL(3)	; girl quick put.
+	WWGIRL(4)	: girl clear.
+	WWGIRL(5)	: girl quick clear.
+	WWGIRL(6)	: now show girl age.
+		;-o- AX : 表示中の年齢
+	WWGIRL(7)	: girl normal<->dameg put.
+	WWGIRL(8)	: girl face put.
+
+
+	WWANIME(function)		; アニメ・ウインドウ
+	WWANIME(1,animetype)		: anime window open.
+	WWANIME(2,animetype)		: anime window close.
+	WWANIME(3,animetype,"filename") : pictuer load.
+	WWANIME(4,animetype)		: put BG.
+	WWANIME(5,animetype)		: pictuer copy vvram -> CRT.
+	WWANIME(6,animetype,"filename") : anime pattern add load.
+	WWANIME(7,animetype,x,y,n)	: anime pattern put vvram.
+	WWANIME(8,animetype)		: restore vram ARA002 -> bank#6 move.
+	WWANIME(9,animetype)		: anime window close.(to bank#6)
+	WWANIME(10,animetype,x1,y1,x2,y2) : anime window size set.高速化の為
+	WWANIME(11,animetype,"filename",bank): (bank)pictuer load.
+	WWANIME(12,animetype,"filename",bank): (bank)anime pattern add load.
+	WWANIME(13,animetype,bank,x,y,n)     : (bank)anime pattern put vvram.
+	WWANIME(14,animetype)		: anime window open.(no frame open)
+	WWANIME(15,animetype,x1,y1,x2,y2,sizex,sizey)  : anime window copy.
+	WWANIME(16,animetype,x,y)	: anime window open.(location/no save)
+	WWANIME(17,animetype,bank,x,y,n):(bank)anime ptn ofset maskput vvram.
+		;	small size=40,128	large size=54,180
+		;	anime window type. 0=small,1=large,2=large2
+		;	n         : pattern number.
+
+
+	WWIVENT(function)		; イベント・ウインドウ
+	WWIVENT(1,iventtype,"filename")	: ivent window open.
+	WWIVENT(2,iventtype)		: ivent window close.
+	WWIVENT(3,iventtype,"filename")	: ivent window open(no save)
+	WWIVENT(4,iventtype)		: ivent window close(diskload)
+	WWIVENT(5,iventtype,x,y)	: ivent window locate.
+	WWIVENT(6,iventtype,bank,lbank,"filename")
+					: ivent window open.(select bank)
+	WWIVENT(7,iventtype,bank)	: ivent window close.(select bank)
+		bank : save bank number.
+		lbank: diskload bank number.
+		iventtype : ivent window type. 0=small,1=large
+				; イベントバンク番号
+				; #4 通常パターンバッファ前半
+				; 背景退避用パーツ番号
+				; #6 text buffer.後半
+
+	WWPROF(function)	: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ
+	WWPROF(1)		: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・表示
+	WWPROF(2)		: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+	WWPROF(3)		: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+	WWPROF(4)		: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・年齢
+	WWPROF(5)		: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･所持金
+	WWPROF(6)		: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･HP
+	WWPROF(7)		: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･MP
+	WWPROF(8)		: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･装備
+
+	WWTOUR(function)	: トーナメント表
+	WWTOUR(1)		     : トーナメント表スタート
+	WWTOUR(2,game,link,state)    : エレメント・テスト
+	-i- game  (BX) : 第何試合か？(1-4)
+	    link  (CX) : 組み合せ番号(1-8)
+	    state (DX) : 状態 1=甲の勝ち,2=乙の勝ち,3=試合開始
+	WWTOUR(3,entrynum,entryname) : エントリィ名前表示
+	-i- entrynum  (BX) : エントリィ番号
+	    entryname (CX) : エントリィ名前
+	WWTOUR(4,entrynum,charanum) : トーナメント・エントリィ登録
+	-i- entrynum  (BX) : エントリィ番号(表の左上から1,2,3...)
+	    charanum  (CX) : キャラクタ番号
+	WWTOUR(5,game) : トーナメント試合・キックオフ
+	-i- game  (BX) : 第何試合か？
+	-o- AX         : 組み合せ数
+	WWTOUR(6,link) : トーナメント試合・組み合せ
+	-i- link  (BX) : 組み合せ番号(1-n)
+	-o- AX         : 試合属性 0=他人の試合,1=甲自分の娘,2=乙自分の娘
+	    CX         : 組み合せ・甲チーム
+	    DX         : 組み合せ・乙チーム
+	    SI         : キャラクタ番号・甲チーム
+	    DI         : キャラクタ番号・乙チーム
+	WWTOUR(7)      : トーナメント試合・衝撃！
+	WWTOUR(8,flag_victory,game,link) : トーナメント試合・勝敗
+	-i- flag_victory(BX) : 1=甲が勝ち,2=乙が勝ち
+	    game  (CX) : 第何試合か？
+	    link  (DX) : 組み合せ番号(1-n)
+	WWTOUR(9)      : トーナメント試合・オフサイド
+	-o- AX         : 状態 0=通常,1=全試合終了
+	    SI         : 優勝キャラクタ番号
+	    DI         : 準優勝キャラクタ番号
+	WWTOUR(10,entrynum): トーナメント・キャラクタ番号取得
+	-i- entrynum  (BX) : エントリィ番号(表の左上から1,2,3...)
+	-o- CX             : キャラクタ番号
+	WWTOUR(11)     : トーナメント表・再描画
+	WWTOUR(12,fighter)    : 対戦相手の検索
+	-i- fighter(BX): 対戦の片方
+	-o- AX         : 1=見つかった,0=見つからない
+	    BX         : 組み合せ番号(1-n)
+	    CX         : 検索された対戦相手
+	WWTOUR(13)     : トーナメント表飾り再描画
+
+	P98F(function)			; PC9801 function.
+	P98F(1)				; vram0 -> vram1 copy.
+	P98F(2,show_bank,write_bank)	; bank change.
+	P98F(3,sw_analog)		; analog switch.
+	-i- sw_analog (BX) : 0=normal analog,1=386LSX(15color)
+			     2=full DIGITAL,3=B/W
+
+	GG_LINE(x1,y1,x2,y2,col)
+				; line
+				; -i- x1  (AX) : start point.
+				;     y1  (BX) : start point.
+				;     x2  (CX) : end point.
+				;     y2  (DX) : end point.
+				;     col (SI) : color.
+
+	GRPCLS			; graphics clear screen.
+
+	PTBK(bank)		; パーツバンク設定
+				; -i- bank (AX) : parts bank number.
+
+	PTMD(mode)		; ＰＵＴモード設定
+				; -i- mode  (AX) : 0=通常,1=オーバラップ
+
+	PTLD("filename")	; パーツロード
+
+	PTLA("filename")	; パーツ追加ロード
+
+	PTX(x,y,rec)		; パーツ座標ＰＵＴ
+				; -i- x     (AX) : Ｘ座標
+				;     y     (BX) : Ｙ座標
+				;     rec   (CX) : パターン番号
+
+	PTM(x,y,rec)		; マスクパーツＰＵＴ
+				; -i- x     (AX) : Ｘ座標
+				;     y     (BX) : Ｙ座標
+				;     rec   (CX) : パターン番号
+
+	PTF(x,y,rec)		; ﾊﾟｰﾂｵﾌｾｯﾄ座標ＰＵＴ
+				; -i- x     (AX) : Ｘオフセット座標
+				;     y     (BX) : Ｙオフセット座標
+				;     rec   (CX) : パターン番号
+
+	PTMF(x,y,rec)		; ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄPUT
+				; -I- x     (AX) : Ｘオフセット座標
+				;     y     (BX) : Ｙオフセット座標
+				;     rec   (CX) : パターン番号
+
+	PTMFX(x,y,rec,x1,y1,x2,y2)	; ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄ範囲PUT
+				; -I- x   (AX) : Ｘオフセット座標
+				;     y   (BX) : Ｙオフセット座標
+				;     rec (CX) : パターン番号
+				;     x1  (DX) : ＧＥＴ Ｘ座標
+				;     y1  (SI) : ＧＥＴ Ｙ座標
+				;     x2  (DI) : ＧＥＴ Ｘサイズ
+				;     y2  (BP) : ＧＥＴ Ｙサイズ
+
+	PTMFX(x,y,rec,xx,yy,sizex,sizey)
+				;ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄ範囲PUT
+				; -I- x     (AX) : Ｘオフセット座標
+				;     y     (BX) : Ｙオフセット座標
+				;     rec   (CX) : パターン番号
+				;     xx    (DX) : ＧＥＴ Ｘ座標
+				;     yy    (SI) : ＧＥＴ Ｙ座標
+				;     sizex (DI) : ＧＥＴ Ｘサイズ
+				;     sizey (BP) : ＧＥＴ Ｙサイズ
+
+	PTCLR			; パーツバッファクリア
+
+	PTGT(x,y,xl,yl)		; パーツ座標ＧＥＴ
+				; -I- x  (AX) : 左上Ｘ
+				;     y  (BX) : 左上Ｙ
+				;     xl (CX) : サイズＸ
+				;     yl (DX) : サイズＹ
+				; -O- AX      : 0=normal end, 1=error.
+
+	PTPLT(rec,num)		; パーツパレットセット
+				; -i- rec  (AX) : record number.
+				;     num  (BX) : table number.
+
+	EFC(function)		; effect function.
+	EFC(0)		; Ｆ・Ｉ（フェードイン）
+	EFC(1)		; Ｆ・Ｏ（フェードアウト）
+	EFC(2)		; ＷＨＩＴＥ・ＦＬＡＳＨ
+	EFC(3)		; ＷＨＩＴＥ・ＩＮ
+	EFC(4)		; ＷＨＩＴＥ・ＯＵＴ
+	EFC(5)		; カラー・ＦＬＡＳＨ
+	EFC(6)		; カラー・ＦＵＬＬ
+	EFC(7)		; ブラックアウト
+	EFC(8)		; ＷＨＩＴＥ
+	EFC(9)		; 明度５０％からノーマルへ
+	EFC(10)		; 明度５０％ダウン
+	EFC(11)		; 色相反転
+	EFC(12)		; 色相戻し
+	EFC(13)		; ＷＨＩＴＥ反射感
+	EFC(14)		; パレット・オーバラップ
+	EFC(15)		; パレット・混合
+	EFC(16)		; ノーマルカラー
+	EFC(17)		; 明度５０％ダウン（瞬間）
+	EFC(18)		; palet10変化割込ON
+	EFC(19)		; palet10変化割込OFF
+	EFC(20)		; 割り込みＦ・Ｏ(ﾌｪｰﾄﾞｱｳﾄ)
+	EFC(21)		; 割り込みＦ・Ｉ(ﾌｪｰﾄﾞｲﾝ)
+	EFC(22)		; 割り込みＷＨＩＴＥ・ＩＮ
+	EFC(23)		; 割り込みＷＨＩＴＥ・ＯＵＴ
+	EFC(24)		; palet5,6,7変化割込ON(OPENING用)
+	EFC(25)		; palet5,6,7変化割込OFF(OPENING用)
+
+	PIC(function)		; picture function.
+	PIC(1,picture_num)	; 部屋の絵PUT
+		-I- picture_num
+			0="陶土の壷に活けられた花束"
+			1="酒瓶と林檎のある静物"
+			2="蒼色を帯びた山脈"
+			3="自画像"
+			4="降臨する天使"
+			5="魚"
+	PIC(2)				: 正常->病気
+	PIC(3)				: 病気->正常
+	PIC(4)				: direct病気
+	PIC(5)				: direct正常
+	PIC(6,x1,x2,yy,wide,color,pattern) : 水平点線
+	PIC(7,x1,x2,yy,wide,color)	: 水平ライン
+	PIC(8,x1,y1,x2,y2,sizex,sizey)	: VRAMを仮想VRAM(40*400)へ転送
+	PIC(9,x1,y1,x2,y2,sizex,sizey)	: 仮想VRAM(40*400)をVRAMへ転送
+	PIC(10,x1,y1,x2,y2,sizex,sizey)	: 仮想VRAM(40*400)間転送
+	PIC(11)				: ﾊﾟﾀｰﾝPUTを仮想VRAM(40*400)へアサイン
+	PIC(12)				: ﾊﾟﾀｰﾝPUTをVRAMへアサイン
+	PIC(13,x1,y1,x2,y2,sizex,sizey)	: 仮想VRAM(40*400)をVRAMへｵｰﾊﾞﾗｯﾌﾟ転送
+	PIC(14,girl_age,girl_face)	: 娘の顔ファイル名
+					: -o- si : file name.
+	PIC(15,x,y,"string")	: 標準文字描画
+				:     x  (BX):x.
+				:     y  (CX):y.
+				:     "string" (SI) : 表示文字列
+	PIC(16,color,size,type)	: 標準文字設定
+				: -i- color (BX):color 0-15
+				:     size  (CX):size.
+				:       0=16x16 1=32x32 2=16x24 3=16x32
+				:     type  (DX):type.0=pset,1=OR,2=fuchi.
+	PIC(17,type,x,y,sizex,sizey)  : フレーム・ﾕｰｻﾞｰﾌﾚｰﾑ
+				: -i- type  (BX)    : frame type.
+				:     x     (CX)    : 表示位置Ｘ
+				:     y     (DX)    : 表示位置Ｙ
+				:     sizex (SI)    : 大きさＸ
+				:     sizey (DI)    : 大きさＹ
+	PIC(18,x1,y1,x2,y2,color)  : BOX
+	PIC(19,ccode,color,contrast,brightness)	: パレットセット
+	    ccode     (BX) : color code.
+	    color     (CX) : color.
+	    contrast  (DX) : contrast.
+	    brightness(SI) : brightness.
+	PIC(20,tblnum,palet,color,contrast,brightness) : パレット単色ＰＵＴ
+	    tblnum    (BX) : パレットテーブル番号
+	    palet     (CX) : パレット番号
+	    color     (DX) : color.
+	    contrast  (SI) : contrast.
+	    brightness(DI) : brightness.
+
+	MUSIC(function)     : music.
+	MUSIC(0,"filename") : 音楽演奏
+	MUSIC(1)            : 音楽停止
+	MUSIC(2)            : 音楽ﾌｪｰﾄﾞｱｳﾄ
+	MUSIC(3)            : 音楽システムPMD起動
+	MUSIC(4)            : 音楽システムMMD起動
+	MUSIC(5)            : 音楽システム初期処理
+	MUSIC(6,soundnumber): 効果音発生
+	MUSIC(7,type)       : 音楽システムMIDI設定 0=MT,1=GM
+	MUSIC(8,timer1)     : 音楽用ﾀｲﾏｰｾｯﾄ
+
+	PLAY(n)             : 音楽演奏
+	                    : -i- n (AX) : 音楽番号(1000以上はﾌﾞﾘｯｼﾞ)
+
+	PARC(function)		: parameter calc.
+	PARC(1,"filename",function,subf) : child process load&run.
+				: -o- AX : 0=normal,1=error.
+				:     BX : child task exit status.
+	PARC(2,function,subf,p1,p2,p3,p4,p5) : child process run.
+				: -o- BX : child task exit status.
+	PARC(3,number)		: buffer address.
+				: -i- number (BX) : select buffer.
+				:	1=VISUALTXTSEG:[VISUALTXTSTARTOFS]
+				: -o- ES:DI  : buffer address.
+	PARC(4)			: timer1 wait & keybord check.
+				: -o- AX : 0=normal,1=PLUS,2=ESC
+	PARC(5)			: 音源ボードの有無
+				: -o- AX : FM音源ﾎﾞｰﾄﾞの有無
+				:     BX : MIDIｲﾝﾀｰﾌｪｰｽﾎﾞｰﾄﾞの有無
+	PARC(6)			: EMSの有無
+				: -o- AX : EMSの有無
+	PARC(7,flag_midi)	: ﾌﾗｸﾞMIDIのON/OFF
+				: -i- flag_midi    (AX) : 1=MIDIのON
+	PARC(8,flag_emsload)	: ﾌﾗｸﾞEMSﾛｰﾄﾞ
+				: -i- flag_emsload (AX): 1=EMSﾛｰﾄﾞ
+	PARC(9)			: ten key check.
+				: -o- AX : 番号(-1:押していない)
+				:     BX : 1=HELP,2=HOME,3=PLUS,4=ESC
+				:          (-1:押していない)
+	PARC(10)            	: マウスボタン待ち
+
+＊テキスト・ウインドウ・ファンクション
+
+	TXOPEN(type)		; text window open.
+				; -i- type : window type.
+				;           1=説明テキスト window
+				;           2=相手テキスト window
+				;           3=娘テキスト window
+				;           4=デバッグテキスト window
+				;	    5=小型テキスト window
+				;	    6=鍛える・仕事テキスト window
+				;	    7=バトル・相手テキスト window
+				;	    8=バトル・娘テキスト window
+				;	    9=小さい娘テキスト window
+				;	   10=説明テキスト2 window
+				;	   11=守護星 window
+				;	   12=武闘会用 window
+				;	   13=ｴﾝﾃﾞｨﾝｸﾞ用1 window
+				;	   14=ｴﾝﾃﾞｨﾝｸﾞ用2 window
+				;	   15=ｴﾝﾃﾞｨﾝｸﾞ用3 window
+
+	TXCLOSE(type)		; text window close.
+				; -i- type : window type.
+
+	TXSLCT(type)		; text window select.
+				; -i- type : window type.
+
+	TXT("strings")		; text window print.
+				; -i- "strings" : string.
+
+	TXA(strings)		; text window print adrs.
+				; -i- strings : string address.
+
+	TXGOLD(gold)		; text window お金.
+				; -i- gold : show gold.
+
+	TXPOINT(point)		; text window ポイント.(数値)
+				; -i- point : show point.
+
+	TXS2KETA(value)		; text window 小数２桁
+				; -i- value : value.
+
+	TXPAUSE			; text window pause.
+
+	TXCLR			; text window clear.
+
+	TXLF			; text window line feed.
+
+	TXFACE("filename")	; text window show face.
+				; -i- filename : face file name.
+
+	TXGIRL(face)		; text window show girl.
+				; -i- face (AX) : 0=普通 1=嬉しい 2=怒り
+				;	3=悲しい 4=暑い 5=寒い 6=大怪我
+				;	7=苦しい 8=すねる 9=不思議 10=恥らう
+				;	11=不安 12=不愉快 13=妖しい
+				;	14=りりしい 15=驚き 16=ガーン
+				;	17=真剣 18=困り
+
+	TXSYU(syugo)		; text window show face.
+				; -i- syugo (AX) : 0="太陽",1="月",2="火星"
+				;	3="水星",4="木星",5="金星",6="土星"
+				;	7="天王星",8="海王星",9="冥王星"
+
+	TXLC(type,x,y,face)	; text window locate.
+				; -i- type (AX): テキスト・タイプ
+				;     x    (BX): locate x.
+				;     y    (CX): locate y.
+				;     face (DX):ﾌｪｲｽ位置0=none,1=left,2=right
+
+	TXF(function)		; text window function.
+	TXF(1,flag_back)	; ﾃｷｽﾄｳｲﾝﾄﾞｳ退避のを止める
+				; -i- flag_back  (BX) : 1=vram save disable.
+	TXF(2)			; マウスOFF待ち
+	TXF(3)			; 乱数初期化
+	TXF(4,string,length)	; 漢字文字詰め処理
+				; -i- string (BX): 漢字文字列
+				;     length (CX): 表示名前の最長
+	TXF(5,"filename",x,y)	; テキストウインドウ ﾌｪｲｽのみ
+				; -i- "filename"(SI) : ファイル名
+				;     x         (BX) : locate x.
+				;     y         (CX) : locate y.
+	TXF(6,face,x,y)		; テキストウインドウ 娘ﾌｪｲｽのみ
+				; -i- face      (BX) : 0=普通 1=嬉しい 2=怒り
+				;     x         (CX) : locate x.
+				;     y         (DX) : locate y.
+	TXF(7,timer)		; テキストウインドウ文字送りﾀｲﾏ
+				; -i- timer     (AX) : timer.
+	TXF(8,face,x,y)		; テキストウインドウ 守護星ﾌｪｲｽのみ
+				; -i- face      (BX) : 0="太陽",1="月",2="火星"...
+				;     x         (CX) : locate x.
+				;     y         (DX) : locate y.
+	TXF(9,point)		; ﾎﾟｲﾝﾄの文字列化
+	TXF(10)			; ﾉｰﾏﾙ時ﾃｷｽﾄﾓｰﾄﾞ
+	TXF(11)			; 戦闘時ﾃｷｽﾄﾓｰﾄﾞ
+
+	EDTX(function)		; テキスト編集
+				; -i- function (AX) : 機能
+	EDTX(1)			; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+	EDTX(2)			; ﾃｷｽﾄ編集ﾊﾞｯﾌｧへの取込開始
+	EDTX(3,string)		; ﾃｷｽﾄ編集ﾊﾞｯﾌｧへの文字列取込
+	EDTX(4,value)		; ﾃｷｽﾄ編集ﾊﾞｯﾌｧへのﾊﾟﾗﾒｰﾀ取込
+	EDTX(5)			; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの行数ｶｳﾝﾀ
+				; -o- DX : 行数
+	EDTX(6,value)		; ﾃｷｽﾄ編集ﾊﾞｯﾌｧへの小数２桁取込
+	EDTX(7,value)		; ﾃｷｽﾄ編集ﾊﾞｯﾌｧへのﾊﾟﾗﾒｰﾀ取込(固定長)
+	EDTX(8,value)		; ﾃｷｽﾄ編集ﾊﾞｯﾌｧへのﾊﾟﾗﾒｰﾀ取込(可変長)
+
+	FFDISK(function)	;ディスク操作
+	FFDISK(1,number)	:データセーブ
+				;-o- AX : 0=normal,1=error.
+	FFDISK(2,number)	:データロード
+				;-o- AX : 0=normal,1=error,101=file not found.
+	FFDISK(3,number)	;データチェック
+				;-o- AX : 0=normal,1=error,101=file not found.
+				;    BX : 年
+				;    CX : 月
+				;    DX : 曜日
+				;    SI : 日
+				;    DI : 娘の名前
+				;    BP : 娘の名字
+	FFDISK(4)		;ﾌﾛｯﾋﾟｰﾃﾞｨｽｸを使用するか
+				;-o- AX : 1=使用しない,0=使用する
+	FFDISK(5,disknum)	; ディスクチェンジディスク指定
+				;-o- AX : 対象ディスクのドライブ番号
+
+
+＊高度なファンクション
+
+	PRES(length)		; 指定セグメントプリント
+				; -i- ES         : string segment.
+				;     DI         : string address.
+				;     length (AX): length.
+
+	PROGADRS("label")	; プログラムアドレスを取り出す
+				; -i- "label" : ラベル　ﾀﾞﾌﾞﾙｸｫｰﾃｰｼｮﾝで囲う
+				; -o- ES      : セグメント
+				;     DI      : アドレス
+
+	PROGCOPY(string)	;　文字列をプログラムアドレスへコピーする
+				; -i- string (AX) : セットする文字列
+				;     ES          : セグメント
+				;     DI          : アドレス
+
+	STRCOPY("string",string) ; 文字列を文字列アドレスへコピーする
+				; -i- "string"(SI): セットする文字列
+				;      string (AX): セットされる文字列アドレス
+				;
+				; ex.
+				; SI="ABCDEFG"
+				; STRCOPY(string)
+
+	STRLEN(string)		; 文字列長さ
+				; -i- string (AX) : 文字列アドレス
+				; -o- AX          : 文字長さ
+
+	LOAD("file_name")	; プログラムをロードする
+				; -i- "file_name" (SI) : ファイル名
+				;
+				; ２つのファイルを連続ロードするときカンマで区切る
+				;
+				; LOAD("filenm1,filenm2")
+
+	CK_LVL(count,lv1,lv2,lv3,lvm)
+				; レベルチェック
+				; -i- count (AX) : 実行回数
+				;     lv1   (BX) : 初級レベル選択値
+				;     lv2   (CX) : 中級レベル選択値
+				;     lv3   (DX) : 上級レベル選択値
+				;     lvm   (SI) : ﾏｽﾀｰレベル選択値
+				; -o- AX         : レベル
+				;	0=初級レベル,1=中級レベル
+				;	2=上級レベル,3=マスターレベル
+				;     DX         : 選択値
+
+	CK_GUARA(count,base)	; バイト料
+				; -i- count (AX) : 実行回数
+				;     base  (BX) : 基本給
+				; -o- AX         : 待遇アップ回数
+				;     DX         : バイト料
+
+	TXTSZ(mode)		; テキストバッファサイズの変更
+				;	-i- mode (AX) : text buffer size table.
+				;	0=65500,1=32000,2=16000,3=8000,4=4000
+				;"RUNNING.TXT"
+
+	<del>CRTREWRITE		; 画面の書き直し
+
+＊予約パラメータ
+
+	VAL_YEAR		; 年
+	VAL_MONTH		; 月
+	VAL_WEEK		; 曜日
+	VAL_DAY			; 日
+	VAL_A_DAY		; 年内合計日付
+	VAL_M_END		; 月末の日
+	TM_SEASON		; 季節（1:春,2:夏,3:秋,4:冬）
+	FLG_SHOGATSU		; フラグ・正月
+	FLG_URUBI		; フラグ・うるう日
+	FLG_CHRISTMAS_EVE 	; フラグ・クリスマスイブ
+	FLG_G_BORTH		; フラグ・娘の誕生日
+	FLG_M_BORTH		; フラグ・私の誕生日
+	FLG_HOLIDAY		; フラグ・休日
+	FLG_SYUKAKU		; フラグ・収穫祭の準備
+
+	DRESS_NUM		; 着衣絵番号
+	;	0=裸
+	;	1=服・普段着,2=服・夏物の服,3=服・冬物の服
+	;	4=服・木綿のドレス,5=服・シルクのドレス
+	;	6=服・レーザーのドレス,7=服・トゲトゲの服
+	;	8=服・傾国のローブ,9=服・見えないドレス
+	;	10=服・悪魔のドレス,11=服・龍のレオタード
+
+＊デバッグコマンド
+
+	DBGFLAG_CONSOLE=1	; デバッグＷＲＩＴＥをＤＯＳコンソールへ
+	DBGFLAG_CONSOLE=2	; デバッグＷＲＩＴＥをdebug windowsへ
+	INLINECOMPDBG=1		; コンパイル状況をデバッグＷＲＩＴＥへ
+	DBGFLAG_FILE=1		; テキストファイルのロード状況
+	DBGFLAG_FILE=2		; 全ファイルのロード状況
+
+	IDBG[0]=1
+	IDBG[1]=1		;人間ｴﾝｶｳﾝﾄのｽｷｯﾌﾟ
+	IDBG[2]=1		;ﾓﾝｽﾀｰｴﾝｶｳﾝﾄのｽｷｯﾌﾟ
+	IDBG[3]=1		;芸術祭の得点一覧
+	IDBG[4]=1		;娘死なない
+	IDBG[5]=1
+	IDBG[6]=1
+	IDBG[7]=1
+
+	PR  ("string")		; 改行無しプリント
+	PRF ("string")		; 改行有りプリント
+	PRV ("string",C1)	; 改行有りワード値プリント１０進
+	PRVH("string",C1)	; 改行有りワード値プリント１６進
+	PRVB("string",C1)	; 改行有りワード値プリント２進
+	STR(NUM)		; ＮＵＭの内容を１０進で表示
+	HEX(NUM)		; ＮＵＭの内容を１６進で表示
+	BIN(NUM)		; ＮＵＭの内容を２進で表示
+	PRINT(string)		; 文字列表示
+	LLF			; 改行
+
+	XDBG(function)		; demo mode.
+	XDBG(1)			; demo start.
+	XDBG(2)			; demo stop.
+	XDBG(3)			; stack dump.
+	XDBG(4,areanum,length) : buffer file write.
+	    areanum (BX) :
+		=1 VISUALTXTSEG:[VISUALTXTSTARTOFS]
+		=2 TEXTPSEG:[TEXTPSTARTOFS]
+	    length  (CX) : write length.
+	XDBG(5)	: now demo mode.
+		-o- AX : 0=normal,1=demo.
+	XDBG(6)	: palet test.
+
+＊登録済み文字列
+
+	DEF_STR_BROOD[n]	; 血液型・文字列
+
+	n =	0="Ａ",0
+		1="Ｂ",0
+		2="Ｏ",0
+		3="ＡＢ",0
+
+	DEF_STR_SIKYU[n]	; 子宮名・文字列
+
+	n =	0="白羊宮",0
+		1="金牛宮",0
+		2="双児宮",0
+		3="巨蟹宮",0
+		4="獅子宮",0
+		5="処女宮",0
+		6="天秤宮",0
+		7="天蠍宮",0
+		8="人馬宮",0
+		9="磨羯宮",0
+		10="宝瓶宮",0
+		11="双魚宮",0
+
+	DEF_STR_STAR[n]		; 守護星・文字列
+
+	n =	0="太陽神ソル",0
+		1="月神ザ・ムーン",0
+		2="火星神マーズ",0
+		3="水星神マーキュリー",0
+		4="木星神ジュピター",0
+		5="金星神ビーナス",0
+		6="土星神サターン",0
+		7="天王星神ウラヌス",0
+		8="海王星神ネプチューン",0
+		9="冥王星神ハーデス",0
+
+	DEF_STR_LEVEL[n]	; レベル・文字列
+
+	n =	0="初級",0
+		1="中級",0
+		2="上級",0
+		3="ﾏｽﾀｰ",0
+
+＊音楽
+
+PLAY(1001)	;B1 ｼｮｯｸ1
+PLAY(1002)	;B2 ｼｮｯｸ2
+PLAY(1003)	;B3 要人と面会
+PLAY(1004)	;B4 嬉しい事件
+PLAY(1005)	;B5 悲しい事件
+PLAY(1006)	;B6 死亡
+PLAY(1007)	;B7 ﾌｧﾝﾌｧｰﾚ
+
+PLAY(1)		;P1 名前入力
+PLAY(2)		;P2 ＯＰ1
+PLAY(3)		;P3 ＯＰ2
+PLAY(4)		;P4 ﾒｲﾝ春
+PLAY(5)		;P5 ﾒｲﾝ夏
+PLAY(6)		;P6 ﾒｲﾝ秋
+PLAY(7)		;P7 ﾒｲﾝ冬
+PLAY(8)		;P8 病気
+PLAY(9)		;P9 お城
+PLAY(10)	;P10 街
+PLAY(11)	;P11 教会
+PLAY(12)	;P12 ｱﾙﾊﾞｲﾄ
+PLAY(13)	;P13 訓練
+PLAY(14)	;P14 武者修行
+PLAY(15)	;P15 警戒
+PLAY(16)	;P16 人と会う
+PLAY(17)	;P17 戦闘
+PLAY(18)	;P18 ﾊﾞｶﾝｽ海
+PLAY(19)	;P19 ﾊﾞｶﾝｽ山
+PLAY(20)	;P20 休息
+PLAY(21)	;P21 芸術祭
+PLAY(22)	;P22 武闘会
+PLAY(23)	;P23 試合
+PLAY(24)	;P24 舞踏
+PLAY(25)	;P25 料理
+PLAY(26)	;P26 表彰
+PLAY(27)	;P27 神秘
+PLAY(28)	;P28 来客
+PLAY(29)	;P29 緊迫
+PLAY(30)	;P30 ｴﾝﾃﾞｨﾝｸﾞ
+PLAY(31)	;P31 ｸﾚｼﾞｯﾄ
+
+*examples
+
+SLCT( "str1,str2,str3" )
+IF ( ISLCT = 0 )
+	ＩＳＬＣＴ＝０
+IF ( ISLCT = 1 )
+	ＩＳＬＣＴ＝１
+IF ( ISLCT = 2 )
+	ＩＳＬＣＴ＝２
+END
+
+
+
