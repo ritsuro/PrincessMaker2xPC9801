@@ -25,7 +25,7 @@ RUNN* TXRTa
 SCN*  TXRTa
 SSK*  TXRTa
 TEST* TXTXb
-#�ڰ�######
+#ﾌﾚｰﾑ######
 FRM0*   FRa
 FRMMAI* FRa
 FRMBO* FR2b
@@ -39,7 +39,7 @@ FRMVA* FR5d
 FRMVA* FR5e
 FX*.PT1 FXa
 P0*.PT1 P0a
-#��########
+#娘########
 GIRL10* GIc
 GIRL11* GIc
 GIRL12* GIc
@@ -57,10 +57,10 @@ DR?X15* D2l
 DR?X16* D2l
 DR?X17* D2l
 FA*.PT1 FAa
-#�����ݸ###
+#ｵｰﾌﾟﾆﾝｸ###
 OPN*    OPb
 OPEN* TXOPb
-#�����#####
+#ｲﾍﾞﾝﾄ#####
 E0*.PT1 E0a
 L0*.PT1 E0a
 EV*   TXEVa
@@ -177,13 +177,13 @@ F207.PT1FOb
 F208.PT1FOb
 F209.PT1FOb
 F21?.PT1FOb
-#�\��######
+#予定######
 J0*.PT1 J0d
 T003B*  J0d
 JOB*  TXJOd
 T0*.PT1 T0e
 TR*   TXTRe
-#�޶ݽ#####
+#ﾊﾞｶﾝｽ#####
 V001*   V0d
 V002*   V0d
 V003*   V0d
@@ -196,7 +196,7 @@ V009*   V2e
 V01*    V2e
 V02*    V2e
 V03*    V2e
-#���n��####
+#収穫祭####
 SS*.PT1 SFh
 E19*    E1h
 B0*     B0h
@@ -208,14 +208,14 @@ SSD*.T*TXSh
 SSE*.T*TXSh
 SSRUN* TXSh
 SSTOU* TXSh
-#���n�ՂQ##
+#収穫祭２##
 SS*.PT1 SFi
 E19*    E1i
 C0*     C0i
 SSA*  TXS2i
 SSCOO*TXS2i
 SSRUN*TXS2i
-#���ҏC�s##
+#武者修行##
 RPG*  TXRPf
 RPY*  TXRPf
 RPZ*  TXRPf
@@ -232,7 +232,7 @@ M008*   M0f
 M009*   M0f
 M01*    M0f
 M02*    M0f
-#���Җk####
+#武者北####
 RPG*  TXRPg
 RPY*  TXRPg
 RPZ*  TXRPg
@@ -247,14 +247,14 @@ M004*   M2g
 M005*   M2g
 M006*   M2g
 M007*   M2g
-#���y######
+#音楽######
 B*.M*   MBa
 P*.M    MPa
 P*.MMD  MMb
 G*.MMD  MGb
 INITMT* MMb
 INITGM* MGb
-#���ިݸ###
+#ｴﾝﾃﾞｨﾝｸ###
 EE*   TXEEj
 END*.PT1ENj
 Z00*    Z0k
