@@ -1,0 +1,20 @@
+AS	=	ML
+ASFLAGS	=	/I. /Zm /c /Fo$@
+CPY	=	COPY
+RAMDISK	=	E:
+
+..\EXEC\ICON.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+ICON88.INC	:	$*.PT1
+	BIN2ASM $*.PT1 $@
+
+PALET.INC	:	$*.PT1
+	BIN2ASM $*.PT1 $@
+
+..\EXEC\PATTAN.OBJ	:	$*.ASM ICON88.INC PALET.INC
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+
