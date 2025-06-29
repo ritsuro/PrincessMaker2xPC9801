@@ -1,0 +1,34 @@
+AS	=	ML
+ASFLAGS	=	/I. /Zm /c /Fo$@
+CPY	=	COPY
+RAMDISK	=	E:
+
+..\EXEC\WORDTOOL.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\UNITSTR.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\PARAMETR.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\PARAEDIT.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\PARADISK.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\PARACALC.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\DEFTBL.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+
