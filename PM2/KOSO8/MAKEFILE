@@ -1,0 +1,14 @@
+AS	=	ML
+ASFLAGS	=	/VM /I. /Zm /c /Fo$@
+CPY	=	COPY
+RAMDISK	=	E:
+
+..\EXEC\PMD.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+..\EXEC\MMD.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+	$(CPY) $@ $(RAMDISK)
+
+
