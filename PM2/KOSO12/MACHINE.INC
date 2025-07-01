@@ -1,0 +1,3 @@
+IBMPC	EQU	0
+PC98	EQU	1
+
