@@ -1,0 +1,12 @@
+AS	=	ML
+ASFLAGS	=	/I. /Zm /c /Fo$@
+
+PM2.OBJ	:	$*.ASM
+	$(AS) $(ASFLAGS) $*.ASM
+
+PM2.COM	:	PM2.OBJ
+	OPTLINK PM2/T;
+
+..\NDOC\PM2.COM	:	$*.COM
+	COPY $*.COM $@
+
