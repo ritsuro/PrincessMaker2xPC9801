@@ -1,0 +1,122 @@
+; "EVNT004.TXT"
+
+;【 効　果 】冬服を持っていなければ，体力が《１／３》低下．
+;　　　　　　冬服を持っている場合，冬服に着替えれば（YES,NO）ストレスが10低下．
+
+.SOUBI_REC
+
+RUN_MONTH[4]++			;「厳寒」実行回数
+E_COOL = 1				;ｲﾍﾞﾝﾄ｢厳寒」
+
+STRSCLEAR
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,1,260,2)		; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+WWIVENT(5,0,6,40)	; ivent window locate.
+
+WWIVENT(1,0,"E002")		; 厳寒
+
+EVNT004
+
+WWIVENT(2,0)			; ivent window close.
+
+LOAD("MAINBORN")
+
+;************************************
+;	厳寒
+;************************************
+
+*EVNT004
+TXOPEN(2)
+TXFACE("F042")				;執事・心配
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+ITEM_SRCH(1,45)		;ICON search. 45=冬物の服
+SOUBI_REC=DX		;item record.
+
+IF ( AX = 1  DRESS_ICON	! 45 )	;45=冬服がある・冬服を着ていない場合
+	*TEST1
+	TXFACE("F043")		;GF執事・安心
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	SLCTX("着替えさせる,いや，そのままだ")
+
+	IF ( ISLCT = 0 )		;着替えさせる
+		TXCLOSE(2)
+		ITEM_SRCH(6,SOUBI_REC)	; equipment chenge.(equip,arms,dress)
+		WWIVENT(2,0)		; ivent window close.
+		WWGIRL(2)			; 娘のＧが冬服に変わる．
+		WWIVENT(1,0,"E002")	; 厳寒
+		TXOPEN(3)			;
+		TXGIRL(1)			; 娘・嬉しい
+		GR_OPEN				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+		STRSCLEAR			;
+		IGRP_TBL1[0]="ストレス"	IGRP_TBL3[0]=B_STRESS		; ストレス
+		IGRP_CNT=1
+		IGRP_X=54
+		IGRP_Y=200
+		GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+		B_STRESS -= 5		; ストレス
+		IF ( B_STRESS < 0 ) B_STRESS=0
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GRPUPD(1,0,	B_STRESS)	; ストレス
+		@P
+		GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+		TXCLOSE(3)
+	IF ( ISLCT = 1 )		; いや，そのままだ
+		TXFACE("F044")		; 執事・硬直
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXOPEN(9)			;
+		TXGIRL(5)			;娘・寒い
+		「＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(9)
+		TXCLOSE(2)
+		WWIVENT(2,0)		; ivent window close.
+	RET
+
+IF ( DRESS_ICON	= 45 )	;45=冬服がある・すでに着ている場合
+	*TEST2
+	TXFACE("F043")		;執事・安心
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXOPEN(9)
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(9)
+	TXCLOSE(2)
+	WWIVENT(2,0)		; ivent window close.
+	RET
+
+TXOPEN(9)			;
+TXGIRL(5)			;娘・寒い
+GR_OPEN				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR			;
+IGRP_TBL1[0]="体力"	IGRP_TBL3[0]=B_TAIRYOKU		; 体力
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=200
+GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+C1 = B_TAIRYOKU / 3		; 体力
+B_TAIRYOKU -= C1		; 体力
+「＊＊＊＊＊＊＊＊＊」
+GRPUPD(1,0,B_TAIRYOKU)		; 体力
+@P
+@2
+TXFACE("F046")		;執事・困り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(9)
+TXCLOSE(2)
+WWIVENT(2,0)		; ivent window close.
+RET
+
+
+;
+;	end of "EVNT004.TXT"
+;
+

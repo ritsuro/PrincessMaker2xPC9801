@@ -1,0 +1,15 @@
+; "EVE4243S.TXT"
+;
+;	”“ú’x‚ê‚Ì’a¶“ú^–º‚Ì’a¶“ú‚Æ•ƒ‚Ì’a¶“ú‚Ì‡‘Ì
+;	merge text.
+;
+;	42 –º‚Ì’a¶“ú
+;	43 •ƒ‚Ì’a¶“ú
+
+EVE4243
+LOAD("RUNNING")
+
+;
+;	end of "EVE4243S.TXT"
+;
+
