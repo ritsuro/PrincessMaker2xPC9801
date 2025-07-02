@@ -1,0 +1,158 @@
+; "EVNT007.TXT"
+;
+;【 効　果 】魔物の申し出を受けると（YES,NO），モラル値の10倍の金を金がもらえる．
+;				そのかわり，モラル値が０になる。断ると，何も起こらない．
+;
+
+.GIVE_GOLD			; モラル値段
+
+RUN_MONTH[7]++		;「魔族の訪問」実行回数
+
+STRSCLEAR
+
+TXLC(1,16,290,0)	; text window locate.
+;TXLC(1,4,290,0)	; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+
+EVNT007
+
+LOAD("MAINBORN")
+
+;************************************
+;	魔族の訪問
+;************************************
+
+
+*EVNT007
+
+TXOPEN(1)
+誰かがTXA(NAME_FAMILY)家の扉を叩いた・・・
+@P
+MUSIC(6,1);SE1
+TXCLOSE(1)
+
+IF ( RUN_MONTH[7] = 1 )	;☆始めてのとき☆
+	TXOPEN(2)
+	TXFACE("F132")		;魔族・普通
+	「＊＊＊＊＊」
+	@P
+	TXOPEN(3)
+	TXFACE("F039")		;執事・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	TXFACE("F047")		;執事・驚き
+	「＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@3
+	@C
+	TXFACE("F042")	;執事・心配
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	GOTO EV_MAIN
+
+;☆２回目以降☆
+
+TXOPEN(2)
+TXFACE("F132")		;魔族・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXFACE("F046")		;執事・困り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+;☆以下，共通☆
+
+*EV_MAIN
+
+GIVE_GOLD =  B_MORALS * 10			; モラル値の10倍の金を金がもらえる
+
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXGOLD(GIVE_GOLD)＊＊＊＊＊＊」
+
+SLCTX("喜んで売る,断じて売らない")
+
+IF ( ISLCT = 0 )		;売るを選んだ場合
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXOPEN(1)
+	魔族の男が呪文を唱えると，一瞬まぶしい光が室内に満たした．
+	@P
+	TXCLOSE(1)
+	TXOPEN(3)
+	TXGIRL(7)		;娘・苦しい
+	「＊＊＊＊」
+	TIMER1(30)WAIT1				;
+	MUSIC(6,6);SE6(SE4)
+	EFC(4)						; ＷＨＩＴＥ・ＯＵＴ
+	TXCLOSE(3)
+	TXCLOSE(2)
+	TIMER1(30)WAIT1				;
+	EFC(3)						; ＷＨＩＴＥ・ＩＮ
+	EFC(16)						; ノーマルカラー
+
+	GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	IGRP_TBL3[0]=B_MORALS
+	IGRP_TBL1[0]="モラル"
+	IGRP_CNT=1
+	IGRP_X=16
+	IGRP_Y=250
+	GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	TXOPEN(1)
+	TXA(NAME_FIRST)のモラルがTXPOINT(B_MORALS)下がり，かわりに所持金がTXGOLD(GIVE_GOLD)増えた．
+	B_MORALS=0
+	GRPUPD(1,0,B_MORALS)
+	GOLDADD(GIVE_GOLD)			; 娘の所持金
+	WWPROF(3)					; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+	@P
+	TXCLOSE(1)
+	GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+	TXOPEN(2)
+	TXFACE("F132")		;魔族・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+
+	TXOPEN(1)
+	魔族の男は，ニタニタ笑いながら去って行った・・・
+	@P
+	TXCLOSE(1)
+	RET
+
+;売らない場合
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+TXOPEN(1)
+魔族の男は，足早に立ちさった・・・
+@P
+TXCLOSE(1)
+RET
+
+;
+;	end of "EVNT007.TXT"
+;
+
