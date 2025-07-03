@@ -1,0 +1,125 @@
+; "EVNT017.TXT"
+;
+;【 効　果 】卵からかえった極楽鳥の雛がお礼を言って，故郷に飛び去って行く．
+;				娘の感受性が１００上昇する．
+;
+
+RUN_MONTH[17]++		;「極楽鳥の誕生」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+WWIVENT(5,0,6,40)	; ivent window locate.
+
+EVNT017
+
+E_ETC[8]=0				;「極楽鳥の誕生」発生条件
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+LOAD("MAINBORN")
+
+;************************************
+;	極楽鳥の誕生
+;************************************
+
+*EVNT017
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+TXA(NAME_FIRST)がお料理コンクールの賞品にもらった『極楽鳥の卵』．
+食べずにしまっておいたまま，すでに一ヶ月以上．そして・・・
+;;食べずにしまっておいたまま，すでに一ヶ月．そして・・・
+@P
+
+PLAY(27)	;P27 神秘
+
+WWIVENT(1,0,"E007")			;極楽鳥の誕生
+MUSIC(6,3);SE3極楽鳥の雛の声
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F140")				;極楽鳥の雛・普通
+「TXA(NAME_FIRST)＊＊＊TXA(NAME_FIRST)＊＊」
+@P
+TXOPEN(3)
+TXGIRL(15)					;娘・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(9)					;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+WWIVENT(2,0)		; ivent window close.
+
+
+TXOPEN(1)
+極楽鳥の雛は，南の方角に飛び去って行った・・・
+@P
+TXCLOSE(1)
+@3
+@C
+TXGIRL(1)			;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR				;
+IGRP_TBL1[0]="感受性"	IGRP_TBL3[0]=B_KANJUSEI
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=200
+GRPOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+B_KANJUSEI += 100		; 感受性
+GRPUPD(1,0,B_KANJUSEI)	; 感受性
+生命の神秘に触れて，TXA(NAME_FIRST)の感受性が１００上がった．
+@P
+GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(1)
+TXCLOSE(3)
+
+C2 = 0
+C1=ITEM_MAX			;所有アイテム数
+	IF ( ITEM_ICON[C2] = 34 )	;極楽鳥の卵
+		ITEM_KILL(C2)			; アイテム削除
+		C1 = 0
+	C2++
+LOOP C1
+RET
+
+;
+;	end of "EVNT017.TXT"
+;
+

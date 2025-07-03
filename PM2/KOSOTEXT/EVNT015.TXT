@@ -1,0 +1,1037 @@
+; "EVNT015.TXT"
+;
+;【 効　果 】お祝いの言葉や励ましをうけ，技能が上がったり，
+;				アイテムがもらえたりする．その内容は以下の通り．
+;
+;	　　　　戦士　　　　　 魔法　　　　　 社交　　 　　　家事
+;	 100　戦闘技術+3 　　魔法技術+3 　　礼儀作法+3 　　料　理　+3
+;	 200　攻撃力　+4 　　魔　力　+4 　　芸　術　+4 　　掃除洗濯+4
+;	 300　防御力　+5 　　抗魔力　+5 　　話　術　+5 　　気だて　+5
+;	 400　ｳﾞｧﾙｷｭﾘｱの剣 　無敵の指輪　　 誘惑の香水　　 至福のパン粉
+
+.UP_FITER_POINT[3]=3,4,5			;戦士
+.UP_MAGIC_POINT[3]=3,4,5			;魔法
+.UP_SOCIAL_POINT[3]=3,4,5			;社交
+.UP_KEEPER_POINT[3]=3,4,5			;家事
+
+.ITEM_ATTRBUTE[1]	;種別
+.ITEM_KOUKA[1]		;効果
+
+RUN_MONTH[15]++		;「技能アップの祝福」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+ITEMPRN(3,50,120)	: マルチアイテム TYPE 5 位置
+
+EVNT015
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+LOAD("MAINBORN")
+
+;E_ETC[7] 技能アップの祝福・家事評価・回数
+
+;************************************
+;	技能アップの祝福
+;************************************
+;E_ETC[4] 技能アップの祝福・戦士評価・回数
+;E_ETC[5] 技能アップの祝福・魔法評価・回数
+;E_ETC[6] 技能アップの祝福・社交評価・回数
+;E_ETC[7] 技能アップの祝福・家事評価・回数
+
+*EVNT015
+
+PLAY(27)	;P27 神秘
+
+IF ( E_ETC[4]=3  H_SENSHI>=400 ) FITER_4TH	;戦士評価
+IF ( E_ETC[4]=2  H_SENSHI>=300 ) FITER_3RD	;戦士評価
+IF ( E_ETC[4]=1  H_SENSHI>=200 ) FITER_2ND	;戦士評価
+IF ( E_ETC[4]=0  H_SENSHI>=100 ) FITER_1ST	;戦士評価
+
+IF ( E_ETC[5]=3  H_MAHO>=400 ) MAGIC_4TH	;魔法評価
+IF ( E_ETC[5]=2  H_MAHO>=300 ) MAGIC_3RD	;魔法評価
+IF ( E_ETC[5]=1  H_MAHO>=200 ) MAGIC_2ND	;魔法評価
+IF ( E_ETC[5]=0  H_MAHO>=100 ) MAGIC_1ST	;魔法評価
+
+IF ( E_ETC[6]=3  H_SYAKOH>=400 ) SOCIAL_4TH	;社交評価
+IF ( E_ETC[6]=2  H_SYAKOH>=300 ) SOCIAL_3RD	;社交評価
+IF ( E_ETC[6]=1  H_SYAKOH>=200 ) SOCIAL_2ND	;社交評価
+IF ( E_ETC[6]=0  H_SYAKOH>=100 ) SOCIAL_1ST	;社交評価
+
+IF ( E_ETC[7]=3  H_KAJI>=400 ) KEEPER_4TH	;家事評価
+IF ( E_ETC[7]=2  H_KAJI>=300 ) KEEPER_3RD	;家事評価
+IF ( E_ETC[7]=1  H_KAJI>=200 ) KEEPER_2ND	;家事評価
+IF ( E_ETC[7]=0  H_KAJI>=100 ) KEEPER_1ST	;家事評価
+
+RET
+
+;************************************
+;	戦士評価の場合・１回目
+;************************************
+
+*FITER_1ST
+E_ETC[4]++		;技能アップの祝福・戦士評価・回数
+
+TXOPEN(2)
+TXFACE("F133")	;ヴァルキュリア・普通
+「＊＊TXA(NAME_FAMILY)＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(15)		;娘・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+MUSIC(6,2);SE2
+EFC(4)						; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)WAIT1				;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)					;
+まばゆい光が室内をつつみ，気がつくとヴァルキュリアの姿は消えていた．
+@P
+TXCLOSE(1)
+TXOPEN(3)
+TXGIRL(9)					;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL3[0]=V_SENTOH
+IGRP_TBL1[0]="戦闘技術"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=148
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+TXA(NAME_FIRST)の戦闘技術がTXPOINT(UP_FITER_POINT[0])上がった．
+V_SENTOH += UP_FITER_POINT[0]
+CLENDER(13)	;訓練技能値計算
+GRPUPD(1,0,V_SENTOH)
+@P
+TXCLOSE(1)
+
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(3)
+RET
+
+
+;************************************
+;	戦士評価の場合・２／３回目
+;************************************
+
+*FITER_2ND
+*FITER_3RD
+E_ETC[4]++		;技能アップの祝福・戦士評価・回数
+TXOPEN(2)
+TXFACE("F133")	;ヴァルキュリア・普通
+「TXA(NAME_FIRST)＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(1)		;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+MUSIC(6,2);SE2
+EFC(4)						; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)WAIT1				;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとヴァルキュリアの姿は消えていた．
+@P
+TXCLOSE(1)
+TXOPEN(3)
+TXGIRL(1)		;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IF ( E_ETC[4]=2 )		;技能アップの祝福・戦士評価・回数
+	IGRP_TBL3[0]=V_KOUGEKI
+	IGRP_TBL1[0]="攻撃力"
+IF ( E_ETC[4]=3 )		;技能アップの祝福・戦士評価・回数
+	IGRP_TBL3[0]=V_BOUGYO
+	IGRP_TBL1[0]="防御力"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=148
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+IF ( E_ETC[4]=2 )		;技能アップの祝福・戦士評価・回数
+	TXA(NAME_FIRST)の攻撃力がTXPOINT(UP_FITER_POINT[1])上がった．
+	V_KOUGEKI += UP_FITER_POINT[1]
+	CLENDER(13)	;訓練技能値計算
+	GRPUPD(1,0,V_KOUGEKI)
+IF ( E_ETC[4]=3 )		;技能アップの祝福・戦士評価・回数
+	TXA(NAME_FIRST)の防御力がTXPOINT(UP_FITER_POINT[2])上がった．
+	V_BOUGYO += UP_FITER_POINT[2]
+	CLENDER(13)	;訓練技能値計算
+	GRPUPD(1,0,V_BOUGYO)
+@P
+TXCLOSE(1)
+
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(3)
+RET
+
+;************************************
+;	戦士評価の場合・４回目
+;************************************
+
+*FITER_4TH
+IF ( ITEM_MAX >= ITEM_DIM ) RET
+
+E_ETC[4]++		;技能アップの祝福・戦士評価・回数
+TXOPEN(2)
+TXFACE("F133")	;ヴァルキュリア・普通
+「TXA(NAME_FIRST)＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(1)		;娘・嬉しい
+「＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+「＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+
+;ヴァルキュリアの剣
+;【特徴】戦いの妖精ヴァルキュリアが，天帝より授かった宝剣．
+;【値段】5000G
+;【効果】攻撃力+25，防御力+10，戦闘技術+18，会心の一撃の発生率が２倍になる．
+ITEMID_TBL1[0]="ヴｧﾙｷｭﾘｱの剣"
+ITEMID_TBL2[0]=10			;ＩＣＯＮ
+ITEMID_TBL3[0]=5000			;金
+ITEMID_TBL4[0]="攻+25 防+10 戦+18"
+ITEMID_TBL5[0]=0			;
+ITEMID_TBL6[0]=""			;
+ITEMID_TBL7[0]=0			;
+ITEM_KOUKA[0]="V_KOUGEKI+25 V_BOUGYO+10 V_SENTOH+18 E_KAISIN!"
+ITEM_ATTRBUTE[0]=2000		;2000番台=武器
+ITEMID_CNT=1				;アイテムＩＤ数
+
+BX=ITEMID_TBL2[0]		;ＩＣＯＮ
+CX=ITEMID_TBL3[0]		;定価
+DX=ITEM_ATTRBUTE[0]		;種別
+SI=ITEMID_TBL1[0]		;所有アイテム名前 string
+DI=ITEM_KOUKA[0]		;所有アイテム効果 string
+BP=ITEMID_TBL4[0]		;所有アイテム説明 string
+ITEM_INST(1)
+
+MUSIC(6,2);SE2
+EFC(4)					; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)					;
+ITEMPRN(1,5)				;マルチアイテム表示
+WAIT1						;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとヴァルキュリアの姿は消えていた．後には一振りの剣が残されていた．
+@P
+TXCLOSE(1)
+TXOPEN(3)
+TXGIRL(1)		;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+TXA(NAME_FIRST)は「ヴァルキュリアの剣」を手に入れた．
+@P
+TXCLOSE(1)
+TXCLOSE(3)
+ITEMPRN(2)	: マルチアイテム復帰
+RET
+
+;************************************
+;	魔法評価の場合・１回目
+;************************************
+
+*MAGIC_1ST
+E_ETC[5]++	;技能アップの祝福・魔法評価・回数
+
+TXOPEN(2)
+TXFACE("F134")		;フェイ・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(15)		;娘・驚き
+「＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊TXA(NAME_FAMILY)＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+MUSIC(6,2);SE2
+EFC(4)					; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)					;
+WAIT1						;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとフェイの姿は消えていた．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(9)					;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL3[0]=V_MAHOGIJUTSU
+IGRP_TBL1[0]="魔法技術"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=148
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+TXA(NAME_FIRST)の魔法技術がTXPOINT(UP_MAGIC_POINT[0])上がった．
+V_MAHOGIJUTSU += UP_MAGIC_POINT[0]
+CLENDER(13)	;訓練技能値計算
+GRPUPD(1,0,V_MAHOGIJUTSU)
+@P
+TXCLOSE(1)
+
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(3)
+RET
+
+
+;************************************
+;	魔法評価の場合・２／３回目
+;************************************
+
+*MAGIC_2ND
+*MAGIC_3RD
+E_ETC[5]++	;技能アップの祝福・魔法評価・回数
+TXOPEN(2)
+TXFACE("F134")		;フェイ・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(1)			;娘・嬉しい
+「＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+MUSIC(6,2);SE2
+EFC(4)					; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)					;
+WAIT1						;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとフェイの姿は消えていた．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(1)			;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊」
+@P
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IF ( E_ETC[5] = 2 )		;技能アップの祝福・魔法評価・回数
+	IGRP_TBL3[0]=V_MARYOKU
+	IGRP_TBL1[0]="魔力"
+IF ( E_ETC[5] = 3 )		;技能アップの祝福・魔法評価・回数
+	IGRP_TBL3[0]=V_KOHMARYOKU
+	IGRP_TBL1[0]="抗魔力"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=148
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+IF ( E_ETC[5] = 2 )		;技能アップの祝福・魔法評価・回数
+	TXA(NAME_FIRST)の魔力がTXPOINT(UP_MAGIC_POINT[1])上がった．
+	V_MARYOKU += UP_MAGIC_POINT[1]
+	CLENDER(13)	;訓練技能値計算
+	GRPUPD(1,0,V_MARYOKU)
+IF ( E_ETC[5] = 3 )		;技能アップの祝福・魔法評価・回数
+	TXA(NAME_FIRST)の抗魔力がTXPOINT(UP_MAGIC_POINT[2])上がった．
+	V_KOHMARYOKU += UP_MAGIC_POINT[2]
+	CLENDER(13)	;訓練技能値計算
+	GRPUPD(1,0,V_KOHMARYOKU)
+@P
+TXCLOSE(1)
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(3)
+RET
+
+
+;************************************
+;	魔法評価の場合・４回目
+;************************************
+
+*MAGIC_4TH
+IF ( ITEM_MAX >= ITEM_DIM ) RET
+
+E_ETC[5]++	;技能アップの祝福・魔法評価・回数
+
+TXOPEN(2)
+TXFACE("F134")		;フェイ・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(1)			;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(10)		;娘・恥らう
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+@3
+@C
+TXGIRL(1)			;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+;無敵の指輪
+;【特徴】「技能アップの祝福」で魔法使いフェイがくれる．ＭＰが減らない．
+;【値段】1000G
+;【効果】魔法を使うと，すぐに使っただけのＭＰが補充される．
+ITEMID_TBL1[0]="無敵の指輪"
+ITEMID_TBL2[0]=37			;ＩＣＯＮ
+ITEMID_TBL3[0]=1000			;金
+ITEMID_TBL4[0]="ＭＰが減らない"
+ITEMID_TBL5[0]=0			;
+ITEMID_TBL6[0]=""			;
+ITEMID_TBL7[0]=0			;
+ITEM_KOUKA[0]="E_MAX_MP!"	;ＭＰが減らない
+ITEM_ATTRBUTE[0]=4000		;4000番台=効能有
+ITEMID_CNT=1				;アイテムＩＤ数
+
+BX=ITEMID_TBL2[0]		;ＩＣＯＮ
+CX=ITEMID_TBL3[0]		;定価
+DX=ITEM_ATTRBUTE[0]		;種別
+SI=ITEMID_TBL1[0]		;所有アイテム名前 string
+DI=ITEM_KOUKA[0]		;所有アイテム効果 string
+BP=ITEMID_TBL4[0]		;所有アイテム説明 string
+ITEM_INST(1)
+
+MUSIC(6,2);SE2
+EFC(4)					; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)					;
+ITEMPRN(1,5)				;マルチアイテム表示
+WAIT1						;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとフェイの姿は消えていた．後には指輪が一つが残されていた．
+@P
+TXCLOSE(1)
+TXOPEN(3)
+TXGIRL(1)			;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+TXA(NAME_FIRST)は「無敵の指輪」を手に入れた．
+@P
+TXCLOSE(1)
+TXCLOSE(3)
+ITEMPRN(2)	: マルチアイテム復帰
+RET
+
+;************************************
+;	社交評価の場合・１回目
+;************************************
+
+*SOCIAL_1ST
+E_ETC[6]++			;技能アップの祝福・社交評価・回数
+
+TXOPEN(2)
+TXFACE("F135")		;パイモン・普通
+「＊＊TXA(NAME_FAMILY)＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(15)			;娘・驚き
+「＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(11)			;娘・不安
+「＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・不安
+「＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+MUSIC(6,2);SE2
+EFC(4)					; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)					;
+WAIT1						;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとパイモンの姿は消えていた．
+@P
+TXCLOSE(1)
+TXOPEN(3)
+TXGIRL(9)		;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL3[0]=V_REIGI
+IGRP_TBL1[0]="礼儀作法"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=148
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+魔神パイモンの魔力により，TXA(NAME_FIRST)の礼儀作法がTXPOINT(UP_SOCIAL_POINT[0])上がった．
+V_REIGI += UP_SOCIAL_POINT[0]
+CLENDER(13)	;訓練技能値計算
+GRPUPD(1,0,V_REIGI)
+@P
+TXCLOSE(1)
+
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(3)
+RET
+
+
+;************************************
+;	社交評価の場合・２／３回目
+;************************************
+
+*SOCIAL_2ND
+*SOCIAL_3RD
+E_ETC[6]++			;技能アップの祝福・社交評価・回数
+
+TXOPEN(2)
+TXFACE("F135")		;パイモン・普通
+「＊＊＊＊＊＊TXA(NAME_FIRST)」
+@P
+TXOPEN(3)
+TXGIRL(11)			;娘・不安
+「＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F135")			;パイモン・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・不安
+「＊＊＊＊＊＊」
+@P
+
+MUSIC(6,2);SE2
+EFC(4)					; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)					;
+WAIT1						;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとパイモンの姿は消えていた．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(1)				;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IF ( E_ETC[6] = 2 )		;技能アップの祝福・社交評価・回数
+	IGRP_TBL3[0]=V_GEIJYUTSU
+	IGRP_TBL1[0]="芸術"
+IF ( E_ETC[6] = 3 )		;技能アップの祝福・社交評価・回数
+	IGRP_TBL3[0]=V_WAJYUTU
+	IGRP_TBL1[0]="話術"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=148
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+IF ( E_ETC[6] = 2 )		;技能アップの祝福・社交評価・回数
+	魔神パイモンの魔力により，TXA(NAME_FIRST)の芸術がTXPOINT(UP_SOCIAL_POINT[1])上がった．
+	V_GEIJYUTSU += UP_SOCIAL_POINT[1]
+	CLENDER(13)	;訓練技能値計算
+	GRPUPD(1,0,V_GEIJYUTSU)
+IF ( E_ETC[6] = 3 )		;技能アップの祝福・社交評価・回数
+	魔神パイモンの魔力により，TXA(NAME_FIRST)の話術がTXPOINT(UP_SOCIAL_POINT[2])上がった．
+	V_WAJYUTU += UP_SOCIAL_POINT[2]
+	CLENDER(13)	;訓練技能値計算
+	GRPUPD(1,0,V_WAJYUTU)
+@P
+TXCLOSE(1)
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(3)
+RET
+
+;************************************
+;	社交評価の場合・４回目
+;************************************
+
+*SOCIAL_4TH
+IF ( ITEM_MAX >= ITEM_DIM ) RET
+
+E_ETC[6]++			;技能アップの祝福・社交評価・回数
+
+TXOPEN(2)
+TXFACE("F135")		;パイモン・普通
+「TXA(NAME_FIRST)＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(0)			;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+「＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+;誘惑の香水
+;【特徴】イベント「技能アップの祝福」で入手．フェロモンを発散する，一種の媚薬．
+;【値段】800G
+;【効果】基本パラメータに関係なく，イベント「プロポーズ」が毎月発生．
+ITEMID_TBL1[0]="誘惑の香水"
+ITEMID_TBL2[0]=31				;ＩＣＯＮ
+ITEMID_TBL3[0]=800				;金
+ITEMID_TBL4[0]=""				;
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEM_KOUKA[0]="E_PROPOSAL!"		;ｲﾍﾞﾝﾄ｢プロポーズ｣毎月発生
+ITEM_ATTRBUTE[0]=4000			;4000番台=効能有
+ITEMID_CNT=1					;アイテムＩＤ数
+
+BX=ITEMID_TBL2[0]		;ＩＣＯＮ
+CX=ITEMID_TBL3[0]		;定価
+DX=ITEM_ATTRBUTE[0]		;種別
+SI=ITEMID_TBL1[0]		;所有アイテム名前 string
+DI=ITEM_KOUKA[0]		;所有アイテム効果 string
+BP=ITEMID_TBL4[0]		;所有アイテム説明 string
+ITEM_INST(1)
+
+MUSIC(6,2);SE2
+EFC(4)					; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)					;
+ITEMPRN(1,5)					;マルチアイテム表示
+WAIT1						;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとパイモンの姿は消えていた．後には香水の瓶がひとつ残されていた．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(1)	;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+TXA(NAME_FIRST)は「誘惑の香水」を手に入れた．
+@P
+TXCLOSE(1)
+TXCLOSE(3)
+ITEMPRN(2)	: マルチアイテム復帰
+RET
+
+
+;************************************
+;	家事評価の場合・１回目
+;************************************
+
+*KEEPER_1ST
+E_ETC[7]++			;技能アップの祝福・家事評価・回数
+
+TXOPEN(2)
+TXFACE("F136")		;ドモヴォイ・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(15)			;娘・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(9)			;娘・不思議
+「＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(10)			;娘・恥らい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(9)			;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+MUSIC(6,2);SE2
+EFC(4)						; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)					;
+WAIT1						;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとドモヴォイの姿は消えていた．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(9)			;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL3[0]=V_RYOURI
+IGRP_TBL1[0]="料理"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=148
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+台所の精・ドモヴォイの力により，TXA(NAME_FIRST)の料理の腕がTXPOINT(UP_KEEPER_POINT[0])上がった．
+V_RYOURI += UP_KEEPER_POINT[0]
+CLENDER(13)	;訓練技能値計算
+GRPUPD(1,0,V_RYOURI)
+@P
+TXCLOSE(1)
+
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(3)
+RET
+
+
+;************************************
+;	家事評価の場合・２／３回目
+;************************************
+
+*KEEPER_2ND
+*KEEPER_3RD
+E_ETC[7]++			;技能アップの祝福・家事評価・回数
+
+TXOPEN(2)
+TXFACE("F136")		;ドモヴォイ・普通
+「＊＊＊TXA(NAME_FIRST)＊」
+@P
+TXOPEN(3)
+TXGIRL(1)			;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・嬉しい
+「＊＊＊＊＊＊＊」
+@P
+
+MUSIC(6,2);SE2
+EFC(4)						; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)					;
+WAIT1						;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとドモヴォイの姿は消えていた．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(1)		;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IF ( E_ETC[7] = 2 )	; 技能アップの祝福・家事評価・回数
+	IGRP_TBL3[0]=V_SOUJISENTAKU
+	IGRP_TBL1[0]="掃除洗濯"
+IF ( E_ETC[7] = 3 )	; 技能アップの祝福・家事評価・回数
+	IGRP_TBL3[0]=V_KIDATE
+	IGRP_TBL1[0]="気だて"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=148
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+IF ( E_ETC[7] = 2 )	; 技能アップの祝福・家事評価・回数
+	台所の精・ドモヴォイの力により，TXA(NAME_FIRST)の掃除洗濯がTXPOINT(UP_KEEPER_POINT[1])上がった．
+	V_SOUJISENTAKU += UP_KEEPER_POINT[1]
+	CLENDER(13)	;訓練技能値計算
+	GRPUPD(1,0,V_SOUJISENTAKU)
+IF ( E_ETC[7] = 3 )	; 技能アップの祝福・家事評価・回数
+	台所の精・ドモヴォイの力により，TXA(NAME_FIRST)の気だてがTXPOINT(UP_KEEPER_POINT[2])上がった．
+	V_KIDATE += UP_KEEPER_POINT[2]
+	CLENDER(13)	;訓練技能値計算
+	GRPUPD(1,0,V_KIDATE)
+@P
+TXCLOSE(1)
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(3)
+RET
+
+
+;************************************
+;	家事評価の場合・４回目
+;************************************
+
+*KEEPER_4TH
+IF ( ITEM_MAX >= ITEM_DIM ) RET
+
+E_ETC[7]++			;技能アップの祝福・家事評価・回数
+
+TXOPEN(2)
+TXFACE("F136")		;ドモヴォイ・普通
+「＊＊＊TXA(NAME_FIRST)＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(1)			;娘・嬉しい
+「＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・嬉しい
+「＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(9)		;娘・不思議
+「＊＊」
+@P
+
+;至福のパン粉
+;【特徴】イベント「技能アップの祝福」で入手．おいしいパンが焼ける．
+;【値段】10G
+;【効果】園遊会のイベント「料理コンクール」で優勝出来る．
+ITEMID_TBL1[0]="至福のパン粉"
+ITEMID_TBL2[0]=32				;ＩＣＯＮ
+ITEMID_TBL3[0]=10				;金
+ITEMID_TBL4[0]=""				;
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEM_KOUKA[0]="E_COOK_WIN!"		;ｲﾍﾞﾝﾄ｢料理コンクール｣優勝出来る
+ITEM_ATTRBUTE[0]=4000			;4000番台=効能有
+ITEMID_CNT=1					;アイテムＩＤ数
+
+BX=ITEMID_TBL2[0]		;ＩＣＯＮ
+CX=ITEMID_TBL3[0]		;定価
+DX=ITEM_ATTRBUTE[0]		;種別
+SI=ITEMID_TBL1[0]		;所有アイテム名前 string
+DI=ITEM_KOUKA[0]		;所有アイテム効果 string
+BP=ITEMID_TBL4[0]		;所有アイテム説明 string
+ITEM_INST(1)
+
+MUSIC(6,2);SE2
+EFC(4)						; ＷＨＩＴＥ・ＯＵＴ
+;（画面ホワイトアウトして，戻る）
+TXCLOSE(2)					;
+TXCLOSE(3)					;
+TIMER1(30)					;
+ITEMPRN(1,5)					;マルチアイテム表示
+WAIT1						;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+まばゆい光が室内をつつみ，気がつくとドモヴォイの姿は消えていた．後には一袋のパン粉が残されていた．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(9)		;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+;;MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+TXA(NAME_FIRST)は「至福のパン粉」を手に入れた．
+@P
+TXCLOSE(1)
+TXCLOSE(3)
+ITEMPRN(2)	: マルチアイテム復帰
+RET
+
+;
+;	end of "EVNT015.TXT"
+;
+
