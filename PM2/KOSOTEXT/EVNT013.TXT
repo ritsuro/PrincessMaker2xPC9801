@@ -1,0 +1,171 @@
+; "EVNT013.TXT"
+;
+;【 効　果 】求婚者からのプレゼントで，所持金が
+;				《500～1000の乱数，下２桁切捨て》増える．
+;				求婚に応じても断ってもお金はもらえるが，応じると
+;				「父との関係」が２０マイナス．断ると１０プラスとなる．
+;
+
+RUN_MONTH[13]++		;「プロポーズ」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+WWIVENT(5,0,50,180)	; ivent window locate.
+
+EVNT013
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+LOAD("MAINBORN")
+
+;************************************
+;	プロポーズ
+;************************************
+
+*EVNT013
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+誰かがTXA(NAME_FIRST)家の扉を叩いた・・・
+MUSIC(6,1);SE1
+@P
+TXCLOSE(1)
+
+PLAY(28)	;P28 来客
+
+TXOPEN(3)
+TXFACE("F042")			;執事・心配
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+TXOPEN(2)
+TXFACE("F142")			;求婚者・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+WWIVENT(1,0,"E005")		;贈物
+
+SLCPOS(5)
+SLCTX("許す,断る")
+IF ( ISLCT = 0 )	GOTO OK_YOOON
+GOTO DAME_YOOON
+
+;************************************
+;	許す場合
+;************************************
+
+*OK_YOOON
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+TXOPEN(3)
+TXGIRL(2)		;娘・怒り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXGIRL(0)		;娘・普通
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXCLOSE(2)
+
+URA_FATHER -= 20	;「父との関係」が２０マイナス
+IF ( URA_FATHER < 0 ) URA_FATHER=0
+
+IRAND2(5,10)	; 《500～1000の乱数，下２桁切捨て》増える．
+C1 = AX * 100
+
+GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL3[0]=C1
+IGRP_TBL1[0]="お金"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=110
+GOLDOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+
+TXOPEN(1)
+求婚者はプレゼントだけ置いて，すごすごと帰って行った・・・
+所持金がTXGOLD(C1)増えました．
+GOLDADD(C1)
+WWPROF(3)					;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+TXCLOSE(1)
+
+GR_CLOSE					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+WWIVENT(2,0)				;ivent window close.
+
+TXOPEN(3)
+TXFACE("F040")		;執事・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+RET
+
+
+;************************************
+;	断る場合
+;************************************
+
+*DAME_YOOON
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+URA_FATHER += 10		;「父との関係」断ると１０プラスとなる．
+IF ( URA_FATHER >100 ) URA_FATHER = 100
+
+IRAND2(5,10)	; 《500～1000の乱数，下２桁切捨て》増える．
+C1 = AX * 100
+
+GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL3[0]=C1
+IGRP_TBL1[0]="お金"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=110
+GOLDOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+
+TXOPEN(1)
+求婚者はプレゼントを置いて帰って行った．
+所持金がTXGOLD(C1)増えました．
+GOLDADD(C1)
+WWPROF(3)					;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+TXCLOSE(1)
+
+GR_CLOSE					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+WWIVENT(2,0)				;ivent window close.
+
+TXOPEN(3)
+TXFACE("F048")				;執事・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+RET
+
+
+*SHORTWAIT
+TIMER1(30)WAIT1
+RET
+
+
+;
+;	end of "EVNT013.TXT"
+;
+

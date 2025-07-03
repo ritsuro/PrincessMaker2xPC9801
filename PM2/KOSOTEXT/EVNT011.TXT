@@ -1,0 +1,167 @@
+; "EVNT011.TXT"
+;
+;【 効　果 】所持金が２０００増える．感受性が１００上昇．
+;
+
+RUN_MONTH[11]++		;「幼精霊の訪問」実行回数
+
+STRSCLEAR
+
+TXLC(1,16,290,0)	; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+WWIVENT(5,1,18,30)	; ivent window locate.
+
+EVNT011
+
+E_ETC[1]=0			;「幼精霊の訪問」発生条件
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+LOAD("MAINBORN")
+
+;************************************
+;	幼精霊の訪問
+;************************************
+
+*EVNT011
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+誰かがTXA(NAME_FIRST)家の扉を叩いた・・・
+MUSIC(6,1);SE1
+@P
+TXCLOSE(1)
+
+PLAY(27)	;P27 神秘
+
+TXOPEN(3)
+TXFACE("F039")			;執事・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+WWIVENT(1,1,"E004")		;幼精霊の訪問
+
+TXOPEN(1)
+扉の前には，可愛い羽根を持つ女の子が浮かんでいた．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXFACE("F048")			;執事・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F137")			;幼精霊・普通
+「＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+SHORTWAIT
+TXOPEN(3)
+TXGIRL(9)				;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(1)				;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(0)				;娘・普通
+「＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F138")			;幼精霊・悲しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(3)				;娘・悲しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+TXFACE("F137")			;幼精霊・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+@C
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXCLOSE(2)
+TXOPEN(1)
+幼い精霊は呪文を唱えた．
+@P
+TXCLOSE(1)
+EFC(4)						; ＷＨＩＴＥ・ＯＵＴ
+MUSIC(6,5);SE2
+;（画面ホワイトアウトして，戻る）
+WWIVENT(2,1)				;ivent window close.
+TIMER1(30)WAIT1
+GOLDADD(2000)
+WWPROF(3)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+TXOPEN(1)
+辺りは一瞬まばゆい光につつまれ，気がつくと精霊の姿は消えていた．
+@P
+TXCLOSE(1)
+TXOPEN(3)
+TXFACE("F047")		;執事・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL3[0]=B_KANJUSEI		IGRP_TBL1[0]="感受性"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=220
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+IGRP_TBL3[0]=2000		IGRP_TBL1[0]="お金"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=182
+GOLDOPEN(1,2)	; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+
+TXOPEN(1)
+TXA(NAME_FIRST)の感受性が１００上がり，所持金が２０００増えました．
+B_KANJUSEI += 100
+GRPUPD(1,0,B_KANJUSEI)
+@P
+TXCLOSE(1)
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+RET
+
+
+*SHORTWAIT
+TIMER1(30)WAIT1
+RET
+
+
+;
+;	end of "EVNT011.TXT"
+;
+
