@@ -1,0 +1,209 @@
+; "EVNT010.TXT"
+;
+;【 効　果 】魔法技術，魔力，抗魔力のどれか（ランダムに決定）が，２０％上昇．
+
+.MAGIC_STRING
+.MAGIC_NUMBER
+
+RUN_MONTH[10]++			;「魔法使いの訪問」実行回数
+
+STRSCLEAR
+
+TXLC(1,16,290,0)		; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+WWIVENT(5,1,18,100)	; ivent window locate.
+;;TXLC(9,35,148,2)	; text window locate.
+
+EVNT010
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+LOAD("MAINBORN")
+
+;************************************
+;	魔法使いの訪問
+;************************************
+
+*EVNT010
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(1)
+誰かがTXA(NAME_FAMILY)家の扉を叩いた・・・
+@P
+MUSIC(6,1);SE1
+TXCLOSE(1)
+
+PLAY(28)	;P28 来客
+
+IF ( RUN_MONTH[10]=1 ) GOTO START1ST	;「魔法使いの訪問」実行回数 １回目
+IF ( RUN_MONTH[10]>1 ) GOTO START2ND	;「魔法使いの訪問」実行回数 ２回目以降
+RET
+
+;************************************
+;	１回目
+;************************************
+
+*START1ST
+TXOPEN(2)
+TXFACE("F134")		;フェイ・普通
+「＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXFACE("F039")		;執事・普通
+「＊＊＊＊＊＊＊＊」
+@P
+@C
+TXFACE("F047")		;執事・驚き
+「＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXFACE("F046")		;執事・困り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+SHORTWAIT
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+@C
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+TXCLOSE(3)
+GOTO POWER_UP
+
+;************************************
+;	２回目以降
+;************************************
+
+*START2ND
+TXOPEN(2)
+TXFACE("F134")		;フェイ・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(1)	;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+TXCLOSE(3)
+GOTO POWER_UP
+
+;************************************
+;	共通
+;************************************
+
+*POWER_UP
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL3[0]=V_MAHOGIJUTSU	IGRP_TBL1[0]="魔法技術"
+IGRP_TBL3[1]=V_MARYOKU		IGRP_TBL1[1]="魔力"
+IGRP_TBL3[2]=V_KOHMARYOKU	IGRP_TBL1[2]="抗魔力"
+IGRP_CNT=3
+IGRP_X=50
+IGRP_Y=190
+GRPOPEN(2,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+SLCPOS(5)		;
+SLCTBAK(5)		; SLCTの一時的な退避バンクの変更
+SLCTX("魔法技術,魔力,抗魔力")
+GR_CLOSE					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+IF ( ISLCT=0 ) MAGIC_STRING="魔法技術"
+IF ( ISLCT=1 ) MAGIC_STRING="魔力"
+IF ( ISLCT=2 ) MAGIC_STRING="抗魔力"
+MAGIC_NUMBER=ISLCT
+@2
+@C
+「TXA(MAGIC_STRING)＊＊＊＊＊＊＊」
+
+SLCTX("はい,いいえ")
+IF ( ISLCT=1 ) GOTO POWER_UP
+@P
+「＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+WWIVENT(1,1,"E003")			;魔法使いの訪問
+
+MUSIC(6,2);SE2
+EFC(4)						; ＷＨＩＴＥ・ＯＵＴ
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IF ( MAGIC_NUMBER=0 ) IGRP_TBL3[0]=V_MAHOGIJUTSU
+IF ( MAGIC_NUMBER=1 ) IGRP_TBL3[0]=V_MARYOKU
+IF ( MAGIC_NUMBER=2 ) IGRP_TBL3[0]=V_KOHMARYOKU
+IGRP_TBL1[0]=MAGIC_STRING
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=190
+GRPOPEN(2,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+IF ( MAGIC_NUMBER=0 )					;魔法技術
+	C1 = V_MAHOGIJUTSU / 5				;２０％上昇
+	V_MAHOGIJUTSU += C1					;魔法技術
+	CLENDER(13)							;訓練技能値計算
+	GRPUPD(1,0,V_MAHOGIJUTSU)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ 更新
+
+IF ( MAGIC_NUMBER=1 )					;魔力
+	C1 = V_MARYOKU / 5					;２０％上昇
+	V_MARYOKU += C1						;魔力
+	CLENDER(13)							;訓練技能値計算
+	GRPUPD(1,0,V_MARYOKU)				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ 更新
+
+IF ( MAGIC_NUMBER=2 )					;抗魔力
+	C1 = V_KOHMARYOKU / 5				;２０％上昇
+	V_KOHMARYOKU += C1					;抗魔力
+	CLENDER(13)							;訓練技能値計算
+	GRPUPD(1,0,V_KOHMARYOKU)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ 更新
+
+TIMER1(30)WAIT1				;
+EFC(3)						; ＷＨＩＴＥ・ＩＮ
+EFC(16)						; ノーマルカラー
+
+TXOPEN(1)
+大魔法使いフェイのおおいなる魔力によって，TXA(NAME_FIRST)のTXA(MAGIC_STRING)がTXPOINT(C1)上がった．
+@P
+TXCLOSE(1)
+GR_CLOSE					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+WWIVENT(2,1)				;ivent window close.
+
+TXOPEN(2)
+TXFACE("F134")		;フェイ・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+TXOPEN(1)
+フェイはにこやかに去って行った．
+@P
+TXCLOSE(1)
+RET
+
+
+*SHORTWAIT
+TIMER1(30)WAIT1
+RET
+
+;
+;	end of "EVNT010.TXT"
+;
+
