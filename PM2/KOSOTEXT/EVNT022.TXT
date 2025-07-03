@@ -1,0 +1,138 @@
+; "EVNT022.TXT"
+;
+;	武芸者の挑戦
+;
+;
+;	-I- C1 : mode 1=RUNNING.TXT 2=KAIMONO.TXT
+;
+;古;古;古;古;古;古;古;古;古い
+;
+;【 効　果 】武芸者の決闘申し込みを受けると（YES,NO），
+;			その武芸者と戦闘状態になります．
+;			挑んでくる武芸者は，娘より戦士評価値
+;			（戦闘技術，攻撃力，防御力の和）が低い者の中から，
+;			ランダムに選ばれます．
+;			娘が勝った場合，娘の戦士評価値が《相手の戦士評価値の１０％》上昇
+;			します．
+;			申し出を断った場合は，娘の戦士評価値が２０低下します．
+;
+;新;新;新;新;新;新;新;新;新;新しい
+;
+;【 効　果 】武芸者の決闘申し込みを受けると（YES,NO），
+;		その武芸者と戦闘状態になります．
+;		挑んでくる武芸者は，娘の戦士評価（または魔法評価）より
+;		戦士評価が低い者の中から，ランダムに選ばれます．
+;		娘が勝った場合，娘の戦士評価値（または魔法評価）が１０上昇します．
+;		申し出を断った場合は，娘の戦士評価値（または魔法評価）が１５低下します．
+;
+;	このなかには"SSBT02.TXT"から"SSBT18.TXT"までのパラメータと
+;	同じ物がふくまれていますので、変更時には注意してください。
+;
+;
+
+.RUN_EV022_MODE				;mode 1=RUNNING.TXT 2=KAIMONO.TXT
+RUN_EV022_MODE = C1
+
+.TBL_BUGE_MAX
+.TBL_BUGE_NUM[15]
+
+STRSCLEAR
+
+EVNT022
+
+E_EV_SKIP = 1			;イベントスキップ
+
+LOAD("RUNNING")
+
+;**************
+;	batle load.
+;**************
+
+*BATLE_LOAD
+
+C1 = RUN_EV022_MODE			;mode 1=RUNNING.TXT 2=KAIMONO.TXT
+
+IF(AX=2)	LOAD("SSEV022,SSBT02")
+IF(AX=3)	LOAD("SSEV022,SSBT03")
+IF(AX=4)	LOAD("SSEV022,SSBT04")
+IF(AX=5)	LOAD("SSEV022,SSBT05")
+IF(AX=6)	LOAD("SSEV022,SSBT06")
+IF(AX=7)	LOAD("SSEV022,SSBT07")
+IF(AX=8)	LOAD("SSEV022,SSBT08")
+IF(AX=9)	LOAD("SSEV022,SSBT09")
+IF(AX=10)	LOAD("SSEV022,SSBT10")
+IF(AX=11)	LOAD("SSEV022,SSBT11")
+IF(AX=12)	LOAD("SSEV022,SSBT12")
+IF(AX=13)	LOAD("SSEV022,SSBT13")
+IF(AX=14)	LOAD("SSEV022,SSBT14")
+IF(AX=15)	LOAD("SSEV022,SSBT15")
+IF(AX=16)	LOAD("SSEV022,SSBT16")
+IF(AX=17)	LOAD("SSEV022,SSBT17")
+IF(AX=18)	LOAD("SSEV022,SSBT18")
+
+;************************************
+;	武芸者の挑戦
+;************************************
+
+*EVNT022
+
+BUGE_SELECT
+IF ( TBL_BUGE_MAX = 0 ) RET
+
+RUN_MONTH[22]++					;「武芸者の挑戦」実行回数
+E_EV_SKIP = 1					;イベントスキップ
+
+RANDAM(TBL_BUGE_MAX)			;
+C2 = IRND-1
+BATLE_LOAD(TBL_BUGE_NUM[C2])	; batle load.
+
+
+*BUGE_SELECT
+TBL_BUGE_MAX=0
+BUGESET(2	,30	,25	,29	)	;2;"ホルスト・ハイムマン"
+BUGESET(3	,20	,45	,21	)	;3;"バンバン・ビザロ"
+BUGESET(5	,42	,26	,25	)	;5;"ミィーア"
+BUGESET(6	,50	,40	,30	)	;6;"ダムダム"
+BUGESET(7	,70	,45	,28	)	;7;"フランソワ・モーレ"
+BUGESET(8	,65	,65	,55	)	;8;"ドン＝レオ・ジョナサン"
+BUGESET(9	,100,47	,15	)	;9;"タオ・ランファン"
+BUGESET(10	,130,52	,25	)	;10;"カタナ・テラー"
+BUGESET(11	,130,78	,22	)	;11;"ナターシャ・ドリプシコワ"
+BUGESET(12	,145,90	,35	)	;12;"サラーム・ナセル"
+BUGESET(13	,190,70	,18	)	;13;"チャン・クーロン"
+BUGESET(14	,181,88	,29	)	;14;"ジェニファー・ザ＝クィーン"
+BUGESET(15	,240,110,69	)	;15;"マッスル・ハルバル"
+RET
+
+;IF ( H_SENSHI <  H_MAHO )	;魔法評価
+;	BUGESET_MAHO(2	,0,0,10)	;2;"ホルスト・ハイムマン"
+;	BUGESET_MAHO(3	,0,0,0)		;3;"バンバン・ビザロ"
+;	BUGESET_MAHO(5	,0,0,24)	;5;"ミィーア"
+;	BUGESET_MAHO(6	,45,70,29)	;6;"ダムダム"
+;	BUGESET_MAHO(7	,0,0,30)	;7;"フランソワ・モーレ"
+;	BUGESET_MAHO(8	,0,0,15)	;8;"ドン＝レオ・ジョナサン"
+;	BUGESET_MAHO(9	,60,25,22)	;9;"タオ・ランファン"
+;	BUGESET_MAHO(10	,0,0,40)	;10;"カタナ・テラー"
+;	BUGESET_MAHO(11	,0,0,3)		;11;"ナターシャ・ドリプシコワ"
+;	BUGESET_MAHO(12	,77,80,32)	;12;"サラーム・ナセル"
+;	BUGESET_MAHO(13	,70,0,5)	;13;"チャン・クーロン"
+;	BUGESET_MAHO(14	,0,0,0)		;14;"ジェニファー・ザ＝クィーン"
+;	BUGESET_MAHO(15	,0,0,0)		;15;"マッスル・ハルバル"
+;RET
+
+;	BUGESET(   番号,  戦闘技術, 攻撃力, 防御力 )
+;				AX		BX			CX		DX
+
+*BUGESET
+C3 = BX + CX + DX		; 戦士評価値（戦闘技術，攻撃力，防御力の和）
+IF ( H_SENSHI >= H_MAHO )	C2 = H_SENSHI	;戦士評価
+IF ( H_SENSHI <  H_MAHO )	C2 = H_MAHO		;魔法評価
+IF ( C3 < C2 )			;戦士評価
+	TBL_BUGE_NUM[TBL_BUGE_MAX] = AX
+	TBL_BUGE_MAX++
+RET
+
+;
+;	end of "EVNT022.TXT"
+;
+

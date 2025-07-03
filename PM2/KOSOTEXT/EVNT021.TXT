@@ -1,0 +1,107 @@
+; "EVNT021.TXT"
+;
+;【 効　果 】街の金持ちは，《色気値の１／３》の金額（ただし下１桁切捨て）
+;				を提示します．
+;				娘は，《モラル値／提示額》の確率で申し出を断る．
+;				断らない場合は，娘は妾となってしまい，
+;				以後，毎月一ヶ月の最初にイベント「妾のお手当」が発生．
+;
+
+.GOLD_MEKAKE
+
+RUN_MONTH[21]++		;「妾」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+TXLC(9,48,148,2)	; text window locate.
+WWIVENT(5,1,21,40)	; ivent window locate.
+
+E_ETC[2]=0			;「妾」状態
+E_ETC[3]=0			;「妾」お金
+
+EVNT021
+
+E_EV_SKIP = 1		;イベントスキップ
+
+LOAD("RUNNING")
+
+;************************************
+;	「妾」
+;	E_ETC[2]「妾」状態
+;	E_ETC[3]「妾」お金
+;************************************
+
+*EVNT021
+GOLD_MEKAKE=B_IROKE/3				; 色気
+IF ( GOLD_MEKAKE=0 ) RET			; 色気
+
+TXOPEN(1)
+家路に急ぐTXA(NAME_FIRST)に，一人の男が声をかけてきた．
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F141")		;中年男・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(0)			;娘・普通
+「＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(9)			;娘・不思議
+「＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXGOLD(GOLD_MEKAKE)＊」
+@P
+@3
+@C
+;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXA(NAME_FIRST)は少し考えてから答えた．
+@P
+C1 = B_MORALS*100 / GOLD_MEKAKE	; 娘は，《モラル値／提示額》の確率で申し出を断る．
+RANDAM(100)
+IF ( IRND < C1 )	;断る場合
+	@3
+	TXGIRL(2)		;娘・怒り
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXA(NAME_FIRST)は中年男の申し出をきっぱり断った・
+	@P
+	TXCLOSE(2)
+	TXCLOSE(3)
+	RET
+
+;受けた場合
+@3
+TXGIRL(13)			;娘・妖しい
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXA(NAME_FIRST)は中年男のお妾になってしまった・・・
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+E_ETC[2]=1					;「妾」状態
+E_ETC[3]=GOLD_MEKAKE		;「妾」お金
+
+RET
+
+;
+;	end of "EVNT021.TXT"
+;
+
