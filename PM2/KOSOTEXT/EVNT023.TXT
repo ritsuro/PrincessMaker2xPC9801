@@ -1,0 +1,79 @@
+; "EVNT023.TXT"
+;
+;【 効　果 】道場破りの挑戦を受ける（YES,NO）と戦闘になります．
+;			娘が勝てば，娘の戦士評価値が，５０上昇します．
+;			負けてもパラメータは変わりません．
+;			断ったり，負けたりすると，道場の看板を持っていかれてしまうので，
+;			翌月は「武芸の修行」が選択できません．
+;			道場破りは，武芸者のうち，「道場破り」に指定された者の中から
+;			ランダムに選ばれます．
+;
+;	E_ETC[11]=1			;「道場破り」で「剣術」の稽古が出来ない
+;	廃止 E_ETC[12]=1	;「道場破り」で「格闘術」の稽古が出来ない
+
+.TBL_BUGE_MAX
+.TBL_BUGE_NUM[7]
+
+STRSCLEAR
+
+TXLC(1,4,290,0)
+TXLC(10,31,270,0)	; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+TXLC(9,48,148,2)	; text window locate.
+WWIVENT(5,1,21,40)	; ivent window locate.
+
+EVNT023
+
+E_EV_SKIP = 1			;イベントスキップ
+
+LOAD("RUNNING")
+
+;**************
+;	batle load.
+;**************
+
+*BATLE_LOAD
+
+C1 = 1		; 1=EVNT023.TXT
+
+IF(AX=3)	LOAD("SSEV023,SSBT03")
+IF(AX=7)	LOAD("SSEV023,SSBT07")
+IF(AX=8)	LOAD("SSEV023,SSBT08")
+IF(AX=12)	LOAD("SSEV023,SSBT12")
+IF(AX=13)	LOAD("SSEV023,SSBT13")
+
+;************************************
+;	「道場破り」
+;************************************
+
+*EVNT023
+
+BUGE_SELECT
+IF ( TBL_BUGE_MAX = 0 ) RET
+
+RUN_MONTH[23]++					;「道場破り」実行回数
+E_EV_SKIP = 1					;イベントスキップ
+
+RANDAM(TBL_BUGE_MAX)			;
+C1 = IRND -1
+BATLE_LOAD(TBL_BUGE_NUM[C1])	;batle load.
+
+*BUGE_SELECT
+TBL_BUGE_MAX=0
+BUGESET(3)		;3;"バンバン・ビザロ"
+BUGESET(7)		;7;"フランソワ・モーレ"
+BUGESET(8)		;8;"ドン＝レオ・ジョナサン"
+BUGESET(12)		;12;"サラーム・ナセル"
+BUGESET(13)		;13;"チャン・クーロン"
+RET
+
+*BUGESET
+TBL_BUGE_NUM[TBL_BUGE_MAX] = AX
+TBL_BUGE_MAX++
+RET
+
+;
+;	end of "EVNT023.TXT"
+;
+

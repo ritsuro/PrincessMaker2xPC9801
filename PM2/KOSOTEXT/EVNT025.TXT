@@ -1,0 +1,106 @@
+; "EVNT025.TXT"
+;
+;【 効　果 】娘は《モラル＋信仰》が《色気》より高ければ，１００％ナンパを断る
+;			低ければ《モラル＋信仰／色気》の確率でナンパを断る．
+;			断れなかった場合ナンパ成功で，以後娘は「恋愛状態」に入る．
+;
+
+RUN_MONTH[25]++		;「悪い虫」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+TXLC(9,48,148,2)	; text window locate.
+WWIVENT(5,1,21,40)	; ivent window locate.
+
+EVNT025
+
+E_EV_SKIP = 1			;イベントスキップ
+
+LOAD("RUNNING")
+
+;************************************
+;	悪い虫
+;************************************
+
+*EVNT025
+
+TXOPEN(1)
+TXA(NAME_FIRST)に若い男が声をかけてきた．
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F143")		;若い男・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)			;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(11)			;娘・不安
+「＊＊＊＊＊＊＊＊＊」
+@P
+@C
+TXA(NAME_FIRST)はしばらく考え込んだ・・・
+@P
+C1 = B_MORALS + B_SHINKOH				; モラル + 信仰
+P100PAR(C1,B_IROKE)	;
+C2 = AX				;
+RANDAM(100)
+IF ( IRND <= C2 )			;《モラル＋信仰／色気》の確率でナンパを断る．
+	;ナンパを断った場合
+	;娘・不安
+	@3
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXOPEN(1)
+	男はぶつくさ言いながら去っていった．
+	@P
+	TXCLOSE(1)
+	TXCLOSE(3)
+	RET
+;ナンパを受けた場合
+@3
+@C
+TXGIRL(0)		;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+TXOPEN(1)
+TXA(NAME_FIRST)と男は繁華街の方に消えていった・・・
+@P
+TXCLOSE(1)
+
+E_ETC[76] = VAL_YEAR			;恋愛開始年
+E_ETC[77] = VAL_MONTH			;恋愛開始月
+E_ETC[78] = VAL_DAY				;恋愛開始日
+FLAG_RENAI=1			;状態・恋愛
+WWPROF(1)				;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・表示
+RET
+
+
+;
+;	end of "EVNT025.TXT"
+;
+
