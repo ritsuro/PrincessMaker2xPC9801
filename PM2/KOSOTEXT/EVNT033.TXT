@@ -1,0 +1,1047 @@
+; "EVNT033.TXT"
+;
+;
+;	注意．この中の悪魔のデータは　"PRZ20N.TXT"　と同じです。
+;
+;
+; 33 悪魔に出会う
+;【 概　要 】悪魔が現れて，「悪魔のペンダント」を渡せと迫ってくる．
+;【 いつ？ 】武者修行実行中．
+;【発生条件】武者修行ＭＡＰ上の地形「悪魔の洞窟」に入る ．
+;【 効　果 】もし，アイテム「悪魔のペンダント」を持っていれば，
+;			悪魔がペンダントの返却を要求．
+;			まず，「返してくれれば，魔性の力を分け与えよう」と言う（YES,NO）．
+;			これにＯＫすれば，魔力が100上昇，気品が100上昇，色気が100上昇，
+;			モラルが０になる．
+;			拒否した場合，次に「ならば，金1000Gで買い取ろう」と言う（YES,NO）．
+;			これも拒否すれば，今度は「金1500Gでどうか？」と来る（YES,NO）．
+;			これを拒否すると，戦闘になる．
+;			戦いに負けると，「悪魔のペンダント」はなくなってしまう．
+;			アイテム「悪魔のペンダント」を持っていなければ，悪魔は娘を無視するだけ．
+;			また，悪魔との取り引きに応じてしまえば，因業値が５０増える．
+;
+
+.IT_RECORD		; item record.
+
+.FLAG_VICTORY	;勝利フラグ
+.FLAG_KAIWA_OK	;会話条件成立
+.FLAG_BATLE		;0=戦闘中,1=娘勝ち,2=敵勝ち,3=娘逃げる,4=敵逃げる
+.G_DAMEG
+.T_DAMEG
+.REC_TBL[50]
+.TOOL_BUKI
+
+.ATTACK_VAL		;攻撃バリュー
+.DEFENS_VAL		;防御バリュー
+.BATLE_NOW		;1=命中,2=失敗
+
+.MY_KAISHIN		;会心率(%)
+.FLAG_KAISHIN=0	;会心ﾌﾗｸﾞ
+.FLAG_TSUKON=0	;痛恨ﾌﾗｸﾞ
+.BATL_COUNT	=0
+.FLG_HABAM	=0
+
+.R_HP		=0	;ＨＰ
+.R_MP		=0	;ＭＰ
+
+.MNSTR_X
+.MNSTR_Y
+
+.FLAG_NONE	=0		; 0=none,1=search.
+
+.R_MS_NUMBER	=0	;モンスター番号
+.R_FACE			=0	;フェイス
+.R_MONSTOR		=0	;モンスター
+.R_NAME			=0	;名前
+.R_CHINOH		=0	;知能
+.R_SENTOH		=0	;戦闘技術
+.R_KOUGEKI		=0	;攻撃力
+.R_BOUGYO		=0	;防御力
+.R_SOUKOU		=0	;装甲
+.R_SKNAME		=0	;装甲名
+.R_MAHOGIJUTSU	=0	;魔法技術
+.R_MARYOKU		=0	;魔力
+.R_KOHMARYOKU	=0	;抗魔力
+.R_SENI			=0	;戦意
+.R_DASSYUTU		=0	;脱出率(%)
+.R_TSUKON		=0	;痛恨率(%)
+.R_MAX_HP		=0	;最大ＨＰ
+.R_MAX_MP		=0	;最大ＭＰ
+.R_GOLD			=0	;所持金
+
+.R_SE_ATTACK	=0	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+.GIRL_SE_ATTACK	=0	;娘に当たる(1=皮,2=鉄,3=体毛)
+
+.S_WORKS		;スケジュール内容
+.S_COUNTER		;当日カウンタ
+.S_STARTDAY		;スケジュール開始日
+.S_ENDDAY		;スケジュール終了日
+.DAY_COUNTER	;日付カウンタ
+.DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG		;装備フラグ
+.SOUBI_REC		;装備のアイテム番号
+.SOUBI_DAY		;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+DAY_COUNTER	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+STRSCLEAR
+
+TXLC(1,17,280,0)		; text window locate.
+TXLC(2,28,130,1)		; text window locate.
+TXLC(3,13,260,2)		; text window locate.
+TXLC(10,12,264,0)		; text window locate.
+WWIVENT(5,1,19,40)		; ivent window locate.
+WWIVENT(5,0,24,60)		; ivent window locate.
+
+RUN_MONTH[33]++			;「悪魔に出会う」実行回数
+
+EVNT033
+
+WWMUSYA(9)				; 戦闘後データロード
+WWMUSYA(8,1)			; 再描画
+
+WWMUSYA(13,0,0,0,1,5)	; マップシフト
+
+PLAY(14)	;P14 武者修行
+
+PTBK(0)
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = DAY_COUNTER	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+IF ( S_WORKS = 0 )	LOAD("RPGLOP,RPG000")		; 0=東部 森林地帯
+IF ( S_WORKS = 1 )	LOAD("RPGLOP,RPG001")		; 1=西部 砂漠地帯
+IF ( S_WORKS = 2 )	LOAD("RPGLOP,RPG002")		; 2=南部 水郷地帯
+IF ( S_WORKS = 3 )	LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+TXOPEN(1)致命的エラーWAITU
+
+;**************
+;	back to home load.
+;**************
+
+*BACK_TO_HOME
+
+PTBK(0)
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = DAY_COUNTER	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+LOAD("RPGDWN")
+
+;************************************
+;	悪魔に出会う
+;************************************
+
+*EVNT033
+
+TXOPEN(1)
+TXA(NAME_FIRST)は怪しげな洞窟に入って行った・・・
+WWMUSYA(7)					; ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+
+;*;GEM悪魔に出会う
+
+@C
+洞窟の奥では，一人の真っ黒な悪魔が冥想にふけっていた・・・・・・
+@P
+TXCLOSE(1)
+
+ITEM_SRCH(1,24)		; ICON search. 24=悪魔のペンダント
+IT_RECORD = DX		; item record.
+FLAG_NONE = AX		; 0=none,1=search.
+
+MNSTR_X=20
+MNSTR_Y=20
+AKUMA_DATA		;悪魔のデータ
+CHECK_GIRL
+
+PLAY(29)		;P29 緊迫
+
+IF ( FLAG_NONE=0 ) 			; 0=none
+	PTBK(4)					; パーツバンク設定
+	PTMD(0)					; ＰＵＴモード設定
+	SI=R_MONSTOR PTLD		; パーツロード
+	PTMF(MNSTR_X,MNSTR_Y,0)	; ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄPUT
+	EVNT033_NONE			; 悪魔のペンダントを持っていない場合
+	RET
+IF ( FLAG_NONE=1 ) 			; 1=search.
+	PTBK(4)					; パーツバンク設定
+	PTMD(0)					; ＰＵＴモード設定
+	SI=R_MONSTOR PTLD		; パーツロード
+	PTMF(MNSTR_X,MNSTR_Y,0)	; ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄPUT
+	EVNT033_PENDANT			; 悪魔のペンダントを持っている場合
+	RET
+
+;**************
+;	悪魔のペンダントを持っていない場合
+;**************
+
+*EVNT033_NONE
+TXOPEN(3)
+TXGIRL(15)	;娘・驚き
+「＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F160")	;悪魔・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」@P
+@3
+@C
+TXGIRL(11)	;娘・不安
+「＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXCLOSE(2)
+MUSIC(6,6);SE6
+TXOPEN(1)
+悪魔が呪文を唱えると，TXA(NAME_FIRST)は洞窟の出口へと飛ばされた．
+@P
+TXCLOSE(1)
+RET
+
+;**************
+;	悪魔のペンダントを持っている場合
+;**************
+
+*EVNT033_PENDANT
+TXOPEN(3)
+TXGIRL(11)	;娘・不安
+「＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F160")	;悪魔・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+SHOW_ITEMS
+@P
+@3
+@C
+;娘・不安
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・不安
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCTBAK(5)
+SLCPOS(1)SLCTX("魔性の力をもらう,断る")
+
+IF ( ISLCT=0 )	;魔性の力をもらう場合
+	@3
+	@C
+	;娘・不安
+	「＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@3
+	@C
+	;娘・不安
+	「＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	悪魔はTXA(NAME_FIRST)の額に手をかざすと呪文を唱えた．
+	@P
+	ITEMPRN(2)					; マルチアイテム復帰
+	MUSIC(6,2);SE2
+	GR_OPEN
+	STRSCLEAR
+	IGRP_TBL1[0]="魔力"
+	IGRP_TBL3[0]=V_MARYOKU
+	IGRP_TBL1[1]="気品"
+	IGRP_TBL3[1]=B_KIHIN
+	IGRP_TBL1[2]="色気"
+	IGRP_TBL3[2]=B_IROKE
+	IGRP_TBL1[3]="モラル"
+	IGRP_TBL3[3]=B_MORALS
+	IGRP_CNT=4
+	IGRP_X=30
+	IGRP_Y=160
+	GRPOPEN(1,1)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+	TXOPEN(10)
+	魔力が１０上がった．
+	気品が１００上がった．
+	色気が１００上がった．
+	IF ( B_MORALS > 0 )	; モラル
+		モラルがTXPOINT(B_MORALS)下がった．
+
+	V_MARYOKU	+=	10		; 魔力
+	B_KIHIN		+=	100		; 気品
+	B_IROKE		+=	100		; 色気
+	B_MORALS	=	0		; モラル
+	CLENDER(13)	;訓練技能値計算
+
+	GRPUPD(1,0,V_MARYOKU)
+	GRPUPD(1,1,B_KIHIN)
+	GRPUPD(1,2,B_IROKE)
+	GRPUPD(1,3,B_MORALS)
+	@P
+	TXCLOSE(10)
+	GR_CLOSE
+	ITEM_KILL(IT_RECORD)		; アイテム削除
+	RET
+
+;断る場合
+@3
+TXGIRL(12)	;娘・不愉快
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+TXFACE("F160")	;悪魔・普通
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCTBAK(5)
+SLCPOS(1)SLCTX("１０００Ｇで売る,断る")
+
+IF ( ISLCT=0 )	;１０００Ｇで売る場合
+	@3
+	TXGIRL(11)	;娘・不安
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	TXOPEN(1)
+	GOLDADD(1000)		; 娘の所持金
+	WWPROF(5)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･所持金
+	TXA(NAME_FIRST)は悪魔にペンダントを１０００Ｇで売り渡した．
+	@P
+	TXCLOSE(1)
+	ITEMPRN(2)					; マルチアイテム復帰
+	ITEM_KILL(IT_RECORD)		; アイテム削除
+	RET
+
+;＊断る場合
+@3
+TXGIRL(14)	;娘・りりしい
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCTBAK(5)
+SLCPOS(1)SLCTX("１５００Ｇで売る,断る")
+
+IF ( ISLCT=0 )	;１５００Ｇで売る場合
+	@3
+	TXGIRL(11)	;娘・不安
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	TXOPEN(1)
+	GOLDADD(1500)		; 娘の所持金
+	WWPROF(5)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･所持金
+	TXA(NAME_FIRST)は悪魔にペンダントを１５００Ｇで売り渡した．
+	@P
+	TXCLOSE(1)
+	ITEMPRN(2)					; マルチアイテム復帰
+	ITEM_KILL(IT_RECORD)		; アイテム削除
+	RET
+
+;＊断る場合
+@3
+@C
+TXGIRL(12)	;娘・不愉快
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+TXFACE("F160")	;悪魔・普通
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXCLOSE(2)
+ITEMPRN(2)					; マルチアイテム復帰
+
+BATLE_MODE			;戦闘モード
+
+PLAY(14)			;P14 武者修行
+
+IF ( FLAG_BATLE=1 )( FLAG_BATLE=4 )		;1=娘勝ち,4=敵逃げる
+	TXOPEN(2)
+	TXFACE("F160")	;悪魔・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXOPEN(1)
+	悪魔は森の闇に消えて行った・・・・・・
+	@P
+	TXCLOSE(1)
+	RET
+IF ( FLAG_BATLE=2 )	;2=敵勝ち
+	TXOPEN(2)
+	TXFACE("F160")	;悪魔・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXOPEN(1)
+	悪魔はTXA(NAME_FIRST)からペンダントを奪うと，洞窟の闇に姿を消した．
+	@P
+	TXCLOSE(1)
+	ITEM_KILL(IT_RECORD)	;アイテム削除
+	GIRL_DOWN_CHK			;敗戦チェック
+	RET
+IF ( FLAG_BATLE=3 )		;3=娘逃げる
+	RET
+RET
+
+;************************************
+;	戦闘モード
+;************************************
+
+*BATLE_MODE			;戦闘モード
+
+PLAY(17)	;P17 戦闘
+
+SLCPOS(2)
+R_HP = R_MAX_HP		;最大ＨＰ
+R_MP = R_MAX_MP		;最大ＭＰ
+FLAG_VICTORY=0		;勝利フラグ
+FLAG_BATLE = 0		;0=戦闘中
+MY_KAISHIN = 3		;会心率(%)
+IF ( E_KAISIN ! 0 )	;会心の一撃発生倍率２倍
+	MY_KAISHIN = 6	;会心率(%)
+BATL_COUNT = 0
+
+GRAPSHOW
+TXLC(7,26,284,0)	;text window locate.
+TXOPEN(7)
+戦闘開始
+@P
+TXF(11)			; 戦闘時ﾃｷｽﾄﾓｰﾄﾞ
+BTL_LOOP
+TXF(10)			; ﾉｰﾏﾙ時ﾃｷｽﾄﾓｰﾄﾞ
+GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+MUSIC(2)			; 音楽ﾌｪｰﾄﾞｱｳﾄ
+
+IF ( FLAG_BATLE=1 )		;1=娘勝ち
+	TXA(NAME_FIRST)はTXA(R_NAME)を倒した．
+	@P
+	TXCLOSE(7)
+	FLAG_VICTORY=1		;勝利フラグ
+	RET
+IF ( FLAG_BATLE=2 )		;2=敵勝ち
+	TXA(NAME_FIRST)は負けた．
+	@P
+	TXCLOSE(7)
+	RET
+IF ( FLAG_BATLE=3 )		;3=娘逃げる
+	なんとか逃げきったようだ．
+	@P
+	TXCLOSE(7)
+	TXOPEN(3)
+	TXGIRL(11)	;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	RET
+IF ( FLAG_BATLE=4 )		;4=敵逃げる
+	;;TXA(R_NAME)は逃げた．
+	TXA(R_NAME)は去っていった・・・
+	@P
+	TXCLOSE(7)
+	RET
+RET
+
+;**************
+;	敗戦処理
+;**************
+
+*GIRL_DOWN_CHK				;敗戦チェック
+IF (FLAG_VICTORY=1) RET		;勝利フラグ
+URA_STEWARD += 2			; 執事との関係
+IF ( URA_STEWARD>100 ) URA_STEWARD=100	; 執事との関係
+TXLC(1,14,280,0)	;text window locate.
+TXLC(2,28,260,1)	;text window locate.
+TXOPEN(2)			;
+TXFACE("F046")		;執事・困り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+WWMUSYA(9)				; 戦闘後データロード
+@P
+WWMUSYA(8,2)			; 再描画
+TXOPEN(1)				;
+WWIVENT(5,0,16,32)		;ivent window locate.
+;WWIVENT(1,0,"E024")	;負けて家に帰る
+WWIVENT(6,0,2,4,"E024")	;save#2,load#4 ivent window open.(select bank)
+TXA(NAME_FIRST)が気を失っている間に，執事はTXA(NAME_FIRST)を家に連れて帰った・・・・・・
+@P						;
+TXCLOSE(1)				;
+IF ( P_TAIJYU < 4000 )	;体重が４０ｋｇ未満の場合
+	TXOPEN(2)
+	TXFACE("F039")		;執事・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+IF ( P_TAIJYU >= 6000 )	;体重が６０ｋｇ以上の場合
+	TXOPEN(2)
+	TXFACE("F046")		;執事・困り
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+;WWIVENT(2,0)			; ivent window close.
+WWIVENT(7,0,2)			; ivent window close.(select bank)
+BACK_TO_HOME
+RET
+
+
+;**************
+;	graph.
+;**************
+
+*GRAPSHOW
+;GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+GR_F(1,9)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+SI = R_NAME
+IGRP_X = 1
+IGRP_Y = 248
+GR_F(3)
+
+C1 = R_SENTOH + R_KOUGEKI + R_BOUGYO			;戦士評価は《戦闘技術＋攻撃力＋防御力》
+C2 = R_MAHOGIJUTSU + R_MARYOKU + R_KOHMARYOKU	;魔法評価は《魔法技術＋魔力＋抗魔力》
+
+IGRP_TBL1[0]="ＨＰ"
+IGRP_TBL1[1]="ＭＰ"
+IGRP_TBL1[2]="戦士評価"
+IGRP_TBL1[3]="魔法評価"
+IGRP_TBL1[4]="戦意"
+IGRP_TBL3[0]=R_HP			;ＨＰ
+IGRP_TBL3[1]=R_MP			;ＭＰ
+IGRP_TBL3[2]=C1
+IGRP_TBL3[3]=C2
+IGRP_TBL3[4]=R_SENI			;戦意
+IGRP_CNT=5
+IGRP_X=1
+IGRP_Y=286
+GRPOPEN(1,2)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+SI = NAME_FIRST
+IGRP_X = 55
+IGRP_Y = 248
+GR_F(3)
+
+IGRP_TBL1[0]="ＨＰ"
+IGRP_TBL1[1]="ＭＰ"
+IGRP_TBL1[2]="戦士評価"
+IGRP_TBL1[3]="魔法評価"
+IGRP_TBL1[4]="戦意"
+IGRP_TBL3[0]=W_HP			;ＨＰ
+IGRP_TBL3[1]=W_MP			;ＭＰ
+IGRP_TBL3[2]=H_SENSHI		;戦士評価
+IGRP_TBL3[3]=H_MAHO			;魔法評価
+IGRP_TBL3[4]=W_SENI			;戦意
+IGRP_CNT=5
+IGRP_X=55
+IGRP_Y=286
+GRPOPEN(1,3)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+RET
+
+*DISP_HP
+GRPUPD(2,0,R_HP)
+GRPUPD(2,1,R_MP)
+GRPUPD(2,4,R_SENI)
+GRPUPD(3,0,W_HP)
+GRPUPD(3,1,W_MP)
+GRPUPD(3,4,W_SENI)
+WWPROF(6)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･HP
+WWPROF(7)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･MP
+RET
+
+;**************
+;	戦闘モード
+;**************
+
+*BTL_LOOP
+
+ATTAKE_GIRL
+DISP_HP
+IF ( FLAG_BATLE ! 0 ) RET
+
+@P
+@C
+
+ATTAKE_MONSTOR
+DISP_HP
+IF ( FLAG_BATLE ! 0 ) RET
+
+BATL_COUNT++
+IF ( BATL_COUNT>=20 )
+	IF ( W_HP >= R_HP )	FLAG_BATLE=4		;4=敵逃げる
+	IF ( W_HP <  R_HP )	FLAG_BATLE=3		;3=娘逃げる
+	RET
+
+GOTO BTL_LOOP
+
+*ATTAKE_GIRL
+SLCTX("攻撃する,魔法を使う,道具を使う")
+@C
+IF ( ISLCT=1   W_MP < 10 )
+	ＭＰが足りません．
+	GOTO ATTAKE_GIRL
+IF ( ISLCT=0 )
+	GIRL_ATTAKE
+	TEKI_KAISHIN_DMG
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(V_KOUGEKI,R_BOUGYO)
+		TEKI_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		TEKI_DAMEG_NONE
+	RET
+IF ( ISLCT=1 )
+	IF ( E_MAX_MP=0 )		;ＭＰが減らない
+		W_MP -= 10
+	GIRL_MAGIC
+	TEKI_KAISHIN_DMG
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(V_MARYOKU,R_KOHMARYOKU)
+		TEKI_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		TEKI_DAMEG_NONE
+	RET
+IF ( ISLCT=2 )
+	USE_TOOL			;道具
+	IF ( TOOL_BUKI=0 )	GOTO ATTAKE_GIRL	;0=NONE
+RET
+
+*ATTAKE_MONSTOR
+;魔力を持っている敵は，《現在のＭＰ：現在のＨＰ》の比率で魔法
+C1 = R_HP + R_MP		;
+P100PAR(R_MP,C1)		;百分率を求める
+C2 = AX					;parcent.
+RANDAM(100)				;
+IF ( C2 < IRND )( R_MP < 10 )
+	TEKI_ATTAKE
+	GIRL_TSUKON_DMG
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(R_KOUGEKI,V_BOUGYO)
+		GIRL_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		GIRL_DAMEG_NONE
+	RET
+IF ( C2 >= IRND )
+	R_MP -= 10
+	TEKI_MAGIC
+	GIRL_TSUKON_DMG
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(R_MARYOKU,V_KOHMARYOKU)
+		GIRL_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		GIRL_DAMEG_NONE
+	RET
+RET
+
+*GIRL_ATTAKE
+TXA(NAME_FIRST)の攻撃！@@
+PPP1
+CALC_ATTACK(V_SENTOH)	ATTACK_VAL=AX
+CALC_DEFENS(R_SENTOH)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*GIRL_MAGIC
+TXA(NAME_FIRST)は呪文を唱えた．
+SE_MAGIC
+魔法攻撃をしかけた！！
+PPP1
+CALC_ATTACK(V_MAHOGIJUTSU)	ATTACK_VAL=AX
+CALC_DEFENS(R_MAHOGIJUTSU)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*TEKI_ATTAKE
+TXA(R_NAME)の攻撃！@@
+PPP1
+CALC_ATTACK(R_SENTOH)	ATTACK_VAL=AX
+CALC_DEFENS(V_SENTOH)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*TEKI_MAGIC
+TXA(R_NAME)は呪文を唱えた！
+SE_MAGIC
+魔法攻撃を受けた！！
+PPP1
+CALC_ATTACK(R_MAHOGIJUTSU)	ATTACK_VAL=AX
+CALC_DEFENS(V_MAHOGIJUTSU)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*TEKI_KAISHIN_DMG
+FLAG_KAISHIN=0			;会心ﾌﾗｸﾞ
+RANDAM(100)
+IF ( MY_KAISHIN >=IRND )	;会心率(%)
+	FLAG_KAISHIN=1
+RET
+
+*TEKI_DAMEG
+T_DAMEG = AX
+IF ( FLAG_KAISHIN!0 )
+	T_DAMEG = T_DAMEG * 3
+	会心の一撃！
+	PPP1
+IF ( FLG_HABAM=0 )
+	IF ( FLAG_KAISHIN=0 )	SE_TK_DAMEG
+	IF ( FLAG_KAISHIN!0 )	SE_KAISHIN
+	命中！TXA(R_NAME)にTXPOINT(T_DAMEG)のダメージを与えた！
+IF ( FLG_HABAM!0 )
+	IF ( R_SOUKOU > 0 )		;装甲
+		SE_TK_DEFENS
+		命中！しかし，TXA(R_NAME)のTXA(R_SKNAME)に阻まれた！
+	IF ( R_SOUKOU = 0 )		;装甲
+		SE_TK_DEFENS
+		TXA(R_NAME)は攻撃を受けとめた！
+	TXA(R_NAME)はTXPOINT(T_DAMEG)のダメージ．
+PPP1
+TEKI_DAMEG_CHK
+RET
+
+*TEKI_DAMEG_NONE
+TXA(R_NAME)は攻撃を回避した！
+PPP1
+RET
+
+*TEKI_DAMEG_CHK
+R_HP -= T_DAMEG
+IF ( R_HP <= 0 )
+	R_HP = 0
+	FLAG_BATLE=1	;1=娘勝ち
+	RET
+R_SENI -= T_DAMEG	;戦意
+IF ( R_SENI <= 0 )
+	R_SENI = 0
+	RANDAM(30)
+	IF ( IRND<=10 )
+		FLAG_BATLE=4	;4=敵逃げる
+RET
+
+*GIRL_TSUKON_DMG
+FLAG_TSUKON=0			;痛恨ﾌﾗｸﾞ
+RANDAM(100)
+IF ( R_TSUKON >=IRND )	;痛恨率(%)
+	FLAG_TSUKON=1
+RET
+
+*GIRL_DAMEG
+G_DAMEG = AX
+IF ( FLAG_TSUKON!0 )		;痛恨ﾌﾗｸﾞ
+	G_DAMEG = G_DAMEG * 3
+	痛恨の一撃！
+	PPP1
+IF ( FLG_HABAM=0 )
+	IF ( FLAG_TSUKON=0 )	SE_GR_DAMEG
+	IF ( FLAG_TSUKON!0 )	SE_TSUKON
+	命中！TXA(NAME_FIRST)はTXPOINT(G_DAMEG)のダメージを受けた！
+IF ( FLG_HABAM!0 )
+	IF ( EQUIP_ICON ! 0 )
+		SE_GR_DEFENS
+		命中！しかし，TXA(NAME_FIRST)のTXA(EQUIP_NAME)に阻まれた！
+	IF ( EQUIP_ICON = 0 )
+		SE_GR_DEFENS
+		TXA(NAME_FIRST)は攻撃を受けとめた！
+	TXA(NAME_FIRST)はTXPOINT(G_DAMEG)のダメージ．
+PPP1
+GIRL_DAMEG_CHK
+RET
+
+*GIRL_DAMEG_NONE
+TXA(NAME_FIRST)は攻撃をかわした。
+PPP1
+RET
+
+*GIRL_DAMEG_CHK
+W_HP -= G_DAMEG		; ＨＰ
+IF ( W_HP <= 0 )
+	W_HP = 0
+	FLAG_BATLE=2	;2=敵勝ち
+	RET
+W_SENI -= G_DAMEG	; 戦意
+IF ( W_SENI <= 0 )
+	W_SENI = 0
+	RANDAM(30)
+	IF ( IRND<=10 )
+		TXA(NAME_FIRST)は一目散に逃げ出した．
+		RANDAM(100)
+		IF ( R_DASSYUTU>=IRND )		;脱出に成功した
+			FLAG_BATLE=3	;3=娘逃げる
+			RET
+		しかし，敵に回り込まれてしまった．
+		逃げられない！
+RET
+
+*USE_TOOL			; 道具
+SLCT_TOOLS
+IF (TOOL_BUKI=0) RET	;0=NONE
+IF (TOOL_BUKI=1)		;1=快癒丸
+	TXA(NAME_FIRST)は快癒丸を一粒飲んだ．
+	IRAND2(20,60)		;20～60まで
+	C2 = AX
+	C1 = W_HP_MAX - W_HP
+	IF ( C1 < C2 ) C2 = C1
+	W_HP = W_HP + C2
+	ＨＰがTXPOINT(C2)回復した．
+	PPP1
+	RET
+IF (TOOL_BUKI=2)		;2=焙碌
+	TXA(NAME_FIRST)は手投げ焙碌を投げつけた．
+	SE_HOUROKU
+	ドッカーン！！
+	RANDAM(80)			;1～80のダメージ
+	R_HP -= IRND
+	IF ( R_HP<0 ) R_HP = 0
+	TXA(R_NAME)にTXPOINT(IRND)のダメージを与えた！
+	PPP1
+	TEKI_DAMEG_CHK
+	RET
+
+*SLCT_TOOLS			; -O- TOOL_BUKI:0=NONE,1=快癒丸,2=焙碌
+ITEM_SRCH(1,16)		;快癒丸
+C2 = DX				;item record.
+C1 = 0				;
+IF ( AX = 1 )		;1=search
+	ITEMID_TBL1[C1]=ITEM_NAME[C2]	;所有アイテム名前
+	ITEMID_TBL2[C1]=ITEM_ICON[C2]	;ＩＣＯＮ
+	ITEMID_TBL3[C1]=ITEM_GOLD[C2]	;金
+	ITEMID_TBL4[C1]=ITEM_HELP[C2]	;所有アイテム説明
+	ITEMID_TBL5[C1]=0
+	ITEMID_TBL6[C1]=""
+	ITEMID_TBL7[C1]=0
+	REC_TBL[C1]=C2
+	C1++
+ITEM_SRCH(1,17)		;投げ焙碌（ﾎｳﾛｸ）
+C2 = DX				;item record.
+IF ( AX = 1 )		;1=search
+	ITEMID_TBL1[C1]=ITEM_NAME[C2]	;所有アイテム名前
+	ITEMID_TBL2[C1]=ITEM_ICON[C2]	;ＩＣＯＮ
+	ITEMID_TBL3[C1]=ITEM_GOLD[C2]	;金
+	ITEMID_TBL4[C1]=ITEM_HELP[C2]	;所有アイテム説明
+	ITEMID_TBL5[C1]=0
+	ITEMID_TBL6[C1]=""
+	ITEMID_TBL7[C1]=0
+	REC_TBL[C1]=C2
+	C1++
+ITEMID_CNT = C1			;アイテムＩＤ数
+IF ( ITEMID_CNT=0 )
+	TOOL_BUKI = 0
+	戦闘に使用できる道具がありません
+	PPP2
+	RET
+ITEMSLCT(1)				;マルチアイテム選択
+IF ( ISITM = -1 )
+	TOOL_BUKI = 0
+	RET
+IF ( ITEMID_TBL2[ISITM]=16 ) ;快癒丸
+	TOOL_BUKI=1	;快癒丸
+IF ( ITEMID_TBL2[ISITM]=17 ) ;投げ焙碌（ﾎｳﾛｸ）
+	TOOL_BUKI=2	;焙碌
+ITEM_KILL(REC_TBL[ISITM])	; アイテム削除
+RET
+
+*CALC_ATTACK	;-I-戦闘技術 -O- AX : 攻撃バリュー
+;AX=AX+-30%randam
+C1 = AX
+IRNDPAR(C1,30)
+RET
+
+*CALC_DEFENS	;-I-戦闘技術 -O- AX : 攻撃バリュー
+;AX=AX+-30%randam
+C1 = AX
+IRNDPAR(C1,30)
+RET
+
+*CALC_DAMEG		;-I-攻撃力,防御側の防御力 -O- AX : ダメージ
+;AX = AX+-20%randam - BX
+FLG_HABAM=0
+C1 = AX
+C2 = BX
+IRNDPAR(C1,20)
+AX = AX - C2
+IF ( AX < 0 )
+	FLG_HABAM=1
+	AX = 1
+RET
+
+*PPP1
+TIMER1(10)
+WAIT1
+RET
+
+*PPP2
+@P
+RET
+
+*SE_TK_DEFENS
+IF(R_SE_ATTACK=1)MUSIC(6,7)	;1=皮
+IF(R_SE_ATTACK=2)MUSIC(6,8)	;2=鉄
+IF(R_SE_ATTACK=3)MUSIC(6,9)	;3=体毛
+IF(R_SE_ATTACK=4)MUSIC(6,10);4=固い体
+IF(R_SE_ATTACK=5)MUSIC(6,15);5=武神
+RET
+
+*SE_GR_DEFENS
+IF(GIRL_SE_ATTACK=0)MUSIC(6,9)	;3=体毛
+IF(GIRL_SE_ATTACK=1)MUSIC(6,7)	;1=皮
+IF(GIRL_SE_ATTACK=2)MUSIC(6,8)	;2=鉄
+IF(GIRL_SE_ATTACK=3)MUSIC(6,9)	;3=体毛
+RET
+
+*SE_MAGIC
+MUSIC(6,4)
+RET
+
+*SE_TK_DAMEG
+MUSIC(6,11)
+RET
+
+*SE_GR_DAMEG
+MUSIC(6,12)
+RET
+
+*SE_KAISHIN
+MUSIC(6,13)
+RET
+
+*SE_TSUKON
+MUSIC(6,14)
+RET
+
+*SE_HOUROKU
+MUSIC(6,16)
+RET
+
+*CHECK_GIRL
+					;娘に当たる(1=皮,2=鉄,3=体毛)
+IF ( EQUIP_ICON = 11 )	GIRL_SE_ATTACK=1		;11=皮の鎧
+IF ( EQUIP_ICON = 12 )	GIRL_SE_ATTACK=2		;12=鎖帷子
+IF ( EQUIP_ICON = 13 )	GIRL_SE_ATTACK=2		;13=鉄の鎧
+IF ( EQUIP_ICON = 14 )	GIRL_SE_ATTACK=2		;14=ミスリルの鎧
+IF ( EQUIP_ICON = 15 )	GIRL_SE_ATTACK=3		;15=シルクの鎧
+RET
+
+;************************************
+;	悪魔のデータ
+;************************************
+
+*AKUMA_DATA
+
+R_MS_NUMBER		=20
+R_FACE			="F180"
+R_MONSTOR		="M020"
+R_NAME			="悪魔"
+R_CHINOH		=100
+RDM(45,50)
+R_SENTOH=AX
+RDM(40,60)
+R_KOUGEKI=AX
+R_BOUGYO		=65
+R_SOUKOU		=55
+R_SKNAME		="魔法のベール"
+RDM(60,65)
+R_MAHOGIJUTSU=AX
+RDM(60,65)
+R_MARYOKU=AX
+R_KOHMARYOKU	=60
+R_SENI			=50
+R_DASSYUTU		=40
+R_TSUKON		=15
+RDM(260,370)
+R_MAX_HP=AX
+RDM(500,800)
+R_MAX_MP=AX
+RDM(250,400)
+R_GOLD=AX
+RET
+
+*RDM
+; RDM(start,end)
+; -o- AX : randmize
+C1 = AX
+C2 = BX - AX + 1
+;*;RANDAM(C2)
+IRAND999X(C2)		; 乱数９９９範囲指定
+AX = IRND + C1 - 1
+RET
+
+
+;**************
+;	アイテム表示
+;**************
+
+*SHOW_ITEMS
+C1 = IT_RECORD				; item record.
+ITEMID_TBL1[0]=ITEM_NAME[C1]	; 所有アイテム名前 string
+ITEMID_TBL2[0]=ITEM_ICON[C1]	; 所有アイテムＩＣＯＮ番号
+ITEMID_TBL3[0]=ITEM_GOLD[C1]	; 所有アイテム値段
+ITEMID_TBL4[0]=ITEM_HELP[C1]	; 所有アイテム説明 string
+ITEMID_TBL5[0]=0
+ITEMID_TBL6[0]=""
+ITEMID_TBL7[0]=0
+ITEMID_CNT=1				; アイテムＩＤ数
+ITEMPRN(3,60,280)			; マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)				; マルチアイテム表示
+RET
+
+;
+;	end of "EVNT033.TXT"
+;
+
