@@ -1,0 +1,342 @@
+; "EVNT028.TXT"
+;
+; 28 精霊に出会う
+;【 概　要 】泉の精霊が現れて，「卵を返して下さい」と頼んでくる．
+;				返してやると，お礼に気品を上げてくれます．
+;				また，１年後にイベント「幼精霊の訪問」が発生します．
+;【 いつ？ 】武者修行実行時．
+;【発生条件】武者修行時に泉のほとりに行く．
+;【 効　果 】アイテム「精霊の指輪」を持っていると，泉の精霊が現れて，
+;				指輪の返還を求める．泉の精霊の要求に応じる（YES,NO）と，
+;				気品が５０上昇し，「精霊の指輪」はなくなる．
+;				断ると感受性が５０％減る．この場合は「精霊の指輪」はなくならないが，
+;				翌月以降，泉は枯れてしまっている．
+;				「精霊の指輪」を持っていない場合は，感受性が２上がる．
+;
+;
+;E_ETC[1]「幼精霊の訪問」発生条件
+;E_ETC[82]幼精霊卵返却年
+;E_ETC[83]幼精霊卵返却月
+;E_ETC[84]幼精霊卵返却日
+;E_ETC[95]武者修行中に１度精霊に出会う
+;
+
+.IT_RECORD			; item record.
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.TODAY_COUNT		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+STRSCLEAR
+
+TXLC(1,17,280,0)		; text window locate.
+TXLC(2,28,130,1)		; text window locate.
+TXLC(3,13,260,2)		; text window locate.
+WWIVENT(5,1,19,40)		; ivent window locate.
+
+EVNT028
+
+WWMUSYA(9)				; 戦闘後データロード
+WWMUSYA(8,1)			; 再描画
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+IF ( S_WORKS = 0 )	LOAD("RPGLOP,RPG000")		; 0=東部 森林地帯
+IF ( S_WORKS = 1 )	LOAD("RPGLOP,RPG001")		; 1=西部 砂漠地帯
+IF ( S_WORKS = 2 )	LOAD("RPGLOP,RPG002")		; 2=南部 水郷地帯
+IF ( S_WORKS = 3 )	LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+TXOPEN(1)致命的エラーWAITU
+
+;************************************
+;	精霊に出会う
+;************************************
+
+*EVNT028
+
+E_ETC[95]=1			;武者修行中に１度精霊に出会う
+
+IF ( E_ETC[25] ! 0 )	;精霊の泉枯れた
+	KARETAYO			;泉が枯れてしまった場合
+	RET
+
+ITEM_SRCH(1,22)		; ICON search. 22=精霊の指輪
+IT_RECORD = DX		; item record.
+IF ( AX=1 )			; 1=search
+	RUN_MONTH[28]++	;「精霊に出会う」実行回数
+	EVNT028_HAVE	; 指輪を持っている場合
+	RET
+IF ( AX=0 )			; 0=none
+	EVNT028_NONE	; 指輪を持っていない場合
+	RET
+
+;**************
+;	指輪を持っている場合
+;**************
+
+*EVNT028_HAVE		;指輪を持っている場合
+
+TXOPEN(3)
+TXA(NAME_FIRST)が泉のほとりに立つと，水面がキラキラと波立ちはじめた．
+TXGIRL(15)		;娘・驚き
+「＊＊＊＊＊」
+WWMUSYA(7)				; ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+TXCLOSE(3)
+
+TXOPEN(1)
+波はやがて一条の水煙となり，水煙は美しい泉の精へと姿を変えた・・・
+@P
+TXCLOSE(1)
+
+PLAY(27)		;P27 神秘
+
+WWIVENT(3,1,"L002")		;精霊に出会う
+
+TXOPEN(3)
+TXGIRL(15)				;娘・驚き
+「＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F155")			;泉の精霊・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(9)				;娘・不思議
+「＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・不思議
+「＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(11)				;娘・不安
+「＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・不安
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+SHOW_ITEMS		;アイテム表示
+SLCTBAK(5)
+SLCPOS(1)SLCTX("返してあげる,断る")
+
+IF ( ISLCT=0 )	;返してあげる場合
+	@C
+	TXGIRL(1)	;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	ITEMPRN(2)	; マルチアイテム復帰
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@3
+	@C
+	;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	TXOPEN(1)
+	泉の精霊は優しく微笑むと，泉の中に消えていった・・・
+	@P
+	GR_OPEN
+	STRSCLEAR
+	IGRP_TBL1[0]="気品"
+	IGRP_TBL3[0]=B_KIHIN
+	IGRP_CNT=1
+	IGRP_X=25
+	IGRP_Y=236
+	GRPOPEN(1,1)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	B_KIHIN += 50		;気品
+	TXA(NAME_FIRST)の気品が５０上がった．
+	GRPUPD(1,0,B_KIHIN)
+	MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+	@P
+	GR_CLOSE
+	TXCLOSE(1)
+	ITEM_KILL(IT_RECORD)			; アイテム削除
+	E_ETC[1]=1						;「幼精霊の訪問」発生条件
+	E_ETC[82]=VAL_YEAR				;幼精霊卵返却年
+	E_ETC[83]=VAL_MONTH				;幼精霊卵返却月
+	E_ETC[84]=VAL_DAY				;幼精霊卵返却日
+	PLAY(14)	;P14 武者修行
+	RET
+
+;断る場合
+
+;娘・不安
+@3
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+TXGIRL(3)		;娘・悲しい
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+ITEMPRN(2)	; マルチアイテム復帰
+TXCLOSE(3)
+TXCLOSE(2)
+TXOPEN(1)
+TXA(NAME_FIRST)は走ってその場から立ち去った．
+@P
+TXCLOSE(1)
+TXOPEN(2)
+TXFACE("F155")			;泉の精霊・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+E_ETC[27] = VAL_MONTH		;精霊が消えた月
+;*;E_ETC[25] = 1			;精霊の泉枯れた -> "RPGLOP.TXT"
+
+IF ( B_KANJUSEI = 0 ) RET
+
+TXOPEN(1)
+泉の精霊は力なく嘆き，消えていった・・・
+GR_OPEN
+STRSCLEAR
+IGRP_TBL1[0]="感受性"
+IGRP_TBL3[0]=B_KANJUSEI
+IGRP_CNT=1
+IGRP_X=25
+IGRP_Y=236
+GRPOPEN(1,1)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+C1 = B_KANJUSEI / 2
+IF ( B_KANJUSEI=1 ) C1=1
+TXA(NAME_FIRST)の感受性がTXPOINT(C1)下がった．
+B_KANJUSEI -= C1	;感受性
+GRPUPD(1,0,B_KANJUSEI)
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+@P
+GR_CLOSE
+TXCLOSE(1)
+PLAY(14)	;P14 武者修行
+RET
+
+
+;**************
+;	指輪を持っていない場合
+;**************
+
+*EVNT028_NONE		;指輪を持っていない場合
+TXOPEN(3)
+TXGIRL(0)			;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+WWMUSYA(7)				; ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+GR_OPEN
+STRSCLEAR
+IGRP_TBL1[0]="感受性"
+IGRP_TBL3[0]=B_KANJUSEI
+IGRP_CNT=1
+IGRP_X=25
+IGRP_Y=220
+GRPOPEN(1,1)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+B_KANJUSEI += 2		;感受性
+TXA(NAME_FIRST)の感受性が２上がった．
+GRPUPD(1,0,B_KANJUSEI)
+@P
+GR_CLOSE
+TXCLOSE(3)
+RET
+
+;**************
+;	泉が枯れてしまった場合
+;**************
+
+*KARETAYO		;泉が枯れてしまった場合
+TXOPEN(1)
+泉は枯れている・・・
+WWMUSYA(7)				; ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(3)		;娘・悲しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+RET
+
+
+;**************
+;	アイテム表示
+;**************
+
+*SHOW_ITEMS
+C1 = IT_RECORD				; item record.
+ITEMID_TBL1[0]=ITEM_NAME[C1]	; 所有アイテム名前 string
+ITEMID_TBL2[0]=ITEM_ICON[C1]	; 所有アイテムＩＣＯＮ番号
+ITEMID_TBL3[0]=ITEM_GOLD[C1]	; 所有アイテム値段
+ITEMID_TBL4[0]=ITEM_HELP[C1]	; 所有アイテム説明 string
+ITEMID_TBL5[0]=0
+ITEMID_TBL6[0]=""
+ITEMID_TBL7[0]=0
+ITEMID_CNT=1				; アイテムＩＤ数
+ITEMPRN(3,60,280)			; マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)				; マルチアイテム表示
+RET
+
+;
+;	end of "EVNT028.TXT"
+;
+
