@@ -1,0 +1,349 @@
+; "EVNT035.TXT"
+;
+; 35 精霊猫に会う
+;【 概　要 】猫の精霊ケット・シーに「猫の眼石」の返還を求められる．
+;【 いつ？ 】武者修行実行中．全マップで発生．
+;【発生条件】「猫の眼石」を持っていて小屋に入る．
+;【 効　果 】ケット・シーに会うと，「『猫の眼石』は山猫族の大事な財産だから，
+;			「返してやってくれ」と頼んでくる．
+;			素直に返してやると，願いを３択でかなえてくれる．
+;			ケット・シーがかなえてくれる，３つのお願い．
+;			1 背を高くしてくれる　（１センチ）
+;			2 背を低くしてくれる　（ 　〃 　）
+;			3 体重を減らしてくれる（ １キロ ）
+;			返さないと，色々悪口を言って去って行く．
+;			次の月の最初に「猫の眼石」は消えている．
+;
+
+.IT_RECORD		; item record.
+
+.S_WORKS		;スケジュール内容
+.S_COUNTER		;当日カウンタ
+.S_STARTDAY		;スケジュール開始日
+.S_ENDDAY		;スケジュール終了日
+.TODAY_COUNT	;日付カウンタ
+.DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG		;装備フラグ
+.SOUBI_REC		;装備のアイテム番号
+.SOUBI_DAY		;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+STRSCLEAR
+
+TXLC(1,17,280,0)		; text window locate.
+TXLC(2,28,130,1)		; text window locate.
+TXLC(3,13,260,2)		; text window locate.
+TXLC(10,19,280,0)		; text window locate.
+WWIVENT(5,1,19,40)		; ivent window locate.
+WWIVENT(5,0,24,60)		; ivent window locate.
+
+RUN_MONTH[35]++			;「精霊猫に会う」実行回数
+E_ETC[97]=1				;武者修行中に１度精霊猫に会う
+
+EVNT035					; 精霊猫に会う
+
+PLAY(14)				;P14 武者修行
+
+WWMUSYA(9)				; 戦闘後データロード
+WWMUSYA(8,1)			; 再描画
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+IF ( S_WORKS = 0 )	LOAD("RPGLOP,RPG000")		; 0=東部 森林地帯
+IF ( S_WORKS = 1 )	LOAD("RPGLOP,RPG001")		; 1=西部 砂漠地帯
+IF ( S_WORKS = 2 )	LOAD("RPGLOP,RPG002")		; 2=南部 水郷地帯
+IF ( S_WORKS = 3 )	LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+TXOPEN(1)致命的エラーWAITU
+
+;************************************
+;	精霊猫に会う
+;************************************
+
+*EVNT035
+
+ITEM_SRCH(1,27)		; ICON search. 27=猫の眼石
+IT_RECORD = DX		; item record.
+IF ( AX=0 ) RET		; 0=none,1=search.
+
+IF ( RUN_MONTH[35]=1 )		;「精霊猫に会う」一回目
+	TXOPEN(1)
+	TXA(NAME_FIRST)は小屋の中に入った・・・・・・
+	WWMUSYA(7)				; ノーマルモード
+	TXF(2)					;マウスOFF待ち
+	@P
+	TXCLOSE(1)
+	TXOPEN(3)				;
+	TXGIRL(9)				;娘・不思議
+	「＊＊＊＊＊＊＊＊」	;
+	WWIVENT(1,1,"E031")		;精霊猫に会う
+	PLAY(27)				;P27 神秘
+	@P						;
+	TXOPEN(2)				;
+	TXFACE("F156")			;ケット・シー・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@3
+	TXGIRL(16)		;娘・ガ～ン
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@3
+	TXGIRL(9)		;娘・不思議
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@3
+	TXGIRL(11)	;娘・不安
+	@C
+	「＊＊＊＊＊＊＊＊＊＊」
+	SHOW_ITEMS			; アイテム表示
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+
+IF ( RUN_MONTH[35]>=2 )		;「精霊猫に会う」二回目以降
+	TXOPEN(1)
+	TXA(NAME_FIRST)は小屋の中に入った・・・・・・
+	WWIVENT(1,1,"E031")		;精霊猫に会う
+	PLAY(27)				;P27 神秘
+	WWMUSYA(7)				; ノーマルモード
+	TXF(2)					;マウスOFF待ち
+	@P
+	TXCLOSE(1)
+	TXOPEN(2)
+	TXFACE("F156")	;ケット・シー・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXOPEN(3)
+	TXGIRL(0)		;娘・普通
+	「＊＊＊＊＊＊＊＊」
+	SHOW_ITEMS			; アイテム表示
+	@P
+
+;共通２
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCTBAK(5)
+SLCPOS(1)SLCTX("背を高くする,背を低くする,体重を軽くする,猫の眼石を返さない")
+
+IF ( ISLCT = 0 )		;背を高くする場合
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	ITEMPRN(2)					;マルチアイテム復帰
+	@P
+	MUSIC(6,5);SE5
+	GR_OPEN
+	STRSCLEAR
+	IGRP_TBL1[0]="身長"
+	IGRP_TBL3[0]=P_SHINCHO
+	IGRP_CNT=1
+	IGRP_X=25
+	IGRP_Y=236
+	PROPROPEN(1,1)	;ﾌﾟﾛﾎﾟｰｼｮﾝ･ｳｲﾝﾄﾞｳ
+	TXOPEN(10)
+	TXA(NAME_FIRST)の身長が１センチ伸びた．
+	P_SHINCHO += 100
+	PROPRUPD(1,0,P_SHINCHO)		; 身長
+	@P
+	TXCLOSE(10)
+	GR_CLOSE		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	TXCLOSE(2)
+	@3
+	TXGIRL(9)	;娘・不思議
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	STN_ALLCLEAR			;猫の眼石・全クリア
+	RET
+
+IF ( ISLCT = 1 )		;背を低くする場合
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	ITEMPRN(2)					;マルチアイテム復帰
+	@P
+	MUSIC(6,5);SE5
+	GR_OPEN
+	STRSCLEAR
+	IGRP_TBL1[0]="身長"
+	IGRP_TBL3[0]=P_SHINCHO
+	IGRP_CNT=1
+	IGRP_X=25
+	IGRP_Y=236
+	PROPROPEN(1,1)	;ﾌﾟﾛﾎﾟｰｼｮﾝ･ｳｲﾝﾄﾞｳ
+	TXOPEN(10)
+	TXA(NAME_FIRST)の身長が１センチ縮んだ．
+	P_SHINCHO -= 100
+	IF ( P_SHINCHO < 0 ) P_SHINCHO = 0
+	PROPRUPD(1,0,P_SHINCHO)
+	@P
+	TXCLOSE(10)
+	GR_CLOSE		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	TXCLOSE(2)
+	@3
+	TXGIRL(9)		;娘・不思議
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	STN_ALLCLEAR			;猫の眼石・全クリア
+	RET
+
+IF ( ISLCT = 2 )		;体重を軽くする
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	ITEMPRN(2)					;マルチアイテム復帰
+	@P
+	MUSIC(6,5);SE5
+	GR_OPEN
+	STRSCLEAR
+	IGRP_TBL1[0]="体重"
+	IGRP_TBL3[0]=P_TAIJYU
+	IGRP_CNT=1
+	IGRP_X=25
+	IGRP_Y=236
+	PROPROPEN(1,1)	;ﾌﾟﾛﾎﾟｰｼｮﾝ･ｳｲﾝﾄﾞｳ
+	TXOPEN(10)
+	TXA(NAME_FIRST)の体重が１キロ減った．
+	P_TAIJYU -= 100
+	IF ( P_TAIJYU < 0 ) P_TAIJYU = 0
+	PROPRUPD(1,0,P_TAIJYU)
+	@P
+	TXCLOSE(10)
+	GR_CLOSE		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	TXCLOSE(2)
+	@3
+	TXGIRL(1)		;娘・嬉しい
+	@C
+	「＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	STN_ALLCLEAR			;猫の眼石・全クリア
+	RET
+
+;猫の眼石を返さない場合
+@3
+TXGIRL(14)		;娘・りりしい
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+TXFACE("F157")	;ケット・シー・怒り
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+TXGIRL(11)	;娘・不安
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」@P@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」@P@C
+「＊＊＊＊＊＊＊＊＊＊＊＊」@P@C
+「＊＊＊＊」@P@C
+「＊＊＊＊＊＊＊」@P@C
+「＊＊＊＊＊＊＊＊＊＊＊＊」@P@C
+「＊＊＊＊＊」@P@C
+「＊＊＊＊」@P@C
+「＊＊＊＊＊」
+@P
+@3
+TXGIRL(3)	;娘・悲しい
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+WWIVENT(2,1)			; ivent window close.
+
+TXLC(1,17,130,0)		; text window locate.
+TXOPEN(1)
+ケット・シーは去って行った．
+ITEMPRN(2)				;マルチアイテム復帰
+@P
+TXCLOSE(1)
+
+@3
+TXGIRL(15)	;娘・驚き
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+TXLC(1,17,280,0)		; text window locate.
+TXOPEN(1)
+どうやらケット・シーは魔法の力で猫の眼石を盗んでいったようだ・・・
+@P
+TXCLOSE(1)
+STN_ALLCLEAR			;猫の眼石・全クリア
+RET
+
+;**************
+;	猫の眼石・全クリア
+;**************
+
+*STN_ALLCLEAR
+ITEM_SRCH(1,27)		; ICON search. 27=猫の眼石
+IF ( AX=0 ) RET		; 0=none,1=search.
+AX = DX				; item record.
+ITEM_KILL			;アイテム削除
+GOTO STN_ALLCLEAR	;
+
+;**************
+;	アイテム表示
+;**************
+
+*SHOW_ITEMS
+C1 = IT_RECORD				; item record.
+ITEMID_TBL1[0]=ITEM_NAME[C1]	; 所有アイテム名前 string
+ITEMID_TBL2[0]=ITEM_ICON[C1]	; 所有アイテムＩＣＯＮ番号
+ITEMID_TBL3[0]=ITEM_GOLD[C1]	; 所有アイテム値段
+ITEMID_TBL4[0]=ITEM_HELP[C1]	; 所有アイテム説明 string
+ITEMID_TBL5[0]=0
+ITEMID_TBL6[0]=""
+ITEMID_TBL7[0]=0
+ITEMID_CNT=1				; アイテムＩＤ数
+ITEMPRN(3,60,280)			; マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)				; マルチアイテム表示
+RET
+
+;
+;	end of "EVNT035.TXT"
+;
+

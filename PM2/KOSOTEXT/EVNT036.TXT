@@ -1,0 +1,131 @@
+; "EVNT036.TXT"
+;
+;
+;	merge from "SCNVACAN.TXT"
+;
+;
+;【 効　果 】マーメイドはフィッシュマンを怨んでいるので，
+;			フィッシュマンを倒した○○○にお礼として
+;			感受性を２０，色気を５０上げてくれる．
+;
+
+RUN_MONTH[36]++		;「マーメイドに会う」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+TXLC(9,48,148,2)	; text window locate.
+WWIVENT(5,1,21,40)	; ivent window locate.
+
+EVNT036
+
+E_MERMAID=0			;ｲﾍﾞﾝﾄ｢マーメイドに会う｣発生条件
+
+MUSIC(2)					;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+RET
+
+;************************************
+;	マーメイドに会う
+;************************************
+
+*EVNT036
+
+MUSIC(2)					;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+EFC(1)						; Ｆ・Ｏ（フェードアウト）
+GRPCLS						; graphics clear screen.
+EFC(16)						; ノーマルカラー
+
+PLAY(27)					;P27 神秘
+
+WWIVENT(1,1,"L004")			;マーメイドに会う
+
+SHORTWAIT
+
+TXOPEN(3)
+TXGIRL(15)			;娘・驚き
+「＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F186")		;マーメイド・普通
+「＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(11)			;娘・不安
+「＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+@C
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(2)			;娘・怒り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(1)			;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+TXOPEN(1)
+マーメイドはTXA(NAME_FIRST)に祈りを捧げた・・・・・・
+MUSIC(6,2);SE2
+@P
+GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL1[0]="色気"
+IGRP_TBL3[0]=B_IROKE
+IGRP_TBL1[1]="感受性"
+IGRP_TBL3[1]=B_KANJUSEI
+IGRP_CNT=2
+IGRP_X=54
+IGRP_Y=200
+GRPOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+@C
+感受性が２０上がった．
+色気が５０上がった．
+B_IROKE += 50			; 色気
+B_KANJUSEI += 20		; 感受性
+GRPUPD(1,0,B_IROKE)		;
+GRPUPD(1,1,B_KANJUSEI)	;
+@P
+GR_CLOSE
+TXCLOSE(1)
+WWIVENT(2,1)			; ivent window close.
+NAMIDA_ALLCLEAR			; 人魚の涙・全クリア
+RET
+
+*SHORTWAIT
+TIMER1(50)WAIT1
+RET
+
+;**************
+;	人魚の涙・全クリア
+;**************
+
+*NAMIDA_ALLCLEAR
+ITEM_SRCH(1,29)		; ICON search. 29=人魚の涙
+IF ( AX=0 ) RET		; 0=none,1=search.
+AX = DX				; item record.
+ITEM_KILL			;アイテム削除
+GOTO NAMIDA_ALLCLEAR
+
+
+;
+;	end of "EVNT036.TXT"
+;
+
