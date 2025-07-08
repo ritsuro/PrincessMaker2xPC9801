@@ -1,0 +1,178 @@
+;"EVNT039.TXT"
+;
+;39 絵を描く
+;【 概　要 】娘が絵画教室で絵を描きます．
+;【 いつ？ 】絵画の訓練直後
+;【発生条件】絵画の訓練４回毎に発生
+;【 効　果 】絵画の先生が絵を描くかどうか聞いてくる．
+;				画材代（100G）を払って
+;				絵を描くと，採点してくれる．
+;				採点は《芸術値》
+
+.PIC_TITLE
+.PIC_SCORE
+.PIC_NUMBER
+
+.PICXX=48
+.PICYY=100
+.XXX
+.YYY
+
+RUN_MONTH[39]++		;「絵を描く」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)		;text window locate.
+TXLC(2,17,156,1)	;text window locate.
+TXLC(3,31,270,2)	;text window locate.
+TXLC(9,48,148,2)	;text window locate.
+TXLC(10,4,290,0)	;text window locate.
+WWIVENT(5,0,6,40)	;ivent window locate.
+
+EVNT039
+
+LOAD("RUNNING")
+
+;************************************
+;	絵を描く
+;************************************
+
+*EVNT039
+TXOPEN(2)
+TXFACE("F059")			;王宮絵師フィルキンス．普通
+「＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+TXOPEN(10)
+経費が１００Ｇかかりますがどうしますか？
+SLCTX("作品を描く,やめておく")
+TXCLOSE(10)
+
+IF ( ISLCT = 1 )	;やめておく
+	TXOPEN(3)
+	TXGIRL(11)		;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	RET
+
+;作品を描く
+
+GOLDCMP(100)		;値段
+IF ( AX=2 )			;娘の所持金
+	@2
+	@C
+	「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXOPEN(3)
+	TXGIRL(11)		;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	RET
+
+TXCLOSE(2)
+
+GOLDSUB(100)	;娘の所持金
+WWPROF(3)		;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+
+WWIVENT(1,0,"E016")			;絵を描く
+
+SHORTWAIT
+
+TXOPEN(1)
+TXA(NAME_FIRST)は一気に絵を描き上げた．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(1)		;娘・嬉しい
+「＊＊＊＊＊＊＊＊」
+@P
+
+PIC_SCORE = V_GEIJYUTSU			;芸術
+
+IF ( PIC_SCORE <= 50 )
+	PIC_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊"
+	PIC_NUMBER = 0
+
+IF ( PIC_SCORE >= 51  PIC_SCORE <= 64 )
+	PIC_TITLE = "＊＊＊＊＊＊＊＊＊＊"
+	PIC_NUMBER = 1
+
+IF ( PIC_SCORE >= 65  PIC_SCORE <= 78 )
+	PIC_TITLE = "＊＊＊＊＊＊＊＊"
+	PIC_NUMBER = 2
+
+IF ( PIC_SCORE >= 79  PIC_SCORE <= 92 )
+	PIC_TITLE = "＊＊＊"
+	PIC_NUMBER = 3
+
+IF ( PIC_SCORE >= 93 )
+	PIC_TITLE = "降臨する天使"
+	PIC_NUMBER = 4
+
+ROOM_PIC = PIC_NUMBER		;部屋の絵
+
+SHOW_PICTURE				;部屋の絵PUT
+
+SHORTWAIT
+
+E_ETC[60]=PIC_SCORE			;娘の絵の点数
+
+TXOPEN(2)
+TXFACE("F059")			;王宮絵師フィルキンス．普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXPOINT(PIC_SCORE)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(PIC_TITLE)＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+WWIVENT(2,0)		;ivent window close.
+CLOSE_GIRL_PIC
+WWGIRL(2)			;girl put.
+RET
+
+*SHORTWAIT
+TIMER1(50)WAIT1
+RET
+
+;部屋の絵PUT
+
+*SHOW_PICTURE
+PTBK(4)
+PTCLR
+PTGT(PICXX,PICYY,19,154)
+PTBK(5)
+PTLD("SSGAKU")
+IF ( ROOM_PIC=0 )	PTLA("P001")
+IF ( ROOM_PIC=1 )	PTLA("P002")
+IF ( ROOM_PIC=2 )	PTLA("P003")
+IF ( ROOM_PIC=3 )	PTLA("P004")
+IF ( ROOM_PIC=4 )	PTLA("P005")
+XXX = PICXX + 3
+YYY = PICYY + 26
+PTM(PICXX,PICYY,0)			; マスクパーツＰＵＴ
+PTX(XXX,YYY,2)				; パーツ座標ＰＵＴ
+PTBK(0)
+RET
+
+*CLOSE_GIRL_PIC
+PTBK(4)
+PTF(0,0,0)
+PTF(0,0,1)
+PTBK(0)
+RET
+
+;
+;	end of "EVNT039.TXT"
+;
+

@@ -1,0 +1,171 @@
+;"EVNT041.TXT"
+;
+;	41 恩賜の剣売却事件
+;	【 概　要 】「武闘会」の優勝賞品・恩賜の剣を売り飛ばしたかどで，
+;				王に叱られる．
+;	【 いつ？ 】「街に行く」実行中
+;	【発生条件】「恩賜の剣」を売ってしまう．
+;	【 効　果 】戦士評価，社交評価が３０づつ低下．
+;				王と将軍の人脈が５０％づつ低下．
+;
+
+STRSCLEAR
+
+RUN_MONTH[41]++		;「恩賜の剣売却事件」実行回数
+
+EVNT041
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+LOAD("MAINBORN")
+
+;************************************
+;	恩賜の剣売却事件
+;************************************
+
+*EVNT041
+
+MUSIC(2)			;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXLC(3,17,270,1)	;text window locate.
+TXOPEN(3)
+TXFACE("F078")		;巡察官・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+PLAY(29)			;P29 緊迫
+
+;IF ( ZAKKA_MAN=2 )
+;	SHORTWAIT
+;	TXOPEN(2)
+;	TXFACE("F076")	;雑貨屋シャロム・普通
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+@3
+@C
+;巡察官・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+@C
+TXA(NAME_FIRST)＊＊＊＊＊＊TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+WWIVENT(2,0)		;ivent window close.
+
+SHORTWAIT
+
+TXLC(3,31,270,2)	;text window locate.
+
+WWIVENT(5,0,50,40)	;ivent window locate.
+WWIVENT(1,0,"E010")		;恩賜の剣売却事件
+
+TXOPEN(2)
+TXFACE("F086")		;王・普通
+「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(3)		;娘・悲しい
+「＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+GR_OPEN						;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR					;
+IGRP_TBL1[0]="社交評価"
+IGRP_TBL3[0]=H_SYAKOH		;社交評価
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=200
+GRPOPEN(1,1)				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+TXOPEN(10)
+社交評価が３０下がった．
+H_SYAKOH -= 30				;社交評価
+IF ( H_SYAKOH < 0 ) H_SYAKOH=0
+GRPUPD(1,0,H_SYAKOH)		;社交評価
+@P
+TXCLOSE(10)
+GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+@2
+@C
+TXFACE("F054")					;将軍・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+@C
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・悲しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+MUSIC(2)			;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+GR_OPEN						;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR					;
+IGRP_TBL1[0]="戦士評価"
+IGRP_TBL3[0]=H_SENSHI		;戦士評価
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=200
+GRPOPEN(1,1)				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+TXOPEN(10)
+戦士評価が３０下がった
+H_SENSHI -= 30				;戦士評価
+IF ( H_SENSHI < 0 ) H_SENSHI=0
+GRPUPD(1,0,H_SENSHI)		;戦士評価
+@P
+TXCLOSE(10)
+GR_CLOSE					;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+;王と将軍の人脈が５０％づつ低下．
+
+C1 = S_JINMYAKU[3] / 2		;人脈・将軍
+C2 = S_JINMYAKU[8] / 2		;人脈・国王
+
+S_JINMYAKU[3] -= C1			;人脈・将軍
+S_JINMYAKU[8] -= C2			;人脈・国王
+
+C3 = C1 + C2
+IF ( S_JINMYAKU[0] < C3 )	C3 = S_JINMYAKU[0]		;人脈・合計値
+IF ( C3 > 0 )
+	GR_OPEN						;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	STRSCLEAR					;
+	IGRP_TBL1[0]="人脈"
+	IGRP_TBL3[0]=S_JINMYAKU[0]	;人脈・合計値
+	IGRP_CNT=1
+	IGRP_X=54
+	IGRP_Y=200
+	GRPOPEN(1,1)				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	TXOPEN(10)
+	人脈がTXPOINT(C3)下がった．
+	S_JINMYAKU[0] -= C3	;人脈・合計値
+	IF ( S_JINMYAKU[0] < 0 ) S_JINMYAKU[0]=0
+	GRPUPD(1,0,S_JINMYAKU[0])
+	@P
+	TXCLOSE(10)
+	GR_CLOSE					;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+TXCLOSE(2)
+TXCLOSE(3)
+WWIVENT(2,0)		;ivent window close.
+
+RET
+
+*SHORTWAIT
+TIMER1(30)WAIT1
+RET
+
+;
+;	end of "EVNT041.TXT"
+;
+

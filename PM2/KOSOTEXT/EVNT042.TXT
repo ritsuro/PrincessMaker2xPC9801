@@ -1,0 +1,590 @@
+; "EVNT042.TXT"
+;
+;	merge text.
+;
+
+;************************************
+;	娘の誕生日と父の誕生日の合体
+;************************************
+
+*EVE4243
+
+.WITH_FTHR
+WITH_FTHR=1	;父の誕生日もいっしょに祝う
+
+EVENT042_INTER
+RET
+
+;************************************
+;	娘の誕生日
+;************************************
+
+*EVENT042
+
+.WITH_FTHR
+WITH_FTHR=0
+
+*EVENT042_INTER
+
+.ITEM_SLCT=0	;選択
+.ITEM_KOUKA[50]	;効果
+
+STRSCLEAR
+
+RUN_MONTH[42]++		;「娘の誕生日」実行回数
+E_ETC[18]=P_NENREI	;「娘の誕生日」をチェックした年齢
+
+TXLC(2,1,260,2)		; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+TXLC(5,5,260,0)		; text window locate.
+TXLC(11,31,20,2)	; text window locate.
+
+;;;ITEM_MAX=ITEM_DIM
+EVNT042
+
+RET
+
+*MUSIC_RETURN
+C1 = SCH_NOW - 1
+C2 = SCHED_SECTION[C1]			; スケジュール項目
+IF ( C2 = 0 )	;0=娘を鍛える
+	PLAY(13)	;P13 訓練
+	RET
+IF ( C2 = 1 )	;1=娘を働かせる
+	PLAY(12)	;P12 ｱﾙﾊﾞｲﾄ
+	RET
+IF ( C2 = 3 )	;3=休みをあげる
+	PLAY(20)	;P20 休息
+	RET
+RET
+
+;************************************
+;	娘の誕生日
+;************************************
+
+*EVNT042
+WWGIRL(6)				; now show girl age.
+IF ( AX ! P_NENREI )	; 表示中の年齢
+	WWGIRL(2)			; girl put.
+WWPROF(4)				: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・年齢
+
+TXOPEN(2)
+@2
+TXFACE("F040")		;執事・嬉しい
+IF ( VAL_DAY = P_BORTHDAY )		; 誕生日
+	「＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊TXPOINT(P_NENREI)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( VAL_DAY ! P_BORTHDAY )		; 誕生日
+	C1 = VAL_DAY - P_BORTHDAY	;
+	「＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊TXPOINT(P_NENREI)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+
+GOLDCMP(30)
+IF ( AX = 2 )	;所持金  お金が足りない場合	快癒丸【値段】30G
+	@P
+	TXFACE("F046")		;執事・困り
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	QUICK_BORTHDAY
+	RET
+
+IF ( ITEM_MAX >= ITEM_DIM )
+	@P
+	ITEM_FULL		;持物がいっぱいの場合
+	@2
+	@C
+	TXFACE("F046")		;執事・困り
+	「＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	QUICK_BORTHDAY
+	RET
+
+*YAPPA_YAMERU
+SLCTX("買う,買わない")
+IF ( ISLCT=1 )			;買わない場合
+	TXFACE("F048")		;執事・不思議
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	QUICK_BORTHDAY
+	RET
+
+;買う場合
+TXCLOSE(2)
+KAIMONO_ZAKKA			; 雑貨屋
+IF ( ITEM_SLCT=-1 )
+	TXOPEN(2)
+	TXFACE("F039")		; 執事・普通
+	「＊＊＊＊＊＊＊＊＊＊」
+	GOTO YAPPA_YAMERU
+
+ITEMPRN(3,6,210)		; マルチアイテム TYPE 5 位置
+TXLC(2,18,272,1)		; text window locate.
+TXLC(3,31,260,2)		; text window locate.
+WWIVENT(5,0,5,80)		; ivent window locate.
+WWIVENT(1,0,"E014")		; 娘の誕生日
+TXOPEN(5)
+TXA(NAME_FIRST)・TXA(NAME_FAMILY)
+@L
+TXPOINT(P_NENREI)歳の誕生日
+@P
+TXCLOSE(5)
+
+TXOPEN(2)
+TXFACE("F040")				;執事・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+SHOW_PRESENT
+TAKE_PRESENT
+URA_FATHER += 5			; 父との関係
+IF ( URA_FATHER >100 ) URA_FATHER = 100
+@P
+TXOPEN(3)
+TXGIRL(1)				;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+ITEMPRN(2)				; マルチアイテム復帰
+TXCLOSE(3)
+TXCLOSE(2)
+IF ( WITH_FTHR=1 )		;父の誕生日もいっしょに祝う
+	WWIVENT(2,0)			; ivent window close.
+	TIMER1(30)WAIT1
+	WWIVENT(1,0,"E013")		; 父の誕生日
+	TXOPEN(1)
+	TXA(NAME_FAMILY)もTXPOINT(P_NENREI[1])歳になりました．
+	@P
+	TXCLOSE(1)
+	EVENT043_INTER		; 父の誕生日
+EVENT037				; ビーナスの祝福
+WWIVENT(2,0)			; ivent window close.
+RET
+
+*QUICK_BORTHDAY
+WWIVENT(5,0,5,80)		; ivent window locate.
+WWIVENT(1,0,"E014")		; 娘の誕生日
+TXOPEN(1)
+TXA(NAME_FIRST)・TXA(NAME_FAMILY)はTXPOINT(P_NENREI)歳になりました．
+@P
+IF ( WITH_FTHR=0 )
+	TXCLOSE(1)
+IF ( WITH_FTHR=1 )		;父の誕生日もいっしょに祝う
+	WWIVENT(2,0)			; ivent window close.
+	TIMER1(30)WAIT1
+	WWIVENT(1,0,"E013")		; 父の誕生日
+	TXA(NAME_FAMILY)もTXPOINT(P_NENREI[1])歳になりました．
+	@P
+	TXCLOSE(1)
+	EVENT043_INTER		; 父の誕生日
+EVENT037				; ビーナスの祝福
+WWIVENT(2,0)			; ivent window close.
+RET
+
+
+;************************************
+;	雑貨屋
+;************************************
+
+*KAIMONO_ZAKKA
+
+.ITEM_ATTRBUTE[20]	;種別
+.WARIBIKI=0			;割引率
+.WARIPRICE=0		;割引価格
+
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+WWIVENT(5,0,6,40)	; ivent window locate.
+WWIVENT(1,0,"E009")	; ivent window open.
+
+TXOPEN(2)
+TXFACE("F076")	;雑貨屋シャロム・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+
+ZAKKA_SET		;雑貨設定
+ZAKKA_SELECT
+TXCLOSE(2)
+WWIVENT(2,0)			; ivent window close.
+RET
+
+
+*ZAKKA_SELECT
+ITEMST(1);ﾏﾙﾁｱｲﾃﾑ選択
+ITEM_SLCT=ISITM		;選択
+IF ( ISITM = -1 )
+	ITEMST(99);ｱｲﾃﾑ選択clear.
+	RET
+ZAKKA_SETSUMEI		;雑貨説明
+@2
+@P
+@C
+PRICE_DOWN
+P1X100(ITEMID_TBL3[ITEM_SLCT],WARIBIKI)
+WARIPRICE=ITEMID_TBL3[ITEM_SLCT]-AX
+
+「TXA(ITEMID_TBL1[ITEM_SLCT])＊＊＊＊TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊」
+SLCTBAK(5)
+SLCTX("買う,やめておく")
+ITEMST(99);ｱｲﾃﾑ選択clear.
+IF ( ISLCT=1 )
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	GOTO ZAKKA_SELECT
+
+GOLDCMP(WARIPRICE)
+IF ( AX = 2 )	;お金が足りない場合
+	@C
+	「＊＊＊＊＊＊＊＊＊」
+	@P
+	GOTO ZAKKA_SELECT
+@C
+IF ( WARIBIKI ! 0 )
+	「＊＊＊TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊TXGOLD(WARIPRICE)＊＊＊＊」
+
+「＊＊＊＊＊＊＊＊」
+GOLDSUB(WARIPRICE)
+WWPROF(3)			: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+RET
+
+
+*ZAKKA_SETSUMEI
+@2
+@C
+IF( ITEM_SLCT=0 )	;お人形
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=1 )	;ティーカップ
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=2 )	;書物
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=3 )	;詩集
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=4 )	;快癒丸
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=5 )	;投げ焙碌
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+RET
+
+
+
+*ZAKKA_SET	;雑貨設定
+
+STRSCLEAR
+
+C2 = 0
+
+;お人形
+;【値段】120G
+;【効果】感受性+5，ストレス-40
+
+ITEMID_TBL1[C2]="お人形"
+ITEMID_TBL2[C2]=18			;ＩＣＯＮ
+ITEMID_TBL3[C2]=120			;金
+ITEMID_TBL4[C2]="感受+5 ｽﾄﾚｽ-40"
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+ITEM_KOUKA[C2]="B_KANJUSEI+5 B_STRESS-40"
+ITEM_ATTRBUTE[C2]=4000	;4000番台=効能有
+C2++
+
+;ティーカップ
+;【値段】500G
+;【効果】気品+10
+
+ITEMID_TBL1[C2]="ティーカップ"
+ITEMID_TBL2[C2]=19			;ＩＣＯＮ
+ITEMID_TBL3[C2]=500			;金
+ITEMID_TBL4[C2]="気品+10"
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+ITEM_KOUKA[C2]="B_KIHIN+10"
+ITEM_ATTRBUTE[C2]=4000	;4000番台=効能有
+C2++
+
+;書物
+;【値段】120G
+;【効果】知能+8
+
+ITEMID_TBL1[C2]="書物"
+ITEMID_TBL2[C2]=20			;ＩＣＯＮ
+ITEMID_TBL3[C2]=120			;金
+ITEMID_TBL4[C2]="知能+8"
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+ITEM_KOUKA[C2]="B_CHINOH+8"
+ITEM_ATTRBUTE[C2]=4000	;4000番台=効能有
+C2++
+
+;詩集
+;【値段】400G
+;【効果】感受性+12
+
+ITEMID_TBL1[C2]="詩集"
+ITEMID_TBL2[C2]=21			;ＩＣＯＮ
+ITEMID_TBL3[C2]=400			;金
+ITEMID_TBL4[C2]="感受+12"
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+ITEM_KOUKA[C2]="B_KANJUSEI+12"
+ITEM_ATTRBUTE[C2]=4000	;4000番台=効能有
+C2++
+
+ITEMID_CNT=C2	;アイテムＩＤ数
+RET
+
+*ITEM_FULL	;持物がいっぱいの場合
+TXOPEN(11)
+TXSYU(P_SYUGOSEI)
+TXA(DEF_STR_STAR[P_SYUGOSEI])
+@L
+「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(11)
+RET
+
+*TAKE_PRESENT
+BX=ITEMID_TBL2[ITEM_SLCT]		;ＩＣＯＮ
+CX=ITEMID_TBL3[ITEM_SLCT]		;定価
+DX=ITEM_ATTRBUTE[ITEM_SLCT]		;種別
+SI=ITEMID_TBL1[ITEM_SLCT]		;所有アイテム名前 string
+DI=ITEM_KOUKA[ITEM_SLCT]		;所有アイテム効果 string
+BP=ITEMID_TBL4[ITEM_SLCT]		;所有アイテム説明 string
+ITEM_INST(1)
+RET
+
+*SHOW_PRESENT
+ITEMID_TBL1[0] = ITEMID_TBL1[ITEM_SLCT]		; テーブル／名前
+ITEMID_TBL2[0] = ITEMID_TBL2[ITEM_SLCT]		; テーブル／ＩＣＯＮ
+ITEMID_TBL3[0] = ITEMID_TBL3[ITEM_SLCT]		; テーブル／金
+ITEMID_TBL4[0] = ITEMID_TBL4[ITEM_SLCT]		; テーブル／文字１
+ITEMID_TBL5[0] = ITEMID_TBL5[ITEM_SLCT]		; テーブル／パラメータ値１
+ITEMID_TBL6[0] = ITEMID_TBL6[ITEM_SLCT]		; テーブル／文字２
+ITEMID_TBL7[0] = ITEMID_TBL7[ITEM_SLCT]		; テーブル／パラメータ値２
+ITEMID_CNT=1				; アイテムＩＤ数
+ITEMPRN(1,5)				; マルチアイテム表示
+RET
+
+
+;************************************
+;	父の誕生日
+;************************************
+
+*EVENT043
+
+.WITH_FTHR
+WITH_FTHR=0
+
+*EVENT043_INTER
+
+.G_PRESENT[5]="マフラー","手袋","ステッキ","煙草入れ","靴下"
+
+STRSCLEAR
+
+RUN_MONTH[43]++			;「父の誕生日」実行回数
+E_ETC[14]=P_NENREI[1]	;「父の誕生日」をチェックした年齢
+
+TXLC(1,4,290,0)			; text window locate.
+TXLC(3,31,260,2)		; text window locate.
+WWIVENT(5,0,5,80)		; ivent window locate.
+
+EVNT043
+
+RET
+
+;************************************
+;	父の誕生日
+;************************************
+
+*EVNT043
+
+IF ( WITH_FTHR=0 )
+	WWIVENT(1,0,"E013")		; 父の誕生日
+	TXOPEN(1)
+	IF ( VAL_DAY = P_BORTHDAY[1] )		; 誕生日
+		今日はTXA(NAME_FAMILY)のTXPOINT(P_NENREI[1])歳の誕生日・・・
+	IF ( VAL_DAY ! P_BORTHDAY[1] )		; 誕生日
+		今月でTXA(NAME_FAMILY)はTXPOINT(P_NENREI[1])歳になりました．
+	@P
+	TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(1)				;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+RANDAM(5) C1 = IRND-1
+;娘・嬉しい
+「＊＊＊＊TXA(G_PRESENT[C1])＊＊＊＊＊＊＊＊＊」
+@P
+URA_FATHER += 5			; 父との関係
+IF ( URA_FATHER >100 ) URA_FATHER = 100
+IF ( WITH_FTHR=0 )
+	WWIVENT(2,0)		; ivent window close.
+TXCLOSE(3)
+RET
+
+
+;************************************
+;	ビーナスの祝福
+;************************************
+
+*EVENT037
+;*;IF ( E_BENUS = 0 )			;ｲﾍﾞﾝﾄ｢ビーナスの祝福｣発生条件
+ITEM_SRCH(1,25)					; ICON search. 25=ビーナスの首飾り
+IF ( AX = 0 ) RET				; 0=none,1=search.
+
+
+.SAVE_BANK
+.LOAD_BANK
+SAVE_BANK=2						;
+LOAD_BANK=4						;
+
+RUN_MONTH[37]++		;「ビーナスの祝福」実行回数
+
+;STRSCLEAR
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,48,252,1)	; text window locate.
+WWIVENT(5,1,2,204)	; ivent window locate.
+
+EVNT037
+
+RET
+
+;************************************
+;	ビーナスの祝福
+;************************************
+
+*EVNT037
+
+WWIVENT(6,1,SAVE_BANK,LOAD_BANK,"E015")			;ビーナスの祝福
+
+PLAY(27)	;P27 神秘
+
+SHORTWAIT
+
+TXOPEN(2)
+TXFACE("F149")		;首飾りの精・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+MUSIC(6,2);SE2
+GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL1[0]="気品"		IGRP_TBL3[0]=B_KIHIN
+IGRP_TBL1[1]="色気"		IGRP_TBL3[1]=B_IROKE
+IGRP_TBL1[2]="感受性"	IGRP_TBL3[2]=B_KANJUSEI
+IGRP_CNT=3				;
+IGRP_X=54				;
+IGRP_Y=180				;
+GRPOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+C1 = P_NENREI			; 年齢
+気品がTXPOINT(C1)上がった．
+色気がTXPOINT(C1)上がった．
+感受性がTXPOINT(C1)上がった．
+
+B_KIHIN += C1			; 気品
+B_IROKE += C1			; 色気
+B_KANJUSEI += C1		; 感受性
+
+GRPUPD(1,0,B_KIHIN)
+GRPUPD(1,1,B_IROKE)
+GRPUPD(1,2,B_KANJUSEI)
+
+MUSIC(2)				; 音楽ﾌｪｰﾄﾞｱｳﾄ
+
+@P
+GR_CLOSE
+TXCLOSE(2)
+WWIVENT(7,1,SAVE_BANK)	; ivent window close.(select bank)
+
+MUSIC_RETURN
+
+RET
+
+
+*SHORTWAIT
+TIMER1(30)WAIT1
+RET
+
+
+*PRICE_DOWN
+IF ( S_JINMYAKU < 100 )
+	WARIBIKI=0
+	RET
+IF ( S_JINMYAKU < 200 )
+	WARIBIKI=5
+	RET
+IF ( S_JINMYAKU < 300 )
+	WARIBIKI=10
+	RET
+IF ( S_JINMYAKU < 400 )
+	WARIBIKI=15
+	RET
+IF ( S_JINMYAKU < 500 )
+	WARIBIKI=20
+	RET
+IF ( S_JINMYAKU < 600 )
+	WARIBIKI=25
+	RET
+IF ( S_JINMYAKU < 700 )
+	WARIBIKI=30
+	RET
+IF ( S_JINMYAKU < 800 )
+	WARIBIKI=35
+	RET
+IF ( S_JINMYAKU < 900 )
+	WARIBIKI=40
+	RET
+IF ( S_JINMYAKU < 1000 )
+	WARIBIKI=45
+	RET
+WARIBIKI=50
+RET
+
+;	*EVENT042
+;	42 娘の誕生日
+;	【 概　要 】娘の誕生日を祝ってあげる．
+;	【 いつ？ 】娘の誕生日に随時．
+;	【発生条件】日付が娘の誕生日になる．
+;	【 効　果 】街の雑貨屋でプレゼントを買うことができる．
+;				すると，隠しパラメータ・父との関係が5上昇．
+;				所持金が何も買えない額だと執事が教えてくれる．
+;
+;	*EVENT043
+;	43 父の誕生日
+;	【 概　要 】父の誕生日を娘が祝ってくれる．
+;	【 いつ？ 】父の誕生日に随時．
+;	【発生条件】日付が父の誕生日になる．父との関係値が６０以上．
+;	【 効　果 】父の誕生日に娘がプレゼントを贈ってくれる．
+;				手作りなのでお金が減ることはない．
+;				父との関係が５上がる．
+;
+;
+;	*EVE4243
+;
+;	娘の誕生日と父の誕生日の合体
+;
+;
+;	37 ビーナスの祝福
+;	【 概　要 】娘の誕生日に美の女神・ビーナスが現れ，祝福してくれる．
+;	【 いつ？ 】スケジュール実行中の娘の誕生日．
+;	【発生条件】「ビーナスの首飾り」を持っている．
+;	【 効　果 】「気品」「色気」「感受性」が《年齢と同じ数》上昇．
+;
+;
+
+;
+;	end of "EVNT042.TXT"
+;
+
