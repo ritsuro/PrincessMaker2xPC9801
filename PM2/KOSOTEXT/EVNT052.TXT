@@ -1,0 +1,142 @@
+; "EVNT052.TXT"
+;
+; 52 表彰
+;【 概　要 】イベント「お尋ね者に遭遇」で，お尋ね者に勝つと，翌月表彰される．
+;【 いつ？ 】お尋ね者に勝った直後の一ヶ月の最初．
+;【発生条件】イベント「お尋ね者に遭遇」で，お尋ね者と戦って勝つ．
+;【 効　果 】お尋ね者に懸けられた賞金をもらえる．また，戦士評価が３０上がる．
+;
+;
+;E_ETC[19]お尋ね者・捕縛・バナザード(1=逮捕,2=賞金)
+;E_ETC[20]お尋ね者・捕縛・バニスター(1=逮捕,2=賞金)
+;E_ETC[21]お尋ね者・捕縛・カスティーヨ(1=逮捕,2=賞金)
+;E_ETC[22]お尋ね者・賞金額・バナザード
+;E_ETC[23]お尋ね者・賞金額・バニスター
+;E_ETC[24]お尋ね者・賞金額・カスティーヨ
+;E_ETC[102]お尋ね者通常攻撃ﾀﾞﾒｰｼﾞ合計
+;E_ETC[103]お尋ね者魔法攻撃ﾀﾞﾒｰｼﾞ合計
+;
+
+.CATCH_GOLD=0
+
+RUN_MONTH[52]++			;「表彰」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)			; text window locate.
+TXLC(2,17,148,1)		; text window locate.
+TXLC(3,31,270,2)		; text window locate.
+WWIVENT(5,0,6,40)		; ivent window locate.
+
+EVNT052
+
+LOAD("MAINBORN")
+
+;************************************
+;	表彰
+;************************************
+
+*EVNT052
+
+TXOPEN(3)
+TXFACE("F040")		;執事・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+TXOPEN(2)
+TXFACE("F078")		;役人（＝グラフィックは「巡察官」兼用）
+「＊＊＊＊MEN_NAME＊＊＊＊＊＊＊＊TXA(NAME_FAMILY)＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+WWIVENT(1,0,"E018")		; 表彰
+
+TXLC(3,19,270,2)		; text window locate.
+
+TXOPEN(3)
+TXFACE("F128")	;町の人（＝グラフィックは「農夫」兼用
+「＊＊＊＊＊＊＊＊＊＊MEN_NAME＊＊＊＊＊＊＊＊＊」
+@P
+@C
+TXFACE("F123")	;町の人（＝グラフィックは「村娘」兼用
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+TXFACE("F126")	;町の人（＝グラフィックは「老人」兼用
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+CATCH_GOLD = 0
+IF (E_ETC[19]=1)			;お尋ね者・捕縛・バナザード(1=逮捕,2=賞金)
+	E_ETC[19]=2				;2=賞金
+	CATCH_GOLD+=E_ETC[22]	;お尋ね者・賞金額・バナザード
+IF (E_ETC[20]=1)			;お尋ね者・捕縛・バニスター(1=逮捕,2=賞金)
+	E_ETC[20]=2				;2=賞金
+	CATCH_GOLD+=E_ETC[23]	;お尋ね者・賞金額・バニスター
+IF (E_ETC[21]=1)			;お尋ね者・捕縛・カスティーヨ(1=逮捕,2=賞金)
+	E_ETC[21]=2				;2=賞金
+	CATCH_GOLD+=E_ETC[24]	;お尋ね者・賞金額・カスティーヨ
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+;お尋ね者通常ﾀﾞﾒｰｼﾞ合計 : お尋ね者魔法ﾀﾞﾒｰｼﾞ合計
+IF ( E_ETC[102]>E_ETC[103] )	C4 = 1
+IF ( E_ETC[102]<E_ETC[103] )	C4 = 2
+IF ( E_ETC[102]=E_ETC[103] )
+	IF ( H_SENSHI>=H_MAHO )		C4 = 1
+	IF ( H_SENSHI< H_MAHO )		C4 = 2
+E_ETC[102]=0	;お尋ね者通常攻撃ﾀﾞﾒｰｼﾞ合計
+E_ETC[103]=0	;お尋ね者魔法攻撃ﾀﾞﾒｰｼﾞ合計
+
+IF ( C4 = 1 )	IGRP_TBL1[0]="戦士評価"	IGRP_TBL3[0]=H_SENSHI
+IF ( C4 = 2 )	IGRP_TBL1[0]="魔法評価"	IGRP_TBL3[0]=H_MAHO
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=148+62
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+IGRP_TBL3[0]=CATCH_GOLD
+IGRP_TBL1[0]="懸賞金"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=110+62
+GOLDOPEN(1,2)	; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+
+TXOPEN(1)
+C1 = 30	;戦士評価が30上がった．
+IF ( C4 = 1 )
+	TXA(NAME_FIRST)の戦士評価がTXPOINT(C1)上がった．
+	H_SENSHI += C1			; 戦士評価
+	GRPUPD(1,0,H_SENSHI)	; 戦士評価
+IF ( C4 = 2 )
+	TXA(NAME_FIRST)の魔法評価がTXPOINT(C1)上がった．
+	H_MAHO += C1			; 魔法評価
+	GRPUPD(1,0,H_MAHO)		; 魔法評価
+
+懸賞金TXGOLD(CATCH_GOLD)をもらった！
+GOLDADD(CATCH_GOLD)
+WWPROF(3)			: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+TXCLOSE(1)
+GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+WWIVENT(2,0)		; ivent window close.
+RET
+
+*MEN_NAME
+IF (E_ETC[19]=1)バナザード@@
+IF (E_ETC[19]=1 E_ETC[20]=1)，@@
+IF (E_ETC[20]=1)バニスター@@
+IF (E_ETC[20]=1 E_ETC[21]=1)，@@
+IF (E_ETC[21]=1)カスティーヨ@@
+RET
+
+*SHORTWAIT
+TIMER1(50)WAIT1
+RET
+
+;
+;	end of "EVNT052.TXT"
+;
+

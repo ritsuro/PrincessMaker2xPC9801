@@ -1,0 +1,168 @@
+; "EVNTBSN3.TXT"
+;
+; 55 武神の退場
+;【 概　要 】娘に倒された武神が消える．
+;【 いつ？ 】武者修行実行中，守護星に会った後．
+;【発生条件】武神を倒した後，守護星に会って，再び武神のいた場所に戻る．
+;【 効　果 】武神は引退を宣言して消える．以後は武神の祠の入口は，
+;			山岳警備隊によって閉鎖され;て入れない．（→56武神の祠閉鎖）
+;
+;RUN_MONTH[55]「武神の退場」実行回数
+;
+
+.VRAM_X
+.VRAM_Y
+.VVRAM_X1
+.VVRAM_Y1
+.VVRAM_X2
+.VVRAM_Y2
+.SIZE_X
+.SIZE_Y
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.TODAY_COUNT		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+TXLC(1,17,280,0)	; text window locate.
+TXLC(2,28,16,1)		; text window locate.
+TXLC(3,13,260,2)	; text window locate.
+TXLC(11,28,20,1)	; text window locate.
+
+EVENT55				; 武神の退場
+
+WWMUSYA(9)			; 戦闘後データロード
+WWMUSYA(8,1)		; 再描画
+
+PLAY(14)		;P14 武者修行
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+;************************************
+;	武神の退場
+;************************************
+
+*EVENT55
+
+RUN_MONTH[55]++		;「武神の退場」実行回数
+
+VRAM_X = 35
+VRAM_Y = 136
+VVRAM_X1 = 0
+VVRAM_Y1 = 0
+VVRAM_X2 = 0
+VVRAM_Y2 = 200
+SIZE_X = 6
+SIZE_Y = 64
+EFC(1)					; Ｆ・Ｏ（フェードアウト）
+TIMER1(30)
+WWMUSYA(5,3,54,13,12,2)	; map relocate. 
+WWMUSYA(12,1)			; 娘の向き設定 1=back
+WWMUSYA(8,1)			; 再描画 1=全部,2=背景のみ
+PTBK(0)
+PTLD("CIPBSN")			; パーツロード
+PIC(8,VRAM_X,VRAM_Y,VVRAM_X1,VVRAM_Y1,SIZE_X,SIZE_Y)	; VRAMを仮想VRAM(40*400)へ転送
+PIC(10,VVRAM_X1,VVRAM_Y1,VVRAM_X2,VVRAM_Y2,SIZE_X,SIZE_Y); 仮想VRAM(40*400)間転送
+PIC(11)					; ﾊﾟﾀｰﾝPUTを仮想VRAM(40*400)へアサイン
+PTMFX(VVRAM_X1,VVRAM_Y1,0,0,0,6,64)	; ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄ範囲PUT
+PIC(12)					; ﾊﾟﾀｰﾝPUTをVRAMへアサイン
+PIC(9,VVRAM_X1,VVRAM_Y1,VRAM_X,VRAM_Y,SIZE_X,SIZE_Y)	; 仮想VRAM(40*400)をVRAMへ転送
+WAIT1
+EFC(0)					; Ｆ・Ｉ（フェードイン）
+
+TIMER1(30)
+WAIT1
+
+TXOPEN(2)
+TXFACE("F167")		;武神
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+WWMUSYA(7)						; ノーマルモード
+TXF(2)							; マウスOFF待ち
+@P
+TXCLOSE(2)
+
+
+;	マップ上の武神消える．
+
+TIMER1(80)
+PTMD(1)					; ＰＵＴモード設定 1=オーバラップ
+TIMER2(50)
+PTBK(0)
+PTLD("CIPBAK")			; パーツロード
+WAIT2
+C1 = VRAM_X - 1
+C2 = VRAM_Y
+PTX(C1,C2,0)			; パーツ座標ＰＵＴ
+PTMD(0)					; ＰＵＴモード設定 0=通常
+WAIT1
+
+TIMER1(30)
+WAIT1
+
+TXLC(1,17,30,0)	; text window locate.
+TXOPEN(1)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊」
+@P
+@1
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(1)
+
+;;	マップ上の上へ行く階段が消える．
+
+WWMUSYA(19,3)		;北の守護星への階段が消える
+
+C1 = 8
+C6 = 80
+	TIMER1(3)
+	C2 = C1 + 1
+	GG_LINE(288,C1,320,C1,0)
+	GG_LINE(288,C2,320,C2,0)
+	WAIT1
+	C1 = C1 + 2
+LOOP C6
+
+@3
+@C	;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+
+MUSIC(2)		; 音楽ﾌｪｰﾄﾞｱｳﾄ
+
+@P
+TXCLOSE(3)
+RET
+
+;
+;	end of "EVNTBSN3.TXT"
+;
+

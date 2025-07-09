@@ -1,0 +1,381 @@
+; "EVNTBSN2.TXT"
+;
+;
+;	守護星に会う
+;
+;
+; 54 守護星に会う
+;【 概　要 】武者修行北マップで守護星に会う．
+;【 いつ？ 】武者修行実行中
+;【発生条件】マップ上で守護星の前に立つ．
+;【 効　果 】守護星が娘の能力をドカンと上げてくれる．
+;			一度守護星に会ってしまうともう二度と発生しない．
+;
+;	0=太陽
+;	1=月
+;	2=火星
+;	3=水星
+;	4=木星
+;	5=金星
+;	6=土星
+;	7=天王星
+;	8=海王星
+;	9=冥王星
+;
+;RUN_MONTH[54]	「守護星に会う」実行回数
+;E_ETC[30]		武神の祠閉鎖
+;
+
+.N_WIN_NUM = 7		;ナレーションウインドウ番号
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.TODAY_COUNT		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+TXLC(1,17,280,0)	; text window locate.
+TXLC(2,28,130,1)	; text window locate.
+TXLC(3,13,260,2)	; text window locate.
+TXLC(N_WIN_NUM,44,120,0)	;ナレーションウインドウ番号
+TXLC(11,28,20,1)	; text window locate.
+
+EVNTBSN2			; 守護星に会う
+
+E_ETC[30]=1			;武神の祠閉鎖
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+;************************************
+;	守護星に会う
+;************************************
+
+*EVNTBSN2						; 守護星に会う
+
+RUN_MONTH[54]++					;「守護星に会う」実行回数
+
+PLAY(27)	;P27 神秘
+
+STAR_OPEN						; 守護星
+WWMUSYA(7)						; ノーマルモード
+TXF(2)							; マウスOFF待ち
+
+IF ( P_SYUGOSEI = 0 )	SYUGO_00N	; 0=太陽
+IF ( P_SYUGOSEI = 1 )	SYUGO_01N	; 1=月
+IF ( P_SYUGOSEI = 2 )	SYUGO_02N	; 2=火星
+IF ( P_SYUGOSEI = 3 )	SYUGO_03N	; 3=水星
+IF ( P_SYUGOSEI = 4 )	SYUGO_04N	; 4=木星
+IF ( P_SYUGOSEI = 5 )	SYUGO_05N	; 5=金星
+IF ( P_SYUGOSEI = 6 )	SYUGO_06N	; 6=土星
+IF ( P_SYUGOSEI = 7 )	SYUGO_07N	; 7=天王星
+IF ( P_SYUGOSEI = 8 )	SYUGO_08N	; 8=海王星
+IF ( P_SYUGOSEI = 9 )	SYUGO_09N	; 9=冥王星
+
+STAR_CLOSE			;
+WWMUSYA(9)			; 戦闘後データロード
+WWMUSYA(8,1)		; 再描画
+RET
+
+
+;************************************
+;	守護星
+;************************************
+
+*STAR_OPEN
+TXOPEN(11)
+TXSYU(P_SYUGOSEI)
+TXA(DEF_STR_STAR[P_SYUGOSEI])
+@L
+RET
+
+*STAR_CLOSE
+;;;TXCLOSE(11)
+RET
+
+;************************************
+;	太陽
+;************************************
+
+*SYUGO_00N	; 0=太陽
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+TXSLCT(11)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PARA_OPEN("気品",B_KIHIN)
+TXA(NAME_FIRST)の気品が１００上がった！
+B_KIHIN  +=  100
+PARA_CLOSE(B_KIHIN)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;************************************
+;	月
+;************************************
+
+*SYUGO_01N	;	1=月
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+TXSLCT(11)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PARA_OPEN("感受性",B_KANJUSEI)
+TXA(NAME_FIRST)の感受性が１００上がった！
+B_KANJUSEI  +=  100
+PARA_CLOSE(B_KANJUSEI)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;************************************
+;	火星
+;************************************
+
+*SYUGO_02N	;	2=火星
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+TXSLCT(11)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PARA_OPEN("モラル",B_MORALS)
+TXA(NAME_FIRST)のモラルが１００上がった！
+B_MORALS  +=  100
+PARA_CLOSE(B_MORALS)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;************************************
+;	水星
+;************************************
+
+*SYUGO_03N	;	3=水星
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+TXSLCT(11)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PARA_OPEN("知能",B_CHINOH)
+TXA(NAME_FIRST)の知能が１００上がった！
+B_CHINOH  +=  100
+PARA_CLOSE(B_CHINOH)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;************************************
+;	木星
+;************************************
+
+*SYUGO_04N	;	4=木星
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+TXSLCT(11)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PARA_OPEN("信仰",B_SHINKOH)
+TXA(NAME_FIRST)の信仰が１００上がった！
+B_SHINKOH  +=  100
+PARA_CLOSE(B_SHINKOH)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;************************************
+;	金星
+;************************************
+
+*SYUGO_05N	;	5=金星
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+TXSLCT(11)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PARA_OPEN("色気",B_IROKE)
+TXA(NAME_FIRST)の色気が１００上がった！
+B_IROKE  +=  100
+PARA_CLOSE(B_IROKE)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;************************************
+;	土星
+;************************************
+
+*SYUGO_06N	;	6=土星
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+TXSLCT(11)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PARA_OPEN("気品",B_KIHIN)
+TXA(NAME_FIRST)の気品が１００上がった！
+B_KIHIN  +=  100
+PARA_CLOSE(B_KIHIN)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;************************************
+;	天王星
+;************************************
+
+*SYUGO_07N	;	7=天王星
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+TXSLCT(11)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PARA_OPEN("感受性",B_KANJUSEI)
+TXA(NAME_FIRST)の感受性が１００上がった！
+B_KANJUSEI  +=  100
+PARA_CLOSE(B_KANJUSEI)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;************************************
+;	海王星神ネプチューン
+;************************************
+
+*SYUGO_08N	;	8=海王星
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+TXSLCT(11)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PARA_OPEN("知能",B_CHINOH)
+TXA(NAME_FIRST)の知能が１００上がった！
+B_CHINOH  +=  100
+PARA_CLOSE(B_CHINOH)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;************************************
+;	冥王星
+;************************************
+
+*SYUGO_09N	;	9=冥王星
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊」
+@P
+TXSLCT(11)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PARA_OPEN("感受性",B_KANJUSEI)
+TXA(NAME_FIRST)の感受性が１００上がった！
+B_KANJUSEI  +=  100
+PARA_CLOSE(B_KANJUSEI)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;************************************
+;	パラメータ
+;************************************
+
+*PARA_OPEN		; parameter open.
+;	PARA_OPEN("感受性",B_KANJUSEI)
+C1 = AX
+TXOPEN(N_WIN_NUM)
+GR_OPEN
+STRSCLEAR
+IGRP_TBL1[0]=SI		;"感受性"
+IGRP_TBL3[0]=C1		;
+IGRP_CNT=1
+IGRP_X=44
+IGRP_Y=224
+GRPOPEN(1,1)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+RET
+
+*PARA_CLOSE		; parameter close.
+;	PARA_CLOSE(B_KANJUSEI)
+C1 = AX
+GRPUPD(1,0,C1)
+@P
+GR_CLOSE
+TXCLOSE(N_WIN_NUM)
+TXSLCT(11)
+@C
+RET
+
+;
+;	end of "EVNTBSN2.TXT"
+;
+

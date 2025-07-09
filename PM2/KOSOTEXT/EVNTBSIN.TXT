@@ -1,0 +1,189 @@
+; "EVNTBSIN.TXT"
+;
+;
+;	北マップの武神に出会う
+;
+;
+;"RPGMNS.TXT"		E_ETC[31]=1			;武神に勝った
+;"EVNTBSN2.TXT"		E_ETC[30]=1			;武神の祠閉鎖
+;"RPG003.TXT"		E_ETC[32]=1			;北の武神への階段が消える
+;E_ETC[30]武神の祠閉鎖
+;E_ETC[34]祠閉鎖に山岳警備隊
+
+.VRAM_X
+.VRAM_Y
+.VRAM_X2
+.VRAM_Y2
+.VVRAM_X1
+.VVRAM_Y1
+.VVRAM_X2
+.VVRAM_Y2
+.VVRAM_X3
+.VVRAM_Y3
+.SIZE_X
+.SIZE_Y
+.SIZE_X2
+.SIZE_Y2
+
+.HI1.HI2.HI3.HI4.HI5.HI6.HI7
+.LX1.RX1
+.LX2.RX2
+.LX3.RX3
+.LX4.RX4
+.LX5.RX5
+.LX6.RX6
+.LX7.RX7
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.TODAY_COUNT		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+EVNTBSIN			; 北マップの武神に出会う
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+TIMER1(80)
+
+;*;LOAD("RPGLOP,RPG003")	; 3=北部 氷山地帯
+
+LOAD("RPGMNS,RPZ07N")		;"武神"
+
+
+;************************************
+;	北マップの武神に出会う
+;************************************
+
+*EVNTBSIN
+;EFC(2)		; ＷＨＩＴＥ・ＦＬＡＳＨ
+WWMUSYA(13,0,-1,0,1,10)		; マップシフト
+;EFC(3)		; ＷＨＩＴＥ・ＩＮ
+WWMUSYA(13,0,0,0,1,1)		; マップシフト
+
+VRAM_X = 35
+VRAM_Y = 152
+VRAM_X2 = 34
+VRAM_Y2 = 152
+VVRAM_X1 = 0
+VVRAM_Y1 = 0
+VVRAM_X2 = 6
+VVRAM_Y2 = 0
+VVRAM_X3 = 12
+VVRAM_Y3 = 0
+SIZE_X = 6
+SIZE_Y = 64
+SIZE_X2 = 8
+SIZE_Y2 = 70
+PTBK(0)
+PTLD("CIPBSN")		; パーツロード
+
+HI1 = 212
+HI2 = 213
+HI3 = 214
+HI4 = 215
+HI5 = 216
+HI6 = 217
+HI7 = 218
+
+LX1 = 302		RX1 = 306
+LX2 = 302-1		RX2 = 306+1
+LX3 = 302-2		RX3 = 306+2
+LX4 = 302-2		RX4 = 306+2
+LX5 = 302-2		RX5 = 306+2
+LX6 = 302-1		RX6 = 306+1
+LX7 = 302		RX7 = 306
+
+PIC(8,VRAM_X2,VRAM_Y2,VVRAM_X3,VVRAM_Y3,SIZE_X2,SIZE_Y2) ; VRAMを仮想VRAM(40*400)へ転送
+
+C1 = 24 C2 = 0 C3 = 0 C4 = 0
+	TIMER1(3)
+	GG_LINE(LX1,HI1,RX1,HI1,C2)
+	GG_LINE(LX2,HI2,RX2,HI2,C2)
+	GG_LINE(LX3,HI3,RX3,HI3,C2)
+	GG_LINE(LX4,HI4,RX4,HI4,C2)
+	GG_LINE(LX5,HI5,RX5,HI5,C2)
+	GG_LINE(LX6,HI6,RX6,HI6,C2)
+	GG_LINE(LX7,HI7,RX7,HI7,C2)
+	LX3--		RX3++
+	LX4--		RX4++
+	LX5--		RX5++
+	C3++
+	IF ( C3 = 2 ) ( C3 = 3 )
+		LX2--		RX2++
+		LX6--		RX6++
+	IF ( C3 = 4 )
+		C3 = 0
+		LX2--		RX2++
+		LX6--		RX6++
+	C4++
+	IF ( C4 = 3 )
+		C4 = 0
+		LX1--		RX1++
+		LX7--		RX7++
+	WAIT1
+LOOP C1
+
+PIC(8,VRAM_X,VRAM_Y,VVRAM_X1,VVRAM_Y1,SIZE_X,SIZE_Y) ; VRAMを仮想VRAM(40*400)へ転送
+
+C1 = 64/2  C2 = 1 C3 = VVRAM_Y2 + 64
+	TIMER1(4)		;
+	PIC(10,VVRAM_X1,VVRAM_Y1,VVRAM_X2,VVRAM_Y2,SIZE_X,SIZE_Y); 仮想VRAM(40*400)間転送
+	PIC(11)					; ﾊﾟﾀｰﾝPUTを仮想VRAM(40*400)へアサイン
+	PTMFX(VVRAM_X2,C3,0,0,0,6,C2)	; ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄ範囲PUT
+	PIC(12)					; ﾊﾟﾀｰﾝPUTをVRAMへアサイン
+	PIC(9,VVRAM_X2,VVRAM_Y2,VRAM_X,VRAM_Y,SIZE_X,SIZE_Y)	; 仮想VRAM(40*400)をVRAMへ転送
+	WAIT1			;
+	C2 =  C2 + 2	;
+	C3 =  C3 - 2	;
+LOOP C1
+
+PIC(11)					; ﾊﾟﾀｰﾝPUTを仮想VRAM(40*400)へアサイン
+C1 = VVRAM_X3 + 1
+PTMFX(C1,C3,0,0,0,6,C2)	; ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄ範囲PUT
+PIC(12)					; ﾊﾟﾀｰﾝPUTをVRAMへアサイン
+PIC(9,VVRAM_X3,VVRAM_Y3,VRAM_X2,VRAM_Y2,SIZE_X2,SIZE_Y2)	; 仮想VRAM(40*400)をVRAMへ転送
+RET
+
+;;WAITU
+;;C1 = 64/2
+;;	C2 -= 2			;
+;;	C3 += 2			;
+;;	TIMER1(4)		;
+;;	PIC(10,VVRAM_X1,VVRAM_Y1,VVRAM_X2,VVRAM_Y2,SIZE_X,SIZE_Y); 仮想VRAM(40*400)間転送
+;;	PIC(11)							; ﾊﾟﾀｰﾝPUTを仮想VRAM(40*400)へアサイン
+;;	PTMFX(VVRAM_X2,C3,0,0,0,6,C2)	; ﾏｽｸﾊﾟﾀｰﾝ座標ｵﾌｾｯﾄ範囲PUT
+;;	PIC(12)							; ﾊﾟﾀｰﾝPUTをVRAMへアサイン
+;;	PIC(9,VVRAM_X2,VVRAM_Y2,VRAM_X,VRAM_Y,SIZE_X,SIZE_Y)	; 仮想VRAM(40*400)をVRAMへ転送
+;;	WAIT1			;
+;;LOOP C1
+;;WWMUSYA(9)		; 戦闘後データロード
+;;WWMUSYA(8,1)		; 再描画
+;;RET
+
+;
+;	end of "EVNTBSIN.TXT"
+;
+
