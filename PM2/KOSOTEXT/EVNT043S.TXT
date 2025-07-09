@@ -1,0 +1,14 @@
+; "EVNT043S.TXT"
+;
+;	数日遅れの父の誕生日（イベント４３の未処理チェック）
+;	merge text.
+;
+;	43 父の誕生日
+
+EVENT043
+LOAD("RUNNING")
+
+;
+;	end of "EVNT043S.TXT"
+;
+

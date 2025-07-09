@@ -1,0 +1,212 @@
+; "EVNT044.TXT"
+;
+; "SCNCASTL.TXT"から
+;
+;	ここに来る前に
+;	WWIVENT(1,0,"E012")		;お城へ行く
+;	が実行されていること。
+;
+;44 青年武官と面会
+;【 概　要 】お城で青年武官（実は正体を隠した王子様）とデートする．
+;【 いつ？ 】１月，メインコマンド「お城に行く」実行中
+;【発生条件】お城で青年武官と面会する
+;【 効　果 】青年武官は実は修行中の王子様．
+;			彼と面会すると「来年も会いたい」と言ってくるので，
+;			承知すれば隠しパラメータの「王子との関係」値が12上がる．
+;			断れば変化なし．
+;
+
+RUN_MONTH[44]++		;「青年武官と面会」実行回数
+
+STRSCLEAR
+
+TXLC(2,28,146,1)		; text window locate.
+TXLC(3,13,270,2)		; text window locate.
+TXLC(1,19,240,0)		; text window locate.
+
+WWIVENT(5,1,21,40)		; ivent window locate.
+
+EVNT044
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+LOAD("MAINBORN")
+
+;************************************
+;	青年武官と面会
+;************************************
+
+*EVNT044
+
+IF ( RUN_MONTH[44]=1 )
+	EVNT044_1ST				;１回目
+IF ( RUN_MONTH[44]>1 )
+	EVNT044_2ND				;２回目
+RET
+
+*EVNT044_1ST			;１回目
+
+TXOPEN(2)
+TXFACE("F088")			;青年武官・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+WAIT1
+@P
+PLAY(9)				;P9 お城
+
+TXOPEN(3)
+TXGIRL(0)				;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F089")			;青年武官・あわて
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・普通
+「＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F090")			;青年武官・照れ
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(14)				;娘・りりしい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F091")			;青年武官・真剣
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(10)				;娘・恥らう
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F088")			;青年武官・普通
+「＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+WWIVENT(2,0)			; ivent window close.
+WWIVENT(1,1,"L001")		;青年武官と面会
+TXCLOSE(3)
+
+TXOPEN(1)
+TXA(NAME_FIRST)は青年武官と楽しいひとときを過ごした・・・・・・
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F088")			;青年武官・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(1)				;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F091")			;青年武官・真剣
+「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+SLCTX("約束する,断る")
+IF ( ISLCT=0 )		;約束する場合
+	@3
+	@C
+	;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	WWIVENT(2,1)		; ivent window close.
+	URA_PRINCE += 12	; 王子との関係
+	RET
+
+; 断る場合
+@3
+@C
+TXGIRL(0)			;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F092")		;青年武官・がっかり
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXCLOSE(2)
+WWIVENT(2,1)		; ivent window close.
+RET
+
+
+*EVNT044_2ND		;２回目
+
+
+TXOPEN(2)
+TXFACE("F088")		;青年武官・普通
+「＊＊＊＊＊＊＊＊＊」
+WAIT1
+@P
+PLAY(9)				;P9 お城
+
+TXOPEN(3)
+TXGIRL(0)			;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+WWIVENT(2,0)			; ivent window close.
+WWIVENT(1,1,"L001")		;青年武官と面会
+TXCLOSE(3)
+
+TXOPEN(1)
+TXA(NAME_FIRST)は青年武官と楽しいひとときを過ごした・・・・・・
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F091")			;青年武官・真剣
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCTX("約束する,断る")
+IF ( ISLCT=0 )		;約束する場合
+	TXOPEN(3)
+	TXGIRL(1)	;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	WWIVENT(2,1)		; ivent window close.
+	URA_PRINCE += 12	; 王子との関係
+	RET
+
+;断る場合
+TXOPEN(3)
+TXGIRL(0)			;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F092")		;青年武官・がっかり
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXCLOSE(2)
+WWIVENT(2,1)		; ivent window close.
+RET
+
+;
+;	end of "EVNT044.TXT"
+;
+
