@@ -1,0 +1,139 @@
+; "EVNT045.TXT"
+;
+; 45 逮捕
+;【 概　要 】非行化指数が１００になると，娘が何か問題を起こして，逮捕される．
+;【 いつ？ 】一ヶ月の最初．
+;【発生条件】非行化指数が一ヶ月の最初の時点で１００．
+;【 効　果 】各評価値が《１／１０》に．因業値とストレスが０に．
+;
+
+RUN_MONTH[45]++		;「逮捕」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)			; text window locate.
+TXLC(2,17,148,1)		; text window locate.
+TXLC(3,31,270,2)		; text window locate.
+WWIVENT(5,0,6,40)		; ivent window locate.
+
+EVNT045
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+LOAD("MAINBORN")
+
+;************************************
+;	逮捕
+;************************************
+
+*EVNT045
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+WWGIRL(5)	; girl quick clear.
+SHORTWAIT
+TXOPEN(3)
+TXFACE("F047")			;執事・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F078")			;役人（＝グラフィックは巡察官と兼用）
+「TXA(NAME_FIRST)＊TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+PLAY(29)	;P29 緊迫
+
+WWIVENT(1,0,"E017")		; 逮捕
+
+@3
+@C
+TXFACE("F047")			;執事・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+TXOPEN(1)
+TXA(NAME_FAMILY)は拘置所へ向かった・・・
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(3)		;娘・悲しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F078")			;役人（＝グラフィックは巡察官と兼用）
+「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+@C
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+;【 効　果 】各評価値が《１／１０》に．因業値とストレスが０に．
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR		;
+
+IGRP_TBL3[0]=B_INGYO
+IGRP_TBL1[0]="因業"
+IGRP_TBL3[1]=B_STRESS
+IGRP_TBL1[1]="ストレス"
+IGRP_CNT=2
+IGRP_X=54
+IGRP_Y=140
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+IGRP_TBL3[0]=H_SENSHI
+IGRP_TBL1[0]="戦士評価"
+IGRP_TBL3[1]=H_MAHO
+IGRP_TBL1[1]="魔法評価"
+IGRP_TBL3[2]=H_SYAKOH
+IGRP_TBL1[2]="社交評価"
+IGRP_TBL3[3]=H_KAJI
+IGRP_TBL1[3]="家事評価"
+IGRP_CNT=4
+IGRP_X=54
+IGRP_Y=200
+GRPOPEN(2,2)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+TXOPEN(1)
+TXA(NAME_FAMILY)はTXA(NAME_FIRST)をつれて家に帰った・・・
+B_INGYO = 0				; 因業
+B_STRESS = 0			; ストレス
+H_SENSHI /= 10			; 戦士評価
+H_MAHO /= 10			; 魔法評価
+H_SYAKOH /= 10			; 社交評価
+H_KAJI /= 10			; 家事評価
+GRPUPD(1,0,B_INGYO)			; 因業
+GRPUPD(1,1,B_STRESS)		; ストレス
+GRPUPD(2,0,H_SENSHI)		; 戦士評価
+GRPUPD(2,1,H_MAHO)			; 魔法評価
+GRPUPD(2,2,H_SYAKOH)		; 社交評価
+GRPUPD(2,3,H_KAJI)			; 家事評価
+@P
+GR_CLOSE
+TXCLOSE(1)
+WWIVENT(2,0)		; ivent window close.
+WWGIRL(2)			; girl put.
+RET
+
+*SHORTWAIT
+TIMER1(50)WAIT1
+RET
+
+
+;
+;	end of "EVNT045.TXT"
+;
+

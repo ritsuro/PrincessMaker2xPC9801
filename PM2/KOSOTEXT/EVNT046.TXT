@@ -1,0 +1,154 @@
+; "EVNT046.TXT"
+;
+; 46 追い剥ぎの発覚
+;【 概　要 】武者修行時に追い剥ぎをしていたことが，世間にバレる．
+;【 いつ？ 】一ヶ月の最初．
+;【発生条件】追い剥ぎ回数が１０回になる．以後，１０回ごとに発生する．
+;【 効　果 】気品が０に．人脈が初期値と同じに．各評価値が《１／２》に．
+;
+
+RUN_MONTH[46]++			;「追い剥ぎの発覚」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)			; text window locate.
+TXLC(2,17,148,1)		; text window locate.
+TXLC(3,31,270,2)		; text window locate.
+WWIVENT(5,0,6,40)		; ivent window locate.
+
+EVNT046
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+E_ETC[16] = E_ETC[15]	; 前科取り調べ時の追い剥ぎ回数 = 追い剥ぎ回数
+
+LOAD("MAINBORN")
+
+;************************************
+;	追い剥ぎの発覚
+;************************************
+
+*EVNT046
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+WWGIRL(5)	: girl quick clear.
+SHORTWAIT
+TXOPEN(3)
+TXFACE("F047")			;執事・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F078")			;役人（＝グラフィックは巡察官と兼用）
+「TXA(NAME_FIRST)＊TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+PLAY(29)	;P29 緊迫
+
+@3
+@C
+TXFACE("F047")			;執事・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+TXOPEN(1)
+TXA(NAME_FAMILY)は拘置所へ向かった・・・
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(3)		;娘・悲しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F078")			;役人
+「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+@C
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+;【 効　果 】気品が０に．人脈が初期値と同じに．各評価値が《１／２》に．
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR		;
+
+IGRP_TBL3[0]=B_KIHIN
+IGRP_TBL1[0]="気品"
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=132
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+IGRP_TBL3[0]=S_JINMYAKU
+IGRP_TBL1[0]="人脈"
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=166
+GRPOPEN(3,3)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+IGRP_TBL3[0]=H_SENSHI
+IGRP_TBL1[0]="戦士評価"
+IGRP_TBL3[1]=H_MAHO
+IGRP_TBL1[1]="魔法評価"
+IGRP_TBL3[2]=H_SYAKOH
+IGRP_TBL1[2]="社交評価"
+IGRP_TBL3[3]=H_KAJI
+IGRP_TBL1[3]="家事評価"
+IGRP_CNT=4
+IGRP_X=54
+IGRP_Y=200
+GRPOPEN(2,2)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+TXOPEN(1)
+TXA(NAME_FAMILY)はTXA(NAME_FIRST)をつれて家に帰った・・・
+
+B_KIHIN = 0				; 気品
+
+S_JINMYAKU[0]=	10		; 人脈・合計値		初期値10（王様の分）
+S_JINMYAKU[1]=	0		; 人脈・門番
+S_JINMYAKU[2]=	0		; 人脈・近衛騎士
+S_JINMYAKU[3]=	0		; 人脈・将軍
+S_JINMYAKU[4]=	0		; 人脈・大臣
+S_JINMYAKU[5]=	0		; 人脈・司教
+S_JINMYAKU[6]=	0		; 人脈・寵姫
+S_JINMYAKU[7]=	0		; 人脈・王妃
+S_JINMYAKU[8]=	10		; 人脈・国王
+
+H_SENSHI /= 2			; 戦士評価
+H_MAHO /= 2				; 魔法評価
+H_SYAKOH /= 2			; 社交評価
+H_KAJI /= 2				; 家事評価
+GRPUPD(1,0,B_KIHIN)			; 気品
+GRPUPD(3,0,S_JINMYAKU)		; 人脈
+GRPUPD(2,0,H_SENSHI)		; 戦士評価
+GRPUPD(2,1,H_MAHO)			; 魔法評価
+GRPUPD(2,2,H_SYAKOH)		; 社交評価
+GRPUPD(2,3,H_KAJI)			; 家事評価
+
+@P
+GR_CLOSE
+TXCLOSE(1)
+WWGIRL(2)			; girl put.
+RET
+
+*SHORTWAIT
+TIMER1(50)WAIT1
+RET
+
+;
+;	end of "EVNT046.TXT"
+;
+

@@ -1,0 +1,170 @@
+; "EVNT047.TXT"
+;
+;47 妖精のお茶会
+;【 概　要 】料理の腕が上がるイベント．東マップ，南マップでは，
+;				それぞれ効果が若干違う．
+;【 いつ？ 】武者修行実行中．東・南マップで発生．
+;【発生条件】東マップ→感受性１５０以上あって，石碑の周辺でキャンプ．
+;				キャンプ終了時に発生．
+;				南マップ→感受性３０以上あって，ラフレシアの小島でキャンプ．
+;				キャンプ終了時に発生．
+;【 効　果 】東マップ→料理値が２５～３５上昇．ストレスが０になる．
+;				南マップ→　〃　が５～１５上昇．ストレスが０になる．
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.TODAY_COUNT		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+RUN_MONTH[47]++				;「妖精のお茶会」実行回数
+
+STRSCLEAR
+
+TXLC(1,17,280,0)		; text window locate.
+TXLC(2,28,130,1)		; text window locate.
+TXLC(3,13,260,2)		; text window locate.
+WWIVENT(5,1,19,40)		; ivent window locate.
+
+EVNT047
+
+WWMUSYA(9)				; 戦闘後データロード
+WWMUSYA(8,1)			; 再描画
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+IF ( S_WORKS = 0 )	LOAD("RPGLOP,RPG000")		; 0=東部 森林地帯
+IF ( S_WORKS = 1 )	LOAD("RPGLOP,RPG001")		; 1=西部 砂漠地帯
+IF ( S_WORKS = 2 )	LOAD("RPGLOP,RPG002")		; 2=南部 水郷地帯
+IF ( S_WORKS = 3 )	LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+TXOPEN(1)致命的エラーWAITU
+
+;************************************
+;	妖精のお茶会
+;************************************
+
+*EVNT047
+
+PLAY(27)	;P27 神秘
+
+TXOPEN(1)
+TXA(NAME_FIRST)がキャンプをたたむと，どこからか小さな話し声が聞こえてきた・・・
+WWMUSYA(7)					; ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+WWIVENT(3,1,"E032")		;妖精のお茶会
+TXOPEN(1)
+
+IF ( S_WORKS = 0 )		; 東マップの場合
+	よく見ると石碑の陰で，妖精たちがお茶会を開いている．
+
+IF ( S_WORKS = 2 )		; 南マップの場合
+	よく見ると花びらの陰で，妖精たちがお茶会を開いている．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(1)	;娘・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F197")		;妖精・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3		;娘・嬉しい
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2		;妖精・普通
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+TXGIRL(10)	;娘・恥じらう
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2		;妖精・普通
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C		;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C		;妖精・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+
+;東マップ→料理値が２５～３５上昇．ストレスが０になる．
+;南マップ→　〃　が５～１５上昇．ストレスが０になる．
+
+GR_OPEN				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR
+IGRP_TBL1[0]="料理"
+IGRP_TBL3[0]=V_RYOURI
+IGRP_TBL1[1]="ストレス"
+IGRP_TBL3[1]=B_STRESS
+IGRP_CNT=2
+IGRP_X=28
+IGRP_Y=240
+GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+@3
+IF ( S_WORKS = 0 )	; 0=東部 森林地帯
+	IRAND2(25,35)	C6 = AX
+IF ( S_WORKS = 2 )	; 2=南部 水郷地帯
+	IRAND2(5,15)	C6 = AX
+TXA(NAME_FIRST)の料理の腕がTXPOINT(C6)上がった！
+ストレスが０になった．
+V_RYOURI += C6
+B_STRESS = 0		; ストレス
+CLENDER(13)	;訓練技能値計算
+GRPUPD(1,0,V_RYOURI)
+GRPUPD(1,1,B_STRESS)
+
+MUSIC(2)				; 音楽ﾌｪｰﾄﾞｱｳﾄ
+
+@P
+GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(3)
+TXCLOSE(2)
+PLAY(14)	;P14 武者修行
+RET
+
+;
+;	end of "EVNT047.TXT"
+;
+
