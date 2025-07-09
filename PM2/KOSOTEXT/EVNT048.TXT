@@ -1,0 +1,260 @@
+; "EVNT048.TXT"
+;
+;48 妖精のダンスパーティー
+;【 概　要 】芸術センスが上がるイベント．東マップと南マップでは，
+;				それぞれ効果が若干違う．
+;【 いつ？ 】武者修行実行中．東・南マップで発生
+;【発生条件】東マップ→感受性１００以上で，エルフの霊木の周辺で夜間にキャンプ．
+;				キャンプ終了時に発生．
+;				南マップ→感受性２００以上で任意の場所で夜間にキャンプ．
+;				キャンプ終了時に発生．
+;【 効　果 】東マップ→芸術値５～１０上昇・体力２～６低下・ストレスが０に．
+;				南マップ→芸術値８～１５上昇・体力５～１０低下・ストレスが０に．
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.TODAY_COUNT		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+RUN_MONTH[48]++				;「妖精のダンスパーティー」実行回数
+
+STRSCLEAR
+
+TXLC(1,17,280,0)		; text window locate.
+TXLC(2,28,130,1)		; text window locate.
+TXLC(3,13,260,2)		; text window locate.
+WWIVENT(5,1,19,40)		; ivent window locate.
+
+EVNT048
+
+S_COUNTER = 0			;当日カウンタ
+DAYLIGHT = 4			; 4=night->day.
+
+WWMUSYA(9)				; 戦闘後データロード
+WWMUSYA(14,2)		; 1=キャンプ張る,2=キャンプをたたむ
+WWMUSYA(8,1)			; 再描画
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+IF ( S_WORKS = 0 )	LOAD("RPGLOP,RPG000")		; 0=東部 森林地帯
+IF ( S_WORKS = 1 )	LOAD("RPGLOP,RPG001")		; 1=西部 砂漠地帯
+IF ( S_WORKS = 2 )	LOAD("RPGLOP,RPG002")		; 2=南部 水郷地帯
+IF ( S_WORKS = 3 )	LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+TXOPEN(1)致命的エラーWAITU
+
+;**************
+;	back to home load.
+;**************
+
+*BACK_TO_HOME
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+LOAD("RPGDWN")
+
+;************************************
+;	妖精のダンスパーティー
+;************************************
+
+*EVNT048
+
+EFC(1)		; Ｆ・Ｏ（フェードアウト）
+TIMER1(30)
+GRPCLS
+WWMUSYA(18,4)		; 昼<->夜操作 4=night->day.
+WAIT1
+EFC(16)		; ノーマルカラー
+MUSIC(2)            : 音楽ﾌｪｰﾄﾞｱｳﾄ
+TXOPEN(1)
+TXA(NAME_FIRST)が休もうとすると，かすかな風の音が耳に入ってきた．風の音？いやちがう．音楽だ．
+WWMUSYA(7)				;ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+;WWIVENT(3,1,"E033")	;妖精のダンスパーティー
+WWIVENT(6,1,0,1,"E033")
+PLAY(27)			;P27 神秘
+;WWMUSYA(18,4)		; 昼<->夜操作 4=night->day.
+
+TXOPEN(1)
+見ると，小さな妖精たちが輪になって踊っている．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F197")		;妖精・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(1)	;娘・嬉しい
+「＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+TXOPEN(1)
+TXA(NAME_FIRST)は妖精たちと楽しい夜を過ごした・・・
+@P
+EFC(1)				; Ｆ・Ｏ（フェードアウト）
+TXCLOSE(1)
+
+;;;WWIVENT(7,1,0)		; ivent window close.(select bank)
+
+TIMER1(60)			;
+WWFRAME(2)			; 2=武者修行
+WWPROF(5)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･所持金
+WWPROF(6)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･HP
+WWPROF(7)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･MP
+WWPROF(8)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･装備
+CLENDER(6,62,0)		; カレンダー・セットアップ
+CLENDER(1)			; カレンダー・表示
+WWMUSYA(9)			; 戦闘後データロード
+WWMUSYA(8,1)		; 再描画
+WAIT1				;
+
+WWMUSYA(18,4)		; 昼<->夜操作 4=night->day.
+TIMER1(60)			;
+SHOWDATE			;＊朝（昼）になる
+WWMUSYA(24)			; 残りクリア
+WAIT1				;
+
+TXLC(3,13,200,2)		; text window locate.
+TXOPEN(3)
+TXGIRL(11)		;娘・不安
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+GR_OPEN				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR
+IGRP_TBL1[0]="体力"
+IGRP_TBL3[0]=B_TAIRYOKU
+IGRP_TBL1[1]="芸術"
+IGRP_TBL3[1]=V_GEIJYUTSU
+IGRP_TBL1[2]="ストレス"
+IGRP_TBL3[2]=B_STRESS
+IGRP_CNT=3
+IGRP_X=35
+IGRP_Y=324
+GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+IF ( S_WORKS = 0 )	; 0=東部 森林地帯
+	IRAND2(2,6)		C5 = AX		;体力２～６低下・ストレスが０に．
+	IRAND2(5,10)	C6 = AX		;芸術値５～１０上昇
+
+IF ( S_WORKS = 2 )	; 2=南部 水郷地帯
+	IRAND2(5,10)	C5 = AX		;体力５～１０低下・ストレスが０に．
+	IRAND2(8,15)	C6 = AX		;芸術値８～１５上昇
+
+@C
+TXA(NAME_FIRST)の体力がTXPOINT(C5)下がった．
+芸術センスがTXPOINT(C6)上がった．
+ストレスが０になった．
+
+B_TAIRYOKU -= C5				; 体力
+IF ( B_TAIRYOKU < 0 ) B_TAIRYOKU = 0
+V_GEIJYUTSU += C6				; 芸術
+B_STRESS = 0					; ストレス
+
+IF ( W_HP_MAX > B_TAIRYOKU )
+	W_HP_MAX = B_TAIRYOKU		; 最大ＨＰ
+
+IF ( W_HP > B_TAIRYOKU )
+	W_HP = B_TAIRYOKU			; ＨＰ
+
+CLENDER(13)	;訓練技能値計算
+
+GRPUPD(1,0,B_TAIRYOKU)			; 体力
+GRPUPD(1,1,V_GEIJYUTSU)			; 芸術
+GRPUPD(1,2,B_STRESS)			; ストレス
+
+WWPROF(6)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･HP
+WWPROF(7)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･MP
+
+MUSIC(2)						; 音楽ﾌｪｰﾄﾞｱｳﾄ
+
+@P
+GR_CLOSE						; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(3)
+IF ( S_ENDDAY =< VAL_DAY )
+	GOTO RPG_END				;武者修行を終える
+
+PLAY(14)				;P14 武者修行
+RET
+
+
+;**************
+;	clender
+;**************
+
+*SHOWDATE
+TODAY_COUNT++		;日付カウンタ
+CLENDER(3)	; カレンダー・更新処理
+CLENDER(2)	; カレンダー・再表示
+P98F(2,0,1)	; bank change.
+CLENDER(2)	; カレンダー・再表示
+P98F(2,0,0)	; bank change.
+RET
+
+;**************
+;	武者修行を終える
+;**************
+
+*RPG_END
+TXLC(1,17,280,0)	; text window locate.
+TXOPEN(1)
+冒険を終えて，TXA(NAME_FIRST)は家に帰った．
+WWMUSYA(7)			; ノーマルモード
+TXF(2)				; マウスOFF待ち
+@P
+TXCLOSE(1)
+;;;WWMUSYA(6)		; ＲＰＧモード
+GOTO BACK_TO_HOME	; back to home load.
+
+;
+;	end of "EVNT048.TXT"
+;
+

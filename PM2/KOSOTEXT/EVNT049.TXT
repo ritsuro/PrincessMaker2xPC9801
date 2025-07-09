@@ -1,0 +1,261 @@
+; "EVNT049.TXT"
+;
+; 49 魔王の酒盛り
+;【 概　要 】信仰値と引き替えに，好きな能力をＵＰできる．因業値も増える．
+;【 いつ？ 】武者修行実行中．西マップで発生．
+;【発生条件】マップ上の洞穴（魔王の岩屋）に入る．
+;【 効　果 】信仰が２０未満の場合，因業値が８０上昇．エンディングに影響．
+;				信仰が２０以上の場合，信仰値が１０～２０減少．
+;				因業値が２５上昇．基本能力のうち
+;				｛体力・筋力・知能・気品・色気｝のどれか一つが４５～６０上昇．
+;
+;	E_ETC[85]++		「魔王の酒盛り」魔王に能力ＵＰ回数
+;	E_ETC[98]		武者修行中に１度魔王の酒盛り
+;
+
+.NAME_KIHON
+.VALUE_KIHON
+.UP_KIHON
+.UP_INGYO
+.DOWN_SHINKO
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.TODAY_COUNT		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+RUN_MONTH[49]++				;「魔王の酒盛り」実行回数
+E_ETC[98]=1					;武者修行中に１度魔王の酒盛り
+
+STRSCLEAR
+
+TXLC(1,17,280,0)		; text window locate.
+TXLC(2,28,130,1)		; text window locate.
+TXLC(3,13,260,2)		; text window locate.
+WWIVENT(5,1,19,40)		; ivent window locate.
+
+EVNT049
+
+WWMUSYA(9)				; 戦闘後データロード
+WWMUSYA(8,1)			; 再描画
+
+PLAY(14)	;P14 武者修行
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+IF ( S_WORKS = 0 )	LOAD("RPGLOP,RPG000")		; 0=東部 森林地帯
+IF ( S_WORKS = 1 )	LOAD("RPGLOP,RPG001")		; 1=西部 砂漠地帯
+IF ( S_WORKS = 2 )	LOAD("RPGLOP,RPG002")		; 2=南部 水郷地帯
+IF ( S_WORKS = 3 )	LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+TXOPEN(1)致命的エラーWAITU
+
+;************************************
+;	魔王の酒盛り
+;************************************
+
+*EVNT049
+
+TXOPEN(1)
+TXA(NAME_FIRST)がキャンプをたたむと，どこかから賑やかな話し声が聞こえてきた・・・
+WWMUSYA(7)					; ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(0)	;娘・普通
+「＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+TXOPEN(1)
+TXA(NAME_FIRST)は声の方向へ近づいていった．
+@P
+TXCLOSE(1)
+
+WWIVENT(3,1,"E034")		;魔王の酒盛り
+
+PLAY(29)				;P29 緊迫
+
+TXLC(2,28,232,1)		;text window locate.
+TXOPEN(2)
+TXFACE("F198")			;魔王・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+TXOPEN(3)
+TXGIRL(14)		;娘・りりしい
+「＊＊＊＊＊＊」
+@P
+
+TXLC(2,28,130,1)		;text window locate.
+TXOPEN(2)
+TXFACE("F198")			;魔王・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+IF ( B_SHINKOH < 20 )		;信仰２０未満の場合
+	@3
+	@C
+	TXGIRL(11)		;娘・不安
+	「＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@3
+	@C
+	TXGIRL(13)		;娘・妖しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXA(NAME_FIRST)は魔王から杯を受け取り，酒を飲み干した．
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+	GR_OPEN
+	STRSCLEAR
+	IGRP_TBL1[0]="因業"
+	IGRP_TBL3[0]=B_INGYO
+	IGRP_CNT=1
+	IGRP_X=35
+	IGRP_Y=360
+	GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	B_INGYO += 80		; 因業
+	GRPUPD(1,0,B_INGYO)
+	@P
+	GR_CLOSE
+
+	TXCLOSE(3)
+	TXCLOSE(2)
+	RET
+
+;信仰２０以上の場合
+@3
+@C
+TXGIRL(14)		;娘・りりしい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+どの能力を上げてもらいますか？
+SLCPOS(1)SLCTX("体力,筋力,知能,気品,色気,断る")
+
+IF ( ISLCT = 5 )
+	@3
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	RET
+
+;断る以外を選んだ場合
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+;		信仰が２０以上の場合，信仰値が１０～２０減少．
+;		因業値が２５上昇．基本能力のうち
+;		｛体力・筋力・知能・気品・色気｝のどれか一つが４５～６０上昇．
+
+STRSCLEAR
+
+IF ( ISLCT = 0 )
+	NAME_KIHON = "体力"
+	VALUE_KIHON= B_TAIRYOKU
+IF ( ISLCT = 1 )
+	NAME_KIHON = "筋力"
+	VALUE_KIHON= B_KINRYOKU
+IF ( ISLCT = 2 )	
+	NAME_KIHON = "知能"
+	VALUE_KIHON= B_CHINOH
+IF ( ISLCT = 3 )
+	NAME_KIHON = "気品"
+	VALUE_KIHON= B_KIHIN
+IF ( ISLCT = 4 )
+	NAME_KIHON = "色気"
+	VALUE_KIHON= B_IROKE
+
+RANDAM(45,60)	UP_KIHON = AX		;基本能力
+RANDAM(10,20)	DOWN_SHINKO = AX	;信仰
+				UP_INGYO = 25		;因業
+
+GR_OPEN
+IGRP_TBL1[0] = NAME_KIHON
+IGRP_TBL3[0] = VALUE_KIHON
+IGRP_TBL1[1] = "信仰"
+IGRP_TBL3[1] = B_SHINKOH
+IGRP_TBL1[2] = "因業"
+IGRP_TBL3[2] = B_INGYO
+IGRP_CNT=3
+IGRP_X=35
+IGRP_Y=192
+GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+IF ( ISLCT = 0 )
+	B_TAIRYOKU += UP_KIHON	; 体力
+IF ( ISLCT = 1 )
+	B_KINRYOKU += UP_KIHON	; 筋力
+IF ( ISLCT = 2 )	
+	B_CHINOH += UP_KIHON	; 知能
+IF ( ISLCT = 3 )
+	B_KIHIN += UP_KIHON		; 気品
+IF ( ISLCT = 4 )
+	B_IROKE += UP_KIHON		; 色気
+
+VALUE_KIHON += UP_KIHON
+B_SHINKOH	-= DOWN_SHINKO
+IF ( B_SHINKOH < 0 ) B_SHINKOH = 0
+B_INGYO		+= UP_INGYO
+@3
+@C
+TXA(NAME_FIRST)のTXA(NAME_KIHON)がTXPOINT(UP_KIHON)上がった！
+信仰がTXPOINT(DOWN_SHINKO)下がった！
+GRPUPD(1,0,VALUE_KIHON)
+GRPUPD(1,1,B_SHINKOH)	;信仰
+GRPUPD(1,2,B_INGYO)		;因業
+@P
+GR_CLOSE
+TXCLOSE(3)
+E_ETC[85]++				;「魔王の酒盛り」魔王に能力ＵＰ回数
+RET
+
+;
+;	end of "EVNT049.TXT"
+;
+
