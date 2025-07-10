@@ -1,0 +1,479 @@
+; "JOB000.TXT"
+
+.S_STARTDAY		; スケジュール開始日
+.S_ENDDAY		; スケジュール終了日
+
+.GG_MAX
+.GG_STR[6]
+.GG_VAL[6]
+
+.DAY_COUNTER	=0	; 日付カウンタ
+.NOW_COUNT		=0	; 実行回数
+
+.FLAG_UP		=0	; 待遇アップフラグ
+.GUARA_BASE		=0	; 基本給
+.GUARA_ONE		=0	; バイト料
+.GUARA_ALL		=0	; バイト料合計
+.WORK_DAYS		=0	; 仕事日数
+.SUCCESS_DAYS	=0	; 成功日数
+.SUCCESS_LINE	=0	; 成功基準値
+.SUCCESS_FLAG	=0	; 成功フラグ
+
+.FLAG_ALLOPEN=0
+
+.A_TEXT_HDL=6		;アニメ中テキストハンドル
+
+.SLCANM
+.TIMELOP
+.TIMELOPMAX
+.TIMEWAIT1
+.GIRX
+.GIRY
+.ALOCX[10]
+.ALOCY[10]
+.ALOCC[10]
+.ALOCF[10]
+.ALOCCNT[10]
+.AFWORK=0
+.AFWORKCNT=0
+.AFMISS=0
+.AFMISSCNT=0
+.TITLES="家の手伝い"
+
+ANIME_INIT
+
+S_STARTDAY	= SCH_STARTDAY[SCH_NOW]		; スケジュール開始日
+S_ENDDAY	= SCH_ENDDAY[SCH_NOW]		; スケジュール終了日
+
+SCH_NOW++		; スケジュール実行中項目
+
+R_HOMEWORK		; 0=家の手伝い
+
+LOAD("RUNNING")
+
+;***************************************
+;
+;		家の手伝い
+;
+;***************************************
+
+*R_HOMEWORK		; 0=家の手伝い
+
+TXOPEN(1)
+TXA(NAME_FIRST)は今日から，
+自分の家で家事手伝いのお仕事です．
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+WORK_DAYS		=0				; 仕事日数
+SUCCESS_DAYS	=0				; 成功日数
+
+CK_GUARA(RUN_ARBEIT[1],1)		; バイト料
+FLAG_UP		= AX				; 待遇アップ
+
+執事のキューブ
+
+RUN_ARBEIT[17]++	;「家の手伝い」訪問回数
+
+IF ( GRA_ARBEIT[1] = FLAG_UP )	; 「家の手伝い」待遇
+	IF ( RUN_ARBEIT[17]=1 )		;１回目
+		TXFACE("F042")
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+	IF ( RUN_ARBEIT[17]>1 )		;２回目以降
+		TXFACE("F040")
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( GRA_ARBEIT[1] ! FLAG_UP )	; 「家の手伝い」待遇
+
+	GRA_ARBEIT[1] = FLAG_UP		;
+
+	IF ( FLAG_UP = 1 )			; 待遇アップ１回目
+		TXFACE("F040")
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+	IF ( FLAG_UP ! 1 )			; 待遇アップ２回目以降
+		TXFACE("F040")
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+ALL_OPEN
+DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+
+	TXF(11)
+
+	IF ( VAL_WEEK!0 )					; Sunday
+
+		RANDAM(2) AX--
+		T_KIDATE += AX					; 気だて
+
+		RANDAM(2) AX--
+		URA_FATHER += AX				; 父との関係
+		IF ( URA_FATHER >100 ) URA_FATHER = 100
+
+		RANDAM(2) AX--
+		T_SOUJISENTAKU += AX			; 掃除洗濯
+
+		RANDAM(2) AX--
+		T_RYOURI += AX					; 料理
+
+		B_KANJUSEI -=2					; 感受性
+		IF ( B_KANJUSEI <0 ) B_KANJUSEI=0
+
+		B_STRESS++						; ストレス
+
+		CLENDER(13)	;訓練技能値計算
+
+		WORK_DAYS++						; 仕事日数
+		TXCLR TXA(TITLES)・TXPOINT(WORK_DAYS)日目
+
+		IRAND999X(B_STRESS)				; ストレス
+		SUCCESS_LINE= B_TAIRYOKU - IRND	; 体力
+
+		CHK_RENAI
+		CHK_HIKOUKA
+
+		IF ( SUCCESS_LINE >= 5 )		; 体力５ 成功
+			今日は無難に家事をこなした．
+			SUCCESS_DAYS++				; 成功日数
+			SUCCESS_FLAG = 1			; 成功フラグ
+			ANIME_WIDW					;
+
+		IF ( SUCCESS_LINE < 5 )			; 体力５ 失敗
+			IF ( S_HIKOUKA < 10 )
+				今日は何か失敗したようだ・・・
+			IF ( S_HIKOUKA >= 10 )
+				TXA(NAME_FIRST)は仕事をサボっている・・・
+			SUCCESS_FLAG = 0			; 成功フラグ
+			ANIME_WIDW					;
+
+		GXXD(0,V_KIDATE)
+		GXXD(1,V_SOUJISENTAKU)
+		GXXD(2,V_RYOURI)
+		GXXD(3,B_KANJUSEI)
+		GXXD(4,B_STRESS)
+
+	IF ( VAL_WEEK=0 )				; Sunday
+		@C
+		今日は日曜日です．
+		ANMTSUNDAY
+
+	TXF(10)
+
+	BORTH_CHECK
+
+	IF ( DAY_COUNTER ! 1 )
+		CLENDER(3)					; カレンダー・更新処理
+		CLENDER(2)					; カレンダー・再表示
+LOOP DAY_COUNTER
+ALL_CLOSE
+
+RUN_ARBEIT[0]++					;「娘を働かせる」実行回数
+IF ( SUCCESS_DAYS>0 )			; 成功日数
+	RUN_ARBEIT[1]++				;「家の手伝い」実行回数
+
+TXOPEN(2)
+IF ( SUCCESS_DAYS = WORK_DAYS )		; バイト終了時（パーフェクト）
+	TXFACE("F040")
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( SUCCESS_DAYS < WORK_DAYS   SUCCESS_DAYS > 0 );（失敗があった場合）
+	TXFACE("F040")
+	「＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( SUCCESS_DAYS = 0 )			; バイト終了時（全滅）
+	TXFACE("F046")
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+RET
+
+*ALL_OPEN
+ANIME_OPEN
+STRSCLEAR
+GG_STR[0]="気だて"
+GG_STR[1]="掃除洗濯"
+GG_STR[2]="料理"
+GG_STR[3]="感受性"
+GG_STR[4]="ストレス"
+GG_VAL[0]=V_KIDATE
+GG_VAL[1]=V_SOUJISENTAKU
+GG_VAL[2]=V_RYOURI
+GG_VAL[3]=B_KANJUSEI
+GG_VAL[4]=B_STRESS
+GG_MAX=5
+GXXSTART
+FLAG_ALLOPEN=1
+RET
+
+*ALL_CLOSE
+IF ( FLAG_ALLOPEN=1 )
+	FLAG_ALLOPEN=0
+	GR_CLOSE						; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	ANIME_CLOSE
+RET
+
+; ******************
+;	lib.
+; ******************
+
+*GXXSTART
+GR_F(1,16)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN  #16	13,000byte
+C3 = 0
+C2 = 0
+IGRP_X=4
+IGRP_Y=340
+IGRP_CNT=0
+C1 = GG_MAX
+	IGRP_TBL1[IGRP_CNT]=GG_STR[C2]
+	IGRP_TBL3[IGRP_CNT]=GG_VAL[C2]
+	IGRP_CNT++ C2++
+	IF ( IGRP_CNT = 2 )
+		C3++ GRPOPEN(1,C3)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+		IGRP_CNT = 0
+		IGRP_X += 24
+LOOP C1
+IF ( IGRP_CNT ! 0 )
+	C3++ GRPOPEN(1,C3)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+RET
+
+*GXXD
+C3 = AX
+C4 = BX
+MOD( C3, 2 )	C5 = AX		; 余り
+C6 = C3 / 2 + 1				; handle.
+GRPUPD(C6,C5,C4)			;
+RET
+
+; ******************
+;	Txxx
+; ******************
+
+*ANIME_INIT
+TIMEWAIT1=8		;8;6
+TIMELOPMAX=5	;5;12
+
+;仕事中１
+RANDAM(29)			;24(3) - 272(34)
+ALOCX[0]	= IRND + 3
+ALOCY[0]	=113-79
+ALOCC[0]	=0
+ALOCCNT[0]	=2
+RANDAM(2)
+IF ( IRND=1 )
+	.FILM0[2]=1,2
+	ALOCF[0] = 0
+IF ( IRND=2 )
+	.FILM0[2]=3,4
+	ALOCF[0] = 1
+;仕事中２
+ALOCX[1]	=256/8
+ALOCY[1]	=113-79
+ALOCC[1]	=0
+ALOCCNT[1]	=2
+.FILM1[2]=8,9
+;仕事ミス・病気１
+ALOCX[2]	=ALOCX[0]
+ALOCY[2]	=113-79
+ALOCC[2]	=0
+ALOCCNT[2]	=2
+.FILM2[2]=5,6
+;仕事ミス・病気２
+ALOCX[3]	=256/8
+ALOCY[3]	=113-79
+ALOCC[3]	=0
+ALOCCNT[3]	=10
+.FILM3[10]=10,11,12,13,14,15,15,15,15,15
+;サボリ
+ALOCX[4]	=280/8
+ALOCY[4]	=113-79
+ALOCC[4]	=0
+ALOCCNT[4]	=2
+.FILM4[2]=16,17
+;キューブ
+ALOCX[5]	=64/8
+ALOCY[5]	=113-79
+ALOCC[5]	=0
+ALOCCNT[5]	=11
+.FILM5[11]=18,18,19,18,19,18,18,18,18,18,19
+RET
+
+*ANIME_OPEN
+WWANIME(1,0)			; anime window open.
+WWANIME(3,0,"J001B")	; pictuer load.
+WWANIME(6,0,"J001A")	; anime pattern add load.
+WWANIME(4,0)			; put BG.
+WWANIME(5,0)			; pictuer copy vvram -> CRT.
+TXOPEN(A_TEXT_HDL)
+RET
+
+*ANIME_CLOSE
+WWANIME(2,0)		: anime window close.
+TXCLOSE(A_TEXT_HDL)
+RET
+
+*ANIME_WIDW
+IF ( AFMISSCNT = 0 )
+	RANDAM(2)
+	AFMISS = IRND - 1
+	ALOCC[3] = 0
+	IF ( SLCANM = 0 )( SLCANM = 1 )
+		AFMISS = AFWORK
+	IF ( AFMISS=0 )	AFMISSCNT = 1
+	IF ( AFMISS=1 )	AFMISSCNT = 2
+IF ( AFWORKCNT = 0 )
+	RANDAM(2)
+	AFWORK = IRND - 1
+	RANDAM(3)
+	AFWORKCNT = IRND
+AFWORKCNT--
+IF ( SUCCESS_FLAG ! 0 )			; 成功フラグ
+	AFMISSCNT=0
+	IF ( AFWORK=0 ) ANMT001(0)	; 0=仕事中１,1=仕事中２
+	IF ( AFWORK=1 ) ANMT001(1)	; 0=仕事中１,1=仕事中２
+	GOTO ANIME_WIDW_SHOW
+IF ( S_HIKOUKA >= 10 )		; 失敗時（非行化指数１０以上）
+	ANMT001(4)				; 4=サボリ
+	GOTO ANIME_WIDW_SHOW
+AFMISSCNT--
+IF ( AFMISS=0 ) ANMT001(2)	; 2=仕事ミス１,3=仕事ミス２
+IF ( AFMISS=1 ) ANMT001(3)	; 2=仕事ミス１,3=仕事ミス２
+*ANIME_WIDW_SHOW
+RET
+
+
+*ANMT001
+; AX :	0=仕事中１,1=仕事中２,2=仕事ミス１,3=仕事ミス２,4=サボリ
+SLCANM = AX
+
+TIMELOP=TIMELOPMAX
+	WWANIME(4,0)		; put BG.
+	TIMER1(TIMEWAIT1)
+
+	ANIM_NUM(5)			APUT(ALOCX[5],ALOCY[5],DX)
+	ANIM_NUM(SLCANM)	APUT(ALOCX[SLCANM],ALOCY[SLCANM],DX)
+	ALOCC[5]++
+	ALOCC[SLCANM]++
+
+	IF ( SLCANM = 0 )
+		IF ( ALOCF[0] = 0 )
+			IF ( ALOCX[0]>=34 )		;272/8
+				FILM0[0]=3
+				FILM0[1]=4
+				ALOCF[0]=1
+			IF ( ALOCX[0]<34 )		;272/8
+				ALOCX[0]++
+				ALOCX[2]++
+		IF ( ALOCF[0] = 1 )
+			IF ( ALOCX[0]<=3 )		;24/8
+				FILM0[0]=1
+				FILM0[1]=2
+				ALOCF[0]=0
+			IF ( ALOCX[0]>3 )		;24/8
+				ALOCX[0]--
+				ALOCX[2]--
+	WAIT1
+	WWANIME(5,0)		; pictuer copy vvram -> CRT.
+LOOP TIMELOP
+RET
+
+*ANMTSUNDAY
+TIMELOP=TIMELOPMAX
+	WWANIME(4,0)		; put BG.
+	TIMER1(TIMEWAIT1)
+	WAIT1
+	WWANIME(5,0)		; pictuer copy vvram -> CRT.
+LOOP TIMELOP
+RET
+
+*ANIM_NUM
+;ANIM_NUM(filmnumber)
+;-O- DX pattern number.
+IF ( ALOCC[AX] >= ALOCCNT[AX] )
+	ALOCC[AX] = 0
+BX = ALOCC[AX]
+IF (AX=0) DX=FILM0[BX]
+IF (AX=1) DX=FILM1[BX]
+IF (AX=2) DX=FILM2[BX]
+IF (AX=3) DX=FILM3[BX]
+IF (AX=4) DX=FILM4[BX]
+IF (AX=5) DX=FILM5[BX]
+DX--	; DX pattern number.
+RET
+
+*APUT
+; anime pattern put vvram.
+; APUT(x,y,pattern)
+GIRX=AX
+GIRY=BX
+SI = CX * 2 + 1
+DX = BX
+CX = AX
+AX = 7
+BX = 0
+;	WWANIME(7,0,ALOCX[0],ALOCY[0],ALOCC[0])
+WWANIME	; anime pattern put vvram.
+RET
+
+
+;************************************
+;	誕生日チェック
+;************************************
+
+*BORTH_CHECK
+
+IF ( P_BORTHMONTH = VAL_MONTH  P_BORTHDAY = VAL_DAY )			; 娘の誕生日
+	IF ( P_BORTHMONTH[1] = VAL_MONTH  P_BORTHDAY[1] = VAL_DAY )	; 父の誕生日
+		E_ETC[14]=P_NENREI[1]			;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )			;父との関係値が６０以上
+			ALL_CLOSE
+			EVE4243						;娘の誕生日と父の誕生日の合体
+			IF ( DAY_COUNTER ! 1 )
+				ALL_OPEN
+			RET
+
+IF ( P_BORTHMONTH = VAL_MONTH )			; 誕生月
+	IF ( P_BORTHDAY = VAL_DAY )			; 誕生日
+		ALL_CLOSE
+		EVENT042						; 42 娘の誕生日
+		IF ( DAY_COUNTER ! 1 )
+			ALL_OPEN
+		RET
+
+IF ( P_BORTHMONTH[1] = VAL_MONTH )		; 父の誕生月
+	IF ( P_BORTHDAY[1] = VAL_DAY )		; 父の誕生日
+		E_ETC[14]=P_NENREI[1]			;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )			;父との関係値が６０以上
+			ALL_CLOSE
+			EVENT043					; 43 父の誕生日
+			IF ( DAY_COUNTER ! 1 )
+				ALL_OPEN
+			RET
+RET
+
+*CHK_RENAI
+IF ( FLAG_RENAI!0 )		;状態・恋愛
+	RANDAM(100)			;２０％の確率
+	IF ( IRND<=20 )
+		SUCCESS_LINE=0
+RET
+
+*CHK_HIKOUKA
+IF ( S_HIKOUKA >= 10 S_HIKOUKA < 30 )	;状態・やや反抗的
+	RANDAM(100)							;４０％の確率
+	IF ( IRND<=40 )
+		SUCCESS_LINE=0
+	RET
+
+IF ( S_HIKOUKA >= 30 )			;状態・反抗的
+	RANDAM(100)					;８０％の確率
+	IF ( IRND<=80 )
+		SUCCESS_LINE=0
+	RET
+RET
+;
+;	end of "JOB000.TXT"
+;
+
