@@ -1,0 +1,737 @@
+; "JOB009.TXT"
+
+.S_STARTDAY		; スケジュール開始日
+.S_ENDDAY		; スケジュール終了日
+
+.GG_MAX
+.GG_STR[6]
+.GG_VAL[6]
+.GG_GOLD_HDL
+
+.DAY_COUNTER	=0	; 日付カウンタ
+.NOW_COUNT		=0	; 実行回数
+
+.FLAG_UP		=0	; 待遇アップフラグ
+.GUARA_BASE		=0	; 基本給
+.GUARA_ONE		=0	; バイト料
+.GUARA_ALL		=0	; バイト料合計
+.WORK_DAYS		=0	; 仕事日数
+.SUCCESS_DAYS	=0	; 成功日数
+.SUCCESS_LINE	=0	; 成功基準値
+.SUCCESS_LINE2	=0	; 成功基準値
+.SUCCESS_FLAG	=0	; 成功フラグ
+
+.FLAG_ALLOPEN=0
+
+.A_TEXT_HDL=6		;アニメ中テキストハンドル
+
+.SLCANM
+.TIMELOP
+.TIMELOPMAX
+.TIMEWAIT1
+.GIRX
+.GIRY
+.ALOCX[13]
+.ALOCY[13]
+.ALOCC[13]
+.ALOCF[13]
+.ALOCCNT[13]
+.AFWORK=0
+.AFWORKCNT=0
+.AFMISS=0
+.AFMISSCNT=0
+.TITLES="狩人"
+
+.SLCANM_OLD=999
+.FLAG_ANM3_ON=0
+.COUNT_HUNTER_OFF
+.COUNT_GIRL_OFF
+.FLAG_SHIKA=0
+
+ANIME_INIT
+
+S_STARTDAY	= SCH_STARTDAY[SCH_NOW]		; スケジュール開始日
+S_ENDDAY	= SCH_ENDDAY[SCH_NOW]		; スケジュール終了日
+
+SCH_NOW++		; スケジュール実行中項目
+
+R_HUNTER		; 9=狩人
+
+LOAD("RUNNING")
+
+
+;***************************************
+;
+;		狩人
+;
+;***************************************
+
+*R_HUNTER		; 9=狩人
+
+TXOPEN(1)
+TXA(NAME_FIRST)は今日から，
+森で狩人のアルバイトです．
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F068")
+
+GUARA_BASE	=8						; 基本給
+GUARA_ALL	=0						; バイト料合計
+WORK_DAYS	=0						; 仕事日数
+SUCCESS_DAYS=0						; 成功日数
+
+CK_GUARA(RUN_ARBEIT[10],GUARA_BASE)	; バイト料
+FLAG_UP		= AX					; 待遇アップ
+GUARA_ONE	= DX					; バイト料
+
+狩人コウ
+
+RUN_ARBEIT[26]++	;「狩人」訪問回数
+
+IF ( GRA_ARBEIT[10] = FLAG_UP )		; 待遇
+
+	IF ( RUN_ARBEIT[26]=1 )		;１回目
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+	IF ( RUN_ARBEIT[26]>1 )		;２回目以降
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( GRA_ARBEIT[10] ! FLAG_UP )		; 待遇
+
+	GRA_ARBEIT[10] = FLAG_UP		; 待遇
+
+	IF ( FLAG_UP = 1 )				; 待遇アップ１回目
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXGOLD(GUARA_ONE)＊＊＊」
+
+	IF ( FLAG_UP ! 1 )				; 待遇アップ２回目以降
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXGOLD(GUARA_ONE)＊」
+@P
+TXCLOSE(2)
+
+ALL_OPEN
+ANMT_INTRO		;	イントロ
+DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+
+	TXF(11)
+
+	IF ( VAL_WEEK!0 )					; Sunday
+
+		B_TAIRYOKU++					; 体力
+
+		RANDAM(2) AX--
+		T_SENTOH += AX					; 戦闘技術
+
+		B_KIHIN--						; 気品
+		IF ( B_KIHIN < 0 ) B_KIHIN=0
+
+		URA_MOTHER_LOVE--				; 母性
+		IF ( URA_MOTHER_LOVE < 0 ) URA_MOTHER_LOVE=0
+
+		B_STRESS += 3					; ストレス
+
+		RANDAM(2) AX--
+		B_INGYO += AX					; 因業
+
+		CLENDER(13)	;訓練技能値計算
+
+		WORK_DAYS++						; 仕事日数
+		TXCLR TXA(TITLES)・TXPOINT(WORK_DAYS)日目
+
+		IRAND999X(B_STRESS)				; ストレス
+		SUCCESS_LINE= B_TAIRYOKU - IRND	; 体力
+		IRAND999X(B_STRESS)				; ストレス
+		SUCCESS_LINE2 = B_CHINOH - IRND	; 知能
+
+		CHK_RENAI
+		CHK_HIKOUKA
+
+		IF ( SUCCESS_LINE >= 80  SUCCESS_LINE2 >= 40 )	; 体力８０ 知能４０ 成功
+			今日はなんとか失敗せずにすんだ．
+			SUCCESS_DAYS++				; 成功日数
+			GUARA_ALL += GUARA_ONE		; バイト料合計
+			GXXDGOLD
+			SUCCESS_FLAG = 1			; 成功フラグ
+			ANIME_WIDW					;
+
+		IF ( SUCCESS_LINE < 80 )( SUCCESS_LINE2 < 40 )	; 体力８０ 知能４０ 失敗
+			IF ( S_HIKOUKA < 10 )
+				今日は仕事の邪魔になってしまったようだ・・・
+			IF ( S_HIKOUKA >= 10 )
+				TXA(NAME_FIRST)は仕事をサボっている・・・
+			SUCCESS_FLAG = 0			; 成功フラグ
+			ANIME_WIDW					;
+
+		GXXD(0,B_TAIRYOKU)			; 体力
+		GXXD(1,V_SENTOH)			; 戦闘技術
+		GXXD(2,B_KIHIN)				; 気品
+		GXXD(3,B_INGYO)				; 因業
+		GXXD(4,B_STRESS)			; ストレス
+
+	IF ( VAL_WEEK=0 )				; Sunday
+		@C
+		今日は日曜日です．
+		ANMTSUNDAY
+
+	TXF(10)
+
+	BORTH_CHECK
+
+	IF ( DAY_COUNTER ! 1)
+		CLENDER(3)					; カレンダー・更新処理
+		CLENDER(2)					; カレンダー・再表示
+LOOP DAY_COUNTER
+ALL_CLOSE
+
+RUN_ARBEIT[0]++					;「娘を働かせる」実行回数
+IF ( SUCCESS_DAYS>0 )			; 成功日数
+	RUN_ARBEIT[10]++			;「狩人」実行回数
+
+TXOPEN(2)
+TXFACE("F068")
+
+IF ( SUCCESS_DAYS = WORK_DAYS )		; バイト終了時（パーフェクト）
+	P1X100(GUARA_ALL,50)
+	GUARA_ALL += AX
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXPOINT(SUCCESS_DAYS)日分TXGOLD(GUARA_ALL)＊＊＊＊＊＊＊＊＊＊」
+	GOLDADD(GUARA_ALL)			; バイト料合計
+
+IF ( SUCCESS_DAYS < WORK_DAYS   SUCCESS_DAYS > 0 );（失敗があった場合）
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXPOINT(SUCCESS_DAYS)日分でTXGOLD(GUARA_ALL)＊」
+	GOLDADD(GUARA_ALL)			; バイト料合計
+
+IF ( SUCCESS_DAYS = 0 )			; バイト終了時（全滅）
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+WWPROF(3)					; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+TXCLOSE(2)
+
+RET
+
+*ALL_OPEN
+ANIME_OPEN
+STRSCLEAR
+GG_STR[0]="体力"
+GG_VAL[0]=B_TAIRYOKU
+GG_STR[1]="戦闘技術"
+GG_VAL[1]=V_SENTOH
+GG_STR[2]="気品"
+GG_VAL[2]=B_KIHIN
+GG_STR[3]="因業"
+GG_VAL[3]=B_INGYO
+GG_STR[4]="ストレス"
+GG_VAL[4]=B_STRESS
+GG_MAX=5
+GXXSTART
+FLAG_ALLOPEN=1
+RET
+
+*ALL_CLOSE
+IF ( FLAG_ALLOPEN=1 )
+	FLAG_ALLOPEN=0
+	GR_CLOSE						; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	ANIME_CLOSE
+RET
+
+; ******************
+;	lib.
+; ******************
+
+*GXXSTART
+;GR_F(1,16)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN  #16	13,000byte
+GR_F(1,23)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN  PROCWRK_TOP #23 52,200byte
+C3 = 0
+C2 = 0
+IGRP_X=4
+IGRP_Y=340
+IGRP_CNT=0
+C1 = GG_MAX
+	IGRP_TBL1[IGRP_CNT]=GG_STR[C2]
+	IGRP_TBL3[IGRP_CNT]=GG_VAL[C2]
+	IGRP_CNT++ C2++
+	IF ( IGRP_CNT = 2 )
+		C3++ GRPOPEN(1,C3)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+		IGRP_CNT = 0
+		IGRP_X += 24
+LOOP C1
+IF ( IGRP_CNT ! 0 )
+	C3++ GRPOPEN(1,C3)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+IGRP_TBL1[0]="もうけ"
+IGRP_TBL3[0]=0
+IGRP_CNT=1
+IGRP_X=4
+IGRP_Y=140
+C3++ GOLDOPEN(1,C3)			; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+GG_GOLD_HDL=C3
+RET
+
+*GXXD
+C3 = AX
+C4 = BX
+MOD( C3, 2 )	C5 = AX		; 余り
+C6 = C3 / 2 + 1				; handle.
+GRPUPD(C6,C5,C4)			;
+RET
+
+*GXXDGOLD
+GOLDUPD(GG_GOLD_HDL,0,GUARA_ALL)
+RET
+
+; ******************
+;	Txxx
+; ******************
+
+*ANIME_INIT
+TIMEWAIT1=8		;8;6
+TIMELOPMAX=8;5	;5;12
+
+;仕事中１
+ALOCX[0]	=8/8	;8/8
+ALOCY[0]	=114-79
+ALOCC[0]	=0
+ALOCCNT[0]	=2
+.FILM0[2]
+
+;仕事中２
+ALOCX[1]	=ALOCX[0]
+ALOCY[1]	=ALOCY[0]
+ALOCC[1]	=0
+ALOCCNT[1]	=2
+.FILM1[4]
+
+;仕事ミス・病気１
+ALOCX[2]	=ALOCX[0]
+ALOCY[2]	=ALOCY[0]
+ALOCC[2]	=0
+ALOCCNT[2]	=1
+.FILM2[1]
+
+;仕事ミス・病気２
+ALOCX[3]	=ALOCX[0]
+ALOCY[3]	=ALOCY[0]
+ALOCC[3]	=0
+ALOCCNT[3]	=1
+.FILM3[1]
+
+;サボリ
+ALOCX[4]	=0/8
+ALOCY[4]	=113-79
+ALOCC[4]	=0
+ALOCCNT[4]	=2
+.FILM4[2]=24,25
+
+;逃げるウサギ(仕事ミス２の)
+ALOCX[5]	=ALOCX[0]
+ALOCY[5]	=ALOCY[0]
+ALOCC[5]	=0
+ALOCCNT[5]	=12
+.FILM5[12]=14,15,16,17,18, 19,20,21,20,21, 22,23
+
+;狩人
+ALOCX[6]	=ALOCX[0]+6
+ALOCY[6]	=ALOCY[0]
+ALOCC[6]	=0
+ALOCCNT[6]	=2
+.FILM6[2]
+
+;イントロ娘
+ALOCX[7]	=8/8
+ALOCY[7]	=114-79
+ALOCC[7]	=0
+ALOCCNT[7]	=12
+.FILM7[12]=3,3,3,3,3, 3,3,3,3,3, 3,3
+;イントロ狩人
+ALOCX[8]	=56/8
+ALOCY[8]	=114-79
+ALOCC[8]	=0
+ALOCCNT[8]	=12
+.FILM8[12]=30,30,30,30,30, 30,31,31,31,31, 31,31
+;イントロ矢
+ALOCX[9]	=160/8
+ALOCY[9]	=114-79
+ALOCC[9]	=0
+ALOCCNT[9]	=12
+.FILM9[12]=0,0,0,0,0, 0,32,32,32,32, 0,0
+;イントロ鹿
+ALOCX[10]	=248/8
+ALOCY[10]	=114-79
+ALOCC[10]	=0
+ALOCCNT[10]	=12
+.FILM10[12]=33,33,33,33,33, 33,36,38,40,42, 0,0
+;イントロ鹿
+ALOCX[11]	=280/8
+ALOCY[11]	=114-79
+ALOCC[11]	=0
+ALOCCNT[11]	=12
+.FILM11[12]=34,35,34,35,34, 35,37,39,41, 0, 0,0
+
+
+WORKS1_RIGHT
+WORKS2_RIGHT
+HANTER_RIGHT
+RET
+
+*WORKS1_RIGHT
+FILM0[0]=1
+FILM0[1]=2
+FILM2[0]=4
+ALOCF[0] = 0
+RET
+
+*WORKS1_LEFT
+FILM0[0]=5
+FILM0[1]=6
+FILM2[0]=7
+ALOCF[0] = 1
+RET
+
+*WORKS2_RIGHT
+FILM1[0]=11
+FILM1[1]=12
+ALOCCNT[1]=2
+FILM3[0]=13
+ALOCF[1] = 0
+ALOCCNT[3]=1
+RET
+
+*WORKS2_LEFT
+FILM1[0]=8
+FILM1[1]=8
+FILM1[2]=9
+FILM1[3]=9
+ALOCCNT[1]=4
+FILM3[0]=10
+ALOCF[1] = 1
+ALOCCNT[3]=1
+RET
+
+*HANTER_RIGHT
+FILM6[0]=26
+FILM6[1]=27
+ALOCF[6] = 0
+RET
+
+*HANTER_LEFT
+FILM6[0]=28
+FILM6[1]=29
+ALOCF[6] = 1
+RET
+
+*ANIME_OPEN
+WWANIME(1,0)			; anime window open.
+WWANIME(3,0,"J010B")	; pictuer load.
+WWANIME(6,0,"J007BK")	; anime pattern add load.
+WWANIME(6,0,"J010A")	; anime pattern add load.
+WWANIME(4,0)			; put BG.
+WWANIME(17,0,0,0,0,1)	;(bank)anime ptn ofset maskput vvram.
+WWANIME(5,0)			; pictuer copy vvram -> CRT.
+TXOPEN(A_TEXT_HDL)
+RET
+
+*ANIME_CLOSE
+WWANIME(2,0)			; anime window close.
+TXCLOSE(A_TEXT_HDL)
+RET
+
+*ANIME_WIDW
+IF ( SUCCESS_FLAG ! 0 )			; 成功フラグ
+	IF ( AFWORK=0 ) ANMT001(0)	; 0=仕事中１,1=仕事中２
+	IF ( AFWORK=1 ) ANMT001(1)	; 0=仕事中１,1=仕事中２
+	GOTO ANIME_WIDW_SHOW
+IF ( S_HIKOUKA >= 10 )		; 失敗時（非行化指数１０以上）
+	ANMT001(4)				; 4=サボリ
+	GOTO ANIME_WIDW_SHOW
+IF ( AFMISS=0 ) ANMT001(2)	; 2=仕事ミス１,3=仕事ミス２
+IF ( AFMISS=1 ) ANMT001(3)	; 2=仕事ミス１,3=仕事ミス２
+*ANIME_WIDW_SHOW
+RET
+
+
+*ANMT001
+; AX :	0=仕事中１,1=仕事中２,2=仕事ミス１,3=仕事ミス２,4=サボリ
+SLCANM = AX
+
+;IF ( SLCANM = 0  SLCANM_OLD ! 0 )( SLCANM = 1  SLCANM_OLD ! 1 )
+IF ( SLCANM = 0  COUNT_GIRL_OFF = 1 )( SLCANM = 1  COUNT_GIRL_OFF = 1 )
+	IF ( ALOCF[6]=0 )
+		WORKS1_RIGHT
+		WORKS2_RIGHT
+	IF ( ALOCF[6]=1 )
+		WORKS1_LEFT
+		WORKS2_LEFT
+	IF ( ALOCF[6] = 0 )
+		IF ( ALOCX[6] < 4 )
+			ALOCX[6] = 4
+		C1 = ALOCX[6] - 7
+	IF ( ALOCF[6] = 1 )
+		IF ( ALOCX[6] > 31 )
+			ALOCX[6] = 31
+		C1 = ALOCX[6] + 7
+	ALOCX[0] = C1
+	ALOCX[1] = C1
+	ALOCX[2] = C1
+	ALOCX[3] = C1
+	COUNT_HUNTER_OFF = 0
+	COUNT_GIRL_OFF = 0
+
+IF ( SLCANM = 3  ALOCF[0]=0 SLCANM_OLD ! 3 )			;3=仕事ミス２
+	ALOCX[5]=ALOCX[0]
+	ALOCC[5]=0
+	FLAG_ANM3_ON=1
+	AFWORK = 0			; 0=仕事中１,1=仕事中２
+	;;AFMISS = 0
+
+TIMELOP=TIMELOPMAX
+	WWANIME(4,0)		; put BG.
+	TIMER1(TIMEWAIT1)
+
+	IF ( COUNT_HUNTER_OFF = 0 )
+		ANIM_NUM(6)		APUT(ALOCX[6],ALOCY[6],DX)
+		ALOCC[6]++
+
+	IF ( SLCANM = 0 )( SLCANM = 1 )
+		IF ( COUNT_GIRL_OFF = 0 )
+			ANIM_NUM(SLCANM)	APUT(ALOCX[SLCANM],ALOCY[SLCANM],DX)
+			ALOCC[SLCANM]++
+	IF ( SLCANM = 2 )( SLCANM = 3 )( SLCANM = 4 )
+		ANIM_NUM(SLCANM)	APUT(ALOCX[SLCANM],ALOCY[SLCANM],DX)
+		ALOCC[SLCANM]++
+
+	IF ( FLAG_ANM3_ON=1 )	;3=仕事ミス２
+		ANIM_NUM(5)		APUT(ALOCX[5],ALOCY[5],DX)
+		ALOCC[5]++
+		IF ( ALOCC[5]=12 )
+			ALOCC[5]=10
+		IF ( ALOCC[5]>=10 )
+			ALOCX[5]--
+			IF ( ALOCC[5]=10 )
+				ALOCX[5]-=2
+			IF ( ALOCX[5]<=-3 )
+				FLAG_ANM3_ON=0
+
+	IF ( SLCANM = 0 )( SLCANM = 1 )
+		IF ( COUNT_GIRL_OFF = 0 )
+			IF ( ALOCF[0] = 0 )
+				IF ( ALOCX[0]>=37 )		;max
+					RANDAM(4)
+					IF ( AX > 2 ) AX = 2
+					IF ( FLAG_SHIKA=1 ) AX = 2
+					FLAG_SHIKA=0
+					AFMISS=AX-1
+					AFWORK=AX-1
+					COUNT_GIRL_OFF=8
+					WORKS1_LEFT
+					WORKS2_LEFT
+				IF ( ALOCX[0]<37 )		;max
+					ALOCX[0]+=2
+					ALOCX[1]+=2
+					ALOCX[2]+=2
+					ALOCX[3]+=2
+			IF ( ALOCF[0] = 1 )
+				IF ( ALOCX[0]<=-2 )		;min
+					RANDAM(4)
+					IF ( AX > 2 ) AX = 2
+					AFMISS=AX-1
+					AFWORK=AX-1
+					COUNT_GIRL_OFF=8
+					WORKS1_RIGHT
+					WORKS2_RIGHT
+				IF ( ALOCX[0]>-2 )		;min
+					IF ( SLCANM = 1 ALOCC[1]=2 )
+						ALOCX[0]++
+						ALOCX[1]++
+						ALOCX[2]++
+						ALOCX[3]++
+					ALOCX[0]-=2
+					ALOCX[1]-=2
+					ALOCX[2]-=2
+					ALOCX[3]-=2
+
+	IF ( COUNT_HUNTER_OFF = 0 )
+		IF ( ALOCF[6] = 0 )
+			IF ( ALOCX[6]>=37 )		;max
+				COUNT_HUNTER_OFF=3
+				HANTER_LEFT
+			IF ( ALOCX[6]<37 )		;max
+				ALOCX[6]+=2
+		IF ( ALOCF[6] = 1 )
+			IF ( ALOCX[6]<=-1 )		;min
+				COUNT_HUNTER_OFF=3
+				HANTER_RIGHT
+			IF ( ALOCX[6]>-1 )		;min
+				ALOCX[6]-=2
+
+	IF ( COUNT_GIRL_OFF > 0 )
+		IF ( COUNT_HUNTER_OFF > 0 )
+			COUNT_HUNTER_OFF--
+
+	IF ( COUNT_HUNTER_OFF = 0 )
+		IF ( COUNT_GIRL_OFF > 0 )
+			COUNT_GIRL_OFF--
+
+	WWANIME(17,0,0,0,0,1)	;(bank)anime ptn ofset maskput vvram.
+	WAIT1
+	WWANIME(5,0)		; pictuer copy vvram -> CRT.
+LOOP TIMELOP
+SLCANM_OLD = SLCANM
+
+IF ( SLCANM = 3  ALOCF[0]=0  FLAG_ANM3_ON=0 )	;3=仕事ミス２
+	AFWORK = 0			; 0=仕事中１,1=仕事中２
+	AFMISS = 0
+RET
+
+;	イントロ
+
+*ANMT_INTRO
+FLAG_SHIKA=1
+
+RANDAM(2)
+AFWORK = AX - 1			; 0=仕事中１,1=仕事中２
+AFMISS = AX - 1
+
+TIMELOP = 12
+	WWANIME(4,0)		; put BG.
+	TIMER1(TIMEWAIT1)
+
+	IF ( ALOCC[7]=0 )( ALOCC[7]>=12 )
+		ALOCX[10]=248/8
+		ALOCX[11]=280/8
+
+	IF ( ALOCC[7]=6 )
+		ALOCX[9]=160/8
+
+	IF ( ALOCC[7]=7 )
+		ALOCX[9]=208/8
+
+	IF ( ALOCC[7]=8 )
+		ALOCX[9]=248/8
+		ALOCX[10]=264/8
+		ALOCX[11]=264/8+4
+
+	IF ( ALOCC[7]=9 )
+		ALOCX[9]=280/8
+		ALOCX[10]=280/8
+		ALOCX[11]=280/8+4
+
+	C1 = 5  C2 = 7
+		ANIM_NUM(C2)		APUT(ALOCX[C2],ALOCY[C2],DX)
+		ALOCC[C2]++
+		C2++
+	LOOP C1
+
+	WWANIME(17,0,0,0,0,1)	;(bank)anime ptn ofset maskput vvram.
+	WAIT1
+	WWANIME(5,0)		; pictuer copy vvram -> CRT.
+LOOP TIMELOP
+RET
+
+*ANMTSUNDAY
+TIMELOP=TIMELOPMAX
+	WWANIME(4,0)		; put BG.
+	TIMER1(TIMEWAIT1)
+	WWANIME(17,0,0,0,0,1)	;(bank)anime ptn ofset maskput vvram.
+	WAIT1
+	WWANIME(5,0)		; pictuer copy vvram -> CRT.
+LOOP TIMELOP
+RET
+
+*ANIM_NUM
+;ANIM_NUM(filmnumber)
+;-O- DX pattern number.
+IF ( ALOCC[AX] >= ALOCCNT[AX] )
+	ALOCC[AX] = 0
+BX = ALOCC[AX]
+IF (AX=0) DX=FILM0[BX]
+IF (AX=1) DX=FILM1[BX]
+IF (AX=2) DX=FILM2[BX]
+IF (AX=3) DX=FILM3[BX]
+IF (AX=4) DX=FILM4[BX]
+IF (AX=5) DX=FILM5[BX]
+IF (AX=6) DX=FILM6[BX]
+IF (AX=7) DX=FILM7[BX]
+IF (AX=8) DX=FILM8[BX]
+IF (AX=9) DX=FILM9[BX]
+IF (AX=10) DX=FILM10[BX]
+IF (AX=11) DX=FILM11[BX]
+DX--	; DX pattern number.
+RET
+
+*APUT
+; anime pattern put vvram.
+; APUT(x,y,pattern)
+IF ( CX < 0 ) RET
+GIRX=AX
+GIRY=BX
+SI = CX * 2 + 1  +2
+DX = BX
+CX = AX
+AX = 7
+BX = 0
+;	WWANIME(7,0,ALOCX[0],ALOCY[0],ALOCC[0])
+WWANIME	; anime pattern put vvram.
+RET
+
+
+;************************************
+;	誕生日チェック
+;************************************
+
+*BORTH_CHECK
+
+IF ( P_BORTHMONTH = VAL_MONTH  P_BORTHDAY = VAL_DAY )			; 娘の誕生日
+	IF ( P_BORTHMONTH[1] = VAL_MONTH  P_BORTHDAY[1] = VAL_DAY )	; 父の誕生日
+		E_ETC[14]=P_NENREI[1]			;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )			;父との関係値が６０以上
+			ALL_CLOSE
+			EVE4243						;娘の誕生日と父の誕生日の合体
+			IF ( DAY_COUNTER ! 1 )
+				ALL_OPEN
+			RET
+
+IF ( P_BORTHMONTH = VAL_MONTH )			; 誕生月
+	IF ( P_BORTHDAY = VAL_DAY )			; 誕生日
+		ALL_CLOSE
+		EVENT042						; 42 娘の誕生日
+		IF ( DAY_COUNTER ! 1 )
+			ALL_OPEN
+		RET
+
+IF ( P_BORTHMONTH[1] = VAL_MONTH )		; 父の誕生月
+	IF ( P_BORTHDAY[1] = VAL_DAY )		; 父の誕生日
+		E_ETC[14]=P_NENREI[1]			;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )			;父との関係値が６０以上
+			ALL_CLOSE
+			EVENT043					; 43 父の誕生日
+			IF ( DAY_COUNTER ! 1 )
+				ALL_OPEN
+			RET
+RET
+
+*CHK_RENAI
+IF ( FLAG_RENAI!0 )		;状態・恋愛
+	RANDAM(100)			;２０％の確率
+	IF ( IRND<=20 )
+		SUCCESS_LINE=0
+RET
+
+*CHK_HIKOUKA
+IF ( S_HIKOUKA >= 10 S_HIKOUKA < 30 )	;状態・やや反抗的
+	RANDAM(100)							;４０％の確率
+	IF ( IRND<=40 )
+		SUCCESS_LINE=0
+	RET
+
+IF ( S_HIKOUKA >= 30 )			;状態・反抗的
+	RANDAM(100)					;８０％の確率
+	IF ( IRND<=80 )
+		SUCCESS_LINE=0
+	RET
+RET
+;
+;	end of "JOB009.TXT"
+;
+
