@@ -1,0 +1,1477 @@
+;"KAIMONO.TXT"
+;
+;	shopping.
+;
+;	worning : don't 32kbyte over.
+;	このテキストは３２ｋｂｙｔｅを越えてはいけません。
+;
+;	"EVNT042.TXT"にも雑貨屋がある
+;
+;
+
+.BUKIYA_MAN=0	;武器屋店員
+.RYOURI_MAN		;料理屋店員
+.ZAKKA_MAN=0	;雑貨屋店員
+.ITEM_SLCT=0	;選択
+.ITEM_KOUKA[50]	;効果
+.ITEM_ATTRBUTE[20]	;種別
+.WARIBIKI=0		;割引率
+.WARIPRICE=0	;割引価格
+.URIPRICE=0		;売り値
+.DOCPRICE=0		;医療費
+
+.D_STRESS[5]	;ｽﾄﾚｽ
+.D_TAIJU[5]		;体重
+.D_TAIRYOKU[5]	;体力
+
+.GT_ITM_ATTR	;item attribute.
+.GT_ITM_EQUIP	;item equipment.
+
+.FLAG_SHOP_EXIT
+
+IF ( E_ETC[9] ! 0 )		;「無駄遣い」実行中
+	EVENT018			;18 ムダ使い
+	LOAD("RUNNING")
+
+FFDISK(4)		;ﾌﾛｯﾋﾟｰﾃﾞｨｽｸを使用するか
+IF ( AX=0 )
+	IF ( P_NENREI < 15 )
+		FFDISK(5,3)		; チェンジディスク指定
+	IF ( P_NENREI >=15 )
+		FFDISK(5,12)	; チェンジディスク指定
+
+*START
+TXLC(1,4,290,0)
+TXLC(10,4,290,0)
+TXLC(2,17,148,1)
+TXLC(3,31,270,2)
+TXLC(11,31,20,2)
+TXLC(5,5,260,0)
+
+WWIVENT(5,0,6,40)	;ivent window locate.
+WWIVENT(1,0,"E009")	;ivent window open.
+TXOPEN(1)
+*START2
+@1 娘と街へ出た．どこへ行こうか？
+
+SLCPOS(4)		;4=メインSLCT発生位置
+;SLCT("武器屋,仕立屋,料理屋,雑貨屋,教会,医院,帰る")
+
+STRSCLEAR
+C2 = 0
+BP="武器屋"		TBLSET4S(84)
+BP="仕立屋"		TBLSET4S(85)
+BP="料理屋"		TBLSET4S(68)
+BP="雑貨屋"		TBLSET4S(86)
+BP="教会"		TBLSET4S(56)
+BP="医院"		TBLSET4S(87)
+
+IF ( IDBG[5]!0 )	;なんでも屋
+	PARC(9)		; ten key check.
+	IF ( BX=1 )	; 1=HELP,2=HOME,3=PLUS,4=ESC (-1:押していない)
+		BP="なんでも屋"	TBLSET4S(104)
+		BP="職業安定所"	TBLSET4S(106)
+
+ITEMID_CNT=C2	;アイテムＩＤ数
+ITEMSLCT(4)		;マルチアイテム選択
+IF ( ISITM=-1 )
+	TXCLOSE(1)
+	EVENT022			;22 武芸者の挑戦
+	WWIVENT(2,0)		;ivent window close.
+	IF ( GIRL_DAMEG!0 )
+		PLAY(8)		;P8 病気
+	IF ( GIRL_DAMEG=0 )
+		IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+		IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+		IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+		IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+	LOAD("MAINLOOP")
+
+IF ( ISITM=0 ) KAIMONO_BUKI			GOTO MAIN_NEXT
+IF ( ISITM=1 ) KAIMONO_SHITATE		GOTO MAIN_NEXT
+IF ( ISITM=2 ) KAIMONO_RYOURI		GOTO MAIN_NEXT
+IF ( ISITM=3 ) KAIMONO_ZAKKA		GOTO MAIN_NEXT
+IF ( ISITM=4 ) KAIMONO_KYOUKAI		GOTO MAIN_NEXT
+IF ( ISITM=5 ) KAIMONO_BYOUIN		GOTO MAIN_NEXT
+IF ( ISITM=6 )
+	WWIVENT(2,0)		;ivent window close.
+	TXCLOSE(1)
+	LOAD("TEST02")
+IF ( ISITM=7 )
+	WWIVENT(2,0)		;ivent window close.
+	TXCLOSE(1)
+	LOAD("TEST")
+
+*MAIN_NEXT
+TXCLOSE(2)
+
+*MAIN_NEXT2
+TXOPEN(1)
+
+GOTO	START2
+
+*KAIMONO_BUKI
+TXCLOSE(1)
+RANDAM(4)
+IF (AX<4) BUKIYA_MAN=1	;武器屋は通常は主人のゼノさんですが
+IF (AX=4) BUKIYA_MAN=2	;《１／４》の確率でアルバイトのアニータ
+TXOPEN(2)
+IF ( BUKIYA_MAN=1 )
+	TXFACE("F074")
+	武器屋のゼノ
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BUKIYA_MAN=2 )
+	TXFACE("F098")
+	武器屋のアルバイト　アニータ
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCT("買物をする,店を出る")
+IF ( ISLCT ! 0 ) RET
+
+BUKI_SET	;武器設定
+
+*BUKI_SELECT
+	ITEMST(1);ﾏﾙﾁｱｲﾃﾑ選択
+	IF ( ISITM = -1 ) RET
+
+	ITEM_SLCT=ISITM		;選択
+
+	BUKI_SETSUMEI		;武器説明
+	@2
+	@P
+	PRICE_DOWN
+	P1X100(ITEMID_TBL3[ITEM_SLCT],WARIBIKI)
+	WARIPRICE=ITEMID_TBL3[ITEM_SLCT]-AX
+	「TXA(ITEMID_TBL1[ITEM_SLCT])＊＊＊＊TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊」
+	SLCTBAK(5)
+	SLCT("買う,やめておく,店を出る")
+	ITEMST(99);ｱｲﾃﾑ選択clear.
+	IF ( ISLCT = 2 ) RET
+	IF ( ISLCT=1 )( ISLCT=-1 )
+		@2
+		@C
+		IF(BUKIYA_MAN=1)「＊＊＊＊＊＊＊＊＊」
+		IF(BUKIYA_MAN=2)「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		GOTO BUKI_SELECT
+	BUKI_BUY
+GOTO BUKI_SELECT
+
+
+
+*BUKI_BUY
+@2
+@C
+GOLDCMP(WARIPRICE)
+IF ( AX = 2 )
+	;お金が足りない場合
+	IF(BUKIYA_MAN=1)「＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	RET
+
+IF ( ITEM_MAX >= ITEM_DIM )
+	ITEM_FULL
+	RET
+
+IF ( WARIBIKI ! 0 )
+	IF(BUKIYA_MAN=1)
+		「＊＊＊TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊＊
+		＊＊＊＊TXA(NAME_FIRST)＊＊＊＊
+		TXGOLD(WARIPRICE)＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊＊＊
+		TXGOLD(WARIPRICE)＊＊＊＊＊＊＊＊」
+
+ITEM_WRITE
+
+IF(BUKIYA_MAN=1)「＊＊＊＊＊＊＊＊」
+IF(BUKIYA_MAN=2)「＊＊＊＊＊＊＊＊」
+
+GOLDSUB(WARIPRICE)
+WWPROF(3)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+RET
+
+*PRICE_DOWN
+IF ( S_JINMYAKU < 100 )		;人脈
+	WARIBIKI=0		;０～９９	０％
+	RET
+IF ( S_JINMYAKU < 200 )
+	WARIBIKI=5		;１００～	５％
+	RET			;　１９９
+IF ( S_JINMYAKU < 300 )
+	WARIBIKI=10		;２００～	１０％
+	RET			;　２９９
+IF ( S_JINMYAKU < 400 )
+	WARIBIKI=15		;３００～	１５％
+	RET			;　３９９
+IF ( S_JINMYAKU < 500 )
+	WARIBIKI=20		;４００～	２０％
+	RET			;　４９９
+IF ( S_JINMYAKU < 600 )
+	WARIBIKI=25		;５００～	２５％
+	RET			;　５９９
+IF ( S_JINMYAKU < 700 )
+	WARIBIKI=30		;６００～	３０％
+	RET			;　６９９
+IF ( S_JINMYAKU < 800 )
+	WARIBIKI=35		;７００～	３５％
+	RET			;　７９９
+IF ( S_JINMYAKU < 900 )
+	WARIBIKI=40		;８００～	４０％
+	RET			;　８９９
+IF ( S_JINMYAKU < 1000 )
+	WARIBIKI=45		;９００～	４５％
+	RET			;　９９９
+WARIBIKI=50			;１０００以上	５０％
+RET				;
+
+
+
+*BUKI_SETSUMEI		;武器説明
+@2
+@C
+IF ( ITEM_SLCT=0 )		;こん棒
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=1 )		;銅の剣
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=2 )		;鉄の短剣
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=3 )		;鉄の長剣
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊
+		＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=4 )		;両手鉄剣
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=5 )		;ﾐｽﾘﾙ剣
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=6 )		;東方片刃剣
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=7 )		;皮の鎧
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=8 )		;鎖帷子
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=9 )		;鉄の鎧
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=10 )		;ﾐｽﾘﾙ鎧
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=11 )		;シルクの鎧
+	IF(BUKIYA_MAN=1)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF(BUKIYA_MAN=2)
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+RET
+
+
+
+*BUKI_SET	;武器設定
+
+STRSCLEAR
+
+C2 = 0
+
+;こん棒
+;【値段】15G
+;【効果】攻撃力+3
+
+ITEMID_TBL1[C2]="こん棒"
+ITEMID_TBL2[C2]=1		;ＩＣＯＮ
+ITEMID_TBL3[C2]=15		;金
+ITEMID_TBL4[C2]="攻撃+3"
+ITEMID_TBL5[C2]=0		;
+ITEMID_TBL6[C2]=""		;
+ITEMID_TBL7[C2]=0		;
+ITEM_KOUKA[C2]="V_KOUGEKI+3"
+ITEM_ATTRBUTE[C2]=2000	;2000番台=武器
+C2++
+
+;銅の剣
+;【値段】40G
+;【効果】攻撃力+6
+
+ITEMID_TBL1[C2]="銅の剣"
+ITEMID_TBL2[C2]=2
+ITEMID_TBL3[C2]=40
+ITEMID_TBL4[C2]="攻撃+6"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_KOUGEKI+6"
+ITEM_ATTRBUTE[C2]=2000	;2000番台=武器
+C2++
+
+;鉄の短剣
+;【値段】130G
+;【効果】攻撃力+9
+
+ITEMID_TBL1[C2]="鉄の短剣"
+ITEMID_TBL2[C2]=3
+ITEMID_TBL3[C2]=130
+ITEMID_TBL4[C2]="攻撃+9"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_KOUGEKI+9"
+ITEM_ATTRBUTE[C2]=2000	;2000番台=武器
+C2++
+
+;鉄の長剣
+;【値段】250G
+;【効果】攻撃力+12，戦闘技術-2
+
+ITEMID_TBL1[C2]="鉄の長剣"
+ITEMID_TBL2[C2]=4
+ITEMID_TBL3[C2]=250
+ITEMID_TBL4[C2]="攻撃+12 戦技-2"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_KOUGEKI+12 V_SENTOH-2"
+ITEM_ATTRBUTE[C2]=2000	;2000番台=武器
+C2++
+
+;両手鉄剣
+;【値段】500G
+;【効果】攻撃力+18，防御力-4
+
+ITEMID_TBL1[C2]="両手鉄剣"
+ITEMID_TBL2[C2]=5
+ITEMID_TBL3[C2]=500
+ITEMID_TBL4[C2]="攻撃+18 防御-4"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_KOUGEKI+18 V_BOUGYO-4"
+ITEM_ATTRBUTE[C2]=2000	;2000番台=武器
+C2++
+
+;ﾐｽﾘﾙ剣
+;【値段】1200G
+;【効果】攻撃力+20
+
+ITEMID_TBL1[C2]="ﾐｽﾘﾙ剣"
+ITEMID_TBL2[C2]=6
+ITEMID_TBL3[C2]=1200
+ITEMID_TBL4[C2]="攻撃+20"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_KOUGEKI+20"
+ITEM_ATTRBUTE[C2]=2000	;2000番台=武器
+C2++
+
+;東方片刃剣
+;【値段】2000G
+;【効果】攻撃力+20，戦闘技術+10，会心の一撃の発生率が２倍になる．
+
+ITEMID_TBL1[C2]="東方片刃剣"
+ITEMID_TBL2[C2]=7
+ITEMID_TBL3[C2]=2000
+ITEMID_TBL4[C2]="攻撃+20 戦技+10"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_KOUGEKI+20 V_SENTOH+10 E_KAISIN!"
+ITEM_ATTRBUTE[C2]=2000	;2000番台=武器
+C2++
+
+;皮の鎧
+;【値段】98G
+;【効果】防御力+8
+
+ITEMID_TBL1[C2]="皮の鎧"
+ITEMID_TBL2[C2]=11
+ITEMID_TBL3[C2]=98
+ITEMID_TBL4[C2]="防御+8"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_BOUGYO+8"
+ITEM_ATTRBUTE[C2]=1000	;1000番台=装備
+C2++
+
+;鎖帷子
+;【値段】498G
+;【効果】防御力+14，戦闘技術ｰ3
+
+ITEMID_TBL1[C2]="鎖帷子"
+ITEMID_TBL2[C2]=12
+ITEMID_TBL3[C2]=498
+ITEMID_TBL4[C2]="防御+14 戦技-3"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_BOUGYO+14 V_SENTOH-3"
+ITEM_ATTRBUTE[C2]=1000	;1000番台=装備
+C2++
+
+;鉄の鎧
+;【値段】980G
+;【効果】防御力+18，戦闘技術-15
+
+ITEMID_TBL1[C2]="鉄の鎧"
+ITEMID_TBL2[C2]=13
+ITEMID_TBL3[C2]=980
+ITEMID_TBL4[C2]="防御+18 戦技-15"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_BOUGYO+18 V_SENTOH-15"
+ITEM_ATTRBUTE[C2]=1000	;1000番台=装備
+C2++
+
+;ﾐｽﾘﾙの鎧
+;【値段】2980G
+;【効果】防御力+22，抗魔力+15
+
+ITEMID_TBL1[C2]="ﾐｽﾘﾙの鎧"
+ITEMID_TBL2[C2]=14
+ITEMID_TBL3[C2]=2980
+ITEMID_TBL4[C2]="防御+22 抗魔+15"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_BOUGYO+22 V_KOHMARYOKU+15"
+ITEM_ATTRBUTE[C2]=1000	;1000番台=装備
+C2++
+
+;シルクの鎧
+;【値段】4480G
+;【効果】防御力+2，色気+50
+
+ITEMID_TBL1[C2]="シルクの鎧"
+ITEMID_TBL2[C2]=15
+ITEMID_TBL3[C2]=4480
+ITEMID_TBL4[C2]="防御+2 色気+50"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_BOUGYO+2 B_IROKE+50"
+ITEM_ATTRBUTE[C2]=1000	;1000番台=装備
+C2++
+
+ITEMID_CNT=C2	;アイテムＩＤ数
+RET
+
+
+*KAIMONO_RYOURI		;料理屋を選択した場合
+TXCLOSE(1)
+IF ( E_ETC[13] ! 0 )		;ただ食い第１旬に料理屋ただ働き
+	TXOPEN(2)
+	TXFACE("F064")	;料理屋のバルボン・普通
+	料理屋のバルボン
+	「＊＊＊＊＊＊＊＊＊＊」
+	@P
+	RET
+
+IF ( E_ETC[104]=VAL_YEAR  E_ETC[105]=VAL_MONTH  E_ETC[106]=VAL_DAY )	;最新料理食い日
+	TXOPEN(2)
+	TXFACE("F064")	;料理屋のバルボン・普通
+	料理屋のバルボン
+	「＊＊＊＊＊＊＊＊＊」
+	@P
+	RET
+
+RANDAM(4)
+IF (AX<4) RYOURI_MAN=1	;料理屋は通常バルボンさんが出るが，
+IF (AX=4) RYOURI_MAN=2	;《１／４》の確率でマルシア
+TXOPEN(2)
+
+IF ( RYOURI_MAN=1 )
+	TXFACE("F064")	;料理屋のバルボン・普通
+	料理屋のバルボン
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( RYOURI_MAN=2 )
+	TXFACE("F101")	;料理屋のアルバイト　マルシア・普通
+	料理屋のアルバイト　マルシア
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCT("食事する,店を出る")
+IF ( ISLCT ! 0 ) RET
+
+RYOURI_SET	;料理設定
+
+IF ( RYOURI_MAN=1 )
+	「＊＊＊＊＊＊＊＊」
+IF ( RYOURI_MAN=2 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+*RYOURI_RETRY
+ITEMST(1);ﾏﾙﾁｱｲﾃﾑ選択
+IF ( ISITM = -1 ) RET
+
+ITEM_SLCT=ISITM		;選択
+
+RYOURI_SETSUMEI		;料理説明
+@2
+@P
+PRICE_DOWN
+P1X100(ITEMID_TBL3[ITEM_SLCT],WARIBIKI)
+WARIPRICE=ITEMID_TBL3[ITEM_SLCT]-AX
+「TXA(ITEMID_TBL1[ITEM_SLCT])＊＊＊＊TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊」
+SLCTBAK(5)
+SLCT("食べる,店を出る")
+ITEMST(99);ｱｲﾃﾑ選択clear.
+IF ( ISLCT ! 0 )  GOTO RYOURI_RETRY	;RET
+
+E_ETC[104]=VAL_YEAR		;最新料理食い年
+E_ETC[105]=VAL_MONTH	;最新料理食い月
+E_ETC[106]=VAL_DAY		;最新料理食い日
+
+C1 = RYOURI_MAN				;料理屋店員
+C2 = D_STRESS[ITEM_SLCT]	;ストレス
+C3 = D_TAIJU[ITEM_SLCT]		;体重
+C4 = ITEMID_TBL3[ITEM_SLCT]	;お金
+C5 = WARIBIKI				;割引率
+C6 = WARIPRICE				;割引価格
+C7 = ITEM_SLCT				;0=ｹｰｷ,1=魚,2=肉
+CX = D_TAIRYOKU[ITEM_SLCT]	;体力
+LOAD("KRYORIYA")			;料理屋
+
+
+*RYOURI_SETSUMEI
+@2
+@C
+IF( ITEM_SLCT=0 )	;ケーキ
+
+	IF ( RYOURI_MAN=1 )
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( RYOURI_MAN=2 )
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=1 )	;魚貝料理
+
+	IF ( RYOURI_MAN=1 )
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( RYOURI_MAN=2 )
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=2 )	;肉料理
+
+	IF ( RYOURI_MAN=1 )
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( RYOURI_MAN=2 )
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+RET
+
+;	料理のパラメータ
+
+*RYOURI_SET	;料理設定
+STRSCLEAR
+C2 = 0
+;ケーキ
+;【値段】80G
+;【効果】ストレス-50，体重+1.0
+ITEMID_TBL1[C2]="ケーキ"
+ITEMID_TBL2[C2]=39			;ＩＣＯＮ
+ITEMID_TBL3[C2]=80			;金
+ITEMID_TBL4[C2]="ｽﾄﾚｽ-50 体重+1.0"	;
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+D_STRESS[C2]=50				;ｽﾄﾚｽ
+D_TAIJU[C2]=100				;体重
+D_TAIRYOKU[C2]=0			;体力
+C2++
+;魚貝料理
+;【値段】120G
+;【効果】ストレス-30，体重+0.3
+ITEMID_TBL1[C2]="魚貝料理"
+ITEMID_TBL2[C2]=40			;ＩＣＯＮ
+ITEMID_TBL3[C2]=120			;金
+ITEMID_TBL4[C2]="ｽﾄﾚｽ-30 体重+0.3"	;
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+D_STRESS[C2]=30				;ｽﾄﾚｽ
+D_TAIJU[C2]=30				;体重
+D_TAIRYOKU[C2]=0			;体力
+C2++
+;肉料理
+;【値段】200G
+;【効果】体力+15，体重+1.2
+ITEMID_TBL1[C2]="肉料理"
+ITEMID_TBL2[C2]=41			;ＩＣＯＮ
+ITEMID_TBL3[C2]=200			;金
+ITEMID_TBL4[C2]="体力+15 体重+1.2"	;
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+D_STRESS[C2]=0				;ｽﾄﾚｽ
+D_TAIJU[C2]=120				;体重
+D_TAIRYOKU[C2]=15			;体力
+C2++
+ITEMID_CNT=C2	;アイテムＩＤ数
+RET
+
+
+*KAIMONO_SHITATE	;仕立屋を選択した場合
+
+TXCLOSE(1)
+TXOPEN(2)
+TXFACE("F075");仕立屋のマール・普通
+仕立屋のマール
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCT("買物する,店を出る")
+IF ( ISLCT ! 0 ) RET
+
+DRESS_SET	;衣服設定
+
+*DRESS_SELECT
+	ITEMST(1);ﾏﾙﾁｱｲﾃﾑ選択
+	IF ( ISITM = -1 ) RET
+
+	ITEM_SLCT=ISITM		;選択
+
+	DRESS_SETSUMEI		;各商品の説明（売り口上）
+	@2
+	@P
+	PRICE_DOWN
+	P1X100(ITEMID_TBL3[ITEM_SLCT],WARIBIKI)
+	WARIPRICE=ITEMID_TBL3[ITEM_SLCT]-AX
+	「TXA(ITEMID_TBL1[ITEM_SLCT])＊＊＊＊＊TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊」
+	SLCTBAK(5)
+	SLCT("買う,やめておく,店を出る")
+	ITEMST(99);ｱｲﾃﾑ選択clear.
+	IF ( ISLCT = 2 ) RET
+	IF ( ISLCT=1 )( ISLCT=-1 )
+		@2
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		GOTO DRESS_SELECT
+	ITEM_SRCH(1,ITEMID_TBL2[ITEM_SLCT])		;ICON search.
+	IF ( AX=1 )		; 0=none,1=search.
+		@2
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		GOTO DRESS_SELECT
+
+	DRESS_BUY
+GOTO DRESS_SELECT
+
+
+
+*DRESS_BUY
+@2
+@C
+GOLDCMP(WARIPRICE)
+IF ( AX = 2 )	;お金が足りない場合
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	RET
+
+IF ( ITEM_MAX >= ITEM_DIM )
+	ITEM_FULL
+	RET
+
+IF ( WARIBIKI ! 0 )	;割引がある場合
+	「＊＊＊TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊＊＊
+	＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊
+	TXGOLD(WARIPRICE)＊＊＊＊＊＊」
+
+ITEM_WRITE
+
+;買う場合
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+GOLDSUB(WARIPRICE)
+WWPROF(3)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+RET
+
+
+
+*DRESS_SETSUMEI		;各商品の説明（売り口上）
+@2
+@C
+IF ( ITEM_SLCT=0 )	;夏物の服
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=1 )	;冬物の服
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=2 )	;木綿のドレス
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=3 )	;シルクのドレス
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=4 )	;レザーのドレス
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( ITEM_SLCT=5 )	;トゲトゲの服
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+RET
+
+
+*DRESS_SET		;衣服設定
+
+STRSCLEAR
+
+C2 = 0
+
+;夏物の服
+;【値段】70G
+;【効果】イベント「猛暑」の被害を防ぐことが出来る．
+
+ITEMID_TBL1[C2]="夏物の服"
+ITEMID_TBL2[C2]=44		;ＩＣＯＮ
+ITEMID_TBL3[C2]=70		;金
+ITEMID_TBL4[C2]=""		;
+ITEMID_TBL5[C2]=0		;
+ITEMID_TBL6[C2]=""		;
+ITEMID_TBL7[C2]=0		;
+ITEM_KOUKA[C2]=""		;
+ITEM_ATTRBUTE[C2]=3000	;3000番台=服
+C2++
+
+;冬物の服
+;【値段】120G
+;【効果】イベント「厳寒」の被害を防ぐことが出来る．
+
+ITEMID_TBL1[C2]="冬物の服"
+ITEMID_TBL2[C2]=45		;ＩＣＯＮ
+ITEMID_TBL3[C2]=120		;金
+ITEMID_TBL4[C2]=""		;
+ITEMID_TBL5[C2]=0		;
+ITEMID_TBL6[C2]=""		;
+ITEMID_TBL7[C2]=0		;
+ITEM_KOUKA[C2]=""		;
+ITEM_ATTRBUTE[C2]=3000	;3000番台=服
+C2++
+
+
+;木綿のドレス
+;【値段】500G
+;【効果】気品+15
+
+ITEMID_TBL1[C2]="木綿のﾄﾞﾚｽ"
+ITEMID_TBL2[C2]=46		;ＩＣＯＮ
+ITEMID_TBL3[C2]=500		;金
+ITEMID_TBL4[C2]="気品+15"	;
+ITEMID_TBL5[C2]=0		;
+ITEMID_TBL6[C2]=""		;
+ITEMID_TBL7[C2]=0		;
+ITEM_KOUKA[C2]="B_KIHIN+15"
+ITEM_ATTRBUTE[C2]=3000	;3000番台=服
+C2++
+
+;シルクのドレス
+;【値段】2000G
+;【効果】気品+40
+
+ITEMID_TBL1[C2]="シルクのﾄﾞﾚｽ"
+ITEMID_TBL2[C2]=47		;ＩＣＯＮ
+ITEMID_TBL3[C2]=2000		;金
+ITEMID_TBL4[C2]="気品+40"	;
+ITEMID_TBL5[C2]=0		;
+ITEMID_TBL6[C2]=""		;
+ITEMID_TBL7[C2]=0		;
+ITEM_KOUKA[C2]="B_KIHIN+40"
+ITEM_ATTRBUTE[C2]=3000	;3000番台=服
+C2++
+
+;レザーのドレス
+;【値段】3000G
+;【効果】色気+50，モラル-20
+
+ITEMID_TBL1[C2]="レザーのﾄﾞﾚｽ"
+ITEMID_TBL2[C2]=48		;ＩＣＯＮ
+ITEMID_TBL3[C2]=3000		;金
+ITEMID_TBL4[C2]="色気+50 ﾓﾗﾙ-20"
+ITEMID_TBL5[C2]=0		;
+ITEMID_TBL6[C2]=""		;
+ITEMID_TBL7[C2]=0		;
+ITEM_KOUKA[C2]="B_IROKE+50 B_MORALS-20"
+ITEM_ATTRBUTE[C2]=3000	;3000番台=服
+C2++
+
+;トゲトゲの服
+;【値段】2800G
+;【効果】感受性+40，モラル-30
+
+ITEMID_TBL1[C2]="トゲトゲの服"
+ITEMID_TBL2[C2]=49		;ＩＣＯＮ
+ITEMID_TBL3[C2]=2800		;金
+ITEMID_TBL4[C2]="感受+40 ﾓﾗﾙ-30"
+ITEMID_TBL5[C2]=0		;
+ITEMID_TBL6[C2]=""		;
+ITEMID_TBL7[C2]=0		;
+ITEM_KOUKA[C2]="B_KANJUSEI+40 B_MORALS-30"
+ITEM_ATTRBUTE[C2]=3000	;3000番台=服
+C2++
+
+ITEMID_CNT=C2	;アイテムＩＤ数
+RET
+
+*KAIMONO_ZAKKA		;雑貨屋を選択した場合
+
+TXCLOSE(1)
+RANDAM(4)
+IF (AX<4) ZAKKA_MAN=1	;雑貨屋の主人シャロムさんが出るが，
+IF (AX=4) ZAKKA_MAN=2	;《１／４》の確率で，ウェンディー
+
+TXOPEN(2)
+IF (ZAKKA_MAN=1)
+	TXFACE("F076")	;雑貨屋シャロム・普通
+	雑貨屋シャロム
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF (ZAKKA_MAN=2)
+	TXFACE("F099")	;雑貨屋のアルバイト　ウェンディー
+	雑貨屋のアルバイト　ウェンディー
+	「＊＊＊＊＊＊＊＊＊＊＊」
+
+*KAIMO_ZAK_LOOP
+@2		;<===重要
+SLCT("買物する,不用品を売る,店を出る")
+IF ( ISLCT = -1 )( ISLCT = 2 )	RET
+IF ( ISLCT = 1 )
+	ITEMPRN(6,1)	;ｶﾚﾝﾄﾍﾟｰｼﾞON/OFF
+	ZAKKA_SELL
+	ITEMPRN(6,0)	;ｶﾚﾝﾄﾍﾟｰｼﾞON/OFF
+	GOTO KAIMO_ZAK_LOOP
+
+ZAKKA_SET		;雑貨設定
+ZAKKA_SELECT
+
+IF ( FLAG_SHOP_EXIT!0 ) RET
+
+GOTO KAIMO_ZAK_LOOP
+
+
+*ZAKKA_SELECT
+
+FLAG_SHOP_EXIT=0
+
+	ITEMST(1);ﾏﾙﾁｱｲﾃﾑ選択
+	IF ( ISITM = -1 ) RET
+
+	ITEM_SLCT=ISITM		;選択
+
+	ZAKKA_SETSUMEI		;雑貨説明
+	@2
+	@P
+	PRICE_DOWN
+	P1X100(ITEMID_TBL3[ITEM_SLCT],WARIBIKI)
+	WARIPRICE=ITEMID_TBL3[ITEM_SLCT]-AX
+	「TXA(ITEMID_TBL1[ITEM_SLCT])＊＊＊＊TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊」
+	SLCTBAK(5)
+	SLCT("買う,やめておく,店を出る")
+	ITEMST(99);ｱｲﾃﾑ選択clear.
+	IF ( ISLCT = 2 )
+		FLAG_SHOP_EXIT=1
+		RET
+	IF ( ISLCT=1 )( ISLCT=-1 )
+		@2
+		@C
+		;止めておく場合
+		IF ( ZAKKA_MAN=1 )	;雑貨屋のシャロム・普通
+			「＊＊＊＊＊＊＊＊＊＊＊」
+		IF ( ZAKKA_MAN=2 )	;雑貨屋のアルバイト　ウェンディー
+			「＊＊＊＊＊＊＊＊＊」
+		@P
+		GOTO ZAKKA_SELECT
+	ZAKKA_BUY
+GOTO ZAKKA_SELECT
+
+
+*ZAKKA_BUY			;買う場合
+@2
+@C
+GOLDCMP(WARIPRICE)
+IF ( AX = 2 )	;お金が足りない場合
+	IF ( ZAKKA_MAN=1 )「＊＊＊＊＊＊＊＊＊」
+	IF ( ZAKKA_MAN=2 )「＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+
+IF ( ITEM_MAX >= ITEM_DIM )
+	ITEM_FULL
+	RET
+
+IF ( WARIBIKI ! 0 )	;割引がある場合
+	IF ( ZAKKA_MAN=1 )
+		「＊＊TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊＊＊＊TXGOLD(WARIPRICE)＊＊＊＊＊＊＊＊」
+	IF ( ZAKKA_MAN=2 )
+		「TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊＊＊TXGOLD(WARIPRICE)＊＊＊＊」
+
+ITEM_WRITE
+
+IF ( ZAKKA_MAN=1 )「＊＊＊＊＊＊＊＊」
+IF ( ZAKKA_MAN=2 )「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+GOLDSUB(WARIPRICE)
+WWPROF(3)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+RET
+
+
+*ZAKKA_SELL		;不用品を売る場合
+
+MOCHIMONO
+IF ( ITEM_MAX=0 ) RET		;所有アイテム数
+IF ( ITEM_SLCT=-1 ) RET		;所有アイテム数
+
+P1X100(ITEMID_TBL3[ITEM_SLCT],50)
+URIPRICE=AX			;売り値
+
+@C
+
+IF ( GT_ITM_EQUIP = 1 )		;1=now equip
+	IF ( GT_ITM_ATTR = 1 )	;1=equip
+		IF ( ZAKKA_MAN=1 )	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		IF ( ZAKKA_MAN=2 )	「＊＊＊＊＊＊＊＊＊」
+	IF ( GT_ITM_ATTR = 2 )	;2=arms
+		IF ( ZAKKA_MAN=1 )	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		IF ( ZAKKA_MAN=2 )	「＊＊＊＊＊＊＊＊＊」
+	IF ( GT_ITM_ATTR = 3 )	;3=dress
+		IF ( ZAKKA_MAN=1 )	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		IF ( ZAKKA_MAN=2 )	「＊＊＊＊＊＊＊＊＊＊＊」
+	ITEMST(99)				;ｱｲﾃﾑ選択clear.
+	GOTO ZAKKA_SELL
+
+IF ( ITEM_ICON[ITEM_SLCT]=43 )		;43=普段着
+	IF ( ZAKKA_MAN=1 )	「＊＊＊＊＊＊＊＊＊＊」
+	IF ( ZAKKA_MAN=2 )	「＊＊＊＊＊＊＊＊＊」
+	ITEMST(99)				;ｱｲﾃﾑ選択clear.
+	GOTO ZAKKA_SELL
+
+IF ( ZAKKA_MAN=1 )	「TXA(ITEM_NAME[ITEM_SLCT])＊＊TXGOLD(URIPRICE)＊＊＊＊＊＊」
+IF ( ZAKKA_MAN=2 )	「TXA(ITEM_NAME[ITEM_SLCT])＊TXGOLD(URIPRICE)＊」
+
+SLCTBAK(5)
+SLCT("売る,やめる")
+ITEMST(99)				;ｱｲﾃﾑ選択clear.
+@C
+IF ( ISLCT ! 0 )
+	;やめる場合
+	IF ( ZAKKA_MAN=1 ) 「＊＊＊＊＊＊＊＊」
+	IF ( ZAKKA_MAN=2 ) 「＊＊＊＊＊＊」
+	GOTO ZAKKA_SELL
+
+;売る場合
+IF ( ZAKKA_MAN=1 ) 「＊＊＊＊＊＊＊＊＊＊＊」
+IF ( ZAKKA_MAN=2 ) 「＊＊＊＊」
+
+IF ( ITEM_ICON[ITEM_SLCT]=8 ) ;恩賜の剣
+	GOLDADD(URIPRICE)
+	WWPROF(3)				;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+	ITEM_KILL(ITEM_SLCT)	;アイテム削除
+	@P
+	ITEMPRN(6,0)			;ｶﾚﾝﾄﾍﾟｰｼﾞON/OFF
+	LOAD("EVNT041")			;41 恩賜の剣売却事件
+
+GOLDADD(URIPRICE)
+WWPROF(3)					;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+ITEM_KILL(ITEM_SLCT)		;アイテム削除
+GOTO ZAKKA_SELL
+
+
+*MOCHIMONO
+IF ( ITEM_MAX = 0 )
+	TXOPEN(5)
+	持ち物はありません。
+	@P
+	TXCLOSE(5)
+	RET
+C2 = 0
+C1=ITEM_MAX			;所有アイテム数
+	ITEMID_TBL1[C2]=ITEM_NAME[C2]	;所有アイテム名前 string
+	ITEMID_TBL2[C2]=ITEM_ICON[C2]	;ＩＣＯＮ
+	ITEMID_TBL3[C2]=ITEM_GOLD[C2]	;金
+	ITEMID_TBL4[C2]=ITEM_HELP[C2]	;所有アイテム説明 string
+	ITEMID_TBL5[C2]=0		;パラメータ値１
+	ITEMID_TBL6[C2]=""		;文字２
+	ITEMID_TBL7[C2]=0		;パラメータ値２
+	C2++
+LOOP C1
+ITEMID_CNT=ITEM_MAX			;アイテムＩＤ数
+ITEMST(1)					;マルチアイテム選択
+;ITEMSLCT(1)					;マルチアイテム選択
+ITEM_SLCT=ISITM				;選択
+ITEM_SRCH(3,ITEM_SLCT)		;attribute get.
+GT_ITM_ATTR = AX			;item attribute.
+GT_ITM_EQUIP = DX			;item equipment.
+RET
+
+
+;	"EVNT042.TXT"にも雑貨屋がある
+
+*ZAKKA_SETSUMEI
+@2
+@C
+IF( ITEM_SLCT=0 )	;お人形
+	IF ( ZAKKA_MAN=1 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( ZAKKA_MAN=2 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=1 )	;ティーカップ
+	IF ( ZAKKA_MAN=1 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( ZAKKA_MAN=2 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=2 )	;書物
+	IF ( ZAKKA_MAN=1 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( ZAKKA_MAN=2 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=3 )	;詩集
+	IF ( ZAKKA_MAN=1 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( ZAKKA_MAN=2 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=4 )	;快癒丸
+	IF ( ZAKKA_MAN=1 )「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( ZAKKA_MAN=2 )「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF( ITEM_SLCT=5 )	;投げ焙碌
+	IF ( ZAKKA_MAN=1 )「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( ZAKKA_MAN=2 )「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+RET
+
+
+
+*ZAKKA_SET	;雑貨設定
+
+STRSCLEAR
+
+C2 = 0
+
+;お人形
+;【値段】120G
+;【効果】感受性+5，ストレス-40
+
+ITEMID_TBL1[C2]="お人形"
+ITEMID_TBL2[C2]=18			;ＩＣＯＮ
+ITEMID_TBL3[C2]=120			;金
+ITEMID_TBL4[C2]="感受+5 ｽﾄﾚｽ-40"
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+ITEM_KOUKA[C2]="B_KANJUSEI+5 B_STRESS-40"
+ITEM_ATTRBUTE[C2]=4000	;4000番台=効能有
+C2++
+
+;ティーカップ
+;【値段】500G
+;【効果】気品+10
+
+ITEMID_TBL1[C2]="ティーカップ"
+ITEMID_TBL2[C2]=19			;ＩＣＯＮ
+ITEMID_TBL3[C2]=500			;金
+ITEMID_TBL4[C2]="気品+10"
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+ITEM_KOUKA[C2]="B_KIHIN+10"
+ITEM_ATTRBUTE[C2]=4000	;4000番台=効能有
+C2++
+
+;書物
+;【値段】120G
+;【効果】知能+8
+
+ITEMID_TBL1[C2]="書物"
+ITEMID_TBL2[C2]=20			;ＩＣＯＮ
+ITEMID_TBL3[C2]=120			;金
+ITEMID_TBL4[C2]="知能+8"
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+ITEM_KOUKA[C2]="B_CHINOH+8"
+ITEM_ATTRBUTE[C2]=4000	;4000番台=効能有
+C2++
+
+;詩集
+;【値段】400G
+;【効果】感受性+12
+
+ITEMID_TBL1[C2]="詩集"
+ITEMID_TBL2[C2]=21			;ＩＣＯＮ
+ITEMID_TBL3[C2]=400			;金
+ITEMID_TBL4[C2]="感受+12"
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+ITEM_KOUKA[C2]="B_KANJUSEI+12"
+ITEM_ATTRBUTE[C2]=4000	;4000番台=効能有
+C2++
+
+;快癒丸
+;【値段】30G
+;【効果】1～50まで，ランダムにヒットポイント回復
+
+ITEMID_TBL1[C2]="快癒丸"
+ITEMID_TBL2[C2]=16			;ＩＣＯＮ
+ITEMID_TBL3[C2]=30			;金
+ITEMID_TBL4[C2]="ＨＰ回復"
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+ITEM_KOUKA[C2]=""
+ITEM_ATTRBUTE[C2]=0			;種別
+C2++
+
+;投げ焙碌（ﾎｳﾛｸ）
+;【値段】100G
+;【効果】相手の防御力に関係なく1～80のダメージ
+
+ITEMID_TBL1[C2]="投げ焙碌"
+ITEMID_TBL2[C2]=17			;ＩＣＯＮ
+ITEMID_TBL3[C2]=100			;金
+ITEMID_TBL4[C2]="攻撃用"
+ITEMID_TBL5[C2]=0			;
+ITEMID_TBL6[C2]=""			;
+ITEMID_TBL7[C2]=0			;
+ITEM_KOUKA[C2]=""
+ITEM_ATTRBUTE[C2]=0			;種別
+C2++
+
+ITEMID_CNT=C2	;アイテムＩＤ数
+RET
+
+*ITEM_FULL	;持物がいっぱいの場合
+TXOPEN(11)
+TXSYU(P_SYUGOSEI)
+TXA(DEF_STR_STAR[P_SYUGOSEI])
+@L
+「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(11)
+RET
+
+
+*KAIMONO_KYOUKAI	;教会を選択した場合
+TXCLOSE(1)
+PLAY(11)			;P11 教会
+TXOPEN(2)
+TXFACE("F053")	;シスター　リイ・普通
+シスター　リイ
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCT("寄付する,しない")
+@C
+IF ( ISLCT ! 0 ) ;しない場合
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+IF ( ISLCT = 0 )
+	GOLDCMP(100)
+	IF ( AX = 2 )
+		お金がありません。
+		@P
+	IF ( AX ! 2 )	;寄付する場合
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOLDSUB(100)
+		WWPROF(3)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+
+		GR_OPEN				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+		STRSCLEAR			;
+		IGRP_TBL1[0]="因業"	IGRP_TBL3[0]=B_INGYO
+		IGRP_CNT=1
+		IGRP_X=54
+		IGRP_Y=200
+		GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+		B_INGYO -= 10		; 因業
+		IF ( B_INGYO < 0 ) B_INGYO=0
+		GRPUPD(1,0,B_INGYO)	; 因業
+		@P
+		GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+PLAY(10)	;P10 街
+RET
+
+
+*KAIMONO_BYOUIN		;医院を選択した場合
+
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F077");ロンバルディーニ医師・普通
+
+IF ( FLAG_BYOUKI = 0 )	;病気じゃないよ
+	ロンバルディーニ医師
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+
+DOCPRICE = S_BYOUKI * 2	;医療費
+
+ロンバルディーニ医師
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+「＊＊＊＊＊＊＊＊＊＊TXGOLD(DOCPRICE)＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCT("はい,いいえ")
+@C
+IF ( ISLCT!0 )	;いいえを選択した場合
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	RET
+
+IF ( ISLCT=0 )	;はいを選択した場合
+
+	PRICE_DOWN
+	P1X100(DOCPRICE,WARIBIKI)
+	WARIPRICE = DOCPRICE - AX
+	GOLDCMP(WARIPRICE)
+	IF ( AX = 2 )	;お金が足りない場合
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		RET
+
+	C2 = S_BYOUKI + 1			;《病気指数＋１》
+	IF ( B_STRESS < C2 ) C2 = B_STRESS
+	B_STRESS -= C2
+	@C
+
+	ストレスが TXPOINT(C2) 下がった．
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+
+	GOLDSUB(WARIPRICE)
+	WWPROF(3)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+
+	IF ( WARIBIKI ! 0 )
+		;割引がある場合
+		@C
+		「＊＊＊＊ TXGOLD(DOCPRICE) ＊＊＊TXGOLD(WARIPRICE)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	RET
+RET
+
+;****
+;18 ムダ使い
+;【 概　要 】娘が勝手に買物をしてしまう．
+;【 いつ？ 】休息の１旬終了時．
+;【 効　果 】仕立屋，雑貨屋，料理屋のなかから，ランダムにどれか一つ買物をする．
+;				手に入れた品物は，通常の買物同様の効果がある．
+;				持物がいっぱいの場合は，料理屋を選ぶ．
+;****
+
+*EVENT018
+
+RUN_MONTH[18]++		;「ムダ使い」実行回数
+
+TXLC(1,4,290,0)		;text window locate.
+TXLC(2,17,148,1)	;text window locate.
+TXLC(3,31,270,2)	;text window locate.
+WWIVENT(5,0,6,40)	;ivent window locate.
+ITEMPRN(3,56,160)	;マルチアイテム TYPE 5 位置
+
+TXOPEN(2)
+TXFACE("F042")		;執事・心配
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+そのとき，TXA(NAME_FIRST)が帰ってきた．
+@P
+
+
+TXOPEN(3)
+TXGIRL(0)				;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+;執事・心配
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TIMER1(30)WAIT1＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+IF ( ITEM_MAX >= ITEM_DIM ) GOTO MUDA_RYOURI	;料理屋
+RANDAM(3)
+IF ( IRND=1 ) GOTO MUDA_ZAKKA		;雑貨屋の場合
+IF ( IRND=2 ) GOTO MUDA_SHITATE		;仕立屋の場合
+IF ( IRND=3 ) GOTO MUDA_RYOURI		;料理屋の場合
+
+
+*MUDA_SHITATE	;仕立屋の場合
+GOLDCMP(250)
+IF ( AX = 2 ) GOTO MUDA_ZAKKA		;雑貨屋
+
+DRESS_SET		;衣服設定
+
+*MUDA_SHITATE_LOOP
+RANDAM(ITEMID_CNT)		;アイテムＩＤ数
+ITEM_SLCT = IRND - 1
+
+GOLDCMP(ITEMID_TBL3[ITEM_SLCT])	;定価
+IF ( AX = 2 )
+	GOTO MUDA_SHITATE_LOOP
+
+ITEM_WRITE
+
+@3
+@C
+
+どうやら勝手に「TXA(ITEMID_TBL1[ITEM_SLCT])」を買ってきたようです．
+GOTO BEST_BUY
+
+
+*MUDA_ZAKKA		;雑貨屋の場合
+ZAKKA_SET		;雑貨設定
+
+RANDAM(ITEMID_CNT)		;アイテムＩＤ数
+ITEM_SLCT = IRND - 1
+
+ITEM_WRITE
+
+@3
+@C
+どうやら勝手に「TXA(ITEMID_TBL1[ITEM_SLCT])」を買ってきたようです．
+GOTO BEST_BUY
+
+
+*MUDA_RYOURI	;料理屋の場合
+RYOURI_SET		;料理設定
+
+RANDAM(ITEMID_CNT)		;アイテムＩＤ数
+ITEM_SLCT = IRND - 1
+
+B_STRESS -= D_STRESS[ITEM_SLCT]		;ストレス
+IF ( B_STRESS<0 ) B_STRESS=0
+P_TAIJYU += D_TAIJU[ITEM_SLCT]		;体重
+B_TAIRYOKU += D_TAIRYOKU[ITEM_SLCT]	; 体力
+@3
+@C
+どうやら料理屋で買い食いしてきたようです．
+GOTO BEST_BUY
+
+*BEST_BUY
+
+ITEMID_TBL1[0]=ITEMID_TBL1[ITEM_SLCT]
+ITEMID_TBL2[0]=ITEMID_TBL2[ITEM_SLCT]
+ITEMID_TBL3[0]=ITEMID_TBL3[ITEM_SLCT]
+ITEMID_TBL4[0]=ITEMID_TBL4[ITEM_SLCT]
+ITEMID_TBL5[0]=ITEMID_TBL5[ITEM_SLCT]
+ITEMID_TBL6[0]=ITEMID_TBL6[ITEM_SLCT]
+ITEMID_TBL7[0]=ITEMID_TBL7[ITEM_SLCT]
+ITEM_KOUKA[0] =ITEM_KOUKA[ITEM_SLCT]
+ITEMID_CNT=1
+ITEMPRN(1,5)		;マルチアイテム表示
+@P
+ITEMPRN(2)			;マルチアイテム復帰
+
+PRICE_DOWN
+P1X100(ITEMID_TBL3[ITEM_SLCT],WARIBIKI)
+WARIPRICE=ITEMID_TBL3[ITEM_SLCT]-AX
+
+IF ( WARIBIKI = 0 )
+	@3
+	TXGIRL(1)		;娘・嬉しい
+	@C
+	「＊＊＊TXGOLD(WARIPRICE)＊＊＊＊＊」
+	GOLDSUB(WARIPRICE)			;娘の所持金
+	WWPROF(3)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+	@P
+IF ( WARIBIKI ! 0 )
+	@3
+	TXGIRL(1)		;娘・嬉しい
+	@C
+	「TXGOLD(ITEMID_TBL3[ITEM_SLCT])＊＊＊＊＊＊
+	TXGOLD(WARIPRICE)＊＊＊＊＊＊＊＊＊」
+	GOLDSUB(WARIPRICE)			;娘の所持金
+	WWPROF(3)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+	@P
+TXCLOSE(3)
+TXCLOSE(2)
+
+E_ETC[9] = 0		;「無駄遣い」実行中
+E_ETC[35] = 0		;強制的に「ムダ使い」が発生する
+RET
+
+;****
+;22 武芸者の挑戦
+;"RUNNING.TXT"にもあります
+;****
+
+*EVENT022
+IF ( FLAG_BYOUKI ! 0 ) RET	;ただし，病気のときは発生せず．
+;;IF ( S_SECTION = 3	) RET	;3=休みをあげる
+
+IF ( H_SENSHI >= H_MAHO )	C2 = H_SENSHI		;戦士評価
+IF ( H_SENSHI <  H_MAHO )	C2 = H_MAHO			;魔法評価
+
+IF ( C2 < 200 ) RET
+
+IF ( C2 < 300 ) 			;２００～３００のとき，確率《１／２０》．
+	RANDAM(20)				;確率《１／２０》
+	IF ( IRND=2 )
+		C1 = 2				;mode 1=RUNNING.TXT 2=KAIMONO.TXT
+		LOAD("EVNT022")
+	RET
+
+RANDAM(10)					;確率《１／１０》．
+IF ( IRND=2 )
+	C1 = 2					;mode 1=RUNNING.TXT 2=KAIMONO.TXT
+	LOAD("EVNT022")
+RET
+
+
+*ITEM_WRITE
+BX=ITEMID_TBL2[ITEM_SLCT]		;ＩＣＯＮ
+CX=ITEMID_TBL3[ITEM_SLCT]		;定価
+DX=ITEM_ATTRBUTE[ITEM_SLCT]		;種別
+SI=ITEMID_TBL1[ITEM_SLCT]		;所有アイテム名前 string
+DI=ITEM_KOUKA[ITEM_SLCT]		;所有アイテム効果 string
+BP=ITEMID_TBL4[ITEM_SLCT]		;所有アイテム説明 string
+ITEM_INST(1)
+RET
+
+*TBLSET4S
+;	ex)	BP="東部"	TBLSET4S(1)
+ITEMID_TBL1[C2]=BP
+ITEMID_TBL2[C2]=AX		;ＩＣＯＮ
+ITEMID_TBL4[C2]=""
+C2++
+RET
+
+;
+;	end of "KAIMONO.TXT"
+;
+

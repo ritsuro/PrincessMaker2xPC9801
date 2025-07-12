@@ -1,0 +1,241 @@
+;"KRYORIYA.TXT"
+;
+;	料理屋
+;
+;	C1 : 料理屋店員
+;		1=料理屋のバルボン・普通
+;		2=料理屋のアルバイト　マルシア・普通
+;	C2 : ストレス
+;	C3 : 体重
+;	C4 : お金
+;	C5 : 割引率
+;	C6 : 割引価格
+;	C7 : 0=ｹｰｷ,1=魚,2=肉
+;	CX : 体力
+;
+;	worning : don't 32kbyte over.
+;	このテキストは３２ｋｂｙｔｅを越えてはいけません。
+;
+;	料理のパラメータは"KAIMONO.TXT"にあります。
+;
+
+STRSCLEAR
+
+.RYOURI_MAN			;料理屋店員
+.D_STRESS			;ストレス
+.D_TAIJU			;体重
+.D_GOLD				;お金
+.WARIBIKI			;割引率
+.WARIPRICE			;割引価格
+.RYOURI_SLCT		;0=ｹｰｷ,1=魚,2=肉
+.D_TAIRYOKU			;体力
+
+RYOURI_MAN	= C1	;料理屋店員
+D_STRESS	= C2	;ストレス
+D_TAIJU		= C3	;体重
+D_GOLD		= C4	;お金
+WARIBIKI	= C5	;割引率
+WARIPRICE	= C6	;割引価格
+RYOURI_SLCT	= C7	;0=ｹｰｷ,1=魚,2=肉
+D_TAIRYOKU	= CX	;体力
+
+TXLC(2,17,148,1)
+TXLC(3,31,270,2)
+
+KAIMONO_RYOURI		;料理屋を選択した場合
+
+LOAD("KAIMONO")
+
+;****
+;	料理屋を選択した場合
+;****
+
+*KAIMONO_RYOURI		;料理屋を選択した場合
+
+LETS_EAT
+
+TXCLOSE(2)
+WWIVENT(2,0)		;ivent window close.
+RET
+
+
+*LETS_EAT		;食べる場合
+TXCLOSE(2)
+WWIVENT(2,0)		;ivent window close.
+WWIVENT(5,0,6,100)	;ivent window locate.
+
+IF ( RYOURI_SLCT=0 )		;0=ｹｰｷ
+	WWIVENT(1,0,"E011C")		;ivent window open.
+IF ( RYOURI_SLCT=1 )		;1=魚
+	WWIVENT(1,0,"E011B")	;ivent window open.
+IF ( RYOURI_SLCT=2 )		;2=肉
+	WWIVENT(1,0,"E011")	;ivent window open.
+
+;ごちそうを食べる
+TXLC(2,17,248,1)
+TXOPEN(2)
+IF ( RYOURI_MAN=1 )	TXFACE("F064")	;料理屋のバルボン・普通
+IF ( RYOURI_MAN=2 )	TXFACE("F101")	;料理屋のアルバイト　マルシア・普通
+
+IF ( RYOURI_MAN=1 )	;料理屋のバルボン・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( RYOURI_MAN=2 )	;料理屋のアルバイト　マルシア・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXLC(2,17,148,1)
+
+TXOPEN(3)
+
+;娘が病気以外の場合
+
+IF ( FLAG_BYOUKI=0 )
+	TXGIRL(1);娘・嬉しい
+	「＊＊＊＊＊＊」
+	@P
+	TXA(NAME_FIRST)はおいしそうに料理をたいらげた・・・
+	@P
+	TXGIRL(1);娘・嬉しい
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( B_STRESS >= D_STRESS ) C1 = D_STRESS
+	IF ( B_STRESS < D_STRESS )  C1 = B_STRESS
+	IF ( C1 > 0 )
+		ストレスがTXPOINT(C1)下がった．
+	IF ( D_TAIRYOKU > 0 )			;体力
+		B_TAIRYOKU += D_TAIRYOKU	; 体力
+		体力がTXPOINT(D_TAIRYOKU)上がった．
+
+	体重がTXS2KETA(D_TAIJU)ｋｇ増えた・・・・・・
+	@P
+
+	B_STRESS -= D_STRESS		;ストレス
+	IF ( B_STRESS<0 ) B_STRESS=0
+	P_TAIJYU += D_TAIJU		;体重
+
+;娘が病気の場合
+
+IF ( FLAG_BYOUKI=1 )		;状態・病気
+	TXGIRL(3);娘・悲しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	TXA(NAME_FIRST)は病気のため食欲がないようだ．
+
+TXOPEN(2)
+IF ( RYOURI_MAN=1 )	TXFACE("F064")	;料理屋のバルボン・普通
+IF ( RYOURI_MAN=2 )	TXFACE("F101")	;料理屋のアルバイト　マルシア・普通
+
+IF ( WARIBIKI = 0 )
+	IF ( RYOURI_MAN=1 )
+		「＊＊＊＊TXGOLD(WARIPRICE)＊＊＊＊＊」
+	IF ( RYOURI_MAN=2 )	
+		「＊＊＊＊＊＊TXGOLD(WARIPRICE)＊＊＊」
+
+IF ( WARIBIKI ! 0 )	;割引がある場合
+	IF ( RYOURI_MAN=1 )
+		「TXGOLD(D_GOLD)＊＊＊＊＊＊＊＊＊＊＊TXGOLD(WARIPRICE)＊＊＊＊＊＊」
+	IF ( RYOURI_MAN=2 )
+		「＊＊＊＊TXGOLD(D_GOLD)＊＊＊＊TXGOLD(WARIPRICE)＊＊＊＊＊＊」
+@P
+GOLDCMP(WARIPRICE)
+IF ( AX = 2 )	;お金が足りない場合
+	EVENT040		;40 ただ食い
+	RET
+TXCLOSE(3)
+GOLDSUB(WARIPRICE)
+WWPROF(3)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+RET
+
+;****
+;40 ただ食い
+;【 概　要 】街の料理屋のお勘定を払うため，その月の第１旬に料理屋で
+;			ただ働きさせられます．
+;【 いつ？ 】一ヶ月の最初
+;【発生条件】料理屋で所持金以上の料理を注文する．
+;【 効　果 】その月の第１旬は，強制的に料理屋で働くことになる．
+;			給料は無しだが，パラメータの変化は通常料理屋で働いたときと同じ．
+;****
+
+*EVENT040
+
+RUN_MONTH[40]++			;「ただ食い」実行回数
+
+TXCLOSE(3)
+IF ( RYOURI_MAN=2 )		;料理屋のアルバイト　マルシア・普通
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXOPEN(1)
+	料理屋の主人バルボンが飛んできた．
+	@P
+	TXCLOSE(1)
+	TXOPEN(2)
+	TXFACE("F064")	;料理屋のバルボン・普通
+
+PLAY(29)	;P29 緊迫
+
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(10)
+今月の１旬目は料理屋で働くことになった．
+@P
+TXCLOSE(10)
+;料理屋の主人・普通
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊」
+@P
+E_ETC[13]=1		;ただ食い第１旬に料理屋ただ働き
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+RET
+
+
+*PRICE_DOWN
+IF ( S_JINMYAKU < 100 )		;人脈
+	WARIBIKI=0		;０～９９	０％
+	RET
+IF ( S_JINMYAKU < 200 )
+	WARIBIKI=5		;１００～	５％
+	RET			;　１９９
+IF ( S_JINMYAKU < 300 )
+	WARIBIKI=10		;２００～	１０％
+	RET			;　２９９
+IF ( S_JINMYAKU < 400 )
+	WARIBIKI=15		;３００～	１５％
+	RET			;　３９９
+IF ( S_JINMYAKU < 500 )
+	WARIBIKI=20		;４００～	２０％
+	RET			;　４９９
+IF ( S_JINMYAKU < 600 )
+	WARIBIKI=25		;５００～	２５％
+	RET			;　５９９
+IF ( S_JINMYAKU < 700 )
+	WARIBIKI=30		;６００～	３０％
+	RET			;　６９９
+IF ( S_JINMYAKU < 800 )
+	WARIBIKI=35		;７００～	３５％
+	RET			;　７９９
+IF ( S_JINMYAKU < 900 )
+	WARIBIKI=40		;８００～	４０％
+	RET			;　８９９
+IF ( S_JINMYAKU < 1000 )
+	WARIBIKI=45		;９００～	４５％
+	RET			;　９９９
+WARIBIKI=50			;１０００以上	５０％
+RET				;
+
+;
+;	end of "KRYORIYA.TXT"
+;
+
