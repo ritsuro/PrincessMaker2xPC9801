@@ -1,0 +1,1601 @@
+; "MAINLOOP.TXT"
+
+.NXT_M_YEAR			; 翌月の年
+.NXT_M_MONTH		; 翌月の月
+.NXT_M_ENDDAY		; 翌月の末日
+.NXT_M_SWEEK		; 翌月の最初の曜日
+
+.SCHD_LINE			; スケジュール・ライン
+.FLAG_GO_SCHEDULE	; Go schedule.
+.SCHD_SYUKAKU		; 収穫祭schedule.
+.ICONNUM			; ICON
+.SCDNM				; schedule name.
+
+.CMND_NUM			; command.
+
+.I_SECTION			; ｽｹｼﾞｭｰﾙ項目
+.I_WORKS			; ｽｹｼﾞｭｰﾙ内容
+
+.IT_EQUIP[50]		; 装備
+.REC_TBL[50]
+.IT_ATTR			; item attrbute.
+
+.GIVE_GOLD = 0
+
+.BAK_GIRL_BREAST	; 胸大 0=無,1=有
+.BAK_GIRL_BODY		; 体形 1=細,2=太
+.FLAG_FAT_CHK=0
+
+.GT_ITM_ATTR		;item attribute.
+.GT_ITM_EQUIP		;item equipment.
+
+.NOW_MONTH_END		; 月末の日
+.NXT_DAYS			; 翌日の日付
+.NXT_WEEK			; 翌日の曜日
+
+.NOW_MONTH_ATR		;どんな月？
+
+.NOW_ICONS
+
+TXF(10)				; ﾉｰﾏﾙ時ﾃｷｽﾄﾓｰﾄﾞ
+
+TXLC(1,4,290,0)			; text window locate.
+TXLC(2,1,260,2)			; text window locate.
+TXLC(3,31,270,2)		; text window locate.
+TXLC(5,5,260,0)			; text window locate.
+
+CLENDER(11)			;カレンダー・今月の計算
+NOW_MONTH_ATR=DX	;どんな月？
+
+PALET_SET(0)
+IF ( E_RWAY = 1 ) GOTO RUNAWAY	; ｲﾍﾞﾝﾄ｢家出」
+
+TXLC(2,28,146,1)	;text window locate.
+TXLC(3,13,270,2)	;text window locate.
+FAT_GIRL_CHK		;太った娘
+
+TXLC(2,1,260,2)		; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+
+*MAINSTART
+STRSCLEAR
+CLENDER(9)			;ﾊﾟﾗﾒｰﾀの整合処理
+
+PARC(2,102,2,0)	; ｺﾏﾝﾄﾞｳｲﾝﾄﾞｳﾎﾞﾀﾝ停止	;2=娘と話す
+PARC(2,102,6,0)	; ｺﾏﾝﾄﾞｳｲﾝﾄﾞｳﾎﾞﾀﾝ停止	;6=お城へ行く
+
+;*;IF ( NOW_MONTH_ATR=2 )	; 2=運命の日
+;*;	PARC(2,102,2,1)		; ｺﾏﾝﾄﾞｳｲﾝﾄﾞｳﾎﾞﾀﾝ停止	2=娘と話す
+;*;	PARC(2,102,6,1)		; ｺﾏﾝﾄﾞｳｲﾝﾄﾞｳﾎﾞﾀﾝ停止	6=お城へ行く
+
+IF ( E_ETC[90]=VAL_DAY  E_ETC[36]=VAL_MONTH  E_ETC[37]=VAL_YEAR )	;最新の「お城へ行く」
+	PARC(2,102,6,1)		; ｺﾏﾝﾄﾞｳｲﾝﾄﾞｳﾎﾞﾀﾝ停止	6=お城へ行く
+
+IF ( E_ETC[91]=VAL_DAY  E_ETC[38]=VAL_MONTH  E_ETC[39]=VAL_YEAR )	;最新の「娘と話す」
+	PARC(2,102,2,1)		; ｺﾏﾝﾄﾞｳｲﾝﾄﾞｳﾎﾞﾀﾝ停止	2=娘と話す
+
+*MAIN_SLCT
+PARC(2,101)		; ｺﾏﾝﾄﾞｳｲﾝﾄﾞｳ
+CMND_NUM=BX		; ｺﾏﾝﾄﾞ番号
+
+IF ( RUN_MONTH[0] <=1 )		TXF(3)		;乱数初期化
+
+IF( CMND_NUM=0 )
+	IF ( NOW_MONTH_ATR=1 )				;1=一番最初の日
+		SCHEDULE_1ST
+		IF ( FLAG_GO_SCHEDULE=1 )
+			SCH_NOW=0				; スケジュール実行中項目
+			E_ETC[11]=0				;「道場破り」で「剣術」の稽古が出来ない
+			CALC_SYOKUHI
+			LOAD("RUNNING")
+		GOTO MAINSTART
+
+IF( CMND_NUM=0 )
+	IF ( VAL_MONTH=9 VAL_DAY=30 )		; 収穫祭前夜
+		SCHEDULE_SYU
+		IF ( FLAG_GO_SCHEDULE=1 )
+			IF ( SCHD_SYUKAKU=1 )		; 収穫祭schedule.
+				CALC_SYOKUHI
+				LOAD("SSRUNS")
+			IF ( SCHD_SYUKAKU=2 )		; 収穫祭schedule.
+				CALC_SYOKUHI
+				C1 = 5		;5=休息
+				LOAD("SSKYUSO,EVNT042")
+		GOTO MAINSTART
+
+IF( CMND_NUM=0 )
+	IF ( NOW_MONTH_ATR=2 )	;2=運命の日
+		LOAD_ENDING
+	IF ( NOW_MONTH_ATR=3 )	;3=一番最後の月
+		SCHEDULE_FIN
+	IF ( NOW_MONTH_ATR=0 )	;0=通常
+		SCHEDULE
+	IF ( NOW_MONTH_ATR=4 )( NOW_MONTH_ATR=5 )( NOW_MONTH_ATR=6 )
+		SCHEDULE
+	IF ( FLAG_GO_SCHEDULE=1 )
+		SCH_NOW=0				; スケジュール実行中項目
+		E_ETC[11]=0				;「道場破り」で「剣術」の稽古が出来ない
+		CALC_SYOKUHI
+		LOAD("RUNNING")
+	GOTO MAINSTART
+
+IF( CMND_NUM= 1 )	SSTATUS		GOTO MAINSTART
+IF( CMND_NUM= 2 )	TALKGIRL	GOTO MAINSTART
+IF( CMND_NUM= 3 )	LOAD("SCNKENKO")
+IF( CMND_NUM= 4 )	PROFILES	GOTO MAINSTART
+IF( CMND_NUM= 5 )
+	PLAY(10)	;P10 街
+	LOAD("KAIMONO")
+IF( CMND_NUM= 6 )	LOAD("SCNCASTL")
+IF( CMND_NUM= 7 )	MOCHIMONO	GOTO MAINSTART
+IF( CMND_NUM= 8 )	C1=1	LOAD("SCNSYUGO")
+
+GOTO MAINSTART
+
+;***
+;	ロードエンディング
+;***
+
+*LOAD_ENDING
+LOAD("EECALC")
+RET
+
+;***
+;	娘との会話
+;***
+
+*TALKGIRL
+*SCNGIRL_LOOP
+SLCT("親子の語らい,おこづかい,お説教")	;;,全会話")
+IF ( ISLCT=0 )
+	TXOPEN(1)
+	どんな話題について話そうか？
+	SLCT("近頃の調子,勉強のこと,その他の話題,やめる")
+	TXCLOSE(1)
+	IF ( ISLCT=-1 )( ISLCT=3 ) RET
+	C1 = 0			;親子の語らい
+	C2 = ISLCT		;0=近頃の調子,1=勉強のこと,2=その他の話題
+	LOAD("SCNGIRL")
+IF ( ISLCT=1 )
+	;（おこづかいの額は１０歳時→２０Ｇ．以後は歳をとるたびに１０Ｇ値上げ）
+	C1 = P_NENREI - 10		; 年齢
+	C1 = C1 * 10
+	GIVE_GOLD = 20 + C1
+	TXOPEN(1)
+	おこづかいTXGOLD(GIVE_GOLD)が必要です．
+	@P
+	TXCLOSE(1)
+	GOLDCMP(GIVE_GOLD)
+	IF ( AX = 2 ) GOTO SCNGIRL_LOOP
+	C1 = 1			;おこづかい
+	LOAD("SCNGIRL")
+IF ( ISLCT=2 )
+	C1 = 2			;お説教
+	LOAD("SCNGIRL")
+;;IF ( ISLCT=3 )
+;;	C1 = 3			;全会話(デバック用)
+;;	LOAD("SCNGIRL")
+RET
+
+
+
+;***
+;【 効　果 】発生した月は，メインコマンドのうち「能力を見る」「持物を見る」
+;				「システム」「終了」しか選べない．
+;				一ヶ月がむなしく経過し，各評価値が１０％低下する．
+;	from "EVNT009.TXT"
+;***
+
+*RUNAWAY	; ｲﾍﾞﾝﾄ｢家出」
+
+*RUNAWAY_LOOP
+SLCTX("娘の帰りを待つ,守護星に祈る,持ち物,ステータス,プロフィール")
+IF(ISLCT=0) GOTO GO_RUNAWAY
+IF(ISLCT=1) C1=1	LOAD("SCNSYUGO")
+IF(ISLCT=2) MOCHIMONO	GOTO RUNAWAY_LOOP
+IF(ISLCT=3) SSTATUS		GOTO RUNAWAY_LOOP
+IF(ISLCT=4) PROFILES	GOTO RUNAWAY_LOOP
+GOTO RUNAWAY_LOOP
+
+*GO_RUNAWAY		;「終了」を選ぶと
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR
+IGRP_TBL1[0]="戦士評価"	IGRP_TBL3[0]=H_SENSHI	; 戦士評価
+IGRP_TBL1[1]="魔法評価"	IGRP_TBL3[1]=H_MAHO		; 魔法評価
+IGRP_TBL1[2]="社交評価"	IGRP_TBL3[2]=H_SYAKOH	; 社交評価
+IGRP_TBL1[3]="家事評価" IGRP_TBL3[3]=H_KAJI		; 家事評価
+IGRP_CNT=4
+IGRP_X=50
+IGRP_Y=298
+GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+CLENDER(4)			; カレンダー・翌月の計算
+NXT_M_YEAR=AX		; 翌月の年
+NXT_M_MONTH=BX		; 翌月の月
+NXT_M_ENDDAY=CX		; 翌月の末日
+NXT_M_SWEEK=DX		; 翌月の最初の曜日
+
+TXOPEN(1)
+娘のいない一ヶ月がむなしく過ぎていった・・・
+
+C1 = NXT_M_ENDDAY			; 翌月の末日
+	TIMER1(4)
+	CLENDER(3)				; カレンダー・更新処理
+	CLENDER(2)				; カレンダー・再表示
+	WAIT1
+LOOP C1
+@P
+
+C1 = H_SENSHI /10			; 戦士評価
+C2 = H_MAHO   /10			; 魔法評価
+C3 = H_SYAKOH /10			; 社交評価
+C4 = H_KAJI   /10			; 家事評価
+
+戦士評価がTXPOINT(C1)下がった．
+魔法評価がTXPOINT(C2)下がった．
+社交評価がTXPOINT(C3)下がった．
+家事評価がTXPOINT(C4)下がった．
+
+H_SENSHI -= C1				; 戦士評価
+IF ( H_SENSHI < 0 )	H_SENSHI=0
+
+H_MAHO   -= C2				; 魔法評価
+IF ( H_MAHO < 0 )	H_MAHO=0
+
+H_SYAKOH -= C3				; 社交評価
+IF ( H_SYAKOH < 0 )	H_SYAKOH=0
+
+H_KAJI   -= C4				; 家事評価
+IF ( H_KAJI < 0 )	H_KAJI=0
+
+GRPUPD(1,0,H_SENSHI)		; 戦士評価
+GRPUPD(1,1,H_MAHO)			; 魔法評価
+GRPUPD(1,2,H_SYAKOH)		; 社交評価
+GRPUPD(1,3,H_KAJI)			; 家事評価
+
+@P
+
+GR_CLOSE					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(1)
+
+E_ETC[18] = P_NENREI		;「娘の誕生日」をチェックした年齢
+E_ETC[14] = P_NENREI[1]		;「父の誕生日」をチェックした年齢
+
+CLENDER(7)					;カレンダー・月次処理
+
+FREAM_BACKHOME_GIRL		;家出帰り娘フレーム表示
+E_RWAY = 0				;ｲﾍﾞﾝﾄ｢家出」
+
+LOAD("MAINBORN")
+
+
+
+*SSTATUS
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+STRSCLEAR
+IGRP_TBL1[0]="体力"	IGRP_TBL3[0]=B_TAIRYOKU		; 体力
+IGRP_TBL1[1]="筋力"	IGRP_TBL3[1]=B_KINRYOKU		; 筋力
+IGRP_TBL1[2]="知能"	IGRP_TBL3[2]=B_CHINOH		; 知能
+IGRP_TBL1[3]="気品"	IGRP_TBL3[3]=B_KIHIN		; 気品
+IGRP_TBL1[4]="色気"	IGRP_TBL3[4]=B_IROKE		; 色気
+IGRP_TBL1[5]="モラル"	IGRP_TBL3[5]=B_MORALS		; モラル
+IGRP_TBL1[6]="信仰"	IGRP_TBL3[6]=B_SHINKOH		; 信仰
+IGRP_TBL1[7]="因業"	IGRP_TBL3[7]=B_INGYO		; 因業
+IGRP_TBL1[8]="感受性"	IGRP_TBL3[8]=B_KANJUSEI		; 感受性
+IGRP_TBL1[9]="ストレス"	IGRP_TBL3[9]=B_STRESS		; ストレス
+IGRP_CNT=10
+IGRP_X=1
+IGRP_Y=84
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+STRSCLEAR
+IGRP_TBL1[0]="戦士評価"	IGRP_TBL3[0]=H_SENSHI		; 戦士評価
+IGRP_TBL1[1]="魔法評価"	IGRP_TBL3[1]=H_MAHO			; 魔法評価
+IGRP_TBL1[2]="社交評価"	IGRP_TBL3[2]=H_SYAKOH		; 社交評価
+IGRP_TBL1[3]="家事評価" IGRP_TBL3[3]=H_KAJI			; 家事評価
+IGRP_CNT=4
+IGRP_X=54
+IGRP_Y=180
+GRPOPEN(2,2)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+STRSCLEAR
+IGRP_TBL1[0]="戦闘技術"	IGRP_TBL3[0]=V_SENTOH		; 戦闘技術
+IGRP_TBL1[1]="攻撃力"	IGRP_TBL3[1]=V_KOUGEKI		; 攻撃力
+IGRP_TBL1[2]="防御力"	IGRP_TBL3[2]=V_BOUGYO		; 防御力
+IGRP_TBL1[3]="魔法技術"	IGRP_TBL3[3]=V_MAHOGIJUTSU	; 魔法技術
+IGRP_TBL1[4]="魔力"		IGRP_TBL3[4]=V_MARYOKU		; 魔力
+IGRP_TBL1[5]="抗魔力"	IGRP_TBL3[5]=V_KOHMARYOKU	; 抗魔力
+IGRP_CNT=6
+IGRP_X=1
+IGRP_Y=268
+GRPOPEN(4,3)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+STRSCLEAR
+IGRP_TBL1[0]="礼儀作法"	IGRP_TBL3[0]=V_REIGI		; 礼儀作法
+IGRP_TBL1[1]="芸術"		IGRP_TBL3[1]=V_GEIJYUTSU	; 芸術
+IGRP_TBL1[2]="話術"		IGRP_TBL3[2]=V_WAJYUTU		; 話術
+IGRP_TBL1[3]="料理"		IGRP_TBL3[3]=V_RYOURI		; 料理
+IGRP_TBL1[4]="掃除洗濯"	IGRP_TBL3[4]=V_SOUJISENTAKU	; 掃除洗濯
+IGRP_TBL1[5]="気だて"	IGRP_TBL3[5]=V_KIDATE		; 気だて
+IGRP_CNT=6
+IGRP_X=54
+IGRP_Y=268
+GRPOPEN(4,4)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+;IGRP_X=1
+;IGRP_Y=315
+;GRPOPEN(4,3)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+;IGRP_CNT=4
+;IGRP_X=54
+;IGRP_Y=315
+;GRPOPEN(4,5)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+WAITU
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+RET
+
+
+*PROFILES
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+WWPROF(3)					; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+
+
+STRSCLEAR
+IGRP_TBL1[0]="name"
+IGRP_TBL1[1]="family"
+IGRP_TBL1[2]="血液型"
+IGRP_TBL1[3]="年齢"
+IGRP_TBL1[4]="誕生日"
+IGRP_TBL1[5]="子宮名"
+IGRP_TBL1[6]="守護星"
+IGRP_TBL3[0]=NAME_FIRST			; 名前
+IGRP_TBL3[1]=NAME_FAMILY		; 名前(family)
+IGRP_TBL3[2]=DEF_STR_BROOD[P_BLOOD]	; 血液型
+IGRP_TBL3[5]=DEF_STR_SIKYU[P_SHIKYU]	; 子宮名
+
+IF ( P_SYUGOSEI=0 ) AX = "太陽神"
+IF ( P_SYUGOSEI=1 ) AX = "月神"
+IF ( P_SYUGOSEI=2 ) AX = "火星神"
+IF ( P_SYUGOSEI=3 ) AX = "水星神"
+IF ( P_SYUGOSEI=4 ) AX = "木星神"
+IF ( P_SYUGOSEI=5 ) AX = "金星神"
+IF ( P_SYUGOSEI=6 ) AX = "土星神"
+IF ( P_SYUGOSEI=7 ) AX = "天王星神"
+IF ( P_SYUGOSEI=8 ) AX = "海王星神"
+IF ( P_SYUGOSEI=9 ) AX = "冥王星神"
+IGRP_TBL3[6] = AX
+
+IGRP_TBL3[3]="99"
+VALSTR(P_NENREI)
+STRCOPY(IGRP_TBL3[3])			; 年齢
+IGRP_TBL3[4]="9999/99/99"
+BORTHDAYSTR(P_BORTHYEAR,P_BORTHMONTH,P_BORTHDAY)
+STRCOPY(IGRP_TBL3[4])			; 誕生日
+IGRP_CNT=7
+IGRP_X=2
+IGRP_Y=42
+PROFILE(1,2)		; プロフィール･ｳｲﾝﾄﾞｳ
+
+
+IGRP_TBL1[0]="身長"	IGRP_TBL3[0]=P_SHINCHO		; 身長
+IGRP_TBL1[1]="体重"	IGRP_TBL3[1]=P_TAIJYU		; 体重
+IGRP_TBL1[2]="バスト"	IGRP_TBL3[2]=P_BUST		; バスト
+IGRP_TBL1[3]="ウエスト"	IGRP_TBL3[3]=P_WAIST		; ウエスト
+IGRP_TBL1[4]="ヒップ"	IGRP_TBL3[4]=P_HIP		; ヒップ
+IGRP_CNT=5
+IGRP_X=54
+IGRP_Y=190
+PROPROPEN(1,3)		;ﾌﾟﾛﾎﾟｰｼｮﾝ･ｳｲﾝﾄﾞｳ
+
+IGRP_TBL1[0]="病気指数"		IGRP_TBL3[0]=S_BYOUKI	; 病気指数(%)
+IGRP_TBL1[1]="非行化指数"	IGRP_TBL3[1]=S_HIKOUKA	; 非行化指数(%)
+IGRP_TBL1[2]="人脈"			IGRP_TBL3[2]=S_JINMYAKU	; 人脈
+
+;;IGRP_TBL1[3]="状態・病気"	IGRP_TBL3[3]=FLAG_BYOUKI; 状態・病気
+
+
+IGRP_TBL3[3]=1
+C1=S_BYOUKI			; 病気指数(%)
+IF ( C1<10 )			IGRP_TBL1[3]="健康です"
+IF ( C1>=10  C1<30 )	IGRP_TBL1[3]="風邪気味です"
+IF ( C1>=30  C1<60 )	IGRP_TBL1[3]="軽い肺炎です"
+IF ( C1>=60  C1<90 )	IGRP_TBL1[3]="悪性肺炎です"
+IF ( C1>=90 C1<100 )	IGRP_TBL1[3]="重態です"
+IF ( C1>=100 )			IGRP_TBL1[3]="瀕死の重態です"
+
+IGRP_TBL3[4]=1
+C1=S_HIKOUKA		; 非行化指数(%)
+IF ( C1<10 )			IGRP_TBL1[4]="素直です"
+IF ( C1>=10 C1<30 )		IGRP_TBL1[4]="やや反抗的です"
+IF ( C1>=30 C1<60 )		IGRP_TBL1[4]="反抗的です"
+IF ( C1>=60 C1<90 )		IGRP_TBL1[4]="非行化してます"
+IF ( C1>=90 )			IGRP_TBL1[4]="愚連隊の仲間"
+
+IGRP_TBL3[5]=1	; 状態・恋愛
+IF ( FLAG_RENAI=0 )	IGRP_TBL1[5]=""
+IF ( FLAG_RENAI!0 )	IGRP_TBL1[5]="恋をしています"
+
+IF ( FLAG_KENKO = 0 )	IGRP_TBL1[6]="健康「無理しない」"
+IF ( FLAG_KENKO = 1 )	IGRP_TBL1[6]="健康「丈夫な子に」"
+IF ( FLAG_KENKO = 2 )	IGRP_TBL1[6]="健康「おしとやか」"
+IF ( FLAG_KENKO = 3 )	IGRP_TBL1[6]="健康「ダイエット」"
+IGRP_TBL3[6]=2
+IGRP_X=2
+IGRP_Y=190
+STATUS(1,4)		; 通常ｽﾃｰﾀｽ･ｳｲﾝﾄﾞｳ
+
+IGRP_TBL1[0]=ARMS_NAME	; 武器　名前
+IGRP_TBL2[0]=ARMS_ICON	; 武器　ＩＣＯＮ番号
+IGRP_TBL3[0]=ARMS_HELP	; 武器　説明 string
+IGRP_TBL4[0]="武器"		; グラフテーブル／項目名
+IGRP_TBL1[1]=EQUIP_NAME	; 装備　名前
+IGRP_TBL2[1]=EQUIP_ICON	; 装備　ＩＣＯＮ番号
+IGRP_TBL3[1]=EQUIP_HELP	; 装備　説明 string
+IGRP_TBL4[1]="防具"		; グラフテーブル／項目名
+IGRP_CNT=2				; グラフテーブル数
+IGRP_X=52				; グラフＸ
+IGRP_Y=290
+PRICON(1,1)				; ICONﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+WAITU
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+RET
+
+
+*MOCHIMONO
+IF ( ITEM_MAX = 0 )
+	TXOPEN(1)
+	持ち物はありません。
+	@P
+	TXCLOSE(1)
+	RET
+GR_F(1,2)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+SHOW_EQUIP			;＊選択した装備品表示．
+C2 = 0
+C1=ITEM_MAX				;所有アイテム数
+	ITEMID_TBL1[C2]=ITEM_NAME[C2]	;所有アイテム名前 string
+	ITEMID_TBL2[C2]=ITEM_ICON[C2]	;ＩＣＯＮ
+	ITEMID_TBL3[C2]=ITEM_GOLD[C2]	;金
+	ITEMID_TBL4[C2]=ITEM_HELP[C2]	;所有アイテム説明 string
+	ITEMID_TBL5[C2]=0		;パラメータ値１
+	ITEMID_TBL6[C2]=""		;文字２
+	ITEMID_TBL7[C2]=0		;パラメータ値２
+	C2++
+LOOP C1
+ITEMID_CNT=ITEM_MAX		;アイテムＩＤ数
+
+*MOCHIMONO_33
+IF ( E_RWAY ! 0 )		;ｲﾍﾞﾝﾄ｢家出」
+	ITEMSLCT(1)			;マルチアイテム選択
+	IF ( ISITM = -1 )
+		GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+		RET
+	GOTO MOCHIMONO_33
+
+ITEMPRN(6,1)	; マルチアイテムｶﾚﾝﾄﾍﾟｰｼﾞON/OFF
+*MOCHIMONO_LOOP
+ITEMPRN(4,0)	;0=ｷｬﾝｾﾙOFF
+ITEMPRN(5,1)	;マルチアイテムﾌｧﾝｸｼｮﾝON/OFF
+;;ITEMST(1)		;マルチアイテム選択
+ITEMSLCT(1)		;マルチアイテム選択
+ITEMPRN(4,1)	;1=ｷｬﾝｾﾙON
+ITEMPRN(5,0)	;マルチアイテムﾌｧﾝｸｼｮﾝON/OFF
+IF ( ISITM = -2 )
+	ITEM_SRCH(5,2)	;equip clear. 2=arms
+	SHOW_EQUIP
+	WWPROF(2)		;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+IF ( ISITM = -3 )
+	ITEM_SRCH(5,1)	;equip clear. 1=equip
+	SHOW_EQUIP
+	WWPROF(2)		;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+IF ( ISITM = -1 )
+	GOTO MOCHIMONO_EXIT
+ITEM_SRCH(3,ISITM)		;attribute get.
+GT_ITM_ATTR=AX
+GT_ITM_EQUIP=DX
+
+IF ( GT_ITM_ATTR = 1 )	; 1=equip.
+	SOUBI_CHG
+IF ( GT_ITM_ATTR = 2 )	; 2=arms.
+	SOUBI_CHG
+IF ( GT_ITM_ATTR = 3 )	; 3=dress.
+	DRESS_CHG
+IF ( GT_ITM_ATTR = 4 )	; 4=up_param.
+
+IF ( GT_ITM_ATTR = 5 )	; 5=up_once.
+	USE_UP_ONCE
+	GOTO MOCHIMONO
+GOTO MOCHIMONO_LOOP
+
+*MOCHIMONO_EXIT
+GR_CLOSE		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+ITEMPRN(6,0)	; マルチアイテムｶﾚﾝﾄﾍﾟｰｼﾞON/OFF
+RET
+
+*DRESS_CHG
+IF ( GT_ITM_EQUIP=1 )		; item equipment.0=normal,1=now equip
+	TXOPEN(1)
+	それは、いま着ています．
+	@P
+	TXCLOSE(1)
+	RET
+DRESS_AGE_CHECK(ITEM_ICON[ISITM])
+IF ( CX = 1 )	;1=年齢制限で着れません
+	GR_CLOSE		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	TXLC(2,28,146,1)	;text window locate.
+	TXLC(3,13,270,2)	;text window locate.
+	TXOPEN(2)
+	TXFACE("F043")	;執事・安心
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXOPEN(3)
+	TXGIRL(8)		;娘・すねる
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	TXLC(2,1,260,2)		; text window locate.
+	TXLC(3,31,270,2)	; text window locate.
+	GR_F(1,2)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	SHOW_EQUIP			;＊選択した装備品表示．
+	RET
+
+IF ( DX = 1 )	;1=太りすぎで着れません
+	GR_CLOSE		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	TXLC(2,28,146,1)	;text window locate.
+	TXLC(3,13,270,2)	;text window locate.
+	TXOPEN(2)
+	TXFACE("F043")	;執事・安心
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXOPEN(3)
+	TXGIRL(16)		;娘・ガ～ン
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	TXLC(2,1,260,2)		; text window locate.
+	TXLC(3,31,270,2)	; text window locate.
+	GR_F(1,2)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	SHOW_EQUIP			;＊選択した装備品表示．
+	RET
+
+
+ITEM_SRCH(6,ISITM)		; equipment chenge.(equip,arms,dress)
+GR_CLOSE				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+WWGIRL(2)				; 娘のＧが変わる．
+GR_F(1,2)				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+SHOW_EQUIP				;＊選択した装備品表示．
+RET
+
+*SOUBI_CHG
+IF ( GT_ITM_EQUIP=1 )	; 装備 0=normal,1=now equip
+	TXOPEN(1)
+	それは、いま装備しています．
+	@P
+	TXCLOSE(1)
+	RET
+ITEM_SRCH(6,ISITM)	; equipment chenge.(equip,arms,dress)
+GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+GR_F(1,2)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+SHOW_EQUIP			;＊選択した装備品表示．
+WWPROF(2)			: ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+RET
+
+*SHOW_EQUIP		;＊選択した装備品表示．
+IGRP_TBL1[0]=ARMS_NAME	; 武器　名前
+IGRP_TBL2[0]=ARMS_ICON	; 武器　ＩＣＯＮ番号
+IGRP_TBL3[0]=ARMS_HELP	; 武器　説明 string
+IGRP_TBL4[0]="武器"		; グラフテーブル／項目名
+IGRP_TBL1[1]=EQUIP_NAME	; 装備　名前
+IGRP_TBL2[1]=EQUIP_ICON	; 装備　ＩＣＯＮ番号
+IGRP_TBL3[1]=EQUIP_HELP	; 装備　説明 string
+IGRP_TBL4[1]="防具"		; グラフテーブル／項目名
+IGRP_CNT=2				; グラフテーブル数
+IGRP_X=2				; グラフＸ
+IGRP_Y=70				; グラフＹ
+PRICON(1,1)				; ICONﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+RET
+
+*USE_UP_ONCE
+GR_CLOSE		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+ITEMPRN(6,0)	; マルチアイテムｶﾚﾝﾄﾍﾟｰｼﾞON/OFF
+
+NOW_ICONS = ITEM_ICON[ISITM]
+
+SHOW_ITEMS
+
+IF ( NOW_ICONS=105 )	;豊乳丸
+	TXOPEN(1)
+	TXA(NAME_FIRST)は豊乳丸を一粒飲んだ．
+	@P
+	TXCLOSE(1)
+IF ( NOW_ICONS=106 )	;いにしえのミルク
+	TXOPEN(1)
+	TXA(NAME_FIRST)は，いにしえのミルクを飲んだ．
+	@P
+	TXCLOSE(1)
+
+ITEM_KILL(ISITM)	; アイテム削除
+MUSIC(6,2)	;効果音発生
+EFC(4)		; ＷＨＩＴＥ・ＯＵＴ
+ITEMPRN(2)	;マルチアイテム復帰
+WWPROF(2)	;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+EFC(22)		; 割り込みＷＨＩＴＥ・ＩＮ
+;EFC(3)		; ＷＨＩＴＥ・ＩＮ
+TIMER1(60)
+BAK_GIRL_BODY	=	GIRL_BODY	;体形 1=細,2=太
+BAK_GIRL_BREAST	=	GIRL_BREAST	; 胸大 0=無,1=有
+CLENDER(10)					;体形のチェック
+IF ( BAK_GIRL_BODY ! GIRL_BODY )( BAK_GIRL_BREAST ! GIRL_BREAST )
+	WWGIRL(2)					;girl put.
+WAIT1
+IF ( NOW_ICONS=105 )	;豊乳丸
+	TXOPEN(1)
+	バストが２センチ大きくなった．
+	@P
+	TXCLOSE(1)
+IF ( NOW_ICONS=106 )	;いにしえのミルク
+	TXOPEN(1)
+	体重が１キロ減った．
+	@P
+	TXCLOSE(1)
+RET
+
+*SHOW_ITEMS
+C2 = ISITM
+ITEMID_TBL1[0]=ITEM_NAME[C2]	;所有アイテム名前 string
+ITEMID_TBL2[0]=ITEM_ICON[C2]	;ＩＣＯＮ
+ITEMID_TBL3[0]=ITEM_GOLD[C2]	;金
+ITEMID_TBL4[0]=ITEM_HELP[C2]	;所有アイテム説明 string
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEMID_CNT=1					; アイテムＩＤ数
+ITEMPRN(3,4,200)				; マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)					; マルチアイテム表示
+RET
+
+
+;***
+;	その他
+;***
+
+*SLEEP
+WAITU			; ユーザ待ち
+RET
+
+*SHOWFREE
+@1
+FREE
+@P
+RET
+
+
+;***
+;	収穫祭スケジュール
+;***
+
+*SCHEDULE_SYU
+FLAG_GO_SCHEDULE=0		; Go schedule.
+SCHD_SYUKAKU=0			; 収穫祭schedule.
+SLCT("収穫祭へ行く,休息する,取り消し")
+IF ( ISLCT = 2 )( ISLCT = -1 ) RET
+IF ( ISLCT = 1 )		;休息するを選択時
+	TXOPEN(2)
+	TXFACE("F046")	;執事・困り
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	SLCT("収穫祭に参加しない,取り消し")
+	IF ( ISLCT ! 0 )
+		TXCLOSE(2)
+		GOTO SCHEDULE_SYU
+	TXFACE("F039")		; 執事・普通
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+
+	SCHD_SYUKAKU=2			; 収穫祭schedule.
+	SCHED_SECTION[0]=3		;3=休みをあげる
+	SCHED_WORKS[0]=0		;
+	SCH_COUNT = 1			;スケジュール数
+	SCH_NOW=0				;
+	FLAG_GO_SCHEDULE=1		; Go schedule.
+	RET
+SCHD_SYUKAKU=1			; 収穫祭schedule.
+SCHED_SECTION[0]=4		;4=収穫祭
+SCHED_WORKS[0]=0		;
+SCH_COUNT = 1			;スケジュール数
+SCH_NOW=0				;
+FLAG_GO_SCHEDULE=1		; Go schedule.
+RET
+
+;***
+;	最初のスケジュールの決定
+;***
+
+*SCHEDULE_1ST
+VACA_GOLD_CALC
+TXOPEN(2)
+TXFACE("F039")			; 執事・普通
+スケジュールの決定
+
+CLENDER(11)				;カレンダー・今月の計算
+NOW_MONTH_END=AX		;月末の日
+NXT_DAYS=BX				;翌日の日付
+NXT_WEEK=CX				;翌日の曜日
+NXT_M_YEAR	=	VAL_YEAR
+NXT_M_MONTH	=	VAL_MONTH
+
+IF ( VAL_DAY = NOW_MONTH_END )	;月末の日
+	CLENDER(4)			;カレンダー・翌月の計算
+	NXT_M_YEAR=AX		;翌月の年
+	NXT_M_MONTH=BX		;翌月の月
+	NOW_MONTH_END=CX	;月末の日
+	NXT_DAYS=1			;翌日の日付
+	NXT_WEEK=DX			;翌日の曜日
+
+SCHD_OPEN(NXT_DAYS,NXT_WEEK,NOW_MONTH_END,NXT_M_MONTH,NXT_M_YEAR)
+*SCHED_RETRY_1ST
+SCHED_MAIN
+TXF(10)
+IF ( FLAG_GO_SCHEDULE ! 0 )
+	今月は、このスケジュールで
+	よいですか？
+	SLCT("スケジュールを実行,取り消し")
+	@C
+	IF ( ISLCT ! 0 )
+		SCHED_CLEAR
+		SCHED_CLEAR
+		SCHED_CLEAR
+		GOTO SCHED_RETRY_1ST
+
+	スケジュールを実行します．
+	@P
+SCHD_CLOSE
+TXCLOSE(2)
+RET
+
+;***
+;	最後のスケジュールの決定
+;***
+
+*SCHEDULE_FIN
+VACA_GOLD_CALC
+TXOPEN(2)
+TXFACE("F039")			; 執事・普通
+スケジュールの決定
+CLENDER(4)				; カレンダー・翌月の計算
+NXT_M_YEAR=AX			; 翌月の年
+NXT_M_MONTH=BX			; 翌月の月
+NXT_M_SWEEK=DX			; 翌月の最初の曜日
+NXT_M_ENDDAY=P_BORTHDAY	; 誕生日
+
+SCHD_OPEN(1,NXT_M_SWEEK,NXT_M_ENDDAY,NXT_M_MONTH,NXT_M_YEAR)	; ｽｹｼﾞｭｰﾙ･ｳｲﾝﾄﾞｳ OPEN
+*SCHED_RETRY_FIN
+SCHED_MAIN
+TXF(10)
+IF ( FLAG_GO_SCHEDULE ! 0 )
+	今月は、このスケジュールで
+	よいですか？
+	SLCT("スケジュールを実行,取り消し")
+	@C
+	IF ( ISLCT ! 0 )
+		SCHED_CLEAR
+		SCHED_CLEAR
+		SCHED_CLEAR
+		GOTO SCHED_RETRY_FIN
+
+	スケジュールを実行します
+	@P
+SCHD_CLOSE
+TXCLOSE(2)
+RET
+
+;***
+;	スケジュールの決定
+;***
+
+*SCHEDULE
+VACA_GOLD_CALC
+TXOPEN(2)
+TXFACE("F039")		; 執事・普通
+スケジュールの決定
+CLENDER(4)		; カレンダー・翌月の計算
+NXT_M_YEAR=AX		; 翌月の年
+NXT_M_MONTH=BX		; 翌月の月
+NXT_M_ENDDAY=CX		; 翌月の末日
+NXT_M_SWEEK=DX		; 翌月の最初の曜日
+SCHD_OPEN(1,NXT_M_SWEEK,NXT_M_ENDDAY,NXT_M_MONTH,NXT_M_YEAR)	; ｽｹｼﾞｭｰﾙ･ｳｲﾝﾄﾞｳ OPEN
+*SCHED_LIST_RETRY
+SCHED_MAIN
+TXF(10)
+IF ( FLAG_GO_SCHEDULE ! 0 )
+	EVENT002X1
+	EVENT002X2
+	EVENT002X3
+	EVENT002X4
+	EVENT002X5
+	EVENT002X6
+	EVENT002X7
+	EVENT002X8
+	EVENT002X9
+	EVENT002X10
+	今月は、このスケジュールで
+	よいですか？
+	SLCT("スケジュールを実行,取り消し")
+	@C
+	IF ( ISLCT ! 0 )
+		SCHED_CLEAR
+		SCHED_CLEAR
+		SCHED_CLEAR
+		GOTO SCHED_LIST_RETRY
+
+	スケジュールを実行します
+	@P
+SCHD_CLOSE
+TXCLOSE(2)
+RET
+
+
+*SCHED_ICONSET
+SCHD_ICON(SCH_STARTDAY[SCHD_LINE],SCH_ENDDAY[SCHD_LINE],ICONNUM)
+RET
+
+*SCHED_CLEAR
+IF ( SCHD_LINE=0 ) RET
+SCHD_LINE--
+SCHD_ICON(SCH_STARTDAY[SCHD_LINE],SCH_ENDDAY[SCHD_LINE],-1)
+RET
+
+*SCHED_MAIN
+
+FLAG_GO_SCHEDULE=0	; Go schedule.
+SCHD_LINE=0			; スケジュール・ライン
+
+IF ( E_ETC[13]!0 )			;ただ食い第１旬に料理屋ただ働き
+	料理屋でただ食いしたので、第１旬は料理屋ただ働きです．
+	ICONNUM = 68			;68=料理屋
+	SCHED_ICONSET			;
+	SCHED_SECTION[0]=1		;娘を働かせる
+	SCHED_WORKS[0]=5		;料理屋
+	SCHD_LINE=1				;スケジュール・ライン
+	@P
+	@C
+
+*SCHED_MAIN_LOOP
+
+TXF(12)
+
+STRSCLEAR
+IF ( SCHD_LINE >= SCH_COUNT )
+	FLAG_GO_SCHEDULE=1	; Go schedule.
+	RET
+
+C1=SCHD_LINE+1
+
+*SCHED_MAIN_LOOP2
+
+今月の娘の予定は？（第TXPOINT(C1)旬）
+SLCPOS(4)		; 4=メインSLCT発生位置
+SLCT("娘を鍛える,娘を働かせる,武者修行に出す,休みをあげる")
+XDBG(5)			; now demo mode.
+IF ( AX=1 )		; 0=normal,1=demo.
+	IF ( ISLCT < 0 )
+		RANDAM(4) AX--
+		ISLCT = AX
+I_SECTION = ISLCT
+
+GOLDCMP(0)
+IF ( AX=2 )	; 2=upper
+	IF ( ISLCT=0 );訓練
+		@C
+		TXFACE("F046")	;執事・困り
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		@C
+		GOTO SCHED_MAIN_LOOP
+
+IF ( ISLCT=0 )	SCHED_KITAERU	SCHED_MAIN_OK	GOTO SCHED_MAIN_LOOP
+IF ( ISLCT=1 )	SCHED_HATARAKU	SCHED_MAIN_OK	GOTO SCHED_MAIN_LOOP
+IF ( ISLCT=2 )	SCHED_MUSYA		SCHED_MAIN_OK	GOTO SCHED_MAIN_LOOP
+IF ( ISLCT=3 )	SCHED_YASUMI	SCHED_MAIN_OK	GOTO SCHED_MAIN_LOOP
+IF ( SCHD_LINE > 0  E_ETC[13]=0 )	;ただ食い第１旬に料理屋ただ働き
+	SCHED_CLEAR
+	@C
+	取り消します．
+	GOTO SCHED_MAIN_LOOP
+IF ( SCHD_LINE > 1  E_ETC[13]!0 )	;ただ食い第１旬に料理屋ただ働き
+	SCHED_CLEAR
+	@C
+	取り消します．
+	GOTO SCHED_MAIN_LOOP
+RET
+
+*SCHED_MAIN_OK
+IF ( I_WORKS = -1 ) RET
+SLCPOS(6,60,260)
+SLCT("スケジュールに組み込む,取り消し")
+SLCPOS(4)		; 4=メインSLCT発生位置
+IF ( ISLCT=0 )
+	@C
+	「＊＊＊TXA(SCDNM)＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	SCHED_ICONSET
+	SCHED_SECTION[SCHD_LINE]=I_SECTION		; スケジュール項目
+	SCHED_WORKS[SCHD_LINE]=I_WORKS			; スケジュール内容
+	SCHD_LINE++
+	RET
+@C
+取り消します．
+RET
+
+*SCHED_KITAERU		;娘を鍛えるを選択した場合
+@C
+娘に何を習わせますか？
+
+STRSCLEAR
+C2 = 0
+BP="自然科学"	TBLSET2(54,RUN_KITAERU[1],30,40,50,60)
+BP="詩文"	TBLSET2(55,RUN_KITAERU[2],40,60,80,100)
+BP="神学"	TBLSET2(56,RUN_KITAERU[3],40,60,80,90)
+BP="軍学"	TBLSET2(57,RUN_KITAERU[4],50,70,90,110)
+BP="剣術"	TBLSET2(58,RUN_KITAERU[5],40,70,130,190)
+BP="格闘術"	TBLSET2(59,RUN_KITAERU[6],30,40,50,60)
+BP="魔法"	TBLSET2(60,RUN_KITAERU[7],60,70,80,90)
+BP="礼法"	TBLSET2(61,RUN_KITAERU[8],40,50,60,70)
+BP="絵画"	TBLSET2(62,RUN_KITAERU[9],40,50,60,80)
+BP="舞踊"	TBLSET2(63,RUN_KITAERU[10],50,70,90,110)
+ITEMID_CNT=C2	;アイテムＩＤ数
+SCHD_IT_SLCT(2)	;マルチアイテム選択
+I_WORKS = ISITM		;選択
+IF ( I_WORKS = -1 ) RET
+
+ICONNUM = ITEMID_TBL2[I_WORKS]	;ＩＣＯＮ
+
+IF ( I_WORKS=0 )
+	SCDNM="自然科学"
+	PRN_SCD
+	迷信を否定し，科学的，合理的な目を養う．
+	RET
+IF ( I_WORKS=1 )
+	SCDNM="詩文"
+	PRN_SCD
+	詩の朗読と創作．詩文の修得は，教養人のステータス・シンボル．
+	RET
+IF ( I_WORKS=2 )
+	SCDNM="神学"
+	PRN_SCD
+	信仰に基づく科学観の修養．学問の王道．
+	RET
+IF ( I_WORKS=3 )
+	SCDNM="軍学"
+	PRN_SCD
+	戦いの技術を学問として学ぶ．
+	RET
+IF ( I_WORKS=4 )
+	IF ( E_ETC[11]=1 )			;「道場破り」で「剣術」の稽古が出来ない
+		@C
+		剣術は道場やぶりにあって閉鎖中になっています．
+		@P
+		GOTO SCHED_KITAERU
+	SCDNM="剣術"
+	PRN_SCD
+	道場に通って剣を学ぶ．
+	RET
+IF ( I_WORKS=5 )
+	SCDNM="格闘術"
+	PRN_SCD
+	武具に頼らぬ，体術を中心とした戦闘法を学ぶ．
+	RET
+IF ( I_WORKS=6 )
+	SCDNM="魔法"
+	PRN_SCD
+	魔法のイロハから，強力な呪文まで修得．
+	RET
+IF ( I_WORKS=7 )
+	SCDNM="礼法"
+	PRN_SCD
+	レディのたしなみから，古法による王宮礼法まで伝授．
+	RET
+IF ( I_WORKS=8 )
+	SCDNM="絵画"
+	PRN_SCD
+	絵の修養で芸術的センスを磨く
+	;．
+	RET
+IF ( I_WORKS=9 )
+	SCDNM="舞踊"
+	PRN_SCD
+	本格的宮廷舞踊を伝授．
+	RET
+RET
+
+
+*SCHED_HATARAKU		;娘を働かせるを選択した場合
+@C
+どの仕事をさせますか？
+
+STRSCLEAR
+C2 = 0
+BP="家の手伝"	TBLSET3(64,0)
+GARA_CHECK(2,4)		BP="子守"		TBLSET3(65,DX)
+GARA_CHECK(3,8)		BP="宿屋"		TBLSET3(66,DX)
+GARA_CHECK(4,10)	BP="農場"		TBLSET3(67,DX)
+GARA_CHECK(5,1)		BP="教会"		TBLSET3(56,DX)
+GARA_CHECK(6,8)		BP="料理屋"		TBLSET3(68,DX)
+IF ( P_NENREI >= 11 )
+	GARA_CHECK(7,12)	BP="木コリ"		TBLSET3(69,DX)
+	GARA_CHECK(8,20)	BP="髪結い"		TBLSET3(70,DX)
+IF ( P_NENREI >= 12 )
+	GARA_CHECK(9,18)	BP="左官"		TBLSET3(71,DX)
+	GARA_CHECK(10,8)	BP="狩人"		TBLSET3(72,DX)
+IF ( P_NENREI >= 13 )
+	GARA_CHECK(11,8)	BP="墓守"		TBLSET3(73,DX)
+IF ( P_NENREI >= 14 )
+	GARA_CHECK(12,20)	BP="家庭教師"	TBLSET3(74,DX)
+	GARA_CHECK(13,12)	BP="酒場"		TBLSET3(75,DX)
+IF ( P_NENREI >= 15 )
+	GARA_CHECK(14,45)	BP="ヤミ酒場"	TBLSET3(76,DX)
+IF ( P_NENREI >= 16 )
+	GARA_CHECK(15,35)	BP="夜の殿堂"	TBLSET3(77,DX)
+
+ITEMID_CNT=C2	;アイテムＩＤ数
+SCHD_IT_SLCT(3)	;マルチアイテム選択
+I_WORKS = ISITM		;選択
+IF ( I_WORKS = -1 ) RET
+
+ICONNUM = ITEMID_TBL2[I_WORKS]	;ＩＣＯＮ
+
+IF ( I_WORKS=0 )
+	SCDNM="家の手伝い"
+	PRN_SCD
+	自宅で家事手伝い．
+	RET
+IF ( I_WORKS=1 )
+	SCDNM="子守"
+	PRN_SCD
+	小さな子供や，赤ちゃんの世話
+	;．
+	RET
+IF ( I_WORKS=2 )
+	SCDNM="宿屋"
+	PRN_SCD
+	街の宿屋で雑用．
+	RET
+IF ( I_WORKS=3 )
+	SCDNM="農場"
+	PRN_SCD
+	郊外の農場で農作業の手伝い．
+	RET
+IF ( I_WORKS=4 )
+	SCDNM="教会"
+	PRN_SCD
+	街の教会で奉仕活動．
+	RET
+IF ( I_WORKS=5 )
+	SCDNM="料理屋"
+	PRN_SCD
+	街の料理屋のお手伝い．
+	RET
+IF ( I_WORKS=6 )
+	SCDNM="木コリ"
+	PRN_SCD
+	木コリの仕事は，腕力だのみの力仕事．
+	RET
+IF ( I_WORKS=7 )
+	SCDNM="髪結い"
+	PRN_SCD
+	髪の手入れや，ヘアメイクの仕事．
+	RET
+IF ( I_WORKS=8 )
+	SCDNM="左官"
+	PRN_SCD
+	建築現場で壁塗りのお手伝い．
+	RET
+IF ( I_WORKS=9 )
+	SCDNM="狩人"
+	PRN_SCD
+	野山で兎や鹿を追う，狩人の助手．
+	RET
+IF ( I_WORKS=10 )
+	SCDNM="墓守"
+	PRN_SCD
+	徹夜で墓荒しから遺骸を守る．
+	RET
+IF ( I_WORKS=11 )
+	SCDNM="家庭教師"
+	PRN_SCD
+	良家の子女に学問を教える．
+	RET
+IF ( I_WORKS=12 )
+	SCDNM="酒場"
+	PRN_SCD
+	酒場の給仕や厨房のお手伝い．
+	RET
+IF ( I_WORKS=13 )
+	SCDNM="ヤミ酒場"
+	PRN_SCD
+	無免許のあぶない酒場．業務内容もちょっとアブナイ．
+	RET
+IF ( I_WORKS=14 )
+	SCDNM="夜の殿堂"
+	PRN_SCD
+	淫靡なショウと華麗な美女の密着サービス．
+	RET
+RET
+
+*GARA_CHECK
+;GARA_CHECK(num,base)
+C1 = GRA_ARBEIT[AX] * -1
+CK_GUARA(C1)
+RET
+
+*SCHED_MUSYA		;武者修行に出すを選択した場合
+@C
+武者修行の旅に出ます．
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+STRSCLEAR
+C2 = 0
+BP="東部" SI="森林地帯"	TBLSET4(78)
+BP="西部" SI="砂漠地帯"	TBLSET4(98)
+BP="南部" SI="水郷地帯"	TBLSET4(99)
+BP="北部" SI="氷山地帯"	TBLSET4(100)
+
+ITEMID_CNT=C2		;アイテムＩＤ数
+SCHD_IT_SLCT(4)		;マルチアイテム選択
+I_WORKS = ISITM		;選択
+
+ICONNUM = ITEMID_TBL2[I_WORKS]	;ＩＣＯＮ
+
+IF ( I_WORKS=0 )
+	SCDNM="東部・森林地帯"
+	PRN_SCD
+	鬱蒼とした森と沼．比較的安全な初心者コース．
+	RET
+IF ( I_WORKS=1 )
+	SCDNM="西部・砂漠地帯"
+	PRN_SCD
+	地獄に通じると噂される恐怖の砂漠．充分な訓練が望まれる．
+	RET
+IF ( I_WORKS=2 )
+	SCDNM="南部・水郷地帯"
+	PRN_SCD
+	川と滝に囲まれた地域．水棲の怪物が多く出没．
+	RET
+IF ( I_WORKS=3 )
+	SCDNM="北部・氷山地帯"
+	PRN_SCD
+	雪と氷の山脈地帯．頂上付近の銀色オオカミに注意．
+	RET
+RET
+
+
+
+*SCHED_YASUMI		;休みをあげるを選択した場合
+@C
+どのような休みを与えますか？
+
+;＊「サナトリウム」は郊外にある静養施設です．
+;＊１日あたり20Gかかります．
+
+IF ( FLAG_BYOUKI ! 0 )					;病気状態の場合
+	STRSCLEAR
+	C2 = 0
+	BP="安静"			TBLSET3(81,0)
+	BP="ｻﾅﾄﾘｳﾑ"			TBLSET3(82,20)
+	ITEMID_CNT=C2		;アイテムＩＤ数
+	SCHD_IT_SLCT(3)		;マルチアイテム選択
+	I_WORKS = ISITM+3		;選択
+
+IF ( FLAG_BYOUKI=0  FLAG_HIKOUKA=0 )	;平常状態（恋愛状態含む）の場合
+	STRSCLEAR
+	C2 = 0
+	BP="自由行動"	DI=""		TBLSET2S(79,0)
+	BP="バカンス"	DI="10日"	TBLSET2S(80,E_ETC[81]);ﾊﾞｶﾝｽの値段
+	ITEMID_CNT=C2		;アイテムＩＤ数
+	SCHD_IT_SLCT(2)		;マルチアイテム選択
+	I_WORKS = ISITM		;選択
+
+IF ( FLAG_BYOUKI = 0  FLAG_HIKOUKA ! 0 )	;非行化状態の場合
+	STRSCLEAR
+	C2 = 0
+	BP="自由行動"	DI=""		TBLSET2S(79,0)
+	BP="バカンス"	DI="10日"	TBLSET2S(80,E_ETC[81])	;ﾊﾞｶﾝｽの値段
+	BP="監視"		DI=""		TBLSET2S(83,0)
+	ITEMID_CNT=C2		;アイテムＩＤ数
+	SCHD_IT_SLCT(2)		;マルチアイテム選択
+	I_WORKS = ISITM		;選択
+
+IF ( ISITM = -1 ) RET
+ICONNUM = ITEMID_TBL2[ISITM]	;ＩＣＯＮ
+
+IF ( I_WORKS=0 )		;自由行動を選択した場合
+	SCDNM="自由行動"
+	PRN_SCD
+	おこづかいを与えて自由行動をとらせます．
+	RET
+IF ( I_WORKS=1 )		;バカンスを選択した場合
+	SCDNM="バカンス"
+	PRN_SCD
+	父娘そろって，海や山に遊びに行きます．
+	RET
+IF ( I_WORKS=2 )		;監視を選択した場合
+	SCDNM="監視
+	PRN_SCD
+	自由行動を取らせながら，こっそり執事に監視させます．
+	RET
+IF ( I_WORKS=3 )
+	SCDNM="安静"
+	PRN_SCD
+	家で安静にします．
+	RET
+IF ( I_WORKS=4 )
+	SCDNM="サナトリウム"
+	PRN_SCD
+	海や山に静養に行きます．
+	RET
+RET
+
+*PRN_SCD
+@C
+TXA(SCDNM)．
+RET
+
+
+*TBLSET2
+;	ex)	BP="自然科学"	TBLSET2(1,RUN_KITAERU[1],10,15,20,25)
+ITEMID_TBL1[C2]=BP
+ITEMID_TBL2[C2]=AX		;ＩＣＯＮ
+AX = BX BX = CX CX = DX DX = SI SI = DI
+CK_LVL
+ITEMID_TBL3[C2]=DX		;金
+ITEMID_TBL4[C2]=DEF_STR_LEVEL[AX]
+C2++
+RET
+
+*TBLSET2S
+;	ex)	BP="バカンス"　DI="10日"	TBLSET2S(1,100)
+ITEMID_TBL1[C2]=BP
+ITEMID_TBL2[C2]=AX		;ＩＣＯＮ
+ITEMID_TBL3[C2]=BX		;金
+ITEMID_TBL4[C2]=DI
+C2++
+RET
+
+*TBLSET3
+;	ex) BP="子守"		TBLSET3(1,4)
+ITEMID_TBL1[C2]=BP
+ITEMID_TBL2[C2]=AX		;ＩＣＯＮ
+ITEMID_TBL3[C2]=BX		;金
+C2++
+RET
+
+*TBLSET4S
+;	ex)	BP="自由行動"	TBLSET4S(1)
+ITEMID_TBL1[C2]=BP
+ITEMID_TBL2[C2]=AX		;ＩＣＯＮ
+ITEMID_TBL4[C2]=""
+C2++
+RET
+
+*TBLSET4
+;	ex)	BP="東部" SI="森林地帯"	TBLSET4(1)
+ITEMID_TBL1[C2]=BP
+ITEMID_TBL2[C2]=AX		;ＩＣＯＮ
+ITEMID_TBL4[C2]=SI
+C2++
+RET
+
+
+;***
+;	「一ヶ月の最初」イベント
+;***
+;2 執事の忠告
+; SCHED_SECTION[] 0=娘を鍛える,1=娘を働かせる,2=武者修行に出す,3=休みをあげる,4=収穫祭
+
+;１：気品・モラル．信仰のどれかが１００以上のとき「あやしい宿屋」「あやし
+;　い酒場」を選択する．
+
+*EVENT002X1
+C1 = 0
+C2 = 0
+C3 = 0
+C4 = SCHD_LINE		; スケジュール・ライン
+	IF ( SCHED_SECTION[C1]=1 )	;1=娘を働かせる
+		IF ( SCHED_WORKS[C1]=13  C2=0 )
+			C2++
+			「ヤミ酒場」
+		IF ( SCHED_WORKS[C1]=14  C3=0 )
+			C3++
+			「夜の殿堂」
+	C1++
+LOOP C4
+IF ( C2 ! 0 )( C3 ! 0 )
+	TXFACE("F042")	;執事・心配
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+RET
+
+;２：病気指数が１０～５９のとき，「安静」か「バカンス」を含まない予定を立てる．
+
+*EVENT002X2
+C1 = 0
+C2 = 0
+C4 = SCHD_LINE		; スケジュール・ライン
+	IF ( SCHED_SECTION[C1]=3 )	;3=休みをあげる
+		C2++
+	C1++
+LOOP C4
+IF ( C2 = 0 )
+	IF ( S_BYOUKI >= 10 S_BYOUKI <=59 )		; 病気指数(%)
+		TXFACE("F042")	;執事・心配
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+RET
+
+;３：ストレスが１０以上で，《体力－ストレス》の値が２０未満．
+
+*EVENT002X3
+IF ( B_STRESS >= 10 )			; ストレス
+	C1 = B_TAIRYOKU - B_STRESS		; 体力－ストレス
+	IF ( C1 < 20 )
+		TXFACE("F042")	;執事・心配
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+RET
+
+;４：ストレスが１０以上で，《信仰またはモラルの高い方－ストレス》が
+;  ２０未満で，かつ非行化指数が１０未満．
+
+*EVENT002X4
+IF ( B_STRESS >= 10 )						; ストレス
+	C1 = B_SHINKOH							; 信仰
+	IF ( B_MORALS > C1 ) C1 = B_MORALS		; モラル
+	C2 = C1 - B_STRESS
+	IF ( C2 < 20 )
+		IF( S_HIKOUKA < 10 )				;非行化指数
+			TXFACE("F042")	;執事・心配
+			「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+			@P
+RET
+
+;５：武者修行を選択して，武器，防具を装備していない．
+
+*EVENT002X5
+C1 = 0
+C2 = 0
+C4 = SCHD_LINE		; スケジュール・ライン
+	IF ( SCHED_SECTION[C1]=2 )	;2=武者修行に出す
+		C2++
+	C1++
+LOOP C4
+IF ( C2 > 0 )
+	IF ( EQUIP_ICON=0 ARMS_ICON=0 )		; 装備ＩＣＯＮ番号 & 武器ＩＣＯＮ番号
+		TXFACE("F042")	;執事・心配
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+RET
+
+;６：１４歳になった時点で，人脈値が１００未満．
+
+*EVENT002X6
+IF ( P_NENREI = 14  VAL_MONTH=P_BORTHMONTH ) ; 年齢 誕生月
+	IF ( S_JINMYAKU < 100 )		; 人脈
+		TXFACE("F039")			;執事・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+RET
+
+;７：最後の月の一ヶ月前の月の最初に，父との関係値が１００のとき．
+
+*EVENT002X7
+C1 = P_BORTHMONTH - 1				; 誕生月 - 1
+IF ( C1 < 1 ) C1 = 12				;
+IF ( C1 = VAL_MONTH   P_NENREI=17 )	; 年齢 誕生月
+	IF ( URA_FATHER >= 100 )		; 父との関係
+		TXFACE("F050")	;執事・照れ
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+RET
+
+;８：　　　　　〃　　　　　　　　　，執事との関係が１００のとき．
+
+*EVENT002X8
+C1 = P_BORTHMONTH - 1				; 誕生月 - 1
+IF ( C1 < 1 ) C1 = 12				;
+IF ( C1 = VAL_MONTH   P_NENREI=17 )	; 年齢 誕生月
+	IF ( URA_STEWARD >= 100 )		; 執事との関係
+		TXFACE("F050")	;執事・照れ
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+RET
+
+;９：非行化指数が６０以上で，スケジュールにアルバイトが入っている．
+
+*EVENT002X9
+C1 = 0
+C2 = 0
+C4 = SCHD_LINE		; スケジュール・ライン
+	IF ( SCHED_SECTION[C1]=1 )	;1=娘を働かせる
+		C2++
+	C1++
+LOOP C4
+IF ( C2 > 0 )
+	IF ( S_HIKOUKA >= 60 )			; 非行化指数(%)
+		TXFACE("F042")	;執事・心配
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+RET
+
+;１０：病気指数が６０以上で，「安静」か「バカンス」が含まれない．
+
+*EVENT002X10
+C1 = 0
+C2 = 0
+C4 = SCHD_LINE		; スケジュール・ライン
+	IF ( SCHED_SECTION[C1]=3 )	;3=休みをあげる
+		C2++
+	C1++
+LOOP C4
+IF ( C2 = 0 )
+	IF ( S_BYOUKI >= 60 )			; 病気指数(%)
+		TXFACE("F042")	;執事・心配
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+RET
+
+
+;	家出帰り娘フレーム表示
+
+*FREAM_BACKHOME_GIRL
+TXLC(2,28,146,1)		;text window locate.
+TXLC(3,13,270,2)		;text window locate.
+DRESS_CHECK
+WWGIRL(2)				; girl put.
+IF ( FLAG_FAT_CHK=1 )
+	TXOPEN(2)
+	TXFACE("F041")
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	TXOPEN(3)
+	TXGIRL(16)
+	「＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXCLOSE(3)
+RET
+
+
+;	太った娘
+
+*FAT_GIRL_CHK
+BAK_GIRL_BODY = GIRL_BODY	;体形 1=細,2=太
+CLENDER(10)					;体形のチェック
+IF ( BAK_GIRL_BODY = GIRL_BODY ) RET
+
+DRESS_CHECK
+IF ( FLAG_FAT_CHK=1 )
+	TXOPEN(2)
+	TXFACE("F041")
+	「＊＊＊＊＊＊＊＊＊＊」
+	TXOPEN(3)
+	TXGIRL(16)
+	「＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXCLOSE(3)
+WWGIRL(2)					;girl put.
+RET
+
+*DRESS_CHECK
+FLAG_FAT_CHK	=0
+IF ( GIRL_BODY = 1 )	RET						;体形 1=細,2=太
+IF ( DRESS_ICON =47 )	DRESS_CHENGE	RET		;47=シルクのドレス
+IF ( DRESS_ICON =48 )	DRESS_CHENGE	RET		;48=レザーのドレス
+IF ( DRESS_ICON =49 )	DRESS_CHENGE	RET		;49=トゲトゲの服
+IF ( DRESS_ICON =52 )	DRESS_CHENGE	RET		;52=悪魔のドレス
+IF ( DRESS_ICON =53 )	DRESS_CHENGE	RET		;53=龍のレオタード
+RET
+
+*DRESS_CHENGE
+ITEM_SRCH(1,43)			;43=普段着	ICON search.
+C1 = DX					;item record.
+IF ( AX=0 ) C1 = 0
+ITEM_SRCH(6,C1)			; equipment chenge.(equip,arms,dress)
+FLAG_FAT_CHK	=1
+RET
+
+;"SSRUNS.TXT"も同様
+*DRESS_AGE_CHECK
+;-O- CX : 1=年齢制限で着れません
+;    DX : 1=太りすぎで着れません
+;    SI : 年齢
+C1 = AX
+CX = 0
+DX = 0
+SI = 0
+IF ( C1=47 )			;47=シルクのドレス	*	13
+	IF ( P_NENREI<13 )
+		CX = 1
+		SI = 13
+IF ( C1=48 )			;48=レザーのドレス	*	14
+	IF ( P_NENREI<14 )
+		CX = 1
+		SI = 14
+IF ( C1=49 )			;49=トゲトゲの服	*	13
+	IF ( P_NENREI<13 )
+		CX = 1
+		SI = 13
+IF ( C1=50 )			;50=傾国のローブ		15
+	IF ( P_NENREI<15 )
+		CX = 1
+		SI = 15
+IF ( C1=52 )			;52=悪魔のドレス	*	14
+	IF ( P_NENREI<14 )
+		CX = 1
+		SI = 14
+IF ( C1=53 )			;53=龍のレオタード	*	15
+	IF ( P_NENREI<15 )
+		CX = 1
+		SI = 15
+IF ( GIRL_BODY = 2 )		;体形 1=細,2=太
+	IF ( C1=47 )	DX=1	;47=シルクのドレス
+	IF ( C1=48 )	DX=1	;48=レザーのドレス
+	IF ( C1=49 )	DX=1	;49=トゲトゲの服
+	IF ( C1=52 )	DX=1	;52=悪魔のドレス
+	IF ( C1=53 )	DX=1	;53=龍のレオタード
+RET
+
+;	バカンス値段
+
+*VACA_GOLD_CALC
+C1 = P_NENREI			;年齢
+IF ( C1 <=10 ) C2 = 100
+IF ( C1 = 11 ) C2 = 110
+IF ( C1 = 12 ) C2 = 120
+IF ( C1 = 13 ) C2 = 130
+IF ( C1 = 14 ) C2 = 140
+IF ( C1 = 15 ) C2 = 150
+IF ( C1 = 16 ) C2 = 160
+IF ( C1 >=17 ) C2 = 170
+E_ETC[81] = C2			;ﾊﾞｶﾝｽの値段
+RET
+
+*SCHD_IT_SLCT
+C1 = AX
+ITEMPRN(4,0)	;0=ｷｬﾝｾﾙOFF
+ITEMSLCT(C1)	;マルチアイテム選択
+ITEMPRN(4,1)	;1=ｷｬﾝｾﾙON
+RET
+
+*CALC_SYOKUHI
+TXOPEN(1)
+IF ( FLAG_KENKO=0 )	C1 = 30		;0=「無理はさせない」		食費30G
+IF ( FLAG_KENKO=1 )	C1 = 80		;1=「とにかく丈夫な子に」	食費80G
+IF ( FLAG_KENKO=2 )	C1 = 10		;2=「おしとやかな子に」		食費10G
+IF ( FLAG_KENKO=3 )	C1 = 5		;3=「ダイエットさせる」		食費5G
+食費がTXGOLD(C1)かかります．
+GR_OPEN
+IGRP_TBL1[0]="食費"				;
+IGRP_TBL3[0]=C1					;
+IGRP_X=4						;
+IGRP_Y=250						;
+IGRP_CNT=1						;
+GOLDOPEN(1,1)					; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+GOLDSUB2(C1)					; 娘の所持金(赤字あり)
+WWPROF(3)
+@P
+GR_CLOSE
+TXCLOSE(1)
+RET
+
+;
+;	end of "MAINLOOP.TXT"
+;
+

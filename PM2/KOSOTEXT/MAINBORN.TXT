@@ -1,0 +1,706 @@
+;"MAINBORN.TXT"
+;
+;	月次処理
+;
+
+STRSCLEAR
+
+.BK_FLAG_BYOUKI		;状態・病気
+.BK_FLAG_HIKOUKA	;状態・非行化
+.BK_FLAG_RENAI		;状態・恋愛
+
+.FLAG_BODY_CHNG	=0	;月次処理の体形の変化あり
+.FLAG_STAT_CHNG	=0	;月次処理のｽﾃｰﾀｽの変化あり
+
+.FLAG_JYOTAI	=0	;1=病気になった,2=非行化した,3=元気になった,4=更正した
+
+.FLAG_FAT_CHK	=0
+
+.NOW_MONTH_ATR		;どんな月？
+
+IF ( E_ETC[2] ! 0 )		;「妾」状態
+	EVENT014
+
+TXLC(1,4,290,0)		;text window locate.
+TXLC(2,1,260,2)		;text window locate.
+TXLC(3,31,270,2)	;text window locate.
+
+CLENDER(11)			;カレンダー・今月の計算
+NOW_MONTH_ATR=DX	;どんな月？
+					;DX : 0=通常,1=一番最初の日,2=運命の日
+					;     3=一番最後の月,4=１月前,5=２月前
+					;     6=３月前
+
+MAINBORN
+
+PARC(1,"DSKTOOL.COM",1,0)	; 初期処理<==========================
+LOAD("MAINLOOP")
+
+;**************
+;	月次処理
+;**************
+
+*MAINBORN
+IF ( RUN_MONTH[0]=1 )	RET		;「月１イベント」実行回数
+
+E_ETC[35]=0			;強制的に「ムダ使い」が発生する
+
+MONTH_BORNUP		;月次処理
+WWPROF(2)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+
+STOP_THE_DIET		;「ダイエット中止」
+
+TXLC(2,28,146,1)	;text window locate.
+TXLC(3,13,270,2)	;text window locate.
+FRAME_GIRL			;
+TXLC(2,1,260,2)		;text window locate.
+TXLC(3,31,270,2)	;text window locate.
+
+BRONING				;収穫祭成長処理
+GET_HOKYU			;父の俸給
+AGE_WORKS_ADD		;執事ｱﾙﾊﾞｲﾄ増加の説明
+
+CHK_SCNDEATH		;死亡時のシナリオ
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+
+IF ( NOW_MONTH_ATR=2 )	; 2=運命の日
+	TXOPEN(1)
+	運命の日です。
+	@P
+	TXCLOSE(1)
+IF ( E_RWAY ! 0 )	;ｲﾍﾞﾝﾄ｢家出」
+	FREAM_NO_GIRL
+	EVNT009			;家出
+RET
+
+;**************
+;	家出フレーム表示
+;**************
+
+*FREAM_NO_GIRL
+IF ( FLAG_STAT_CHNG!0 )		;月次処理のｽﾃｰﾀｽの変化あり
+	WWPROF(2)				;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+WWGIRL(4)					;girl clear.
+RET
+
+
+;**************
+;	娘フレーム表示
+;**************
+
+*FRAME_GIRL
+DRESS_CHECK
+IF ( FLAG_STAT_CHNG!0 )	;月次処理のｽﾃｰﾀｽの変化あり
+	WWPROF(2)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+IF ( FLAG_BODY_CHNG=1 )	;1=体形の変化あり
+	WWGIRL(2)			;girl put.
+IF ( FLAG_BODY_CHNG=2 )	;2=重体->正常
+	WWGIRL(7)			;girl normal<->dameg put.
+IF ( FLAG_BODY_CHNG=3 )	;3=正常->重体
+	WWGIRL(7)			;girl normal<->dameg put.
+IF ( FLAG_BODY_CHNG=4 )	;4=顔の変化のみ
+	WWGIRL(8)			;girl face put.
+MESS_MONTH_CHG			;状態変更メッセージ
+RET
+
+;	服装のﾁｪｯｸ
+;		服		   体形	年齢
+;43=普段着				--
+;44=夏物の服			--
+;45=冬物の服			--
+;46=木綿のドレス		--
+;47=シルクのドレス	*	13
+;48=レザーのドレス	*	14
+;49=トゲトゲの服	*	13
+;50=傾国のローブ		15
+;51=見えないドレス		--
+;52=悪魔のドレス	*	14
+;53=龍のレオタード	*	15
+
+*DRESS_CHECK
+FLAG_FAT_CHK	=0
+IF ( GIRL_BODY = 1 )	RET						;体形 1=細,2=太
+IF ( DRESS_ICON =47 )	DRESS_CHENGE	RET		;47=シルクのドレス
+IF ( DRESS_ICON =48 )	DRESS_CHENGE	RET		;48=レザーのドレス
+IF ( DRESS_ICON =49 )	DRESS_CHENGE	RET		;49=トゲトゲの服
+IF ( DRESS_ICON =52 )	DRESS_CHENGE	RET		;52=悪魔のドレス
+IF ( DRESS_ICON =53 )	DRESS_CHENGE	RET		;53=龍のレオタード
+RET
+
+*DRESS_CHENGE
+MESS_FAT_CHG
+ITEM_SRCH(1,43)			;43=普段着	ICON search.
+C1 = DX					;item record.
+IF ( AX=0 ) C1 = 0
+ITEM_SRCH(6,C1)			; equipment chenge.(equip,arms,dress)
+FLAG_FAT_CHK	=1
+RET
+
+*MESS_FAT_CHG
+TXOPEN(2)
+TXFACE("F041")
+「＊＊＊＊＊＊＊＊TXA(DRESS_NAME)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+TXOPEN(3)
+TXGIRL(16)
+「＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+RET
+
+;	状態変更メッセージ
+
+*MESS_MONTH_CHG
+IF ( FLAG_JYOTAI=0 )	RET
+TXOPEN(1)
+IF ( FLAG_JYOTAI=1 )	娘が病気になった．
+IF ( FLAG_JYOTAI=2 )	娘が非行化した．
+IF ( FLAG_JYOTAI=3 )	娘が元気になった．
+IF ( FLAG_JYOTAI=4 )	娘が更正した．
+@P
+TXCLOSE(1)
+RET
+
+;**************
+;	月次処理
+;	-o- FLAG_STAT_CHNG :月次処理のｽﾃｰﾀｽの変化あり
+;	    FLAG_BODY_CHNG :月次処理の体形の変化あり
+;			0=変化無し,1=体形の変化あり,2=重体->正常,3=正常->重体,4=顔の変化のみ
+;	    FLAG_JYOTAI    :1=病気になった,2=非行化した,3=元気になった,4=更正した
+;**************
+
+*MONTH_BORNUP
+IF ( E_ETC[79] ! VAL_MONTH )		;月次処理済みの最新月
+	E_ETC[79] = VAL_MONTH			;月
+
+	BK_FLAG_BYOUKI	= FLAG_BYOUKI	;状態・病気
+	BK_FLAG_HIKOUKA	= FLAG_HIKOUKA	;状態・非行化
+	BK_FLAG_RENAI	= FLAG_RENAI	;状態・恋愛
+
+	CLENDER(7)						;カレンダー・月次処理
+	FLAG_BODY_CHNG=BX				;月次処理の体形の変化あり
+
+	FLAG_STAT_CHNG=0
+
+	IF ( BK_FLAG_BYOUKI ! FLAG_BYOUKI )( BK_FLAG_HIKOUKA ! FLAG_HIKOUKA )( BK_FLAG_RENAI ! FLAG_RENAI )	;状態・病気  状態・非行化  状態・恋愛
+		FLAG_STAT_CHNG=1		;月次処理のｽﾃｰﾀｽの変化あり
+
+	FLAG_JYOTAI	= 0
+	IF ( BK_FLAG_BYOUKI=0  FLAG_BYOUKI!0 )	;状態・病気
+		FLAG_JYOTAI	=1	;1=病気になった
+		RET
+	IF ( BK_FLAG_HIKOUKA=0  FLAG_HIKOUKA!0 );状態・非行化
+		FLAG_JYOTAI	=2	;2=非行化した
+		RET
+	IF ( BK_FLAG_BYOUKI!0  FLAG_BYOUKI=0 )	;状態・病気
+		FLAG_JYOTAI	=3	;3=元気になった
+		RET
+	IF ( BK_FLAG_HIKOUKA!0  FLAG_HIKOUKA=0 );状態・非行化
+		FLAG_JYOTAI	=4	;4=更正した
+		RET
+RET
+
+;**************
+;	死亡時のシナリオ
+;	病気指数１００の状態の名前を「死亡」から「瀕死の重態」に変更
+;	その月では死なず，２ヶ月連続で病気指数１００なら死亡
+;**************
+
+*CHK_SCNDEATH
+IF ( IDBG[4]=1 ) RET		;娘死なない
+
+IF ( S_BYOUKI<100 )			; 病気指数(%)
+	E_ETC[108]=0			;「瀕死の重態」連続月
+	RET
+
+E_ETC[108]++				;「瀕死の重態」連続月
+IF (E_ETC[108]>=2 )			;２ヶ月連続で病気指数１００なら死亡
+	LOAD("SCNDEATH")
+RET
+
+
+;**************
+;	「ダイエット中止」
+;**************
+
+*STOP_THE_DIET
+IF ( FLAG_KENKO = 1 ) RET		;健康管理 1=「とにかく丈夫な子に」
+
+;体重が《（身長×０．９）－１０５》未満の場合（こっちが優先）
+C1 = P_SHINCHO * 9 / 10 -105		; 身長
+
+IF ( P_TAIJYU < C1 )		;体重
+	TXOPEN(2)
+	TXFACE("F043")			;執事・安心
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	KENKO_CHENGE
+	RET
+IF ( B_TAIRYOKU < 15 )		; 体力が１５未満の場合
+	TXOPEN(2)
+	TXFACE("F042")			;執事・心配
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	KENKO_CHENGE
+	RET
+RET
+
+
+*KENKO_CHENGE
+TXOPEN(1)
+健康管理の内容を「とにかく丈夫な子に」に変更します．
+SI="とにかく丈夫な子"
+STRCOPY(S_HEALTH_CARE)
+FLAG_KENKO = 1
+WWPROF(2)		; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+@P
+TXCLOSE(1)
+RET
+
+
+;**************
+;	父の俸給
+;**************
+
+*GET_HOKYU
+IF ( VAL_MONTH!9 )( VAL_DAY!30 ) RET
+IF ( E_ETC[87]=VAL_YEAR  E_ETC[88]=VAL_MONTH  E_ETC[89]=VAL_DAY ) RET
+E_ETC[87]=VAL_YEAR
+E_ETC[88]=VAL_MONTH
+E_ETC[89]=VAL_DAY
+RUN_MONTH[56]++
+IF ( RUN_MONTH[56] = 1 )	;「今年度分の俸給」実行回数
+	GET_HOKYU_1		;１年目
+	RET
+GET_HOKYU_2			;２年目以降
+RET
+
+*GET_HOKYU_1	;１年目
+TXOPEN(2)
+TXFACE("F041")	;執事・すまし
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXFACE("F039")	;執事・普通
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXFACE("F040")	;執事・嬉しい
+
+GR_OPEN
+IGRP_TBL1[0]="俸給"	
+IGRP_TBL3[0]=500
+IGRP_X=26
+IGRP_Y=220
+IGRP_CNT=1
+GOLDOPEN(1,1)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+IF ( E_ETC[107]!P_NENREI  P_NENREI>=11  P_NENREI<=16 )	;執事ｱﾙﾊﾞｲﾄ増加の説明年
+	@C
+	「＊＊＊@@
+	AGE_WORKS_MES
+TXCLOSE(2)
+GOLDADD(500)		; 娘の所持金
+WWPROF(3)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+RET
+
+
+*GET_HOKYU_2	;２年目以降
+TXOPEN(2)
+TXFACE("F041")	;執事・すまし
+
+GR_OPEN
+IGRP_TBL1[0]="俸給"	
+IGRP_TBL3[0]=500
+IGRP_X=26
+IGRP_Y=220
+IGRP_CNT=1
+GOLDOPEN(1,1)
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+IF ( E_ETC[107]!P_NENREI  P_NENREI>=11  P_NENREI<=16 )	;執事ｱﾙﾊﾞｲﾄ増加の説明年
+	@C
+	「＊＊＊@@
+	AGE_WORKS_MES
+TXCLOSE(2)
+GOLDADD(500)		; 娘の所持金
+WWPROF(3)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+RET
+
+
+;**************
+;	執事ｱﾙﾊﾞｲﾄ増加の説明
+;**************
+
+*AGE_WORKS_ADD
+
+IF ( P_NENREI<11 ) RET
+IF ( P_NENREI>16 ) RET
+IF ( E_ETC[107]=P_NENREI )	RET	;執事ｱﾙﾊﾞｲﾄ増加の説明年
+
+E_ETC[107]=P_NENREI				;執事ｱﾙﾊﾞｲﾄ増加の説明年
+
+TXOPEN(2)
+TXFACE("F039")	;執事・普通
+「@@
+AGE_WORKS_MES
+TXCLOSE(2)
+RET
+
+
+*AGE_WORKS_MES
+E_ETC[107]=P_NENREI	;執事ｱﾙﾊﾞｲﾄ増加の説明年
+IF ( P_NENREI=11 )	;１１歳
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	＊＊＊＊＊＊＊＊＊＊」
+	@P
+IF ( P_NENREI=12 )	;１２歳
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	＊＊＊＊＊＊＊＊＊＊」
+	@P
+IF ( P_NENREI=13 )	;１３歳
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	＊＊＊＊＊＊＊＊＊＊」
+	@P
+IF ( P_NENREI=14 )	;１４歳
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	＊＊＊＊＊＊＊＊＊＊」
+	@P
+IF ( P_NENREI=15 )	;１５歳
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	＊＊＊＊＊＊＊＊＊＊」
+	@P
+IF ( P_NENREI=16 )	;１６歳
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	＊＊＊＊＊＊＊＊＊＊」
+	@P
+RET
+
+
+;**************
+;	収穫祭成長処理
+;**************
+
+*BRONING
+IF ( VAL_MONTH!10 )( VAL_DAY!31 ) RET
+
+;武闘会
+
+IRAND2(30,50)	E_ETC[41] += AX		;ｱﾆｰﾀ最大ＨＰ	30～50
+IRAND2(40,60)	E_ETC[43] += AX		;ｱﾆｰﾀ戦意		40～60
+IRAND2(3,5)		E_ETC[44] += AX		;ｱﾆｰﾀ戦闘技術	3～5
+IRAND2(4,6)		E_ETC[45] += AX		;ｱﾆｰﾀ攻撃力		4～6
+				E_ETC[46] += 3		;ｱﾆｰﾀ防御力		3
+				E_ETC[47]++			;ｱﾆｰﾀ魔法技術	1
+IRAND2(5,10)	E_ETC[49] += AX		;ｱﾆｰﾀ抗魔力		5～10	
+
+IRAND2(8,12)	E_ETC[50] += AX		;ｳｪﾝﾃﾞｨｰ最大ＨＰ	8～12
+IRAND2(10,30)	E_ETC[51] += AX		;ｳｪﾝﾃﾞｨｰ最大ＭＰ	10～30
+IRAND2(10,20)	E_ETC[52] += AX		;ｳｪﾝﾃﾞｨｰ戦意　　	10～20
+IRAND2(3,5)		E_ETC[53] += AX		;ｳｪﾝﾃﾞｨｰ戦闘技術	3～5
+IRAND2(3,5)		E_ETC[54] += AX		;ｳｪﾝﾃﾞｨｰ攻撃力　	3～5
+				E_ETC[55] += 2		;ｳｪﾝﾃﾞｨｰ防御力　	2
+IRAND2(3,5)		E_ETC[56] += AX		;ｳｪﾝﾃﾞｨｰ魔法技術	3～5
+IRAND2(4,6)		E_ETC[57] += AX		;ｳｪﾝﾃﾞｨｰ魔力　　	4～6
+IRAND2(1,3)		E_ETC[58] += AX		;ｳｪﾝﾃﾞｨｰ抗魔力　	1～3
+
+;ダンスパーティー
+				E_ETC[61]++			;ﾊﾟﾄﾚｲｼｱ年齢
+IRAND2(1,30)	E_ETC[62] += AX		;ﾊﾟﾄﾚｲｼｱ体力
+IRAND2(10,40)	E_ETC[63] += AX		;ﾊﾟﾄﾚｲｼｱ色気
+IRAND2(5,10)	E_ETC[64] += AX		;ﾊﾟﾄﾚｲｼｱ芸術
+
+;お料理コンクール
+
+E_ETC[65]++				;ｼﾞｭﾘｴｯﾀ年齢
+E_ETC[66]++				;ﾌｨｵﾘﾅ年齢
+E_ETC[67]++				;ｱｰﾆｽ年齢
+E_ETC[68]++				;ﾗﾝﾌｧﾝ年齢
+E_ETC[69]++				;ｼﾞｪﾆﾌｧｰ年齢
+E_ETC[70]++				;ﾌﾗﾝｿﾜ年齢
+E_ETC[71]++				;ﾅﾀｰｼｬ年齢
+
+E_ETC[72]++							;ﾏﾙｼｱ年齢
+IRAND2(5,10)	E_ETC[73] += AX		;ﾏﾙｼｱ料理
+IRAND2(1,30)	E_ETC[74] += AX		;ﾏﾙｼｱ感受性
+
+E_ETC[75]++				;ﾄｰﾍﾞ年齢
+
+RET
+
+
+;************************************
+;	家出
+;************************************
+
+*EVNT009
+
+RUN_MONTH[9]++		;「家出」実行回数
+
+TXOPEN(1)
+しかし，TXA(NAME_FIRST)の姿が見えない・・・
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F047")	;執事・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXFACE("F046")	;執事・困り
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+RET
+
+
+
+;from "EVNT014.TXT"
+;************************************
+;【 効　果 】イベント「妾」で決定されたお手当が毎月，
+;		一ヶ月の最初に所持金に加えられる．気品が《１～１０》，
+;		モラルが《５～２０》低下（いずれもランダム）．
+;		この件について説教するか，ほおっておくかを選択．
+;		説教すれば，成否にかかわりなく，父との関係が５上昇．
+;		説教が成功すれば妾をやめさせることができる．
+;		説教は《父との関係％》の確率で成功．
+;		（父との関係=50なら50%の確率で成功）
+;		基本能力中でモラル値，または信仰値が色気値よりも高くなっていれば，
+;		妾を自発的にやめる．
+;************************************
+
+*EVENT014
+
+RUN_MONTH[14]++		;「妾のお手当」実行回数
+
+STRSCLEAR
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,31,148,2)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+WWIVENT(5,0,50,140)	; ivent window locate.
+
+EVNT014
+
+RET
+
+;************************************
+;	妾のお手当
+;
+;	E_ETC[2]「妾」状態
+;	E_ETC[3]「妾」お金
+;
+;************************************
+
+*EVNT014
+
+TXOPEN(1)
+TXA(NAME_FIRST)の妾のお手当，金TXGOLD(E_ETC[3])が送られてきました．
+@P
+TXCLOSE(1)
+
+;	基本能力中でモラル値，または信仰値が色気値よりも高くなっていれば，
+;	妾を自発的にやめる．
+
+IF (  B_MORALS > B_IROKE )	GOTO YAMERU		; モラル > 色気
+IF (  B_SHINKOH > B_IROKE )	GOTO YAMERU		; 信仰   > 色気
+
+GOTO MEKAKE
+
+;************************************
+;	自発的にやめる場合
+;************************************
+
+*YAMERU
+TXOPEN(3)
+TXGIRL(3)	;娘・悲しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+TXOPEN(1)
+娘は自発的に妾をやめることにした．
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXFACE("F043")	;執事・安心
+「＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+E_ETC[2]=0			;「妾」状態
+E_ETC[3]=0			;「妾」お金
+RET
+
+;************************************
+;	自発的にやめない場合
+;************************************
+
+*MEKAKE
+
+TXOPEN(1)
+お説教をしますか？
+SLCTX("説教する,ほおっておく")
+IF ( ISLCT=0 ) GOTO SEKKYOU_SURU
+GOTO HOHTTE_OKU
+
+;************************************
+;	お説教する場合
+;************************************
+
+*SEKKYOU_SURU
+@C
+「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+URA_FATHER += 5					; この時点で，父との関係が５上昇．
+IF ( URA_FATHER >100 ) URA_FATHER = 100
+
+RANDAM(100)						; 説教は《父との関係％》の確率で成功．
+IF ( IRND < URA_FATHER )		; （父との関係=50なら50%の確率で成功）
+
+	; お説教が成功の場合
+
+	@C
+	愛する父・TXA(NAME_FAMILY)の言葉は，TXA(NAME_FIRST)の心に響いた・・・
+	@P
+	TXCLOSE(1)
+	TXOPEN(3)
+	TXGIRL(3)	;娘・悲しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXOPEN(1)
+	@C
+	TXA(NAME_FIRST)は深く反省し，妾をやめることにした．
+	@P	
+	TXCLOSE(1)
+	TXOPEN(2)
+	TXFACE("F039")	;執事・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXCLOSE(3)
+	E_ETC[2]=0			;「妾」状態
+	E_ETC[3]=0			;「妾」お金
+	RET
+
+;	お説教が失敗の場合
+TXCLOSE(1)
+TXOPEN(3)
+TXGIRL(8)	;娘・すねる
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXOPEN(1)
+;	一ヶ月の最初に所持金に加えられる．
+;	気品が《１～１０》
+;	モラルが《５～２０》低下（いずれもランダム）
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL3[0]=B_KIHIN		IGRP_TBL1[0]="気品"
+IGRP_TBL3[1]=B_MORALS		IGRP_TBL1[1]="モラル"
+IGRP_CNT=2
+IGRP_X=50
+IGRP_Y=180
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+IGRP_TBL3[0]=E_ETC[3]		IGRP_TBL1[0]="お手当"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=230
+GOLDOPEN(1,2)	; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+
+IRAND2(1,10)	; 範囲乱数
+C1 = AX			; 気品
+IRAND2(5,20)	; 範囲乱数
+C2 = AX			; モラル
+
+@1
+@C
+お説教は効果がなかったようだ・・・
+気品がTXPOINT(C1)下がった．
+モラルがTXPOINT(C2)下がった．
+B_KIHIN  -= C1			; 気品
+IF ( B_KIHIN < 0 ) B_KIHIN = 0
+B_MORALS -= C2			; モラル
+IF ( B_MORALS < 0 ) B_MORALS = 0
+GOLDADD(E_ETC[3])		;「妾」お金
+GRPUPD(1,0,B_KIHIN)
+GRPUPD(1,1,B_MORALS)
+WWPROF(3)				; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(1)
+RET
+
+;************************************
+;	ほおっておく
+;************************************
+
+*HOHTTE_OKU
+TXCLOSE(1)
+TXOPEN(3)
+TXFACE("F046")	;執事・困り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXOPEN(1)
+;	一ヶ月の最初に所持金に加えられる．
+;	気品が《１～１０》
+;	モラルが《５～２０》低下（いずれもランダム）
+
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL3[0]=B_KIHIN		IGRP_TBL1[0]="気品"
+IGRP_TBL3[1]=B_MORALS		IGRP_TBL1[1]="モラル"
+IGRP_CNT=2
+IGRP_X=50
+IGRP_Y=180
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+IGRP_TBL3[0]=E_ETC[3]		IGRP_TBL1[0]="お手当"
+IGRP_CNT=1
+IGRP_X=50
+IGRP_Y=230
+GOLDOPEN(1,2)	; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+
+IRAND2(1,10)	; 範囲乱数
+C1 = AX			; 気品
+IRAND2(5,20)	; 範囲乱数
+C2 = AX			; モラル
+
+@1
+@C
+気品がTXPOINT(C1)下がった．
+モラルがTXPOINT(C2)下がった．
+B_KIHIN  -= C1			; 気品
+IF ( B_KIHIN < 0 ) B_KIHIN = 0
+B_MORALS -= C2			; モラル
+IF ( B_MORALS < 0 ) B_MORALS = 0
+GOLDADD(E_ETC[3])		;「妾」お金
+GRPUPD(1,0,B_KIHIN)
+GRPUPD(1,1,B_MORALS)
+WWPROF(3)				; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(1)
+RET
+
+
+;
+;	end of "MAINBORN.TXT"
+;
+

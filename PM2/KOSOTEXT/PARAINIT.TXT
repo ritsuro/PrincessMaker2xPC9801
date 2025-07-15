@@ -1,0 +1,395 @@
+;"PARAINIT.TXT"
+;
+;
+;
+;	C1 :	1="START.TXT"(初期スタートモード)
+;			2="SCNDEATH.TXT"(再スタート)
+;			???3="EESTAF.TXT"
+
+STRSCLEAR
+
+.FLG_START_MODE
+FLG_START_MODE = C1
+
+.WIDSTRATLOCX	=	32		; start locate x.
+.WIDSTRATLOCY	=	150		; start locate y.
+
+TXF(10)				; ﾉｰﾏﾙ時ﾃｷｽﾄﾓｰﾄﾞ
+
+CLENDER(14)			;パラメータ全クリア
+
+STRCOPY("オリーブ",NAME_FIRST)
+STRCOPY("オイル",NAME_FAMILY)
+
+IF ( FLG_START_MODE = 1 )	; 1="START.TXT"(初期スタートモード)
+	TIMER1(10)
+	PARC(4)	; timer1 wait & keybord check. AX : 0=normal,1=PLUS,2=ESC
+	IF ( AX ! 1 )
+		SLCPOS(6,WIDSTRATLOCX,WIDSTRATLOCY)
+		SLCTX("最初から始める,時を戻す")
+		IF ( ISLCT=1 )
+			C1 = 2			;2=(初期ロード)
+			LOAD("SCNSYUGO")
+*RESTART
+IF ( FLG_START_MODE = 2 )	; 2="SCNDEATH.TXT"(再スタート)
+	SLCPOS(6,WIDSTRATLOCX,WIDSTRATLOCY)
+	SLCTX("最初から始める,時を戻す,終了する")
+	IF ( ISLCT=1 )
+		C1 = 3			;3=(再スタートロード)
+		LOAD("SCNSYUGO")
+	IF ( ISLCT=2 )
+		TIMER1(30)
+		WAIT1
+		FFDISK(4)		;ﾌﾛｯﾋﾟｰﾃﾞｨｽｸを使用するか
+		IF ( AX=1 )		;-o- AX : 1=使用しない,0=使用する
+			EFC(7)		; ブラックアウト
+			GRPCLS		; graphics clear screen.
+			TXOPEN(1)
+			EFC(0)		; Ｆ・Ｉ（フェードイン）
+			ＤＯＳへ戻ります．
+			SLCTX("はい,いいえ")
+			IF ( ISLCT=0 )
+				MUSIC(2)	; 音楽ﾌｪｰﾄﾞｱｳﾄ
+				EFC(1)		; Ｆ・Ｏ（フェードアウト）
+				GRPCLS		; graphics clear screen.
+				END			; ===> exit DOS
+			TXCLOSE(1)
+			GOTO RESTART
+		GRPCLS			; graphics clear screen.
+		TXOPEN(1)
+		MUSIC(2)		; 音楽ﾌｪｰﾄﾞｱｳﾄ
+		EFC(0)			; Ｆ・Ｉ（フェードイン）
+		ディスクを抜いてから電源を止めてください．
+		@P@P@P@P@P@P@P@P@P
+		GOTO RESTART
+
+SLCPOS(4)			; 4=メインSLCT発生位置
+
+;娘
+P_BLOOD			= 0		;血液型
+P_NENREI		= 10	;年齢
+P_BORTHDAY		= 2		;誕生日
+P_BORTHMONTH	= 4		;誕生月
+P_BORTHYEAR		= 1200	;誕生年
+P_SHIKYU		= 0		;子宮名
+P_SYUGOSEI		= 0		;守護星
+
+;私
+P_BLOOD[1]		= 0		;血液型
+P_NENREI[1]		= 10	;年齢
+P_BORTHDAY[1]	= 3		;誕生日
+P_BORTHMONTH[1]	= 4		;誕生月
+P_BORTHYEAR[1]	= 1162	;誕生年
+P_SHIKYU[1]		= 0		;子宮名
+P_SYUGOSEI[1]	= 0		;守護星
+
+TIMER1(10)
+PARC(4)	; timer1 wait & keybord check. AX : 0=normal,1=PLUS,2=ESC
+IF ( AX ! 1 )
+	PLAY(1)						;P1 名前入力
+	PARC(1,"NAMEIN.COM",0,0)	;child process test.	;名前セット
+
+VAL_YEAR	= 1210				;年
+VAL_MONTH	= P_BORTHMONTH		;月
+VAL_DAY		= P_BORTHDAY		;日
+
+CLENDER(5,P_BORTHYEAR,P_BORTHMONTH,P_BORTHDAY)	;年齢の計算
+P_NENREI = DX			;年齢
+E_ETC[18]=DX			;「娘の誕生日」をチェックした年齢
+
+CLENDER(5,P_BORTHYEAR[1],P_BORTHMONTH[1],P_BORTHDAY[1])	;年齢の計算
+P_NENREI[1] = DX		;年齢
+E_ETC[14]=DX			;「父の誕生日」をチェックした年齢
+
+
+B_TAIRYOKU	= 0			;体力
+B_KINRYOKU	= 0			;筋力
+B_CHINOH	= 0			;知能
+B_KIHIN		= 0			;気品
+B_IROKE		= 0			;色気
+B_MORALS	= 0			;モラル
+B_SHINKOH	= 0			;信仰
+B_INGYO		= 0			;因業
+B_KANJUSEI	= 0			;感受性
+B_STRESS	= 0			;ストレス
+
+H_SENSHI	= 0			;戦士評価
+H_MAHO		= 0			;魔法評価
+H_SYAKOH	= 0			;社交評価
+H_KAJI		= 0			;家事評価
+
+T_SENTOH	= 0			;戦闘技術
+T_KOUGEKI	= 0			;攻撃力
+T_BOUGYO	= 0			;防御力
+T_MAHOGIJUTSU= 0		;魔法技術
+T_MARYOKU	= 0			;魔力
+T_KOHMARYOKU= 0			;抗魔力
+
+T_REIGI		= 0			;礼儀作法
+T_GEIJYUTSU	= 0			;芸術
+T_WAJYUTU	= 0			;話術
+T_RYOURI	= 0			;料理
+T_SOUJISENTAKU= 0		;掃除洗濯
+T_KIDATE	= 0			;気だて
+
+GOLDADD(500)			;娘の所持金
+
+;初期値は
+;身長=136.00～152.00(ﾗﾝﾀﾞﾑ)
+;体重=(身長の初期値×0.95)-100
+;バスト初期値	身長の初期値×0.5
+;ウエスト初期値	（（身長×0.3）＋25＋体重）÷2
+;ヒップ初期値	身長初期値×0.52
+
+RANDAM(17) AX--
+AX = AX * 100
+P_SHINCHO	= 13600 + AX	;身長
+
+P1X100(P_SHINCHO,95)
+P_TAIJYU	= AX - 10000	;体重
+
+P1X100(P_SHINCHO,50)		;バスト
+P_BUST		=	AX
+
+P1X100(P_SHINCHO,30)
+AX = AX + 2500 + P_TAIJYU	;ウエスト
+P_WAIST		=	AX / 2
+
+P1X100(P_SHINCHO,52)		;ヒップ
+P_HIP		=	AX
+
+
+C1 =  3
+IF ( P_SHINCHO < 14000 )	;身長初期値が140未満の場合
+	C1 = 2					;バスト・ヒップともに大にはならない
+RANDAM(C1)
+URA_BREAST_TYPE=AX			;バストの大中小タイプの分類 1=小,2=中,3=大
+RANDAM(C1)
+URA_HIP_TYPE=AX				;ヒップの大中小タイプの分類 1=小,2=中,3=大
+
+S_BYOUKI	= 0			;病気指数(%)
+S_HIKOUKA	= 0			;非行化指数(%)
+S_JINMYAKU[0]= 10		;人脈		初期値10（王様の分）
+S_JINMYAKU[8]=10		;人脈・国王
+FLAG_BYOUKI	= 0			;状態・病気
+FLAG_HIKOUKA= 0			;状態・非行化
+FLAG_RENAI	= 0			;状態・恋愛
+
+
+FLAG_KENKO = 0			;健康管理
+SI="無理はさせない"		;
+STRCOPY(S_HEALTH_CARE)	;健康管理 string
+
+
+;☆誕生日と星座・守護星の関係
+
+IF ( P_BORTHMONTH=3  P_BORTHDAY>=21 )( P_BORTHMONTH=4  P_BORTHDAY=<19 )
+	P_SHIKYU   = 0		;白羊宮
+	P_SYUGOSEI = 2		;火星
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=4 )( P_BORTHMONTH=5  P_BORTHDAY=<20 )
+	P_SHIKYU   = 1		;金牛宮
+	P_SYUGOSEI = 5		;金星
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=5 )( P_BORTHMONTH=6  P_BORTHDAY=<21 )
+	P_SHIKYU   = 2		;双児宮
+	P_SYUGOSEI = 3		;水星
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=6 )( P_BORTHMONTH=7  P_BORTHDAY=<22 )
+	P_SHIKYU   = 3		;巨蟹宮
+	P_SYUGOSEI = 1		;月
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=7 )( P_BORTHMONTH=8  P_BORTHDAY=<22 )
+	P_SHIKYU   = 4		;獅子宮
+	P_SYUGOSEI = 0		;太陽
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=8 )( P_BORTHMONTH=9  P_BORTHDAY=<22 )
+	P_SHIKYU   = 5		;処女宮
+	P_SYUGOSEI = 3		;水星
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=9 )( P_BORTHMONTH=10  P_BORTHDAY=<23 )
+	P_SHIKYU   = 6		;天秤宮
+	P_SYUGOSEI = 5		;金星
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=10 )( P_BORTHMONTH=11  P_BORTHDAY=<22 )
+	P_SHIKYU   = 7		;天蠍宮
+	P_SYUGOSEI = 9		;冥王星
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=11 )( P_BORTHMONTH=12  P_BORTHDAY=<21 )
+	P_SHIKYU   = 8		;人馬宮
+	P_SYUGOSEI = 4		;木星
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=12 )( P_BORTHMONTH=1  P_BORTHDAY=<19 )
+	P_SHIKYU   = 9		;磨羯宮
+	P_SYUGOSEI = 6		;土星
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=1 )( P_BORTHMONTH=2  P_BORTHDAY=<18 )
+	P_SHIKYU   = 10		;宝瓶宮
+	P_SYUGOSEI = 7		;天王星
+	GOTO SEIZA_END
+IF ( P_BORTHMONTH=2 )( P_BORTHMONTH=3  P_BORTHDAY=<20 )
+	P_SHIKYU   = 11		;双魚宮
+	P_SYUGOSEI = 8		;海王星
+	GOTO SEIZA_END
+
+*SEIZA_END
+
+
+;☆星座別による娘の初期値一覧
+;       白羊　金牛　双児　巨蟹　獅子　処女　天秤　天蠍　人馬　磨羯　宝瓶　双魚
+;       火星　金星　水星　 月 　太陽　水星　金星　冥王　木星　土星　天王　海王
+;体力
+.Q_TAI[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;筋力
+.Q_KIN[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;知能
+.Q_CHI[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;気品
+.Q_KIH[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;色気
+.Q_IRO[12]= 1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;モラル
+.Q_MOR[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;信仰
+.Q_SHI[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;感受性
+.Q_KAN[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;戦闘技術
+.Q_SEN[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;攻撃力
+.Q_GEK[12]= 1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;魔法技術
+.Q_MAH[12]= 1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;魔力
+.Q_MAR[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;抗魔力
+.Q_KOH[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;礼儀作法
+.Q_REI[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;芸術
+.Q_GEI[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;話術
+.Q_WAJ[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;料理
+.Q_RYO[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;掃除洗濯
+.Q_SOU[12]=1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+;気だて
+.Q_KID[12]= 1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1
+
+C1 = P_SHIKYU			;子宮名
+
+B_TAIRYOKU	= Q_TAI[C1]	;体力
+B_KINRYOKU	= Q_KIN[C1]	;筋力
+B_CHINOH	= Q_CHI[C1]	;知能
+B_KIHIN		= Q_KIH[C1]	;気品
+B_IROKE		= Q_IRO[C1]	;色気
+B_MORALS	= Q_MOR[C1]	;モラル
+B_SHINKOH	= Q_SHI[C1]	;信仰
+B_KANJUSEI	= Q_KAN[C1]	;感受性
+
+E_ETC[40]	= B_IROKE	;色気パラメータの自然増加量
+
+T_SENTOH	= Q_SEN[C1]	;戦闘技術
+T_KOUGEKI	= Q_GEK[C1]	;
+
+T_MAHOGIJUTSU	= Q_MAH[C1]	;魔法技術
+T_MARYOKU		= Q_MAR[C1]	;魔力
+T_KOHMARYOKU	= Q_KOH[C1]	;抗魔力
+
+T_REIGI			= Q_REI[C1]	;礼儀作法
+T_GEIJYUTSU		= Q_GEI[C1]	;芸術
+T_WAJYUTU		= Q_WAJ[C1]	;話術
+T_RYOURI		= Q_RYO[C1]	;料理
+T_SOUJISENTAKU	= Q_SOU[C1]	;掃除洗濯
+T_KIDATE		= Q_KID[C1]	;気だて
+
+;	T_SENTOH等の値が100の制限計算されてV_SENTOHにセットされます
+;
+;	T_SENTOH		->	V_SENTOH				;戦闘技術
+;	T_KOUGEKI		->	V_KOUGEKI				;攻撃力
+;	T_BOUGYO		->	V_BOUGYO				;防御力
+;	T_MAHOGIJUTSU	->	V_MAHOGIJUTSU			;魔法技術
+;	T_MARYOKU		->	V_MARYOKU				;魔力
+;	T_KOHMARYOKU	->	V_KOHMARYOKU			;抗魔力
+;	T_REIGI			->	V_REIGI					;礼儀作法
+;	T_GEIJYUTSU		->	V_GEIJYUTSU				;芸術
+;	T_WAJYUTU		->	V_WAJYUTU				;話術
+;	T_RYOURI		->	V_RYOURI				;料理
+;	T_SOUJISENTAKU	->	V_SOUJISENTAKU			;掃除洗濯
+;	T_KIDATE		->	V_KIDATE				;気だて
+
+CLENDER(13)					;訓練技能値計算
+
+DRESS_NUM[0]=1			;着衣絵番号
+DRESS_ICON[0]=43		;着衣ＩＣＯＮ番号 43=普段着
+DRESS_GOLD[0]=10		;着衣値段
+STRCOPY("普段着",DRESS_NAME[0])	;文字列を文字列アドレスへコピーする
+STRCOPY("",DRESS_PROG[0])	;着衣効果 string
+
+ITEM_MAX=1				;所有アイテム数
+ITEM_ICON[0]=43			;所有アイテムＩＣＯＮ番号
+ITEM_GOLD[0]=10			;所有アイテム値段
+ITEM_ATTR[0]=3001		;所有アイテム種別	3000番台=服
+STRCOPY("普段着",ITEM_NAME[0])	;所有アイテム名前 string
+STRCOPY("",ITEM_PROG[0])	;所有アイテム効果 string
+
+E_ETC[41]=111			;ｱﾆｰﾀ最大ＨＰ
+E_ETC[42]=0				;ｱﾆｰﾀ最大ＭＰ
+E_ETC[43]=111			;ｱﾆｰﾀ戦意
+E_ETC[44]=111			;ｱﾆｰﾀ戦闘技術
+E_ETC[45]=111			;ｱﾆｰﾀ攻撃力
+E_ETC[46]=111			;ｱﾆｰﾀ防御力
+E_ETC[47]=111			;ｱﾆｰﾀ魔法技術
+E_ETC[48]=0				;ｱﾆｰﾀ魔力
+E_ETC[49]=111			;ｱﾆｰﾀ抗魔力
+
+E_ETC[50]=111			;ｳｪﾝﾃﾞｨｰ最大ＨＰ
+E_ETC[51]=111			;ｳｪﾝﾃﾞｨｰ最大ＭＰ
+E_ETC[52]=111			;ｳｪﾝﾃﾞｨｰ戦意
+E_ETC[53]=111			;ｳｪﾝﾃﾞｨｰ戦闘技術
+E_ETC[54]=111			;ｳｪﾝﾃﾞｨｰ攻撃力
+E_ETC[55]=111			;ｳｪﾝﾃﾞｨｰ防御力
+E_ETC[56]=111			;ｳｪﾝﾃﾞｨｰ魔法技術
+E_ETC[57]=111			;ｳｪﾝﾃﾞｨｰ魔力
+E_ETC[58]=111			;ｳｪﾝﾃﾞｨｰ抗魔力
+
+E_ETC[61]=99			;ﾊﾟﾄﾚｲｼｱ年齢
+E_ETC[62]=99			;ﾊﾟﾄﾚｲｼｱ体力
+E_ETC[63]=99			;ﾊﾟﾄﾚｲｼｱ色気
+E_ETC[64]=99			;ﾊﾟﾄﾚｲｼｱ芸術
+
+E_ETC[65]=99			;ｼﾞｭﾘｴｯﾀ年齢
+E_ETC[66]=99			;ﾌｨｵﾘﾅ年齢
+E_ETC[67]=99			;ｱｰﾆｽ年齢
+E_ETC[68]=99			;ﾗﾝﾌｧﾝ年齢
+E_ETC[69]=99			;ｼﾞｪﾆﾌｧｰ年齢
+E_ETC[70]=99			;ﾌﾗﾝｿﾜ年齢
+E_ETC[71]=99			;ﾅﾀｰｼｬ年齢
+E_ETC[72]=99			;ﾏﾙｼｱ年齢
+E_ETC[73]=99			;ﾏﾙｼｱ料理
+E_ETC[74]=99			;ﾏﾙｼｱ感受性
+E_ETC[75]=99			;ﾄｰﾍﾞ年齢
+
+CLENDER(8)				;初期状態の整合処理
+
+IF ( FLG_START_MODE = 2 )	; 2=(再スタート)
+	EFC(1)				; Ｆ・Ｏ（フェードアウト）
+	C1 =	0			; スケジュール項目
+	C2 =	0			; スケジュール内容
+	LOAD("MAINEVNT")	;
+
+TIMER1(10)
+PARC(4)	; timer1 wait & keybord check. AX : 0=normal,1=PLUS,2=ESC
+IF ( AX = 1 )
+	EFC(1)				; Ｆ・Ｏ（フェードアウト）
+	C1 =	0			; スケジュール項目
+	C2 =	0			; スケジュール内容
+	LOAD("MAINEVNT")	;
+
+LOAD("OPENING")			;
+
+;
+;	end of "PARAINIT.TXT"
+;
+
