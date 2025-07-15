@@ -1,0 +1,710 @@
+;"RPG003.TXT"
+;
+;	3=北部 氷山地帯・イベント
+;
+;	LOAD("RPGLOP,RPG003")
+;
+
+;**************
+;	place event.
+;**************
+
+*PLACE_IVENT
+
+FLAG_EVENT = 0
+ENC_EVNT = 0
+ENC_MNS = 0
+
+WWMUSYA(17) ;ステータス
+IF ( AX=4 )	;4=North1
+	IF ( PXX=14 PYY=2 ) GOTO NEXT_MAP11N
+	IF ( PXX=32 PYY=2 ) GOTO NEXT_MAP12N
+	IF ( PXX>=128 PXX<=131 PYY=2 ) GOTO NEXT_MAP13N
+
+	IF ( PXX>=64  PXX<=67  PYY=76 )
+		TXOPEN(1)
+		家へ帰りますか？
+		WWMUSYA(7)	;ノーマルモード
+		WWMUSYA(15,"家へ帰る,冒険を続ける",2)
+		C1 = BX
+		TXCLOSE(1)
+		WWMUSYA(6)	;ＲＰＧモード
+		IF ( C1!0 )
+			WWMUSYA(12,1)	;娘向き
+			WWMUSYA(8,1)	;再描画
+			WWMUSYA(13,0,0,0,-1,2)	;マップシフト
+			RET
+		WWMUSYA(12,0)	;娘向き
+		WWMUSYA(8,1)	;再描画
+		WWMUSYA(13,0,0,0,1,3)	;マップシフト
+		WWMUSYA(4,9)			;effect.
+		E_ETC[109]=1			;RPG帰りは出口から
+		GOTO RPG_END			;武者修行を終える
+
+	IF ( PXX>=100  PXX<=103  PYY=78 )
+		TXOPEN(1)
+		家へ帰りますか？
+		WWMUSYA(7)	;ノーマルモード
+		WWMUSYA(15,"家へ帰る,冒険を続ける",2)
+		C1 = BX
+		TXCLOSE(1)
+		WWMUSYA(6)	;ＲＰＧモード
+		IF ( C1!0 )
+			WWMUSYA(12,1)	;娘向き
+			WWMUSYA(8,1)	;再描画
+			WWMUSYA(13,0,0,0,-1,2)	;マップシフト
+			RET
+		WWMUSYA(12,0)	;娘向き
+		WWMUSYA(8,1)	;再描画
+		WWMUSYA(13,0,0,0,1,3)		;マップシフト
+		WWMUSYA(4,9)				;effect.
+		GOTO RPG_END				;武者修行を終える
+
+
+
+	;29 お尋ね者と遭遇
+	;	お尋ね者Ｂ（バニスター）　→南マップ
+	;	お尋ね者は全部で３人．お尋ね者は弱い順番に登場．戦ってやっつけない限
+	;	り，同じお尋ね者しか登場しない．
+	IF ( PXX>=64 PXX=<66 PYY=19 )
+		IF ( E_ETC[20] ! 0 )		;お尋ね者・捕縛・バニスター(1=逮捕,2=賞金)
+			IF ( E_ETC[21] = 0 )	;お尋ね者・捕縛・カスティーヨ(1=逮捕,2=賞金)
+				RANDAM(4)			;1/4の確率で発生
+				IF ( IRND = 2 )
+					IF ( E_ETC[94]=0 )	;武者修行中に１度お尋ね者と遭遇
+						ENC_EVNT = 29	;29 お尋ね者と遭遇
+						GOTO EVENT_RET	;
+		WWMUSYA(12,1)	; 1=back.
+		WWMUSYA(8,1)	;再描画 1=全部
+		MSG_INAI("誰もいないようだ．")
+
+IF ( AX=5 )	;5=North2
+	IF ( PXX=14 PYY>=93 ) GOTO NEXT_MAP21N
+	IF ( PXX=32 PYY>=93 ) GOTO NEXT_MAP22N
+	IF ( PXX>=128 PXX<=130 PYY>=93 ) GOTO NEXT_MAP23N
+
+	IF ( PXX=16  PYY=33  E_ETC[34]=1 )		;祠閉鎖に山岳警備隊
+		GOTO MAP3_CLOSED
+
+	IF ( PXX=16 PYY<=2 )  GOTO NEXT_MAP24N
+
+	IF ( PXX>=68 PXX<=69 PYY=82 )
+		ITEM_SRCH(1,27)				;ICON search. 27=猫の眼石
+		IF ( AX=1 )					;0=none,1=search.
+			GOTO CATMAN				;精霊猫に会う
+		WWMUSYA(12,1)	; 1=back.
+		WWMUSYA(8,1)	;再描画 1=全部
+		MSG_INAI("中には誰もいない．")
+		RET
+	IF ( PXX=83 PYY=11 )
+		GOTO MAP2_FALL1
+	IF ( PXX=84 PYY=32 )
+		GOTO MAP2_FALL2
+	IF ( PXX=98 PYY=11 )
+		GOTO MAP2_FALL3
+
+IF ( AX=6 )	;6=North3
+	IF ( PXX=16 PYY=103 ) GOTO NEXT_MAP31N
+	IF ( PXX=17 PYY=23  E_ETC[30]=0 )			;武神の祠閉鎖
+		GOTO TOP_STAGE
+	IF ( PXX=17 PYY=23  E_ETC[30]=1 )			;武神の祠閉鎖
+		GOTO TOP_STAGE_OFF
+	IF ( PXX>=17 PXX<=18 PYY=33 E_ETC[30]=1 )	;武神の祠閉鎖
+		GOTO TOP_DOWN_STEP
+	IF ( PXX>=16 PXX<=17 PYY=94 RUN_MONTH[55]>0 E_ETC[32]=0 )
+		;「武神の退場」実行回数, 北の武神への階段が消える
+		GOTO BISHIN_STEP_CLS
+	IF ( PXX>=16 PYY>=69 PXX<=17 PYY<=69 E_ETC[31]=0 )	;武神に勝った
+		ENC_MNS = 7					;北マップの武神に出会う
+		GOTO EVENT_RET
+
+CHK_KANBAN					;check kanban.
+IF ( FLAG_EVENT ! 0 ) RET	;0=none.
+
+CHK_TAKARA					;check takara.
+
+RET
+
+*NEXT_MAP11N
+;WWMUSYA(7)						;ノーマルモード
+WWMUSYA(4,8)					;effect.
+WWMUSYA(10,5,63)				;マップ再ロード
+WWMUSYA(5,2,72,12,21,2)			;map relocate. 
+WWMUSYA(4,11)					;effect.
+;;WWMUSYA(13,0,0,0,-1,3)			;マップシフト
+WWMUSYA(12,1)					;1=back.
+;WWMUSYA(6)						;ＲＰＧモード
+GOTO EVENT_RET
+
+*NEXT_MAP12N
+;WWMUSYA(7)						;ノーマルモード
+WWMUSYA(4,8)					;effect.
+WWMUSYA(10,5,63)				;マップ再ロード
+WWMUSYA(5,20,72,12,21,2)		;map relocate. 
+WWMUSYA(4,11)					;effect.
+;;WWMUSYA(13,0,0,0,-1,3)			;マップシフト
+WWMUSYA(12,1)					;1=back.
+;WWMUSYA(6)						;ＲＰＧモード
+GOTO EVENT_RET
+
+*NEXT_MAP13N
+C4 = BX	-117					;X
+;WWMUSYA(7)						;ノーマルモード
+WWMUSYA(4,8)					;effect.
+WWMUSYA(10,5,63)				;マップ再ロード
+WWMUSYA(5,117,72,C4,21,2)		;map relocate. 
+WWMUSYA(4,11)					;effect.
+;;WWMUSYA(13,0,0,0,-1,3)			;マップシフト
+WWMUSYA(12,1)					;1=back.
+;WWMUSYA(6)						;ＲＰＧモード
+GOTO EVENT_RET
+
+*NEXT_MAP21N
+;WWMUSYA(7)						;ノーマルモード
+WWMUSYA(4,9)					;effect.
+WWMUSYA(10,4,63)				;マップ再ロード
+WWMUSYA(5,2,0,12,0,2)			;map relocate. 
+WWMUSYA(4,10)					;effect.
+;;WWMUSYA(13,0,0,0,1,3)			;マップシフト
+WWMUSYA(12,0)					;0=front.
+;WWMUSYA(6)						;ＲＰＧモード
+GOTO EVENT_RET
+
+*NEXT_MAP22N
+;WWMUSYA(7)						;ノーマルモード
+WWMUSYA(4,9)					;effect.
+WWMUSYA(10,4,63)				;マップ再ロード
+WWMUSYA(5,20,0,12,0,2)			;map relocate. 
+WWMUSYA(4,10)					;effect.
+;;WWMUSYA(13,0,0,0,1,3)			;マップシフト
+WWMUSYA(12,0)					;0=front.
+;WWMUSYA(6)						;ＲＰＧモード
+GOTO EVENT_RET
+
+*NEXT_MAP23N
+C4 = BX	-117					;X
+;WWMUSYA(7)						;ノーマルモード
+WWMUSYA(4,9)					;effect.
+WWMUSYA(10,4,63)				;マップ再ロード
+WWMUSYA(5,117,0,C4,0,2)			;map relocate. 
+WWMUSYA(4,10)					;effect.
+;;WWMUSYA(13,0,0,0,1,3)			;マップシフト
+WWMUSYA(12,0)					;0=front.
+;WWMUSYA(6)						;ＲＰＧモード
+GOTO EVENT_RET
+
+*NEXT_MAP24N
+;WWMUSYA(7)						;ノーマルモード
+WWMUSYA(4,8)					;effect.
+WWMUSYA(10,6,47)				;マップ再ロード
+IF ( DAYLIGHT=3 ) DAYLIGHT=2
+IF ( DAYLIGHT=4 ) DAYLIGHT=1
+WWMUSYA(18,DAYLIGHT)			;昼<->夜操作 1=day,2=night,3=day->night...
+EFC(1)							;Ｆ・Ｏ（フェードアウト）
+TIMER1(30)						;
+WWMUSYA(5,3,80,13,21,2)			;map relocate. 
+WAIT1							;
+WWMUSYA(18,1)					;昼<->夜操作 1=day,2=night,3=day->night...
+;EFC(16)						;ノーマルカラー
+WWMUSYA(4,11)					;effect.
+;;WWMUSYA(13,0,0,0,-1,3)			;マップシフト
+WWMUSYA(12,1)					;1=back.
+;WWMUSYA(6)						;ＲＰＧモード
+WWMUSYA(20,P_SYUGOSEI)			;守護星のセット
+WWMUSYA(19,2)					;2=北の守護星現れる
+IF ( E_ETC[32]=1 )				;北の武神への階段が消える
+	WWMUSYA(19,3)				;北の守護星への階段が消える
+
+GOTO EVENT_RET
+
+
+*MAP2_FALL1			;宝箱へ
+WWMUSYA(11,15)		;滝長さ
+WWMUSYA(4,12)		;effect.12=落下
+GOTO EVENT_RET
+
+*MAP2_FALL2			;宝箱から
+WWMUSYA(11,20)		;滝長さ
+WWMUSYA(4,12)		;effect.12=落下
+GOTO EVENT_RET
+
+*MAP2_FALL3			;宝箱へ
+WWMUSYA(11,22)		;滝長さ
+WWMUSYA(4,12)		;effect.12=落下
+GOTO EVENT_RET
+
+
+*NEXT_MAP31N
+;WWMUSYA(7)						;ノーマルモード
+WWMUSYA(4,9)					;effect.
+WWMUSYA(10,5,63)				;マップ再ロード
+EFC(1)							;Ｆ・Ｏ（フェードアウト）
+TIMER1(30)
+WWMUSYA(5,3,0,13,0,2)			;map relocate. 
+WAIT1
+WWMUSYA(18,DAYLIGHT)			;昼<->夜操作 1=day,2=night,3=day->night...
+;EFC(16)						;ノーマルカラー
+WWMUSYA(4,10)					;effect.
+;;WWMUSYA(13,0,0,0,1,3)			;マップシフト
+WWMUSYA(12,0)					;0=front.
+;WWMUSYA(6)						;ＲＰＧモード
+GOTO EVENT_RET
+
+*TOP_STAGE
+WWMUSYA(13,0,-1,0,1,10)		;マップシフト
+WWMUSYA(13,0,0,0,1,2)		;マップシフト
+
+	BX = S_WORKS		;スケジュール内容
+	CX = S_COUNTER		;当日カウンタ
+	C1 = S_STARTDAY		;スケジュール開始日
+	C2 = S_ENDDAY		;スケジュール終了日
+	C3 = TODAY_COUNT	;日付カウンタ
+	C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+	C5 = SOUBI_FLG		;装備フラグ
+	C6 = SOUBI_REC		;装備のアイテム番号
+	C7 = SOUBI_DAY		;装備の日
+	LOAD("EVNTBSN2")	;
+
+GOTO EVENT_RET
+
+*TOP_STAGE_OFF
+TXLC(10,17,286,0)	;text window locate.
+TXOPEN(10)
+はやく、ゆきなさい．
+WWMUSYA(7)						;ノーマルモード
+TXF(2)							;マウスOFF待ち
+@P
+TXCLOSE(10)
+WWMUSYA(6)						;ＲＰＧモード
+WWMUSYA(13,0,0,0,1,2)			;マップシフト
+GOTO EVENT_RET
+
+*TOP_DOWN_STEP
+WWMUSYA(13,0,0,0,1,5)			;マップシフト
+WWMUSYA(4,9)					;effect.
+ENC_EVNT = 55					;55 武神の退場
+GOTO EVENT_RET
+
+*BISHIN_STEP_CLS
+C1 = 8
+C6 = 72
+	TIMER1(3)
+	C2 = C1 + 1
+	GG_LINE(272,C1,304,C1,0)
+	GG_LINE(272,C2,304,C2,0)
+	WAIT1
+	C1 = C1 + 2
+LOOP C6
+WWMUSYA(19,4)			;北の武神への階段が消える
+WWMUSYA(8,1)			;再描画 1=全部,2=背景のみ
+TXLC(3,13,260,2)		;text window locate.
+TXOPEN(3)				;
+TXGIRL(9)				;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+WWMUSYA(7)				;ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+TXCLOSE(3)
+WWMUSYA(6)			;ＲＰＧモード
+WWMUSYA(9)			;戦闘後データロード
+WWMUSYA(8,1)		;再描画
+E_ETC[32]=1			;北の武神への階段が消える
+GOTO EVENT_RET
+
+
+*MAP3_CLOSED
+TXLC(2,28,16,1)		;text window locate.
+TXLC(3,13,260,2)	;text window locate.
+TXOPEN(2)
+TXFACE("F121")		;警備兵
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+WWMUSYA(7)			;ノーマルモード
+TXF(2)				;マウスOFF待ち
+@P
+TXOPEN(3)
+TXGIRL(0)			;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+WWMUSYA(6)				;ＲＰＧモード
+WWMUSYA(9)				;戦闘後データロード
+WWMUSYA(8,1)			;再描画
+WWMUSYA(13,0,0,0,1,3)	;マップシフト
+RET
+
+*CATMAN			;精霊猫に会う
+IF ( E_ETC[97]=0 )	;武者修行中に１度精霊猫に会う
+	ENC_EVNT = 35	;35 精霊猫に会う
+GOTO EVENT_RET
+
+*EVENT_RET
+;;IF ( DAYLIGHT=3 ) DAYLIGHT=2 RET
+;;IF ( DAYLIGHT=4 ) DAYLIGHT=1 RET
+FLAG_EVENT = 1	;1=ok.
+RET
+
+*MSG_INAI
+TXOPEN(1)
+TXT
+WWMUSYA(7)	;ノーマルモード
+TXF(2)		;マウスOFF待ち
+@P
+TXCLOSE(1)
+WWMUSYA(6)				;ＲＰＧモード
+WWMUSYA(13,0,0,0,1,2)	; マップシフト
+RET
+
+;**************
+;	check kanban.
+;**************
+
+*CHK_KANBAN
+FLAG_EVENT = 0			;0=none.
+IF ( PDIR ! 1 )						;娘の向き 0=front,1=back,2=left,3=right.	
+	IF ( MUSX ! 0 )( MUSY ! -1 )	;orginal dir.
+		RET
+	WWMUSYA(12,1)	;娘の向き設定 1=back.
+	WWMUSYA(8,1)	;再描画 1=全部
+
+WWMUSYA(17)	;ステータス
+
+IF ( AX=4  PXX>=103  PXX<=105  PYY=65  PDIR = 1 )	;娘の向き 1=back.
+	KANBAN_READ("「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」")
+	RET
+IF ( AX=5  PXX>=128  PXX<=130  PYY=85  PDIR = 1 )	;娘の向き 1=back.
+	KANBAN_READ("「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」")
+	RET
+IF ( AX=5  PXX=114  PYY=31 )	;娘の向き
+	WWMUSYA(12,3)				;娘の向き設定  3=right.
+	WWMUSYA(8,1)				;再描画 1=全部
+	C5 = "洞窟に落書きがある．"
+	C6 = "「＊＊＊＊＊＊＊＊＊＊＊」"
+	DOUKUTU_READ
+	RET
+IF ( AX=5  PXX>=111  PXX<=113  PYY=10  PDIR = 1 )	;娘の向き 1=back.
+	KANBAN_READ("「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」")
+	RET
+IF ( AX=5  PXX>=19  PXX<=21  PYY=38  PDIR = 1 )		;娘の向き 1=back.
+	KANBAN_READ("「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」")
+	RET
+RET
+
+*KANBAN_READ
+TXOPEN(1)
+AX = SI TXA
+WWMUSYA(7)				;ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+TXCLOSE(1)
+WWMUSYA(6)				;ＲＰＧモード
+WWMUSYA(13,0,0,0,1,1)	;マップシフト
+FLAG_EVENT = 1			;1=ok.
+RET
+
+*DOUKUTU_READ
+TXOPEN(1)
+AX = C5 TXA
+WWMUSYA(7)				;ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+@C
+AX = C6 TXA
+@P
+TXCLOSE(1)
+WWMUSYA(6)				;ＲＰＧモード
+WWMUSYA(13,0,0,0,1,1)	;マップシフト
+FLAG_EVENT = 1			;1=ok.
+RET
+
+;**************
+;	check takara.
+;**************
+
+*CHK_TAKARA
+FLAG_EVENT = 0			;0=none.
+IF ( PDIR ! 1 )						;娘の向き 0=front,1=back,2=left,3=right.
+	IF ( MUSX ! 0 )( MUSY ! -1 )	;orginal dir.
+		RET
+	WWMUSYA(12,1)	;娘の向き設定 1=back.
+	WWMUSYA(8,1)	;再描画 1=全部
+
+IF ( PXX>=31  PXX<=33  PYY=72  FLG_TAKARA[11]=0 )
+	C1 = 1					;宝箱番号
+	C2 = "氷のかけら"		;アイテム名
+	C3 = 36					;ＩＣＯＮ
+	C4 = 600				;金 600G
+	C5 = "B_TAIRYOKU+10 B_STRESS-10"	;効果
+	C6 = 4000				;属性 4000番台=効能有
+	C7 = "体力+10 ｽﾄﾚｽ-10"	;説明
+	TAKARABAKO				;宝箱番号
+	RET
+IF ( PXX>=85  PXX<=87  PYY=29  FLG_TAKARA[12]=0 )
+	C1 = 2					;宝箱番号
+	C2 = "東方片刃剣"		;アイテム名
+	C3 = 7					;ＩＣＯＮ
+	C4 = 2000				;金 2000G
+	C5 = "V_KOUGEKI+20 V_SENTOH+10 E_KAISIN!"	;効果
+	C6 = 2000				;属性 2000番台=武器
+	C7 = "攻撃+20 戦技+10"	;説明
+	TAKARABAKO				;宝箱番号
+	RET
+IF ( PXX>=110  PXX<=112  PYY=33  FLG_TAKARA[13]=0 )
+	C1 = 3					;宝箱番号
+	CATCH_GOLD = 400		;
+	GOLD_CATCH				;
+	RET
+RET
+
+
+;**************
+;	宝箱番号
+;C1 : 宝箱番号
+;C2 : アイテム名
+;C3 : ＩＣＯＮ
+;C4 : 金
+;C5 : 効果
+;C6 : 属性
+;C7 : 説明
+;**************
+
+*TAKARABAKO
+C8 = C1 + 4
+WWMUSYA(19,C8)			;5=宝箱OPEN.1
+WWMUSYA(8,1)			;再描画 1=全部
+
+ITEMID_TBL1[0]=C2
+ITEMID_TBL2[0]=C3
+ITEMID_TBL3[0]=C4
+ITEMID_TBL4[0]=C7
+ITEMID_TBL5[0]=0
+ITEMID_TBL6[0]=""
+ITEMID_TBL7[0]=0
+ITEM_KOUKA[0]=C5
+ITEM_ATTRBUTE[0]=C6
+ITEMID_CNT=1			;アイテムＩＤ数
+ITEMPRN(3,37,200)		;マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)			;マルチアイテム表示
+IF ( ITEM_MAX >= ITEM_DIM )		;所有最大アイテム数
+	TXOPEN(1)			;
+	「TXA(ITEMID_TBL1[0])」を見つけたが，これ以上持てない．
+	WWMUSYA(7)			;ノーマルモード
+	TXF(2)				;マウスOFF待ち
+	@P					;
+	C8 = C8 + 5			;
+	WWMUSYA(19,C8)		;10=宝箱CLOSE.1
+	ITEMPRN(2)			;マルチアイテム復帰
+	TXCLOSE(1)			;
+	WWMUSYA(21)			;マップデータのみ再ロード
+	GOTO TAKARA_RET		;
+AX = C1 + 10
+FLG_TAKARA[AX]=1 		;宝箱フラグ
+TXOPEN(1)
+TXA(NAME_FIRST)は「TXA(ITEMID_TBL1[0])」を手に入れた．
+TAKE_ITEM				;アイテム取得
+WWMUSYA(7)				;ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P						;
+ITEMPRN(2)				;マルチアイテム復帰
+TXCLOSE(1)				;
+WWMUSYA(21)				;マップデータのみ再ロード
+GOTO TAKARA_RET			;
+
+
+*TAKARA_RET
+WWMUSYA(6)				;ＲＰＧモード
+WWMUSYA(13,0,0,0,1,1)	;マップシフト
+FLAG_EVENT = 1			;1=ok.
+RET
+
+
+;**************
+;C1 : 宝箱番号
+;CATCH_GOLD : 手に入れたお金
+;**************
+
+*GOLD_CATCH
+AX = C1 + 10
+FLG_TAKARA[AX]=1		;宝箱フラグ
+C7 = C1 + 4				;
+WWMUSYA(19,C7)			;5=宝箱OPEN.1
+WWMUSYA(8,1)			;再描画 1=全部
+GR_OPEN					;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL1[0]="お金"
+IGRP_TBL3[0]=CATCH_GOLD
+IGRP_CNT=1
+IGRP_X=30
+IGRP_Y=110
+GOLDOPEN(1,1)			;ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+TXOPEN(1)
+TXGOLD(CATCH_GOLD)を手に入れた！
+GOLDADD(CATCH_GOLD)		;娘の所持金
+WWPROF(5)				;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･所持金
+WWMUSYA(7)				;ノーマルモード
+TXF(2)					;マウスOFF待ち
+@P
+TXCLOSE(1)
+GR_CLOSE				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+WWMUSYA(6)				;ＲＰＧモード
+WWMUSYA(13,0,0,0,1,1)	;マップシフト
+FLAG_EVENT = 1			;1=ok.
+RET
+
+;**************
+;	アイテム取得
+;**************
+
+*TAKE_ITEM
+BX=ITEMID_TBL2[0]		;ＩＣＯＮ
+CX=ITEMID_TBL3[0]		;定価
+DX=ITEM_ATTRBUTE[0]		;種別
+SI=ITEMID_TBL1[0]		;所有アイテム名前 string
+DI=ITEM_KOUKA[0]		;所有アイテム効果 string
+BP=ITEMID_TBL4[0]		;所有アイテム説明 string
+ITEM_INST(1)
+RET
+
+;**************
+;	man check.
+;	-O- ENC_MAN :人間と出会う
+;**************
+
+*MAN_CHECK
+ENC_MAN = 0
+
+WWMUSYA(17)	;ステータス
+
+IF ( AX=4 )	;4=North1
+	IF ( PXX>=50  PYY>=56  PXX<=117 PYY<=79  ) MAN_CHECK_1LV RET
+	IF ( PXX>=20  PYY>=36  PXX<=67  PYY<=55  ) MAN_CHECK_2LV RET
+	IF ( PXX>=92  PYY>=18  PXX<=139 PYY<=55  ) MAN_CHECK_2LV RET
+	IF ( PXX>=4   PYY>=0   PXX<=71  PYY<=35  ) MAN_CHECK_3LV RET
+	IF ( PXX>=128 PYY>=0   PXX<=131 PYY<=17  ) MAN_CHECK_3LV RET
+	RET
+IF ( AX=5 )	;5=North2
+	IF ( PXX>=7  PYY>=70 PXX<=41  PYY<=95 ) MAN_CHECK_3LV RET
+	IF ( PXX>=81 PYY>=55 PXX<=155 PYY<=95 ) MAN_CHECK_3LV RET
+	RET
+RET
+
+*MAN_CHECK_1LV
+RANDAM(9)
+ENC_MAN = AX
+RET
+
+*MAN_CHECK_2LV
+RANDAM(7)
+IF ( AX >= 3 ) AX++		;村娘
+IF ( AX >= 6 ) AX++		;老人
+ENC_MAN = AX
+RET
+
+*MAN_CHECK_3LV
+ENC_MAN = 1				;警備兵
+RET
+
+;**************
+;	monstor check.
+;	-O- ENC_MNS : モンスターと出会う
+;**************
+
+*MONSTOR_CHECK
+ENC_MNS = 0
+MNS_MAX=0		;モンスター数
+MNS_CHK01
+MNS_CHK02
+MNS_CHK03
+MNS_CHK04
+MNS_CHK05
+MNS_CHK06
+IF ( MNS_MAX = 0 ) RET		;モンスター数
+C1 = MNS_MAX
+RANDAM(C1)
+AX--
+ENC_MNS = MNS_TBL[AX]		;モンスターテーブル
+RET
+
+*MNS_CHK01
+WWMUSYA(17)	;ステータス
+IF ( AX=4 )	;4=North1
+	IF ( PXX>=4  PYY>=16 PXX<=27  PXX<=39 )	MNSSET(1)	RET		;"人さらい"
+	IF ( PXX>=28 PYY>=6  PXX<=71  PXX<=74 )	MNSSET(1)	RET		;"人さらい"
+	IF ( PXX>=92 PYY>=0  PXX<=139 PXX<=74 )	MNSSET(1)	RET		;"人さらい"
+IF ( AX=5 )	;5=North2
+	IF ( PXX>=128 PXX<=67 PYY>=131 PYY>=95)	MNSSET(1)	RET		;"人さらい"
+RET
+
+*MNS_CHK02
+WWMUSYA(17)	;ステータス
+IF ( AX=4 )	;4=North1
+	IF ( PXX>=8 PYY>=0 PXX<=56 PYY<=43 )	MNSSET(4)	RET		;"オオカミ"
+	IF ( PXX>=40 PYY>=44 PXX<=67 PYY<=63 )	MNSSET(4)	RET		;"オオカミ"
+IF ( AX=5 )	;5=North2
+	IF ( PXX>=33 PYY>=7 PXX<=137 PYY<=36 )	MNSSET(4)	RET		;"オオカミ"
+	IF ( PXX>=95 PYY>=32 PXX<=129 PYY<=50 )	MNSSET(4)	RET		;"オオカミ"
+	IF ( PXX>=82 PYY>=51 PXX<=103 PYY<=58 )	MNSSET(4)	RET		;"オオカミ"
+	IF ( PXX>=121 PYY>=14 PXX<=155 PYY<=37)	MNSSET(4)	RET		;"オオカミ"
+RET
+
+*MNS_CHK03
+WWMUSYA(17)	;ステータス
+IF ( AX=4 )	;4=North1
+	IF ( PXX>=14 PYY>=0 PXX<=15  PYY<=15 )	RET					;
+	IF ( PXX>=4  PYY>=6 PXX<=71  PYY<=40 )	MNSSET(2)	RET		;"アミーバ"
+	IF ( PXX>=92 PYY>=0 PXX<=139 PYY<=21 )	MNSSET(2)	RET		;"アミーバ"
+IF ( AX=5 )	;5=North2
+	IF ( PXX>=128 PYY>=67 PXX<=131 PYY<=95)	MNSSET(2)	RET		;"アミーバ"
+RET
+
+*MNS_CHK04
+WWMUSYA(17)	;ステータス
+IF ( AX=4 )	;4=North1
+	IF ( PXX>=14 PYY>=0 PXX<=15 PYY<=15 )	MNSSET(3)	RET		;"スノーオーク"
+	IF ( PXX>=14 PYY>=0 PXX<=33 PYY<=28 )	MNSSET(3)	RET		;"スノーオーク"
+IF ( AX=5 )	;5=North2
+	IF ( PXX>=7 PYY>=44 PXX<=75 PYY<=95 )	MNSSET(3)	RET		;"スノーオーク"
+	IF ( PXX>=81 PYY>=38 PXX<=159 PYY<=88 )	MNSSET(3)	RET		;"スノーオーク"
+	IF ( PXX>=95 PYY>=32 PXX<=118 PYY<=37 )	MNSSET(3)	RET		;"スノーオーク"
+RET
+
+*MNS_CHK05
+WWMUSYA(17)	;ステータス
+IF ( AX=5 )	;5=North2
+	IF ( PXX>=33 PYY>=7 PXX<=137 PYY<=36 )	MNSSET(6)	RET		;"銀色オオカミ"
+	IF ( PXX>=79 PYY>=27 PXX<=90 PYY<=31 )	MNSSET(6)	RET		;"銀色オオカミ"
+RET
+
+*MNS_CHK06
+WWMUSYA(17)	;ステータス
+IF ( AX=4 )	;4=North1
+	IF ( PXX>=14  PYY>=0 PXX<=15  PYY<=16 )	MNSSET(5)	RET		;"アイスボール"
+	IF ( PXX>=32  PYY>=0 PXX<=33  PYY<=6  )	MNSSET(5)	RET		;"アイスボール"
+	IF ( PXX>=128 PYY>=0 PXX<=131 PYY<=17 )	MNSSET(5)	RET		;"アイスボール"
+IF ( AX=5 )	;5=North2
+	MNSSET(5)	;"アイスボール"
+	RET
+RET
+
+*MNSSET
+MNS_TBL[MNS_MAX] = AX	;モンスターテーブル
+MNS_MAX++				;モンスター数
+RET
+
+;**************
+;	event check.
+;	-O- ENC_EVNT : イベントが起こる
+;**************
+
+*EVENT_CHECK
+ENC_EVNT = 0							;イベントが起こる
+IF ( PGRAND < 0 ) RET					;水中は無し
+RET
+
+;
+;	end of "RPG003.TXT"
+;
+
