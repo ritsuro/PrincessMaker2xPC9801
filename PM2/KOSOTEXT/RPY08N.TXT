@@ -1,0 +1,55 @@
+;"PRY08N.TXT"
+;
+;	人間のデータ
+;
+
+*CHECK_MEN				; man check.
+MAN08N
+RET
+
+*MAN08N	;農夫
+R_FACE			="F128"
+R_NAME			="農夫"
+R_CHINOH		=10
+R_SENTOH		=40
+RDM(45,60)
+R_KOUGEKI=AX
+R_BOUGYO		=25
+R_SOUKOU		=0
+R_SKNAME		=""
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=10
+R_SENI			=180
+R_DASSYUTU		=100
+R_TSUKON		=0
+RDM(180,280)
+R_MAX_HP		=AX
+R_MAX_MP		=0
+RDM(50,100)
+R_GOLD			=AX		;50･･･100
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MENMES[0]="＊＊＊＊＊＊＊"
+MENMES[1]="＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[3]="＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[4]="＊＊＊＊＊＊＊＊"
+MENMES[5]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[6]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+;
+;	end of "PRY08N.TXT"
+;
+

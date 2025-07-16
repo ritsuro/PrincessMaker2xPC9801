@@ -1,0 +1,64 @@
+;"PRY09N.TXT"
+;
+;	人間のデータ
+;
+
+*CHECK_MEN				; man check.
+MAN09N
+RET
+
+*MAN09N	;狩人		かなりの実力．
+R_FACE			="F129"
+R_NAME			="狩人"
+R_CHINOH		=10
+R_SENTOH		=80
+RDM(55,65)
+R_KOUGEKI=AX
+R_BOUGYO		=35
+R_SOUKOU		=25
+R_SKNAME		="毛皮"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=40
+RDM(140,200)
+R_SENI=AX
+R_DASSYUTU		=60
+R_TSUKON		=15
+RDM(200,250)
+R_MAX_HP		=AX
+R_MAX_MP		=0
+RDM(50,100)
+R_GOLD			=AX		;50･･･100
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME ="投げ焙碌"
+R_ITEM_ICON	=17
+R_ITEM_GOLD	=100
+R_ITEM_ATTR	=0
+R_ITEM_PROG	=""
+R_ITEM_HELP	="攻撃用"
+R_ITEM_PROPA=25
+
+MENMES[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[3]="＊＊＊"
+IF(AX=3)MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[4]="＊＊＊＊＊＊＊＊＊"
+MENMES[5]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[6]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+;
+;	end of "PRY09N.TXT"
+;
+
