@@ -1,0 +1,175 @@
+;"RPGRUN.TXT"
+;
+;
+;	ＲＰＧ実行開始
+;
+
+;;.TIMER_DAYS=1200	;ひるタイム
+;;.TIMER_NIGHT=1200	;よるタイム
+
+.TIMER_DAYS=600	;ひるタイム
+.TIMER_NIGHT=600	;よるタイム
+
+.S_WORKS		; スケジュール内容
+.S_COUNTER	=0	; 当日カウンタ
+.S_STARTDAY		; スケジュール開始日
+.S_ENDDAY		; スケジュール終了日
+.TODAY_COUNT=0	; 日付カウンタ
+.DAYLIGHT=2		; 1=day,2=night,3=day->night,4=night->day.<====夜明けと共にスタート
+.SOUBI_FLG=0	;
+.SOUBI_REC=0	;
+.SOUBI_DAY=0	;
+
+S_WORKS		= SCHED_WORKS[SCH_NOW]		; スケジュール内容
+S_STARTDAY	= SCH_STARTDAY[SCH_NOW]		; スケジュール開始日
+S_ENDDAY	= SCH_ENDDAY[SCH_NOW]		; スケジュール終了日
+SCH_NOW++								; スケジュール実行中項目
+
+WWMUSYA(24)			; 残りクリア
+
+TXLC(1,20,160,0)	; text window locate.
+TXLC(2,28,260,1)	; text window locate.
+TXLC(3,14,260,2)	; text window locate.
+STARTINIT			;
+EFC(1)				; Ｆ・Ｏ（フェードアウト）
+
+GRPCLS	; graphics clear screen.
+EFC(16)		; ノーマルカラー
+TXOPEN(1)
+IF ( S_WORKS = 0 )					; 0=東部 森林地帯
+	TXA(NAME_FIRST)は東部森林地帯に出かけていった・・・
+IF ( S_WORKS = 1 )					; 1=西部 砂漠地帯
+	TXA(NAME_FIRST)は西部砂漠地帯に出かけていった・・・
+IF ( S_WORKS = 2 )					; 2=南部 水郷地帯
+	TXA(NAME_FIRST)は南部水郷地帯に出かけていった・・・
+IF ( S_WORKS = 3 )					; 3=北部 氷山地帯
+	TXA(NAME_FIRST)は北部山岳地帯に出かけていった・・・
+@P
+TXCLOSE(1)
+EFC(7)		; ブラックアウト
+
+WWFRAME(2)			; 2=武者修行
+WWPROF(5)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･所持金
+WWPROF(6)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･HP
+WWPROF(7)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･MP
+WWPROF(8)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･装備
+CLENDER(6,62,0)		; カレンダー・セットアップ
+CLENDER(1)			; カレンダー・表示
+;*;P98F(1)			; vram0 -> vram1 copy.
+
+E_ETC[26]=0		;武者修行中に１度エルフに出会った
+E_ETC[29]=0		;竜の谷に入った
+E_ETC[33]=0		;武者修行中に１度ｻﾝﾄﾞﾚｲﾀﾞｰｽを倒した
+
+E_ETC[92]=0		;武者修行中に１度妖精のお茶会
+E_ETC[93]=0		;武者修行中に１度妖精のダンスパーティー
+E_ETC[94]=0		;武者修行中に１度お尋ね者と遭遇
+E_ETC[95]=0		;武者修行中に１度精霊に出会う
+E_ETC[96]=0		;武者修行中に１度老ドラゴンに会う
+E_ETC[97]=0		;武者修行中に１度精霊猫に会う
+E_ETC[98]=0		;武者修行中に１度魔王の酒盛り
+E_ETC[109]=0	;RPG帰りは出口から
+
+S_COUNTER = 0				;当日カウンタ
+
+RUN_MUSYA[0]++				;「武者修行に出す」実行回数
+
+IF ( S_WORKS = 0 )					; 0=東部 森林地帯
+	RUN_MUSYA[1]++					;「東」実行回数
+	PALET_SETONLY(5,0)				; RPG･東･夜
+	WWMUSYA(1,1,0,50,4,10,127)		; start.<===
+	WWMUSYA(12,3)					; 3=right.
+
+IF ( S_WORKS = 1 )					; 1=西部 砂漠地帯
+	RUN_MUSYA[2]++					;「西」実行回数
+	PALET_SETONLY(6,0)				; RPG･西･夜
+	WWMUSYA(1,2,172,26,21,8,127)	; start.<===
+	WWMUSYA(12,2)					; 2=left.
+	IF ( E_ETC[27] ! 0 )			;精霊が消えた月
+		IF ( E_ETC[27] ! VAL_MONTH )
+			IF ( E_ETC[25] = 0 )	;
+				E_ETC[25] = 1		;精霊の泉枯れた
+
+	IF ( E_ETC[25] = 1 )			;精霊の泉枯れた
+		WWMUSYA(19,1)				;マップの修正
+
+IF ( S_WORKS = 2 )					; 2=南部 水郷地帯
+	RUN_MUSYA[3]++					;「南」実行回数
+	PALET_SETONLY(7,0)				; RPG･南･夜
+	WWMUSYA(1,3,48,0,13,6,127)		; start.<===
+	WWMUSYA(12,0)					; 0=front.
+
+IF ( S_WORKS = 3 )					; 3=北部 氷山地帯
+	RUN_MUSYA[4]++					;「北」実行回数
+	PALET_SETONLY(8,0)				; RPG･北･夜
+	WWMUSYA(1,4,88,56,13,15,63)		; start.<===
+	WWMUSYA(12,1)					; 1=back.
+	IF ( E_ETC[30] ! 0 )			;武神の祠閉鎖
+		E_ETC[34]=1					;祠閉鎖に山岳警備隊
+
+WWMUSYA(2,TIMER_DAYS,TIMER_NIGHT)	; interval.
+WWMUSYA(16)			; キャンプ後ロード
+WWMUSYA(6)			; ＲＰＧモード
+
+
+IF ( S_WORKS = 0 )					;0=東部 森林地帯
+	IF ( FLG_TAKARA[1]=1 ) WWMUSYA(19,5)				;5=宝箱OPEN.1
+	IF ( FLG_TAKARA[2]=1 ) WWMUSYA(19,6)				;6=宝箱OPEN.2
+	IF ( FLG_TAKARA[3]=1 ) WWMUSYA(19,7)				;7=宝箱OPEN.3
+
+IF ( S_WORKS = 1 )					; 1=西部 砂漠地帯
+	IF ( FLG_TAKARA[4]=1 ) WWMUSYA(19,5)				;5=宝箱OPEN.1
+	IF ( FLG_TAKARA[5]=1 ) WWMUSYA(19,6)				;6=宝箱OPEN.2
+	IF ( FLG_TAKARA[6]=1 ) WWMUSYA(19,7)				;7=宝箱OPEN.3
+	IF ( FLG_TAKARA[7]=1 ) WWMUSYA(19,8)				;8=宝箱OPEN.4
+
+IF ( S_WORKS = 2 )					; 2=南部 水郷地帯
+	IF ( FLG_TAKARA[8]=1 )  WWMUSYA(19,5)				;5=宝箱OPEN.1
+	IF ( FLG_TAKARA[9]=1 )  WWMUSYA(19,6)				;6=宝箱OPEN.2
+	IF ( FLG_TAKARA[10]=1 ) WWMUSYA(19,7)				;7=宝箱OPEN.3
+
+IF ( S_WORKS = 3 )					; 3=北部 氷山地帯
+	IF ( FLG_TAKARA[11]=1 ) WWMUSYA(19,5)				;5=宝箱OPEN.1
+	IF ( FLG_TAKARA[12]=1 )	WWMUSYA(19,6)				;6=宝箱OPEN.2
+	IF ( FLG_TAKARA[13]=1 )	WWMUSYA(19,7)				;7=宝箱OPEN.3
+
+
+PLAY(14)			;P14 武者修行
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+IF ( S_WORKS = 0 )
+	LOAD("RPGLOP,RPG000")		; 0=東部 森林地帯
+IF ( S_WORKS = 1 )
+	LOAD("RPGLOP,RPG001")		; 1=西部 砂漠地帯
+IF ( S_WORKS = 2 )
+	LOAD("RPGLOP,RPG002")		; 2=南部 水郷地帯
+IF ( S_WORKS = 3 )
+	LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+;**************
+;	start init.
+;**************
+
+*STARTINIT
+W_HP_MAX = B_TAIRYOKU - S_BYOUKI		; 最大ＨＰ 体力－病気指数
+IF ( W_HP_MAX < 0 ) W_HP_MAX = 0
+W_MP_MAX = B_CHINOH						; 最大ＭＰ 知能
+W_SENI = H_SENSHI						; 戦士評価 -> 戦意
+IF ( H_MAHO > H_SENSHI ) W_SENI= H_MAHO	; 魔法評価 -> 戦意
+W_HP = W_HP_MAX
+W_MP = W_MP_MAX
+RET
+
+;
+;	end of "RPGRUN.TXT"
+;
+
