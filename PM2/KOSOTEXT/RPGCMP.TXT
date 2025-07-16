@@ -1,0 +1,775 @@
+;"RPGCMP.TXT"
+;
+;
+;
+;	RPG global common.
+
+.ENC_EVNT			;イベントが起こる
+.PXX.PYY			;ロケーション
+.KAI_KAIFUK=0
+
+.NOW_ICONS
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.TODAY_COUNT		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+CAMP_MAIN			; camp main.
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+IF ( S_WORKS = 0 )	LOAD("RPGLOP,RPG000")		; 0=東部 森林地帯
+IF ( S_WORKS = 1 )	LOAD("RPGLOP,RPG001")		; 1=西部 砂漠地帯
+IF ( S_WORKS = 2 )	LOAD("RPGLOP,RPG002")		; 2=南部 水郷地帯
+IF ( S_WORKS = 3 )	LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+
+TXOPEN(1)致命的エラーWAITU
+
+;**************
+;	event load.
+;	-I- ENC_EVNT :イベントが起こる
+;**************
+
+*EVENT_INTER
+
+STRSCLEAR
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+E_ETC[28]=ENC_EVNT	;ＲＰＧの直前のイベント番号
+
+AX = ENC_EVNT	;イベントが起こる
+IF (AX=28) LOAD("EVNT028")	; 28 精霊に出会う
+IF (AX=29) LOAD("EVNT029")	; 29 お尋ね者と遭遇
+IF (AX=30) LOAD("EVNT030")	; 30 ユニコーンを発見
+IF (AX=31) LOAD("EVNT031")	; 31 エルフに出会う
+IF (AX=32) LOAD("EVNT032")	; 32 老ドラゴンに会う
+IF (AX=33) LOAD("EVNT033")	; 33 悪魔に出会う
+IF (AX=34) LOAD("EVNT034")	; 34 生意気なドラゴンに会う
+IF (AX=35) LOAD("EVNT035")	; 35 精霊猫に会う
+IF (AX=47) LOAD("EVNT047")	; 47 妖精のお茶会
+IF (AX=48) LOAD("EVNT048")	; 48 妖精のダンスパーティー
+IF (AX=49) LOAD("EVNT049")	; 49 魔王の酒盛り
+
+;**************
+;	back to home load.
+;**************
+
+*BACK_TO_HOME
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+LOAD("RPGDWN")
+
+;***************************************
+;
+;	camp main.
+;
+;***************************************
+
+*CAMP_MAIN
+
+.FLAG_RELOAD=0			; reload flag.
+;*;.IT_EQUIP[50]		; 装備
+.REC_TBL[50]			;
+.ITM_RECORD				; item record.
+
+;;SLCPOS(3)				;3=RPG時WWMUSYA(15,..)のマウス位置
+
+WWMUSYA(14,1)			; 1=キャンプ張る,2=キャンプをたたむ
+CAMPMODE_LOOP			;
+WWMUSYA(8,1)			; 再描画
+
+CMAP_EVENT_CHECK					; after camp event check.
+IF ( ENC_EVNT ! 0 ) EVENT_INTER		; イベントが起こる
+
+RET
+
+*CAMPMODE_LOOP
+;"道具を使う,休む,装備変更,キャンプをたたむ"
+;;WWMUSYA(15,"道具使う,休む,装備変更,たたむ,reload,mainloop",1)
+;;WWMUSYA(15,"休む,道具使う,装備変更,たたむ",1)
+WWMUSYA(15,"休む,道具使う,装備変更,ステータス",1)
+*CAMPMODE_INTER
+C1 = BX
+TXLC(2,28,260,1)		; text window locate.
+TXLC(3,20,260,2)		; text window locate.
+BX = C1
+IF (BX=0)(BX=-1)
+	CAMP_REST
+	CAMP_CLOSE
+	GOTO CAMP_RET
+IF (BX=1)
+	CAMP_TOOL
+	GOTO CAMPMODE_LOOP
+IF (BX=2)
+	CAMP_EQUIP
+	GOTO CAMPMODE_LOOP
+IF (BX=3)
+	CAMP_STATUS
+	GOTO CAMPMODE_LOOP
+
+;;IF (BX=3)(BX=-1)	CAMP_CLOSE	GOTO CAMP_RET
+;;IF (BX=4) LOAD("RPGRUN")
+;;IF (BX=5) LOAD("MAINLOOP")
+RET
+
+*CAMP_RET
+RET
+
+;**************
+;	camp tool.
+;**************
+
+*CAMP_TOOL
+FLAG_RELOAD = 0			; reload flag.
+MOCHIMONO
+IF ( ITEMID_CNT = 0 )( ISITM = -1 )
+	IF ( FLAG_RELOAD ! 0 )	; reload flag.
+		WWMUSYA(9)			; 戦闘後データロード
+	RET
+
+;道具を使うを選択した場合
+;MN現在使えるアイテム（快癒丸と武者修行中イベントの条件になるアイテム）
+;快癒丸を選択した場合
+
+IF ( ITEM_ICON[ITM_RECORD] = 23 )	;23=ユニコーンの角笛
+	E_UNICOON = 1					;ｲﾍﾞﾝﾄ｢ユニコーンを発見｣発生条件
+
+IF ( ITEM_ATTR[ITM_RECORD] = 5000 )	;種別
+	USE_UP_ONCE
+	GOTO CAMP_TOOL
+
+IF ( ITEM_ICON[ITM_RECORD] ! 16 )	;16=快癒丸
+	CAMP_TOOL_NONE
+	GOTO CAMP_TOOL
+CAMP_TOOL_NKAIYU
+RET
+
+*CAMP_TOOL_NKAIYU
+TXOPEN(1)
+TXA(NAME_FIRST)は快癒丸を一粒飲んだ．
+@P
+TXCLOSE(1)
+
+GR_OPEN						; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR
+IGRP_TBL1[0]="ＨＰ"	IGRP_TBL3[0]=W_HP	; ＨＰ
+IGRP_CNT=1
+IGRP_X=14
+IGRP_Y=200
+GRPOPEN(1,1)				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+TXOPEN(3)					;
+TXGIRL(13)					;娘・妖しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+KAIUGAN		;快癒丸
+
+GRPUPD(1,0,W_HP)			;
+WWPROF(6)					; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･HP
+@P
+TXOPEN(1)
+ＨＰがTXPOINT(KAI_KAIFUK)回復した．
+@P
+TXCLOSE(1)
+TXCLOSE(3)
+GR_CLOSE					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+ITEM_KILL(ITM_RECORD)		; アイテム削除
+WWMUSYA(9)			; 戦闘後データロード
+;;;WWMUSYA(8,1)		; 再描画
+RET
+
+*CAMP_TOOL_NONE
+TXOPEN(1)
+TXA(NAME_FIRST)はTXA(ITEM_NAME[ITM_RECORD])を試してみた・・・・・・
+@P
+TXCLOSE(1)
+TXOPEN(3)
+TXGIRL(9)	;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+RET
+
+*USE_UP_ONCE
+NOW_ICONS = ITEM_ICON[ITM_RECORD]
+SHOW_ITEMS
+IF ( NOW_ICONS=105 )	;豊乳丸
+	TXOPEN(1)
+	TXA(NAME_FIRST)は豊乳丸を一粒飲んだ．
+	@P
+	TXCLOSE(1)
+IF ( NOW_ICONS=106 )	;いにしえのミルク
+	TXOPEN(1)
+	TXA(NAME_FIRST)は，いにしえのミルクを飲んだ．
+	@P
+	TXCLOSE(1)
+ITEM_KILL(ITM_RECORD)	; アイテム削除
+MUSIC(6,2)	;効果音発生
+EFC(4)		; ＷＨＩＴＥ・ＯＵＴ
+EFC(3)		; ＷＨＩＴＥ・ＩＮ
+IF ( NOW_ICONS=105 )	;豊乳丸
+	TXOPEN(1)
+	バストが２センチ大きくなった．
+	@P
+	TXCLOSE(1)
+IF ( NOW_ICONS=106 )	;いにしえのミルク
+	TXOPEN(1)
+	体重が１キロ減った．
+	@P
+	TXCLOSE(1)
+ITEMPRN(2)	;マルチアイテム復帰
+RET
+
+*SHOW_ITEMS
+C2 = ITM_RECORD
+ITEMID_TBL1[0]=ITEM_NAME[C2]	;所有アイテム名前 string
+ITEMID_TBL2[0]=ITEM_ICON[C2]	;ＩＣＯＮ
+ITEMID_TBL3[0]=ITEM_GOLD[C2]	;金
+ITEMID_TBL4[0]=ITEM_HELP[C2]	;所有アイテム説明 string
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEMID_CNT=1					; アイテムＩＤ数
+ITEMPRN(3,4,200)				; マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)					; マルチアイテム表示
+RET
+
+*MOCHIMONO
+STRSCLEAR
+ITEMID_CNT = 0
+IF ( ITEM_MAX = 0 )
+	TXOPEN(1)
+	持ち物はありません。
+	@P
+	TXCLOSE(1)
+	RET
+C3 = 0
+C2 = 0
+C1=ITEM_MAX				;所有アイテム数
+	ITEM_SRCH(3,C2)		;attribute get.
+	IF ( AX=0 )( AX=4 )( AX=5 )		;item attribute 0=normal,4=up_param,5=up_once.
+		ITEMID_TBL1[C3]=ITEM_NAME[C2]	;所有アイテム名前 string
+		ITEMID_TBL2[C3]=ITEM_ICON[C2]	;ＩＣＯＮ
+		ITEMID_TBL3[C3]=ITEM_GOLD[C2]	;金
+		ITEMID_TBL4[C3]=ITEM_HELP[C2]	;所有アイテム説明 string
+		ITEMID_TBL5[C3]=0				;パラメータ値１
+		ITEMID_TBL6[C3]=""				;文字２
+		ITEMID_TBL7[C3]=0				;パラメータ値２
+		REC_TBL[C3]=C2					;
+		C3++
+	C2++
+LOOP C1
+ITEMID_CNT=C3			;アイテムＩＤ数
+IF ( ITEMID_CNT = 0 )
+	TXOPEN(1)
+	持ち物はありません。
+	@P
+	TXCLOSE(1)
+	RET
+FLAG_RELOAD = 1			; reload flag.
+ITEMSLCT(1)				;マルチアイテム選択
+IF ( ISITM>=0 ) ITM_RECORD=REC_TBL[ISITM]
+RET
+
+;**************
+;	camp rest.
+;**************
+
+*CAMP_REST
+GR_OPEN				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR
+IGRP_TBL1[0]="ＨＰ"	IGRP_TBL3[0]=W_HP
+IGRP_TBL1[1]="ＭＰ"	IGRP_TBL3[1]=W_MP
+IGRP_TBL1[2]="戦意"	IGRP_TBL3[2]=W_SENI
+IGRP_CNT=3
+IGRP_X=14
+IGRP_Y=200
+GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+TXOPEN(1)
+TXA(NAME_FIRST)は横になって休んだ・・・・・・
+すこしづつＨＰ，ＭＰが回復
+C1 = W_HP_MAX / 2			; ＨＰ
+C2 = W_MP_MAX / 2			; ＭＰ
+IF ( C1=0 ) C1=1
+IF ( C2=0 ) C2=1
+W_HP += C1
+W_MP += C2
+IF ( W_HP > W_HP_MAX ) W_HP = W_HP_MAX		; ＨＰ
+IF ( W_MP > W_MP_MAX ) W_MP = W_MP_MAX		; ＭＰ
+
+W_SENI += C1
+IF ( H_SENSHI >= H_MAHO )
+	IF ( W_SENI > H_SENSHI )	W_SENI = H_SENSHI
+IF ( H_MAHO > H_SENSHI )
+	IF ( W_SENI > H_MAHO )	W_SENI = H_MAHO
+
+GRPUPD(1,0,W_HP)
+GRPUPD(1,1,W_MP)
+GRPUPD(1,2,W_SENI)
+WWPROF(6)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･HP
+WWPROF(7)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･MP
+@P
+TXCLOSE(1)
+
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+;;WWMUSYA(3,7)		; 7=ﾊﾟﾚｯﾄ割込みON(西マップ)
+WWMUSYA(3,6)		; 6=ﾊﾟﾚｯﾄ割込みOFF
+CHECK_DANCE		; 48 妖精のダンスパーティー
+AFTERDAY		; 翌朝まで
+RET
+
+;**************
+;	翌朝まで
+;**************
+
+*AFTERDAY
+IF ( DAYLIGHT=3 ) DAYLIGHT=2
+IF ( DAYLIGHT=4 ) DAYLIGHT=1
+
+IF ( DAYLIGHT = 1 )		;1=day,2=night,3=day->night,4=night->day.
+	WWMUSYA(18,3)		; day->night.
+	TIMER1(100)
+	WAIT1
+EFC(1)					; Ｆ・Ｏ（フェードアウト）
+TIMER1(30)
+WAIT1
+EFC(0)					; Ｆ・Ｉ（フェードイン）
+
+DAYLIGHT = 4			; 4=night->day.
+WWMUSYA(18,DAYLIGHT)	; night->day.
+SHOWDATE				; clender
+WWMUSYA(24)				; 残りクリア
+
+IF ( S_ENDDAY =< VAL_DAY )
+	GOTO RPG_END		;武者修行を終える
+RET
+
+;**************
+;	clender
+;**************
+
+*SHOWDATE
+TODAY_COUNT=0	;日付カウンタ
+CLENDER(3)		; カレンダー・更新処理
+CLENDER(2)		; カレンダー・再表示
+P98F(2,0,1)		; bank change.
+CLENDER(2)		; カレンダー・再表示
+P98F(2,0,0)		; bank change.
+RET
+
+;**************
+;	快癒丸
+;**************
+
+*KAIUGAN
+RANDAM(50)			;1～50まで
+KAI_KAIFUK = IRND
+C1 = W_HP_MAX - W_HP
+IF ( C1 < IRND ) KAI_KAIFUK = C1
+W_HP += KAI_KAIFUK
+RET
+
+;**************
+;**************
+
+*CAMP_CLOSE
+TXOPEN(1)
+TXA(NAME_FIRST)はキャンプをたたんだ．
+@P
+TXCLOSE(1)
+WWMUSYA(14,2)		; 1=キャンプ張る,2=キャンプをたたむ
+RET
+
+*CAMP_EQUIP			;装備変更を選択した場合
+TXLC(3,16,140,2)	; text window locate.
+TXOPEN(3)			;
+TXGIRL(11)			;娘・不安
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GR_F(1,1)				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL1[0]=ARMS_NAME	; 武器　名前
+IGRP_TBL2[0]=ARMS_ICON	; 武器　ＩＣＯＮ番号
+IGRP_TBL3[0]=ARMS_HELP	; 武器　説明 string
+IGRP_TBL4[0]="武器"		; グラフテーブル／項目名
+IGRP_TBL1[1]=EQUIP_NAME	; 装備　名前
+IGRP_TBL2[1]=EQUIP_ICON	; 装備　ＩＣＯＮ番号
+IGRP_TBL3[1]=EQUIP_HELP	; 装備　説明 string
+IGRP_TBL4[1]="防具"		; グラフテーブル／項目名
+IGRP_CNT=2				; グラフテーブル数
+IGRP_X=17				; グラフＸ
+IGRP_Y=50				; グラフＹ
+PRICON(1,2)				; ICONﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+@P
+GETSOUBI			;装備選択画面
+IF ( ITEMID_CNT > 0 )
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+IF ( ISITM=-1 )
+	@3
+	@C
+	「＊＊＊」
+	@P
+	TXCLOSE(3)
+	WWMUSYA(9)				; 戦闘後データロード
+	RET
+IF ( ITEMID_CNT = 0 )
+	TXCLOSE(3)
+	WWMUSYA(9)				; 戦闘後データロード
+	RET
+
+;*;IF ( IT_EQUIP[ISITM]=1 )	; 装備 0=normal,1=now equip
+IF ( ITEMID_TBL2[ISITM]	= ARMS_ICON )	; 武器　ＩＣＯＮ番号
+	TXOPEN(1)
+	その武器は、すでに装備しています。
+	@P
+	TXCLOSE(1)
+	TXCLOSE(3)
+	WWMUSYA(9)				; 戦闘後データロード
+	RET
+IF ( ITEMID_TBL2[ISITM] = EQUIP_ICON )	; 装備　ＩＣＯＮ番号
+	TXOPEN(1)
+	その鎧は、すでに装備しています。
+	@P
+	TXCLOSE(1)
+	TXCLOSE(3)
+	WWMUSYA(9)				; 戦闘後データロード
+	RET
+
+TXCLOSE(3)
+
+SOUBI_FLG=1				; item flag.
+SOUBI_REC=ITM_RECORD	; item record.
+SOUBI_DAY=VAL_DAY+1		; item take day.
+
+TXOPEN(2)
+TXFACE("F046")			;執事・困り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+WWIVENT(5,0,16,32)		; ivent window locate.
+;WWIVENT(1,0,"E023")	; 装備を運ぶ
+WWIVENT(6,0,2,4,"E023")	;save#2,load#4 ivent window open.(select bank)
+@P						;
+TXCLOSE(2)
+;WWIVENT(2,0)			; ivent window close.
+WWIVENT(7,0,2)			; ivent window close.(select bank)
+WWMUSYA(9)				; 戦闘後データロード
+RET
+
+*GETSOUBI
+STRSCLEAR
+ITEMID_CNT = 0
+C3 = 0
+C2 = 0
+C1=ITEM_MAX					;所有アイテム数
+	ITEM_SRCH(3,C2)			;attribute get.
+	IF ( AX=1 )( AX=2 )		;item attribute 0=normal,1=equip,2=arms,3=dress
+		;*;IT_EQUIP[C3]=DX			; 装備 0=normal,1=now equip
+		ITEMID_TBL1[C3]=ITEM_NAME[C2]	;所有アイテム名前 string
+		ITEMID_TBL2[C3]=ITEM_ICON[C2]	;ＩＣＯＮ
+		ITEMID_TBL3[C3]=ITEM_GOLD[C2]	;金
+		ITEMID_TBL4[C3]=ITEM_HELP[C2]	;所有アイテム説明 string
+		ITEMID_TBL5[C3]=0				;パラメータ値１
+		ITEMID_TBL6[C3]=""				;文字２
+		ITEMID_TBL7[C3]=0				;パラメータ値２
+		REC_TBL[C3]=C2					;
+		C3++
+	C2++
+LOOP C1
+ITEMID_CNT=C3				;アイテムＩＤ数
+IF ( ITEMID_CNT = 0 )
+	GR_CLOSE				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	TXOPEN(1)
+	TXA(NAME_FIRST)は装備を何も持っていなかった。
+	@P
+	TXCLOSE(1)
+	RET
+FLAG_RELOAD = 1			; reload flag.
+ITEMSLCT(1)				;マルチアイテム選択
+;*;ITEMST(1)			;マルチアイテム選択
+IF ( ISITM>=0 ) ITM_RECORD=REC_TBL[ISITM]	; item record.
+RET
+
+;**************
+;	status.
+;**************
+
+*CAMP_STATUS
+SSTATUS
+WWMUSYA(9)				; 戦闘後データロード
+RET
+
+*SSTATUS
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+STRSCLEAR
+IGRP_TBL1[0]="体力"	IGRP_TBL3[0]=B_TAIRYOKU		; 体力
+IGRP_TBL1[1]="筋力"	IGRP_TBL3[1]=B_KINRYOKU		; 筋力
+IGRP_TBL1[2]="知能"	IGRP_TBL3[2]=B_CHINOH		; 知能
+IGRP_TBL1[3]="気品"	IGRP_TBL3[3]=B_KIHIN		; 気品
+IGRP_TBL1[4]="色気"	IGRP_TBL3[4]=B_IROKE		; 色気
+IGRP_TBL1[5]="モラル"	IGRP_TBL3[5]=B_MORALS		; モラル
+IGRP_TBL1[6]="信仰"	IGRP_TBL3[6]=B_SHINKOH		; 信仰
+IGRP_TBL1[7]="因業"	IGRP_TBL3[7]=B_INGYO		; 因業
+IGRP_TBL1[8]="感受性"	IGRP_TBL3[8]=B_KANJUSEI		; 感受性
+IGRP_TBL1[9]="ストレス"	IGRP_TBL3[9]=B_STRESS		; ストレス
+IGRP_CNT=10
+IGRP_X=1
+IGRP_Y=84
+GRPOPEN(1,1)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+STRSCLEAR
+IGRP_TBL1[0]="戦士評価"	IGRP_TBL3[0]=H_SENSHI		; 戦士評価
+IGRP_TBL1[1]="魔法評価"	IGRP_TBL3[1]=H_MAHO			; 魔法評価
+IGRP_TBL1[2]="社交評価"	IGRP_TBL3[2]=H_SYAKOH		; 社交評価
+IGRP_TBL1[3]="家事評価" IGRP_TBL3[3]=H_KAJI			; 家事評価
+IGRP_CNT=4
+IGRP_X=54
+IGRP_Y=180
+GRPOPEN(2,2)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+STRSCLEAR
+IGRP_TBL1[0]="戦闘技術"	IGRP_TBL3[0]=V_SENTOH		; 戦闘技術
+IGRP_TBL1[1]="攻撃力"	IGRP_TBL3[1]=V_KOUGEKI		; 攻撃力
+IGRP_TBL1[2]="防御力"	IGRP_TBL3[2]=V_BOUGYO		; 防御力
+IGRP_TBL1[3]="魔法技術"	IGRP_TBL3[3]=V_MAHOGIJUTSU	; 魔法技術
+IGRP_TBL1[4]="魔力"		IGRP_TBL3[4]=V_MARYOKU		; 魔力
+IGRP_TBL1[5]="抗魔力"	IGRP_TBL3[5]=V_KOHMARYOKU	; 抗魔力
+IGRP_CNT=6
+IGRP_X=1
+IGRP_Y=268
+GRPOPEN(4,3)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+STRSCLEAR
+IGRP_TBL1[0]="礼儀作法"	IGRP_TBL3[0]=V_REIGI		; 礼儀作法
+IGRP_TBL1[1]="芸術"		IGRP_TBL3[1]=V_GEIJYUTSU	; 芸術
+IGRP_TBL1[2]="話術"		IGRP_TBL3[2]=V_WAJYUTU		; 話術
+IGRP_TBL1[3]="料理"		IGRP_TBL3[3]=V_RYOURI		; 料理
+IGRP_TBL1[4]="掃除洗濯"	IGRP_TBL3[4]=V_SOUJISENTAKU	; 掃除洗濯
+IGRP_TBL1[5]="気だて"	IGRP_TBL3[5]=V_KIDATE		; 気だて
+IGRP_CNT=6
+IGRP_X=54
+IGRP_Y=268
+GRPOPEN(4,4)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+;IGRP_X=1
+;IGRP_Y=315
+;GRPOPEN(4,3)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+;IGRP_CNT=4
+;IGRP_X=54
+;IGRP_Y=315
+;GRPOPEN(4,5)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+WAITU
+GR_CLOSE		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+RET
+
+;**************
+;	48 妖精のダンスパーティー
+;**************
+
+*CHECK_DANCE
+
+WWMUSYA(17)		; ステータス
+PXX = BX		; map locate x.
+PYY = CX		; map locate y.
+
+IF ( S_WORKS = 0 )	; 0=東部 森林地帯
+	; 48 妖精のダンスパーティー
+	;【発生条件】東マップ→感受性１００以上で，エルフの霊木の周辺で夜間にキャンプ．
+	;				キャンプ終了時に発生．
+	IF ( PXX>=170  PYY>=85  PXX<=200  PYY<=100 )
+		IF ( DAYLIGHT = 2 )( DAYLIGHT = 3 )	;2=night,3=day->night.
+			IF ( B_KANJUSEI >= 100 )	;感受性
+				IF ( E_ETC[93]=0 )		;武者修行中に１度妖精のダンスパーティー
+					E_ETC[93]=1			;
+					ENC_EVNT = 48		;48 妖精のダンスパーティー
+					EVENT_INTER			;event load.
+					RET
+IF ( S_WORKS = 2 )	; 2=南部 水郷地帯
+	; 48 妖精のダンスパーティー
+	;【発生条件】南マップ→感受性２００以上で任意の場所で夜間にキャンプ．
+	;				キャンプ終了時に発生．
+	IF ( PXX>=17 PYY>=91 PXX<=32 PYY<=102 )( PXX>=100 PYY>=87 PXX<=118 PYY<=98 )
+		IF ( DAYLIGHT = 2 )( DAYLIGHT = 3 )	;2=night,3=day->night.
+			IF ( B_KANJUSEI >= 200 )	;感受性
+				IF ( E_ETC[93]=0 )		;武者修行中に１度妖精のダンスパーティー
+					E_ETC[93]=1			;
+					ENC_EVNT = 48		;48 妖精のダンスパーティー
+					EVENT_INTER			;event load.
+					RET
+RET
+
+;**************
+;	after camp event check.
+;	-O- ENC_EVNT : イベントが起こる
+;**************
+
+*CMAP_EVENT_CHECK
+ENC_EVNT = 0			;イベントが起こる
+
+WWMUSYA(17)		; ステータス
+PXX = BX		; map locate x.
+PYY = CX		; map locate y.
+
+IF ( S_WORKS = 0 )	CMAP_EVENT_CHK_EAST		RET		; 0=東部 森林地帯
+IF ( S_WORKS = 1 )	CMAP_EVENT_CHK_WEST		RET		; 1=西部 砂漠地帯
+IF ( S_WORKS = 2 )	CMAP_EVENT_CHK_SOUTH	RET		; 2=南部 水郷地帯
+IF ( S_WORKS = 3 )	CMAP_EVENT_CHK_NORTH	RET		; 3=北部 氷山地帯
+RET
+
+;**************
+;	東部 森林地帯
+;**************
+
+*CMAP_EVENT_CHK_EAST
+IF ( PXX < 8 ) RET
+;;IF ( PGRAND < 0 ) RET			;水中は無し
+
+; 30 ユニコーンを発見
+;【発生条件】林でキャンプし，アイテム「ユニコーンの角笛」を使う．
+
+IF ( E_UNICOON ! 0 )
+	E_UNICOON = 0				;ｲﾍﾞﾝﾄ｢ユニコーンを発見｣発生条件
+	ENC_EVNT = 30				;30 ユニコーンを発見
+	RET
+
+; 47 妖精のお茶会
+;【発生条件】東マップ→感受性１５０以上あって，石碑の周辺でキャンプ．
+;				キャンプ終了時に発生．
+
+IF ( PXX>=168  PYY>=44  PXX<=182  PYY<=53 )
+	IF ( B_KANJUSEI >= 150 )	;感受性
+		IF ( E_ETC[92]=0 )		;武者修行中に１度妖精のお茶会
+			E_ETC[92]=1			;
+			ENC_EVNT = 47		;47 妖精のお茶会
+			RET
+RET
+
+;**************
+;	西部 砂漠地帯
+;**************
+
+*CMAP_EVENT_CHK_WEST	
+
+; 30 ユニコーンを発見
+;【発生条件】林でキャンプし，アイテム「ユニコーンの角笛」を使う．
+
+IF ( PXX>=156  PXX<=191 )
+	IF ( E_UNICOON ! 0 )
+		E_UNICOON = 1				;ｲﾍﾞﾝﾄ｢ユニコーンを発見｣発生条件
+		ENC_EVNT = 30				;30 ユニコーンを発見
+		RET
+
+; 49 魔王の酒盛り
+
+IF ( PXX>=77 PYY>=61 PXX<=91 PYY<=72 )
+	IF ( E_ETC[98]=0 )		;武者修行中に１度魔王の酒盛り
+		ENC_EVNT = 49		;49 魔王の酒盛り
+		RET
+RET
+
+;**************
+;	南部 水郷地帯
+;**************
+
+*CMAP_EVENT_CHK_SOUTH
+
+; 30 ユニコーンを発見
+;【発生条件】林でキャンプし，アイテム「ユニコーンの角笛」を使う．
+
+IF ( PXX>=58 PYY>=10 PXX<=102 PYY<=25 )
+	IF ( E_UNICOON ! 0 )
+		E_UNICOON = 1				;ｲﾍﾞﾝﾄ｢ユニコーンを発見｣発生条件
+		ENC_EVNT = 30				;30 ユニコーンを発見
+		RET
+
+; 47 妖精のお茶会
+;【発生条件】南マップ→感受性３０以上あって，ラフレシアの小島でキャンプ．
+;				キャンプ終了時に発生．
+
+IF ( PXX>=123 PYY>=129 PXX<=140 PYY<=139 )
+	IF ( B_KANJUSEI >= 30 )		;感受性
+		IF ( E_ETC[92]=0 )		;武者修行中に１度妖精のお茶会
+			E_ETC[92]=1			;
+			ENC_EVNT = 47		;47 妖精のお茶会
+			RET
+RET
+
+;**************
+;	北部 氷山地帯
+;**************
+
+*CMAP_EVENT_CHK_NORTH
+
+; 30 ユニコーンを発見
+;【発生条件】林でキャンプし，アイテム「ユニコーンの角笛」を使う．
+
+WWMUSYA(17)	; ステータス
+IF ( PXX>=60 PYY>=56 PXX<=107 PYY<=74 AX=4 )	;4=North1
+	IF ( E_UNICOON ! 0 )
+		E_UNICOON = 1				;ｲﾍﾞﾝﾄ｢ユニコーンを発見｣発生条件
+		ENC_EVNT = 30				;30 ユニコーンを発見
+		RET
+RET
+
+;**************
+;	武者修行を終える
+;**************
+
+*RPG_END
+TXLC(1,17,280,0)	; text window locate.
+TXOPEN(1)
+冒険を終えて，TXA(NAME_FIRST)は家に帰った．
+WWMUSYA(7)			; ノーマルモード
+TXF(2)				; マウスOFF待ち
+@P
+TXCLOSE(1)
+;;;WWMUSYA(6)		; ＲＰＧモード
+GOTO BACK_TO_HOME	; back to home load.
+
+;
+;	end of "RPGCMP.TXT"
+;
+

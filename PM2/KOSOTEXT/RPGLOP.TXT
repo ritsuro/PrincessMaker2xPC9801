@@ -1,0 +1,655 @@
+;"RPGLOP.TXT"
+;
+;	ＲＰＧループ
+;
+;	LOAD("RPGLOP,RPG000")		; 0=東部 森林地帯
+;	LOAD("RPGLOP,RPG001")		; 1=西部 砂漠地帯
+;	LOAD("RPGLOP,RPG002")		; 2=南部 水郷地帯
+;	LOAD("RPGLOP,RPG003")		; 3=北部 氷山地帯
+;
+;	エンカウント RPGMNS.TXT,RPGMEN.TXT へ行った場合、
+;	最初の台詞の直後で WWMUSYA(7) ノーマルモードへ移行します。
+;
+
+STRSCLEAR
+
+;	RPG global common.
+
+.PXX.PYY	;ロケーション
+.PDIR		;娘の向き
+.PGRAND		;娘の地面位置
+.MUSX.MUSY	;マウス方向
+.FLAG_EVENT	;0=none,1=ok
+
+.ITEM_KOUKA[1]		;効果
+.ITEM_ATTRBUTE[1]	;種別
+
+.CATCH_GOLD=0
+
+.ENC_MAN	;人間と出会う
+.ENC_MNS	;モンスターと出会う
+.ENC_EVNT	;イベントが起こる
+
+.MNS_TBL[10]	; モンスターテーブル
+.MNS_MAX		; モンスター数
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.TODAY_COUNT		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+TXLC(1,17,280,0)	; text window locate.
+TXLC(2,28,260,1)	; text window locate.
+TXLC(3,14,260,2)	; text window locate.
+
+RPG_MAIN			; RPG main.
+
+PALET_SET(0)		;
+
+LOAD("RUNNING")		;
+
+;**************
+;	camp load.
+;**************
+
+*CAMPMODE_INTER		; C8 = menu number.
+
+STRSCLEAR
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+LOAD("RPGCMP")
+
+
+;**************
+;	mostor load.
+;	-I- ENC_MNS : モンスターと出会う
+;**************
+
+*MONSTOR_INTER
+
+STRSCLEAR
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+AX = ENC_MNS	;モンスターと出会う
+IF (AX=01) LOAD("RPGMNS,RPZ01N")	;*	;"人さらい"
+IF (AX=02) LOAD("RPGMNS,RPZ02N")	;*	;"アミーバ"
+IF (AX=03) LOAD("RPGMNS,RPZ03N")	;*	;"スノーオーク"
+IF (AX=04) LOAD("RPGMNS,RPZ04N")	;*	;"オオカミ"
+IF (AX=05) LOAD("RPGMNS,RPZ05N")	;*	;"アイスボール"
+IF (AX=06) LOAD("RPGMNS,RPZ06N")	;*	;"銀色オオカミ"
+IF (AX=07) LOAD("EVNTBSIN")			;	;北マップの武神に出会う
+IF (AX=08) LOAD("RPGMNS,RPZ08N")	;*	;"ゾルゲルマンティス"
+IF (AX=09) LOAD("RPGMNS,RPZ09N")	;*	;"レッチコンドル"
+IF (AX=10) LOAD("RPGMNS,RPZ10N")	;*	;"バットマン"
+IF (AX=11) LOAD("RPGMNS,RPZ11N")	;*	;"山猫"
+IF (AX=12) LOAD("RPGMNS,RPZ12N")	;*	;"マンイーター"
+IF (AX=13) LOAD("RPGMNS,RPZ13N")	;*	;"ドラゴンモドキ"
+IF (AX=14) LOAD("RPGMNS,RPZ14N")	;*	;"オオサソリ"
+IF (AX=15) LOAD("RPGMNS,RPZ15N")	;*	;"ガバリン"
+IF (AX=16) LOAD("RPGMNS,RPZ16N")	;*	;"サンドレイダース"
+IF (AX=17) LOAD("RPGMNS,RPZ17N")	;*	;"骸骨"
+IF (AX=18) LOAD("RPGMNS,RPZ18N")	;*	;"ヘルパイエ"
+IF (AX=19) LOAD("RPGMNS,RPZ19N")	;*	;"ジャイアントクロウ"
+IF (AX=20) LOAD("RPGMNS,RPZ20N")	;*	;"悪魔"
+IF (AX=21) LOAD("RPGMNS,RPZ21N")	;*	;"ドラゴン"
+IF (AX=22) LOAD("RPGMNS,RPZ22N")	;*	;"スネイキー"
+IF (AX=23) LOAD("RPGMNS,RPZ23N")	;*	;"フィッシュマン"
+IF (AX=24) LOAD("RPGMNS,RPZ24N")	;*	;"フェチフィッシュ"
+IF (AX=25) LOAD("RPGMNS,RPZ25N")	;*	;"トロル"
+
+
+;**************
+;	man load.
+;	-I- ENC_MAN : 人間と出会う
+;**************
+
+*MAN_INTER
+
+STRSCLEAR
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+AX = ENC_MAN	;人間と出会う
+IF (AX=1) LOAD("RPGMEN,RPY01N")	;警備兵
+IF (AX=2) LOAD("RPGMEN,RPY02N")	;旅人
+IF (AX=3) LOAD("RPGMEN,RPY03N")	;村娘
+IF (AX=4) LOAD("RPGMEN,RPY04N")	;若者
+IF (AX=5) LOAD("RPGMEN,RPY05N")	;商人
+IF (AX=6) LOAD("RPGMEN,RPY06N")	;老人
+IF (AX=7) LOAD("RPGMEN,RPY07N")	;木コリ
+IF (AX=8) LOAD("RPGMEN,RPY08N")	;農夫
+IF (AX=9) LOAD("RPGMEN,RPY09N")	;狩人
+
+;**************
+;	event load.
+;	-I- ENC_EVNT :イベントが起こる
+;**************
+
+*EVENT_INTER
+
+STRSCLEAR
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+E_ETC[28]=ENC_EVNT	;ＲＰＧの直前のイベント番号
+
+AX = ENC_EVNT	;イベントが起こる
+IF (AX=28) LOAD("EVNT028")	; 28 精霊に出会う
+IF (AX=29) LOAD("EVNT029")	; 29 お尋ね者と遭遇
+IF (AX=30) LOAD("EVNT030")	; 30 ユニコーンを発見
+IF (AX=31) LOAD("EVNT031")	; 31 エルフに出会う
+IF (AX=32) LOAD("EVNT032")	; 32 老ドラゴンに会う
+IF (AX=33) LOAD("EVNT033")	; 33 悪魔に出会う
+IF (AX=34) LOAD("EVNT034")	; 34 生意気なドラゴンに会う
+IF (AX=35) LOAD("EVNT035")	; 35 精霊猫に会う
+IF (AX=47) LOAD("EVNT047")	; 47 妖精のお茶会
+IF (AX=48) LOAD("EVNT048")	; 48 妖精のダンスパーティー
+IF (AX=49) LOAD("EVNT049")	; 49 魔王の酒盛り
+IF (AX=55) LOAD("EVNTBSN3")	; 55 武神の退場
+
+;**************
+;	back to home load.
+;**************
+
+*BACK_TO_HOME
+
+BX = S_WORKS		;スケジュール内容
+CX = S_COUNTER		;当日カウンタ
+C1 = S_STARTDAY		;スケジュール開始日
+C2 = S_ENDDAY		;スケジュール終了日
+C3 = TODAY_COUNT	;日付カウンタ
+C4 = DAYLIGHT		;1=day,2=night,3=day->night,4=night->day.
+C5 = SOUBI_FLG		;装備フラグ
+C6 = SOUBI_REC		;装備のアイテム番号
+C7 = SOUBI_DAY		;装備の日
+
+LOAD("RPGDWN")
+
+;***************************************
+;
+;	RPG main.
+;
+;***************************************
+
+*RPG_MAIN
+
+P98F(1)					; vram0 -> vram1 copy.
+WWMUSYA(6)				; ＲＰＧモード
+WWMUSYA(3,7)			; 7=ﾊﾟﾚｯﾄ割込みON(西マップ)
+
+GOTO LOOP_END
+
+*RPG_MAIN_LOOP
+
+*RPG_MAIN_LOOP2
+WWMUSYA(3,DAYLIGHT)					;normal walk.
+GOTO RPG_MAIN_CHK
+
+*RPG_MAIN_LOOP3
+WWMUSYA(3,5)						;5=前回の継続
+
+*RPG_MAIN_CHK
+PXX = BX							;
+PYY = CX + 2						;
+PDIR = DX							;
+PGRAND = SI							;娘の地面位置
+MUSX = DI							;orginal dir x.
+MUSY = BP							;orginal dir y.
+STRSCLEAR							;
+C1 = AX
+;;PRV("PGRAND=",PGRAND)LLF
+AX = C1
+IF ( AX = 1 )						;status. 1=place ivent.
+	PLACE_IVENT						;
+	IF ( ENC_EVNT ! 0 )
+		WWMUSYA(3,6)				; 6=ﾊﾟﾚｯﾄ割込みOFF
+		EVENT_INTER					;イベントが起こる
+	IF ( ENC_MNS ! 0 )
+		WWMUSYA(3,6)				; 6=ﾊﾟﾚｯﾄ割込みOFF
+		MONSTOR_INTER				;モンスターと出会う
+	GOTO RPG_MAIN_LOOP3				;
+
+IF ( AX = 3 )						;キャンプ
+	WWMUSYA(7)						;ノーマルモード
+	CAMPMODE						;camp mode.
+	WWMUSYA(6)						;ＲＰＧモード
+	GOTO RPG_MAIN_LOOP3				;
+
+IF ( AX = 4 )						;event50.
+	EVNT050							;拾い物
+	WWMUSYA(6)						;ＲＰＧモード
+	WWMUSYA(9)						;戦闘後データロード
+	WWMUSYA(8,1)					;再描画
+	GOTO RPG_MAIN_LOOP3				;
+
+EVENT_CHECK							;event check.
+IF ( ENC_EVNT ! 0 )
+	WWMUSYA(3,6)					; 6=ﾊﾟﾚｯﾄ割込みOFF
+	EVENT_INTER						;イベントが起こる
+
+IF ( DAYLIGHT=3 )( DAYLIGHT=4 ) GOTO LOOP_END	;夕方明け方はｴﾝｶｳﾝﾄ無
+
+IF ( IDBG[1]=0 )					;人間ｴﾝｶｳﾝﾄのｽｷｯﾌﾟ
+	;;PRV(" ",PXX)PRV(":",PYY)LLF
+	RANDAM(2)						;
+	IF ( IRND=1 )					;
+		MAN_CHECK					;man check.
+		IF ( ENC_MAN ! 0 )			;
+			WWMUSYA(3,6)			; 6=ﾊﾟﾚｯﾄ割込みOFF
+			MAN_INTER				;人間と出会う
+
+IF ( IDBG[2]=0 )					;ﾓﾝｽﾀｰｴﾝｶｳﾝﾄのｽｷｯﾌﾟ
+	MONSTOR_CHECK					;monstor check.
+	IF ( ENC_MNS ! 0 )
+		WWMUSYA(3,6)				; 6=ﾊﾟﾚｯﾄ割込みOFF
+		MONSTOR_INTER				;モンスターと出会う
+
+*LOOP_END
+
+WWMUSYA(23)          		; 残り時間
+IF ( BX ! 0 )
+	GOTO RPG_MAIN_LOOP3
+
+S_COUNTER++							;当日カウンタ
+IF ( DAYLIGHT=1 )( DAYLIGHT=2 )
+	IF ( S_COUNTER < 1 ) GOTO RPG_MAIN_LOOP2		;<=====
+
+S_COUNTER = 0						;当日カウンタ
+WWMUSYA(3,6)						; 6=ﾊﾟﾚｯﾄ割込みOFF
+
+;IF ( S_ENDDAY =< VAL_DAY )
+;	GOTO RPG_END					;武者修行を終える
+IF ( S_ENDDAY = VAL_DAY )
+	GOTO RPG_END					;武者修行を終える
+
+IF (DAYLIGHT=4)
+	DAYLIGHT=1
+	CHK_SOUBI_TAKE
+	GOTO RPG_MAIN_NEXT
+
+IF (DAYLIGHT=3)
+	DAYLIGHT=2
+	GOTO RPG_MAIN_NEXT
+IF (DAYLIGHT=1)
+	DAYLIGHT=3
+	GOTO RPG_MAIN_NEXT
+IF (DAYLIGHT=2)
+	SHOWDATE
+	DAYLIGHT=4
+	GOTO RPG_MAIN_NEXT
+*RPG_MAIN_NEXT
+GOTO RPG_MAIN_LOOP
+
+;**************
+;	clender
+;**************
+
+*SHOWDATE
+TODAY_COUNT=0	;日付カウンタ
+CLENDER(3)		; カレンダー・更新処理
+CLENDER(2)		; カレンダー・再表示
+P98F(2,0,1)		; bank change.
+CLENDER(2)		; カレンダー・再表示
+P98F(2,0,0)		; bank change.
+RET
+
+;**************
+;	camp mode
+;**************
+
+*CAMPMODE
+SLCPOS(3)	;3=RPG時WWMUSYA(15,..)のマウス位置
+;PRV("S_ENDDAY=",S_ENDDAY)
+;PRV("VAL_DAY=",VAL_DAY)
+
+IF ( S_ENDDAY =< VAL_DAY )
+	TXOPEN(1)
+	冒険最後の日です．
+	;;家へ帰りますか？
+	WWMUSYA(7)	;ノーマルモード
+	@P
+	;;WWMUSYA(15,"家へ帰る,冒険を続ける",2)
+	;;C1 = BX
+	TXCLOSE(1)
+	WWMUSYA(6)	;ＲＰＧモード
+	;;IF ( C1=0 )
+	;;	GOTO RPG_END			;武者修行を終える
+	RET
+TXOPEN(1)
+キャンプを張りますか？
+WWMUSYA(7)	;ノーマルモード
+WWMUSYA(15,"キャンプ,やめる",2)
+C1 = BX
+TXCLOSE(1)
+WWMUSYA(6)	;ＲＰＧモード
+IF ( C1=0 )
+	C8 = 0
+	GOTO CAMPMODE_INTER
+RET
+
+*CHK_SOUBI_TAKE						;装備変更を選んで１日後
+IF ( SOUBI_FLG = 0 ) RET			; item flag.
+IF ( SOUBI_DAY > VAL_DAY ) RET		; item take day.
+SOUBI_FLG = 0
+STRSCLEAR
+TXLC(2,28,70,1)				; text window locate.
+TXLC(3,20,260,2)			; text window locate.
+TXOPEN(2)					;
+TXFACE("F040")				;執事・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+WWMUSYA(7)					; ノーマルモード
+TXF(2)						; マウスOFF待ち
+;＊選択した装備品表示．
+ITEMPRN(3,28,194)				;マルチアイテム TYPE 5 位置
+C2=SOUBI_REC					;item record.
+ITEMID_TBL1[0]=ITEM_NAME[C2]	;所有アイテム名前 string
+ITEMID_TBL2[0]=ITEM_ICON[C2]	;ＩＣＯＮ
+ITEMID_TBL3[0]=ITEM_GOLD[C2]	;金
+ITEMID_TBL4[0]=ITEM_HELP[C2]	;所有アイテム説明 string
+ITEMID_TBL5[0]=0				;パラメータ値１
+ITEMID_TBL6[0]=""				;文字２
+ITEMID_TBL7[0]=0				;パラメータ値２
+ITEMID_CNT=1				;アイテムＩＤ数
+ITEMPRN(1,5)				;マルチアイテム表示
+@P
+TXOPEN(3)
+TXGIRL(9)		;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F041")	;執事・すまし
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・不思議
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+ITEMPRN(2)				; マルチアイテム復帰
+
+TXOPEN(1)
+TXA(NAME_FIRST)は装備を変更した．
+ITEM_SRCH(6,SOUBI_REC)	; equipment chenge.(equip,arms,dress)
+GR_F(1,2)				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_TBL1[0]=ARMS_NAME	; 武器　名前
+IGRP_TBL2[0]=ARMS_ICON	; 武器　ＩＣＯＮ番号
+IGRP_TBL3[0]=ARMS_HELP	; 武器　説明 string
+IGRP_TBL4[0]="武器"		; グラフテーブル／項目名
+IGRP_TBL1[1]=EQUIP_NAME	; 装備　名前
+IGRP_TBL2[1]=EQUIP_ICON	; 装備　ＩＣＯＮ番号
+IGRP_TBL3[1]=EQUIP_HELP	; 装備　説明 string
+IGRP_TBL4[1]="防具"		; グラフテーブル／項目名
+IGRP_CNT=2				; グラフテーブル数
+IGRP_X=16				; グラフＸ
+IGRP_Y=180				; グラフＹ
+PRICON(1,2)				; ICONﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+WWPROF(8)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･装備
+@P
+GR_CLOSE				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F039")			;執事・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(1)				;娘・嬉しい
+「＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+URA_STEWARD += 2		;（執事との関係が２上昇）
+IF ( URA_STEWARD>100 ) URA_STEWARD=100	; 執事との関係
+WWMUSYA(9)				; 戦闘後データロード
+WWMUSYA(6)				; ＲＰＧモード
+RET
+
+;**************
+;	戦闘アイテム
+;**************
+
+*KAIUGAN	;快癒丸
+;1～50まで，ランダムにヒットポイント回復
+RANDAM(50)
+W_HP += IRND
+IF ( W_HP > W_HP_MAX ) W_HP = W_HP_MAX
+RET
+
+;**************
+;	武者修行を終える
+;**************
+
+*RPG_END
+TXLC(1,17,280,0)	; text window locate.
+TXOPEN(1)
+冒険を終えて，TXA(NAME_FIRST)は家に帰った．
+WWMUSYA(7)			; ノーマルモード
+TXF(2)				; マウスOFF待ち
+@P
+TXCLOSE(1)
+;;;WWMUSYA(6)		; ＲＰＧモード
+GOTO BACK_TO_HOME	; back to home load.
+
+
+;************************************
+;	拾い物
+;************************************
+
+*EVNT050
+RANDAM(100)
+IF ( AX>=40 )		;お金			６０％
+	GIRLACTION_GOLD
+	RET
+IF ( AX>=20 )		;快癒丸			２０％
+	TK_KAIYU
+	GIRLACTION		;もの
+	RET
+IF ( AX>=10 )		;投げ焙碌		１０％
+	TK_HOUROKU
+	GIRLACTION		;もの
+	RET
+IF ( AX>=5 )		;妖精の蜜		　５％
+	TK_HONEY
+	GIRLACTION		;もの
+	RET
+;漆黒のウロコ	　５％
+TK_UROKO
+GIRLACTION		;もの
+RET
+
+;**************
+;	おかね
+;**************
+
+*GIRLACTION_GOLD
+
+TXOPEN(1)
+TXA(NAME_FIRST)はお金を拾った！
+WWMUSYA(7)					; ノーマルモード
+TXF(2)						; マウスOFF待ち
+@P
+TXCLOSE(1)
+
+TXOPEN(3)
+TXGIRL(0)					;娘・普通
+「＊＊＊＊＊＊＊＊＊＊」
+RANDAM(50)
+C1 = AX						;娘の所持金
+GOLDADD(C1)					;娘の所持金
+TXA(NAME_FIRST)はTXGOLD(C1)を手に入れた．
+WWPROF(5)		;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・RPG･所持金
+;;WWPROF(3)					; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+TXCLOSE(3)
+
+RET
+
+;**************
+;	もの
+;**************
+
+*GIRLACTION
+
+TXOPEN(1)
+SHOW_PRESENT
+TXA(NAME_FIRST)はTXA(ITEMID_TBL1[0])を拾った！
+WWMUSYA(7)					; ノーマルモード
+TXF(2)						; マウスOFF待ち
+@P
+TXCLOSE(1)
+
+IF ( ITEM_MAX >= ITEM_DIM )		; 所有アイテム数
+	TXOPEN(3)		;アイテムの所持限界を越えている場合
+	TXGIRL(0)		;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXOPEN(1)
+	TXA(NAME_FIRST)はTXA(ITEMID_TBL1[0])を放り投げた・・・
+	@P
+	TXCLOSE(1)
+	ITEMPRN(2)	; マルチアイテム復帰
+	RET
+;アイテムの所持限界内の場合
+TXOPEN(3)
+TXGIRL(0)		;娘・普通
+「＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXOPEN(1)
+TXA(NAME_FIRST)はTXA(ITEMID_TBL1[0])を手に入れた．
+@P
+TXCLOSE(1)
+ITEMPRN(2)		; マルチアイテム復帰
+TAKE_ITEM
+RET
+
+
+;**************
+;	拾い物
+;**************
+
+;		快癒丸			２０％
+;		投げ焙碌		１０％
+;		妖精の蜜		　５％
+;		漆黒のウロコ	　５％
+
+;快癒丸
+
+*TK_KAIYU
+ITEMID_TBL1[0]="快癒丸"
+ITEMID_TBL2[0]=16			;ＩＣＯＮ
+ITEMID_TBL3[0]=30			;金
+ITEMID_TBL4[0]="ＨＰ回復"
+ITEMID_TBL5[0]=0			;
+ITEMID_TBL6[0]=""			;
+ITEMID_TBL7[0]=0			;
+ITEM_KOUKA[0]=""
+ITEM_ATTRBUTE[0]=0			;種別
+RET
+
+;投げ焙碌
+
+*TK_HOUROKU
+ITEMID_TBL1[0]="投げ焙碌"
+ITEMID_TBL2[0]=17			;ＩＣＯＮ
+ITEMID_TBL3[0]=100			;金
+ITEMID_TBL4[0]="攻撃用"
+ITEMID_TBL5[0]=0			;
+ITEMID_TBL6[0]=""			;
+ITEMID_TBL7[0]=0			;
+ITEM_KOUKA[0]=""
+ITEM_ATTRBUTE[0]=0			;種別
+RET
+
+;妖精の蜜
+
+*TK_HONEY
+ITEMID_TBL1[0]="妖精の蜜"
+ITEMID_TBL2[0]=42				;ＩＣＯＮ
+ITEMID_TBL3[0]=200				;金
+ITEMID_TBL4[0]="色気+10"
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEM_KOUKA[0]="B_IROKE+10"
+ITEM_ATTRBUTE[0]=4000			;4000番台=効能有
+RET
+
+;漆黒のウロコ
+
+*TK_UROKO
+ITEMID_TBL1[0]="漆黒のウロコ"
+ITEMID_TBL2[0]=26				;ＩＣＯＮ
+ITEMID_TBL3[0]=500				;金
+ITEMID_TBL4[0]="防御+3"
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEM_KOUKA[0]="V_BOUGYO+3"
+ITEM_ATTRBUTE[0]=4000			;4000番台=効能有
+RET
+
+*SHOW_PRESENT
+ITEMID_CNT=1				; アイテムＩＤ数
+ITEMPRN(3,24,100)			; マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)				; マルチアイテム表示
+RET
+
+;
+;	end of "RPGLOP.TXT"
+;
+

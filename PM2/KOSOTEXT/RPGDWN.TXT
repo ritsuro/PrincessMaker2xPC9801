@@ -1,0 +1,204 @@
+;"RPGDWN.TXT"
+;
+;
+;	ここに戻るシナリオ
+;
+;	EVNT029.TXT  29 お尋ね者と遭遇
+;	EVNT033.TXT  33 悪魔に出会う
+;	EVNT034.TXT  34 生意気なドラゴンに会う
+;	EVNT048.TXT  48 妖精のダンスパーティー
+;
+;	RPGCMP.TXT  キャンプの休息から
+;	RPGDWN.TXT  1:  ;"RPGDWN.TXT"
+;	RPGDWN.TXT  84:  ;      end of "RPGDWN.TXT"
+;	RPGLOP.TXT  211:  LOAD("RPGDWN")
+;	RPGMEN.TXT  125:  LOAD("RPGDWN")
+;	RPGMNS.TXT  188:  LOAD("RPGDWN")
+;
+;
+
+.AMARI_DAYS
+
+.S_WORKS			;スケジュール内容
+.S_COUNTER			;当日カウンタ
+.S_STARTDAY			;スケジュール開始日
+.S_ENDDAY			;スケジュール終了日
+.TODAY_COUNT		;日付カウンタ
+.DAYLIGHT			;1=day,2=night,3=day->night,4=night->day.
+.SOUBI_FLG			;装備フラグ
+.SOUBI_REC			;装備のアイテム番号
+.SOUBI_DAY			;装備の日
+
+S_WORKS		=	BX	;スケジュール内容
+S_COUNTER	=	CX	;当日カウンタ
+S_STARTDAY	=	C1	;スケジュール開始日
+S_ENDDAY	=	C2	;スケジュール終了日
+TODAY_COUNT	=	C3	;日付カウンタ
+DAYLIGHT	=	C4	;1=day,2=night,3=day->night,4=night->day.
+SOUBI_FLG	=	C5	;装備フラグ
+SOUBI_REC	=	C6	;装備のアイテム番号
+SOUBI_DAY	=	C7	;装備の日
+
+BACK_TO_MAIN
+
+LOAD("RUNNING")
+
+;***************************************
+;
+;	back to home main.
+;
+;***************************************
+
+*BACK_TO_MAIN
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,1,260,2)		; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+WWMUSYA(22)			; 全モードクリア
+
+MUSIC(2)		; 音楽ﾌｪｰﾄﾞｱｳﾄ
+MAIN_FRAME		;
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+AMARI_DAYS = S_ENDDAY - VAL_DAY		;日
+IF ( AMARI_DAYS <= 0 ) RET			;日付カウンタ
+
+MUSYA_QUICK
+
+TXOPEN(1)
+TXA(NAME_FIRST)は残りのTXPOINT(AMARI_DAYS)日間を家で過ごした．
+@P
+TXCLOSE(1)
+
+C1 = AMARI_DAYS
+	TIMER1(10)
+	SHOWDATE
+	WAIT1
+LOOP C1
+RET
+
+;**************
+;	clender
+;**************
+
+*SHOWDATE
+CLENDER(3)		; カレンダー・更新処理
+CLENDER(2)		; カレンダー・再表示
+RET
+
+;**************
+;	main frame
+;**************
+
+*MAIN_FRAME
+EFC(1)				; Ｆ・Ｏ（フェードアウト）
+GRPCLS
+CLENDER(6,0,0)		; カレンダー・セットアップ
+WWIVENT(5,0,6,40)	; ivent window locate.
+PALET_SET(0)		;
+WWFRAME(1)			;
+CLENDER(1)			;
+WWPROF(1)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・表示
+WWGIRL(3)			; girl quick put.
+RET
+
+;**************
+;	武者修行早帰り
+;	規定の日数より早く帰りついた場合は，警備兵に讃えられて
+;	戦士評価（魔法評価）が上がる．
+;	上がるのは戦士評価・魔法評価のうち高い方．（同じなら戦士評価）
+;	帰りの城門から帰った場合のみ（つまり一周した場合のみ）評価ＵＰ．
+;	最初の城門から帰った場合は，従来通り．
+;**************
+
+*MUSYA_QUICK
+IF ( E_ETC[109]=0 )	RET		;RPG帰りは出口から
+E_ETC[109]=0
+
+E_ETC[110]++			;RPG帰りは出口から回数
+
+IF ( E_ETC[110]=1 )		;１回目
+
+	TXOPEN(2)
+	TXFACE("F039")      ;執事・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊TXPOINT(AMARI_DAYS)＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+
+	TIMER1(10)WAIT1
+
+	TXOPEN(2)
+	TXFACE("F121")	;警備兵・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+
+	TIMER1(10)WAIT1
+
+	TXOPEN(2)
+	TXFACE("F126")	;老人・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+
+	TIMER1(10)WAIT1
+
+	TXOPEN(2)
+	TXFACE("F041")	; 執事・すまし
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+
+IF ( E_ETC[110]>=2 )		;２回目
+
+	TXOPEN(2)
+	TXFACE("F041")	; 執事・すまし
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+
+IF ( H_SENSHI >= H_MAHO )	;戦士評価が魔法評価より高い場合
+	GR_OPEN					;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	IGRP_TBL1[0]="戦士評価"
+	IGRP_TBL3[0]=H_SENSHI	; 戦士評価
+	IGRP_CNT=1
+	IGRP_X=50
+	IGRP_Y=190
+	GRPOPEN(1,2)			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	TXOPEN(1)
+	戦士評価がTXPOINT(AMARI_DAYS)上がった！
+	H_SENSHI += AMARI_DAYS
+	GRPUPD(2,0,H_SENSHI)		; 戦士評価
+	@P
+	TXCLOSE(1)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	RET
+
+IF ( H_SENSHI < H_MAHO )	;魔法評価が戦士評価より高い場合
+	GR_OPEN					;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	IGRP_TBL1[0]="魔法評価"
+	IGRP_TBL3[0]=H_MAHO		; 魔法評価
+	IGRP_CNT=1
+	IGRP_X=50
+	IGRP_Y=190
+	GRPOPEN(1,2)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	TXOPEN(1)
+	魔法評価がTXPOINT(AMARI_DAYS)上がった！
+	H_MAHO += AMARI_DAYS
+	GRPUPD(2,0,H_MAHO)		; 戦士評価
+	@P
+	TXCLOSE(1)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	RET
+RET
+
+;
+;	end of "RPGDWN.TXT"
+;
+
