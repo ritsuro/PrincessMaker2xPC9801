@@ -1,0 +1,57 @@
+;"PRY01N.TXT"
+;
+;	人間のデータ
+;
+
+*CHECK_MEN				; man check.
+MAN01N
+RET
+
+*MAN01N	;警備兵		素人ではない．装備良い精鋭．
+R_FACE			="F121"
+R_NAME			="警備兵"
+R_CHINOH		=10
+RDM(55,65)
+R_SENTOH=AX
+RDM(50,60)
+R_KOUGEKI=AX
+R_BOUGYO		=45
+R_SOUKOU		=40
+R_SKNAME		="皮の鎧"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=5
+R_SENI			=200
+R_DASSYUTU		=50
+R_TSUKON		=10
+RDM(240,350)
+R_MAX_HP		=AX
+R_MAX_MP		=0
+RDM(50,100)
+R_GOLD			=AX
+R_SE_ATTACK	=1	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MENMES[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[4]="＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[5]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[6]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+
+RET
+
+;
+;	end of "PRY01N.TXT"
+;
+

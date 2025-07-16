@@ -1,0 +1,54 @@
+;"PRY03N.TXT"
+;
+;	人間のデータ
+;
+
+*CHECK_MEN				; man check.
+MAN03N
+RET
+
+*MAN03N	;村娘		か弱い乙女．抗魔力あり．
+R_FACE			="F123"
+R_NAME			="村娘"
+R_CHINOH		=10
+R_SENTOH		=30
+R_KOUGEKI		=30
+R_BOUGYO		=10
+R_SOUKOU		=0
+R_SKNAME		=""
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=25
+R_SENI			=40
+R_DASSYUTU		=100
+R_TSUKON		=0
+RDM(40,120)
+R_MAX_HP		=AX		;40･･･120
+R_MAX_MP		=0
+RDM(20,50)
+R_GOLD			=AX		;20･･･50
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MENMES[0]="＊＊＊＊＊"
+MENMES[1]="＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[3]="＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[3]="＊＊＊＊＊＊＊"
+MENMES[4]="＊＊＊＊＊＊＊＊＊＊"
+MENMES[5]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[6]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+;
+;	end of "PRY03N.TXT"
+;
+

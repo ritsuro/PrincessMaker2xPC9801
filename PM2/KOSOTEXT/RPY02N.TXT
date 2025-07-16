@@ -1,0 +1,52 @@
+;"PRY02N.TXT"
+;
+;	人間のデータ
+;
+
+*CHECK_MEN				; man check.
+MAN02N
+RET
+
+*MAN02N	;旅人		一般人としてはやや固く高ＨＰ．
+R_FACE			="F122"
+R_NAME			="旅人"
+R_CHINOH		=10
+R_SENTOH		=45
+R_KOUGEKI		=30
+R_BOUGYO		=40
+R_SOUKOU		=20
+R_SKNAME		="皮の上着"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=15
+R_SENI			=100
+R_DASSYUTU		=100
+R_TSUKON		=0
+RDM(240,300)
+R_MAX_HP		=AX		;150･･･200
+R_MAX_MP		=0
+RDM(150,250)
+R_GOLD			=AX		;150･･･250
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MENMES[0]="＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[1]="＊＊＊＊＊＊＊＊＊＊＊＊"
+
+RANDAM(3)
+IF(AX=1)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[4]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[5]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[6]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+;
+;	end of "PRY02N.TXT"
+;
+

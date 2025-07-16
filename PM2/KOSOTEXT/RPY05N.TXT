@@ -1,0 +1,64 @@
+;"PRY05N.TXT"
+;
+;	人間のデータ
+;
+
+*CHECK_MEN				; man check.
+MAN05N
+RET
+
+*MAN05N	;商人		お金持ち．歩く金庫．
+R_FACE			="F125"
+R_NAME			="商人"
+R_CHINOH		=10
+R_SENTOH		=40
+R_KOUGEKI		=40
+R_BOUGYO		=40
+R_SOUKOU		=25
+R_SKNAME		="皮の上着"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=5
+R_SENI			=50
+R_DASSYUTU		=100
+R_TSUKON		=0
+RDM(75,190)
+R_MAX_HP		=AX		;60･･･150
+R_MAX_MP		=0
+RDM(500,1500)
+R_GOLD			=AX		;500･･･1500
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME ="ティーカップ"
+R_ITEM_ICON	=19
+R_ITEM_GOLD	=500
+R_ITEM_ATTR	=4000		;4000番台=効能有
+R_ITEM_PROG	="B_KIHIN+10"
+R_ITEM_HELP	="気品+10"
+R_ITEM_PROPA=25
+
+MENMES[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[3]="＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[4]="＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[5]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MENMES[6]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MENMES[7]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+
+
+;
+;	end of "PRY05N.TXT"
+;
+
