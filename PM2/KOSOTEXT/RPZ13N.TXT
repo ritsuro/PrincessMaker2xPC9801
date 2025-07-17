@@ -1,0 +1,70 @@
+;"PRZ13N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR13N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA13N
+RET
+
+*MSR13N	;東・西・南
+R_MS_NUMBER		=13
+R_FACE			="F173"
+R_MONSTOR		="M013"
+R_NAME			="ドラゴンモドキ"
+R_CHINOH		=30
+RDM(40,55)
+R_SENTOH=AX
+RDM(50,65)
+R_KOUGEKI=AX
+R_BOUGYO		=60
+R_SOUKOU		=60
+R_SKNAME		="固い甲皮"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=0
+R_SENI			=30
+R_DASSYUTU		=100
+R_TSUKON		=25
+RDM(280,400)
+R_MAX_HP=AX
+R_MAX_MP		=0
+R_GOLD			=0
+R_SE_ATTACK	=1	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME ="妖精の蜜"
+R_ITEM_ICON	=42
+R_ITEM_GOLD	=200
+R_ITEM_ATTR	=4000		;4000番台=効能有
+R_ITEM_PROG	="B_IROKE+10"
+R_ITEM_HELP	="色気+10"
+R_ITEM_PROPA=10
+
+MONSTR[0]="＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊"
+RET
+
+
+*KWA13N
+AX = 0
+IF ( B_KANJUSEI >= 600 )	AX=1	;感受性500
+RET
+
+;
+;	end of "PRZ13N.TXT"
+;
+

@@ -1,0 +1,54 @@
+;"PRZ12N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR12N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA12N
+RET
+
+*MSR12N	;東
+R_MS_NUMBER		=12
+R_FACE			="F172"
+R_MONSTOR		="M012"
+R_NAME			="マンイーター"
+R_CHINOH		=35
+RDM(25,40)
+R_SENTOH=AX
+R_KOUGEKI		=70
+R_BOUGYO		=65
+R_SOUKOU		=50
+R_SKNAME		="固い表皮"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=0
+R_SENI			=125
+R_DASSYUTU		=70
+R_TSUKON		=0
+RDM(85,125)
+R_MAX_HP=AX
+R_MAX_MP		=0
+R_GOLD			=0
+R_SE_ATTACK	=4	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MONSTR[0]="＊＊＊＊＊＊＊"
+MONSTR[1]="＊＊＊＊＊＊＊＊＊"
+MONSTR[2]="＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊"
+RET
+
+*KWA12N
+AX = 0
+IF ( B_KANJUSEI >= 600 )	AX=1	;感受性500
+RET
+
+;
+;	end of "PRZ12N.TXT"
+;
+

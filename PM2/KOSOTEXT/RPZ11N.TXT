@@ -1,0 +1,77 @@
+;"PRZ11N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR11N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA11N
+RET
+
+*MSR11N	;東
+R_MS_NUMBER		=11
+R_FACE			="F171"
+R_MONSTOR		="M011"
+R_NAME			="山猫"
+R_CHINOH		=50
+RDM(40,50)
+R_SENTOH=AX
+R_KOUGEKI		=40
+R_BOUGYO		=25
+R_SOUKOU		=0
+R_SKNAME		="なし"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=20
+RDM(40,60)
+R_SENI=AX
+R_DASSYUTU		=100
+R_TSUKON		=30
+RDM(55,120)
+R_MAX_HP=AX
+R_MAX_MP		=0
+RDM(1,15)
+R_GOLD=AX
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME ="猫の眼石"
+R_ITEM_ICON	=27
+R_ITEM_GOLD	=600
+R_ITEM_ATTR	=4000		;4000番台=効能有
+R_ITEM_PROG	="E_CAT!"	;「精霊猫に会う｣発生条件
+R_ITEM_HELP	=""
+R_ITEM_PROPA=10
+
+RANDAM(3)
+IF(AX=1)MONSTR[0]="＊＊＊＊"
+IF(AX=2)MONSTR[0]="＊＊＊＊＊"
+IF(AX=3)MONSTR[0]="＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[3]="＊＊＊＊"
+IF(AX=2)MONSTR[3]="＊＊＊＊＊"
+IF(AX=3)MONSTR[3]="＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊"
+RET
+
+
+*KWA11N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ11N.TXT"
+;
+
