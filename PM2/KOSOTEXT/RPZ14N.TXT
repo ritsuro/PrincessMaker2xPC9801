@@ -1,0 +1,64 @@
+;"PRZ14N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR14N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA14N
+RET
+
+*MSR14N	;西
+R_MS_NUMBER		=14
+R_FACE			="F174"
+R_MONSTOR		="M014"
+R_NAME			="オオサソリ"
+R_CHINOH		=50
+RDM(35,55)
+R_SENTOH=AX
+R_KOUGEKI		=50
+R_BOUGYO		=45
+R_SOUKOU		=45
+R_SKNAME		="固い表皮"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=0
+RDM(80,200)
+R_SENI=AX
+R_DASSYUTU		=50
+R_TSUKON		=10
+RDM(100,185)
+R_MAX_HP=AX
+R_MAX_MP		=0
+R_GOLD			=0
+R_SE_ATTACK	=4	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MONSTR[0]="＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[3]="＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[3]="＊＊＊＊"
+MONSTR[4]="＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊"
+RET
+
+*KWA14N
+AX = 0
+IF ( B_KANJUSEI >= 350 )	AX=1	;感受性250
+RET
+
+;
+;	end of "PRZ14N.TXT"
+;
+

@@ -1,0 +1,74 @@
+;"PRZ17N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR17N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA17N
+RET
+
+*MSR17N	;西
+R_MS_NUMBER		=17
+R_FACE			="F177"
+R_MONSTOR		="M017"
+R_NAME			="骸骨"
+R_CHINOH		=80
+RDM(75,80)
+R_SENTOH=AX
+RDM(75,85)
+R_KOUGEKI=AX
+R_BOUGYO		=45
+R_SOUKOU		=35
+R_SKNAME		="甲冑"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+RDM(38,48)
+R_KOHMARYOKU=AX
+R_SENI			=200
+R_DASSYUTU		=45
+R_TSUKON		=15
+RDM(200,250)
+R_MAX_HP=AX
+R_MAX_MP		=0
+RDM(250,500)
+R_GOLD	=AX
+R_SE_ATTACK	=2	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME	="鉄の長剣"
+R_ITEM_ICON	=4
+R_ITEM_GOLD	=250
+R_ITEM_ATTR	=2000
+R_ITEM_PROG	="V_KOUGEKI+12 V_SENTOH-2"
+R_ITEM_HELP	="攻撃+12 戦技-2"
+R_ITEM_PROPA=10
+
+MONSTR[0]="＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[3]="＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊"
+RET
+
+*KWA17N
+AX = 0
+IF ( B_SHINKOH >= 600 )	AX=1	;信仰500
+RET
+
+;
+;	end of "PRZ17N.TXT"
+;
+

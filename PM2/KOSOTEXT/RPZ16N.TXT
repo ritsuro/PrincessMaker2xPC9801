@@ -1,0 +1,64 @@
+;"PRZ16N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR16N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA16N
+RET
+
+*MSR16N	;西
+R_MS_NUMBER		=16
+R_FACE			="F176"
+R_MONSTOR		="M016"
+R_NAME			="サンドレイダース"
+R_CHINOH		=999
+RDM(55,65)
+R_SENTOH=AX
+RDM(75,85)
+R_KOUGEKI=AX
+R_BOUGYO		=50
+R_SOUKOU		=40
+R_SKNAME		="ざらざらの表皮"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+RDM(25,30)
+R_KOHMARYOKU=AX
+R_SENI			=250
+R_DASSYUTU		=20
+R_TSUKON		=0
+RDM(240,360)
+R_MAX_HP=AX
+R_MAX_MP		=0
+RDM(100,300)
+R_GOLD=AX
+R_SE_ATTACK	=4	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊"
+RET
+
+
+
+
+
+*KWA16N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ16N.TXT"
+;
+
