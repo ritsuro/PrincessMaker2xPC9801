@@ -1,0 +1,76 @@
+;"PRZ20N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR20N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA20N
+RET
+
+*MSR20N	;西
+R_MS_NUMBER		=20
+R_FACE			="F180"
+R_MONSTOR		="M020"
+R_NAME			="悪魔"
+R_CHINOH		=100
+RDM(45,50)
+R_SENTOH=AX
+RDM(40,60)
+R_KOUGEKI=AX
+R_BOUGYO		=65
+R_SOUKOU		=55
+R_SKNAME		="魔法のベール"
+RDM(60,65)
+R_MAHOGIJUTSU=AX
+RDM(60,65)
+R_MARYOKU=AX
+R_KOHMARYOKU	=60
+R_SENI			=50
+R_DASSYUTU		=40
+R_TSUKON		=15
+RDM(260,370)
+R_MAX_HP=AX
+RDM(500,800)
+R_MAX_MP=AX
+RDM(250,400)
+R_GOLD=AX
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME	="悪魔のドレス"
+R_ITEM_ICON	=52
+R_ITEM_GOLD	=3000
+R_ITEM_ATTR	=3000
+R_ITEM_PROG	="B_IROKE+45 B_MORALS-100"
+R_ITEM_HELP	="色気+45 ﾓﾗﾙ-100"
+R_ITEM_PROPA=5
+
+RANDAM(3)
+IF(AX=1)MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+*KWA20N
+AX = 0
+IF ( B_SHINKOH >= 10 )	AX=1	;信仰10
+RET
+
+;
+;	end of "PRZ20N.TXT"
+;
+

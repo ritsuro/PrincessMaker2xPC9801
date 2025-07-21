@@ -1,0 +1,76 @@
+;"PRZ18N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR18N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA18N
+RET
+
+*MSR18N	;西
+R_MS_NUMBER		=18
+R_FACE			="F178"
+R_MONSTOR		="M018"
+R_NAME			="ヘルパイエ"
+R_CHINOH		=90
+RDM(55,60)
+R_SENTOH=AX
+RDM(55,60)
+R_KOUGEKI=AX
+R_BOUGYO		=55
+R_SOUKOU		=30
+R_SKNAME		="厚い羽毛"
+RDM(40,50)
+R_MAHOGIJUTSU=AX
+R_MARYOKU		=50
+R_KOHMARYOKU	=80
+RDM(55,65)
+R_SENI	=AX
+R_DASSYUTU		=50
+R_TSUKON		=0
+RDM(60,80)
+R_MAX_HP=AX
+RDM(320,450)
+R_MAX_MP=AX
+RDM(200,250)
+R_GOLD=AX
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME ="妖精の蜜"
+R_ITEM_ICON	=42
+R_ITEM_GOLD	=200
+R_ITEM_ATTR	=4000		;4000番台=効能有
+R_ITEM_PROG	="B_IROKE+10"
+R_ITEM_HELP	="色気+10"
+R_ITEM_PROPA=5
+
+RANDAM(3)
+IF(AX=1)MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[0]="＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+*KWA18N
+AX = 0
+IF ( B_SHINKOH >= 300 )	AX=1	;信仰200
+RET
+
+;
+;	end of "PRZ18N.TXT"
+;
+

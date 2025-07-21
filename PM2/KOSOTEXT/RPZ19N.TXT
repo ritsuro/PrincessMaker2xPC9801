@@ -1,0 +1,68 @@
+;"PRZ19N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR19N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA19N
+RET
+
+*MSR19N	;西
+R_MS_NUMBER		=19
+R_FACE			="F179"
+R_MONSTOR		="M019"
+R_NAME			="ジャイアントクロウ"
+R_CHINOH		=60
+RDM(50,55)
+R_SENTOH=AX
+RDM(55,60)
+R_KOUGEKI=AX
+R_BOUGYO		=35
+R_SOUKOU		=30
+R_SKNAME		="厚い羽毛"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+RDM(20,25)
+R_KOHMARYOKU=AX
+RDM(40,60)
+R_SENI	=AX
+R_DASSYUTU		=40
+R_TSUKON		=10
+RDM(245,300)
+R_MAX_HP=AX
+R_MAX_MP		=0
+R_GOLD			=0
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME ="いにしえのﾐﾙｸ"
+R_ITEM_ICON	=106
+R_ITEM_GOLD	=500
+R_ITEM_ATTR	=5000
+R_ITEM_PROG	="P_TAIJYU-100"
+R_ITEM_HELP	="使うとやせる"
+R_ITEM_PROPA=10
+
+MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[1]="＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊＊"
+RET
+
+*KWA19N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ19N.TXT"
+;
+
