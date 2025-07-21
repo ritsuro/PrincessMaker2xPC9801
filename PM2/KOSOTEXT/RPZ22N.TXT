@@ -1,0 +1,63 @@
+;"PRZ22N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR22N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA22N
+RET
+
+*MSR22N	;南
+R_MS_NUMBER		=22
+R_FACE			="F182"
+R_MONSTOR		="M022"
+R_NAME			="スネイキー"
+R_CHINOH		=60
+RDM(40,50)
+R_SENTOH=AX
+R_KOUGEKI		=45
+R_BOUGYO		=20
+R_SOUKOU		=15
+R_SKNAME		="ウロコ"
+RDM(30,35)
+R_MAHOGIJUTSU=AX
+R_MARYOKU		=40
+R_KOHMARYOKU	=25
+R_SENI			=30
+R_DASSYUTU		=70
+R_TSUKON		=30
+RDM(95,150)
+R_MAX_HP=AX
+RDM(35,40)
+R_MAX_MP=AX
+RDM(1,50)
+R_GOLD=AX
+R_SE_ATTACK	=4	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MONSTR[0]="＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊"
+RET
+
+*KWA22N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ22N.TXT"
+;
+

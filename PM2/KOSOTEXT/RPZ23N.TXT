@@ -1,0 +1,68 @@
+;"PRZ23N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR23N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA23N
+RET
+
+*MSR23N	;南
+R_MS_NUMBER		=23
+R_FACE			="F183"
+R_MONSTOR		="M023"
+R_NAME			="フィッシュマン"
+R_CHINOH		=75
+R_SENTOH		=60
+RDM(45,50)
+R_KOUGEKI=AX
+R_BOUGYO		=35
+R_SOUKOU		=25
+R_SKNAME		="ウロコ"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=0
+R_SENI			=100
+R_DASSYUTU		=25
+R_TSUKON		=10
+RDM(150,220)
+R_MAX_HP=AX
+R_MAX_MP		=0
+RDM(10,80)
+R_GOLD=AX
+R_SE_ATTACK	=4	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME	="人魚の涙"
+R_ITEM_ICON	=29
+R_ITEM_GOLD	=950
+R_ITEM_ATTR	=4000		;4000番台=効能有
+R_ITEM_PROG	="E_MERMAID!"	;「マーメイドに会う｣発生条件
+R_ITEM_HELP	=""
+R_ITEM_PROPA=20
+
+MONSTR[0]="＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(2)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊"
+RET
+
+*KWA23N
+AX = 0
+IF ( B_SHINKOH >= 300 )	AX=1	;信仰200
+RET
+
+;
+;	end of "PRZ23N.TXT"
+;
+

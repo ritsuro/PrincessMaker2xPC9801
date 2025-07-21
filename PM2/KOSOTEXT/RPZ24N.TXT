@@ -1,0 +1,66 @@
+;"PRZ24N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR24N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA24N
+RET
+
+*MSR24N	;南
+R_MS_NUMBER		=24
+R_FACE			="F184"
+R_MONSTOR		="M024"
+R_NAME			="フェチフィッシュ"
+R_CHINOH		=45
+RDM(30,40)
+R_SENTOH=AX
+RDM(45,50)
+R_KOUGEKI=AX
+R_BOUGYO		=55
+R_SOUKOU		=40
+R_SKNAME		="ウロコ"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+RDM(45,60)
+R_KOHMARYOKU=AX
+R_SENI			=45
+R_DASSYUTU		=100
+R_TSUKON		=15
+RDM(60,120)
+R_MAX_HP=AX
+RDM(1,20)
+R_MAX_MP=AX
+RDM(45,125)
+R_GOLD=AX
+R_SE_ATTACK	=4	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME	="漆黒のウロコ"
+R_ITEM_ICON	=26
+R_ITEM_GOLD	=500
+R_ITEM_ATTR	=4000		;4000番台=効能有
+R_ITEM_PROG	="V_BOUGYO+3"
+R_ITEM_HELP	="防御+3"
+R_ITEM_PROPA=20
+
+MONSTR[0]="＊＊＊＊＊"
+MONSTR[1]="＊＊＊＊＊＊＊＊＊"
+MONSTR[2]="＊＊＊"
+MONSTR[3]="＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊"
+RET
+
+*KWA24N
+AX = 0
+IF ( B_SHINKOH >= 400 )	AX=1	;信仰300
+RET
+
+;
+;	end of "PRZ24N.TXT"
+;
+

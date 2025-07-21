@@ -1,0 +1,57 @@
+;"PRZ25N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR25N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA25N
+RET
+
+*MSR25N	;南
+R_MS_NUMBER		=25
+R_FACE			="F185"
+R_MONSTOR		="M025"
+R_NAME			="トロル"
+R_CHINOH		=60
+RDM(40,55)
+R_SENTOH=AX
+RDM(60,70)
+R_KOUGEKI=AX
+R_BOUGYO		=50
+R_SOUKOU		=40
+R_SKNAME		="強固な筋肉"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+RDM(30,35)
+R_KOHMARYOKU=AX
+R_SENI			=50
+R_DASSYUTU		=90
+R_TSUKON		=50
+RDM(90,200)
+R_MAX_HP=AX
+R_MAX_MP		=0
+RDM(120,200)
+R_GOLD=AX
+R_SE_ATTACK	=4	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MONSTR[0]="＊＊＊＊＊＊"
+MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊"
+RET
+
+*KWA25N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ25N.TXT"
+;
+
