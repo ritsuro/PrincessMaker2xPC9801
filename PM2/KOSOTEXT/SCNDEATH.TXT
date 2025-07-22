@@ -1,0 +1,146 @@
+;"SCNDEATH.TXT"
+;
+;	死亡時のシナリオ
+;
+;
+
+TXLC(2,28,146,1)	; text window locate.
+TXLC(3,13,270,2)	; text window locate.
+TXLC(1,4,290,0)		; text window locate.
+TXLC(11,31,220,2)	; text window locate.
+
+MAIN
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+EFC(1)		; Ｆ・Ｏ（フェードアウト）
+GRPCLS		; graphics clear screen.
+EFC(0)
+
+C1 = 2		; 2="SCNDEATH.TXT"(再スタート)
+LOAD("PARAINIT")
+
+
+;******
+;	死亡時のシナリオ
+;******
+
+*MAIN
+
+TXOPEN(2)
+TXFACE("F047")	;GF執事・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(3)
+TXGIRL(7)	;GF娘・苦しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+;GF執事・驚き
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3 
+@C
+;GF娘・苦しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+;GF執事・驚き
+「＊＊＊＊＊＊＊」
+EFC(1)
+;＊画面暗転
+TXCLOSE(2)
+TXCLOSE(3)
+WWGIRL(5)
+EFC(0)
+TXOPEN(1)   ;N
+TXA(NAME_FIRST)はTXPOINT(P_NENREI)歳でその短い生涯を終えた・・・
+@P
+TXCLOSE(1)
+
+IF (P_SYUGOSEI=0)	;太陽神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	CLOSE_SYUGO  
+	RET
+
+IF (P_SYUGOSEI=1)	;月神・普通
+	OPEN_SYUGO	
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	CLOSE_SYUGO	
+	RET
+
+IF (P_SYUGOSEI=2)	;火星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	CLOSE_SYUGO
+	RET
+
+IF (P_SYUGOSEI=3)	;水星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	CLOSE_SYUGO	
+	RET
+
+IF (P_SYUGOSEI=4)	;木星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	CLOSE_SYUGO	
+	RET
+
+IF (P_SYUGOSEI=5)	;金星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	CLOSE_SYUGO	
+	RET
+
+IF (P_SYUGOSEI=6)	;土星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	CLOSE_SYUGO	
+	RET
+
+IF (P_SYUGOSEI=7)	;天王星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	CLOSE_SYUGO	
+	RET
+
+IF (P_SYUGOSEI=8)	;海王星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	CLOSE_SYUGO	
+	RET
+
+IF (P_SYUGOSEI=9)	;冥王星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	CLOSE_SYUGO	
+	RET
+*OPEN_SYUGO
+TXOPEN(11)
+TXSYU(P_SYUGOSEI)
+TXA(DEF_STR_STAR[P_SYUGOSEI])
+@L
+RET
+
+*CLOSE_SYUGO
+TXCLOSE(11)
+RET
+
+
+;
+;	end of ""SCNDEATH.TXT"
+;
+

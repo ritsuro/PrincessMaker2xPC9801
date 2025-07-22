@@ -1,0 +1,822 @@
+;"SCNCASTL.TXT"
+;
+;
+;	お城へ行く
+;
+;
+
+.UP_JINMYAKU=0
+.MAX_UP_JINMYAKU=0
+
+TXLC(2,28,146,1)		;text window locate.
+TXLC(3,13,270,2)		;text window locate.
+TXLC(1,17,220,0)		;text window locate.
+TXLC(10,17,220,0)		;text window locate.
+
+WWIVENT(5,0,6,40)		;ivent window locate.
+WWIVENT(1,0,"E012")		;お城へ行く
+
+;;;ALL_MESS_TEST
+
+PLAY(9)					;P9 お城
+
+SCNCASTL				;お城へ行く
+
+WWIVENT(2,0)			;ivent window close.
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+LOAD("MAINLOOP")
+
+;***************************************
+;	お城へ行く
+;***************************************
+
+*SCNCASTL
+
+RUN_OSHIRO[0]++				;「お城に行く」実行回数
+
+E_ETC[90]=VAL_DAY			;最新の「お城へ行く」日
+E_ETC[36]=VAL_MONTH			;最新の「お城へ行く」月
+E_ETC[37]=VAL_YEAR			;最新の「お城へ行く」年
+
+TXOPEN(1)
+お城に来ました．
+@P
+TXCLOSE(1)
+
+;１回目
+
+IF ( RUN_OSHIRO[0] = 1 )			;「お城に行く」実行回数
+	TXOPEN(2)
+	TXFACE("F080")		;門番・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXOPEN(3)
+	TXGIRL(11)			;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@3	;娘・不安
+	@C
+	「＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	TXCLOSE(3)
+
+IF ( RUN_OSHIRO[0] >= 2 )			;「お城に行く」実行回数  ２回目以降
+	TXOPEN(2)						;
+	TXFACE("F080")					;門番・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCPOS(4)		;4=メインSLCT発生位置
+IF ( VAL_MONTH ! 1 )( VAL_DAY ! 31 )	;月
+	IF ( RUN_MONTH[8]< 3 )	;「道化師の訪問」実行回数
+		SLCTX("門番,近衛騎士,将軍,大臣,司教,寵姫,王妃,国王,道化師")
+
+	IF ( RUN_MONTH[8]>=3 )	;「道化師の訪問」実行回数
+		SLCTX("門番,近衛騎士,将軍,大臣,司教,寵姫,王妃,国王")
+
+IF ( VAL_MONTH = 1   VAL_DAY = 31 )		;月
+	IF ( RUN_MONTH[8]< 3 )	;「道化師の訪問」実行回数
+		SLCTX("門番,近衛騎士,将軍,大臣,司教,寵姫,王妃,国王,道化師,青年武官")
+
+	IF ( RUN_MONTH[8]>=3 )	;「道化師の訪問」実行回数
+		SLCTX("門番,近衛騎士,将軍,大臣,司教,寵姫,王妃,国王,青年武官")
+		IF (ISLCT=8) ISLCT=9
+
+IF ( ISLCT=0 )	SLC_MONBAN		RET		;門番
+IF ( ISLCT=8 )	SLC_DOUKESI		RET		;道化師
+TXCLOSE(2)
+IF ( ISLCT=1 )	SLC_KONOEKISI	RET		;近衛騎士
+IF ( ISLCT=2 )	SLC_SHOGUN		RET		;将軍
+IF ( ISLCT=3 )	SLC_DAIJIN		RET		;大臣
+IF ( ISLCT=4 )	SLC_SHISAI		RET		;司教
+IF ( ISLCT=5 )	SLC_HIME		RET		;寵姫
+IF ( ISLCT=6 )	SLC_OHUHI		RET		;王妃
+IF ( ISLCT=7 )	SLC_KOKUOH		RET		;国王
+IF ( ISLCT=9 )	SLC_BUKAN		RET		;青年武官
+RET
+
+;**************
+;	門番
+;**************
+
+*SLC_MONBAN
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+IF ( V_REIGI < 10 )			;礼儀作法が10未満の場合
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXOPEN(1)
+	門番に断られてしまった・・・
+	@P
+	TXCLOSE(1)
+	RET
+
+RUN_OSHIRO[1]++		;「面会・門番」実行回数
+
+;《気品／5》人脈値がアップ．人脈最大値は30まで．
+
+MAX_UP_JINMYAKU = 30 - S_JINMYAKU[1]	;門番
+UP_JINMYAKU = B_KIHIN / 5				;気品
+
+IF ( UP_JINMYAKU > MAX_UP_JINMYAKU )
+	UP_JINMYAKU = MAX_UP_JINMYAKU
+
+IF ( UP_JINMYAKU > 15 ) UP_JINMYAKU = 15
+
+IF ( MAX_UP_JINMYAKU <= 0 )				;人脈値上限に達している場合
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+
+;礼儀作法が10以上の場合
+PLAY(1003)	;B3 要人と面会
+MUSIC(8,60)
+TXOPEN(10)
+TXA(NAME_FIRST)は門番と立ち話に興じた・・・・・・
+WAIT1
+@P
+TXCLOSE(10)
+PLAY(9)		;P9 お城
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+IF ( UP_JINMYAKU = 0 )
+	RET
+
+JINMYAKU_UP(1)			;門番
+RET
+
+*JINMYAKU_UP
+S_JINMYAKU[AX]  += UP_JINMYAKU
+TXOPEN(1)
+GR_OPEN
+IGRP_TBL1[0] = "人脈"
+IGRP_TBL3[0] = 	S_JINMYAKU[0]
+IGRP_CNT=1
+IGRP_X=32
+IGRP_Y=186
+GRPOPEN(1,1)				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+人脈がTXPOINT(UP_JINMYAKU)上がった．
+S_JINMYAKU[0] += UP_JINMYAKU
+GRPUPD(1,0,S_JINMYAKU)		;人脈
+@P
+GR_CLOSE
+TXCLOSE(1)
+RET
+
+;**************
+;	近衛騎士を選んだ場合
+;**************
+
+*SLC_KONOEKISI
+TXOPEN(2)
+TXFACE("F081")			;近衛騎士・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+IF ( V_REIGI < 30 )		;礼儀作法が30未満の場合
+	TXOPEN(3)
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXCLOSE(3)
+	TXOPEN(1)
+	近衛騎士はTXA(NAME_FIRST)との面会を断った．
+	@P
+	TXCLOSE(1)
+	RET
+
+RUN_OSHIRO[2]++		;「面会・近衛騎士」実行回数
+
+;《気品／8》人脈値がアップ．最大値は50まで．
+
+MAX_UP_JINMYAKU = 50 - S_JINMYAKU[2]	;近衛騎士
+UP_JINMYAKU = B_KIHIN / 8				;気品
+
+IF ( UP_JINMYAKU > MAX_UP_JINMYAKU )
+	UP_JINMYAKU = MAX_UP_JINMYAKU
+
+IF ( UP_JINMYAKU > 25 ) UP_JINMYAKU = 25
+
+IF ( MAX_UP_JINMYAKU <= 0 )				;人脈値上限に達している場合
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+
+;礼儀作法が30以上の場合
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PLAY(1003)	;B3 要人と面会
+MUSIC(8,60)
+TXOPEN(10)
+TXA(NAME_FIRST)は近衛騎士としばしの間，歓談した・・・・・・
+WAIT1
+@P
+TXCLOSE(10)
+PLAY(9)		;P9 お城
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+IF ( UP_JINMYAKU = 0 )
+	RET
+
+JINMYAKU_UP(2)			;近衛騎士
+RET
+
+;**************
+;	将軍を選んだ場合
+;**************
+
+*SLC_SHOGUN
+TXOPEN(2)
+TXFACE("F054")		;将軍・普通
+「＊＊＊＊＊＊＊＊」
+@P
+
+IF ( V_REIGI < 50 )			;礼儀作法が50未満の場合 
+	TXOPEN(3)
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXCLOSE(3)
+	RET
+
+RUN_OSHIRO[3]++		;「面会・将軍」実行回数
+
+;《色気／5》人脈値がアップ．最大値は100まで．
+
+MAX_UP_JINMYAKU = 100 - S_JINMYAKU[3]	;将軍
+UP_JINMYAKU = B_IROKE / 5				;色気
+
+IF ( UP_JINMYAKU > MAX_UP_JINMYAKU )
+	UP_JINMYAKU = MAX_UP_JINMYAKU
+
+IF ( UP_JINMYAKU > 50 ) UP_JINMYAKU = 50
+
+IF ( MAX_UP_JINMYAKU <= 0 )				;人脈値上限に達している場合
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+
+;礼儀作法が50以上の場合 
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PLAY(1003)	;B3 要人と面会
+MUSIC(8,60)
+TXOPEN(10)
+TXA(NAME_FIRST)は将軍としばしの間，語り合った・・・・・・
+WAIT1
+@P
+TXCLOSE(10)
+PLAY(9)		;P9 お城
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+IF ( UP_JINMYAKU = 0 )
+	RET
+
+JINMYAKU_UP(3)			;将軍
+RET
+
+;**************
+;	大臣を選んだ場合
+;**************
+
+*SLC_DAIJIN
+TXOPEN(2)
+TXFACE("F082")		;大臣・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+IF ( V_REIGI < 70 )			;礼儀作法70未満の場合 
+	TXOPEN(3)
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXCLOSE(3)
+	RET
+
+RUN_OSHIRO[4]++		;「面会・大臣」実行回数
+
+;《知力／10》人脈値アップ．最大値は120まで．
+
+MAX_UP_JINMYAKU = 120 - S_JINMYAKU[4]	;大臣
+UP_JINMYAKU = B_CHINOH / 10				;知能
+
+IF ( UP_JINMYAKU > MAX_UP_JINMYAKU )
+	UP_JINMYAKU = MAX_UP_JINMYAKU
+
+IF ( UP_JINMYAKU > 60 ) UP_JINMYAKU = 60
+
+IF ( MAX_UP_JINMYAKU <= 0 )				;人脈値上限に達している場合
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+
+;礼儀作法70以上の場合 
+TXOPEN(3)
+TXGIRL(0)			;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PLAY(1003)	;B3 要人と面会
+MUSIC(8,60)
+TXOPEN(10)
+TXA(NAME_FIRST)は大臣としばしの間，歓談した・・・・・・
+WAIT1
+@P
+TXCLOSE(10)
+PLAY(9)		;P9 お城
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+IF ( UP_JINMYAKU = 0 )
+	RET
+
+JINMYAKU_UP(4)			;大臣
+RET
+
+;**************
+;	司教を選んだ場合
+;**************
+
+*SLC_SHISAI
+IF ( V_REIGI < 80 )		;礼儀作法80未満の場合 
+	TXOPEN(3)
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXOPEN(2)
+	TXFACE("F083")			;司教・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	TXOPEN(1)
+	司教はTXA(NAME_FIRST)を無視して行ってしまった．
+	@P
+	TXCLOSE(1)
+	RET
+
+RUN_OSHIRO[5]++		;「面会・司教」実行回数
+
+;《信仰／10》人脈値がアップ．最大値は120まで．
+
+MAX_UP_JINMYAKU = 120 - S_JINMYAKU[5]	;司教
+UP_JINMYAKU = B_SHINKOH / 10			;信仰
+
+IF ( UP_JINMYAKU > MAX_UP_JINMYAKU )
+	UP_JINMYAKU = MAX_UP_JINMYAKU
+
+IF ( UP_JINMYAKU > 60 ) UP_JINMYAKU = 60
+
+IF ( MAX_UP_JINMYAKU <= 0 )				;人脈値上限に達している場合
+	TXOPEN(2)
+	TXFACE("F083")			;司教・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+
+;礼儀作法80以上の場合 
+
+TXOPEN(3)
+TXGIRL(0)			;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F083")		;司教・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PLAY(1003)	;B3 要人と面会
+MUSIC(8,60)
+TXOPEN(10)
+TXA(NAME_FIRST)は司教としばしの間，話し合った・・・・・・
+WAIT1
+@P
+TXCLOSE(10)
+PLAY(9)		;P9 お城
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+IF ( UP_JINMYAKU = 0 )
+	RET
+
+JINMYAKU_UP(5)			;司教
+RET
+
+;**************
+;	寵姫を選んだ場合
+;**************
+
+*SLC_HIME
+TXOPEN(2)
+TXFACE("F084")		;寵姫
+「＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+IF ( V_REIGI < 85 )		;礼儀作法85未満の場合 
+	TXOPEN(3)
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@P
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	RET
+
+RUN_OSHIRO[6]++			;「面会・寵姫」実行回数
+
+;《話術／10》人脈値がアップ．最大値は120まで．
+
+MAX_UP_JINMYAKU = 120 - S_JINMYAKU[6]	;寵姫
+UP_JINMYAKU = V_WAJYUTU / 10			;話術
+
+IF ( UP_JINMYAKU > MAX_UP_JINMYAKU )
+	UP_JINMYAKU = MAX_UP_JINMYAKU
+
+IF ( UP_JINMYAKU > 60 ) UP_JINMYAKU = 60
+
+IF ( MAX_UP_JINMYAKU <= 0 )				;人脈値上限に達している場合
+	@2
+	@C
+	「＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+
+;礼儀作法85以上の場合 
+
+TXOPEN(3)
+TXGIRL(0)			;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PLAY(1003)	;B3 要人と面会
+MUSIC(8,60)
+TXOPEN(10)
+TXA(NAME_FIRST)は寵姫としばしの間，会話を楽しんだ・・・・・・
+WAIT1
+@P
+TXCLOSE(10)
+PLAY(9)		;P9 お城
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+IF ( UP_JINMYAKU = 0 )
+	RET
+
+JINMYAKU_UP(6)			;寵姫
+RET
+
+;**************
+;	王妃を選んだ場合
+;**************
+
+*SLC_OHUHI
+TXOPEN(2)
+TXFACE("F085")		;王妃・普通
+「＊＊＊＊＊＊＊」
+@P
+
+IF ( V_REIGI < 90 )		;礼儀作法90未満の場合 
+	TXOPEN(3)
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TIMER1(30)WAIT1
+	TXOPEN(2)
+	TXFACE("F081")			;近衛騎士・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+	TXCLOSE(2)
+	RET
+
+RUN_OSHIRO[7]++		;「面会・王妃」実行回数
+
+;《気だて／10》人脈値がアップ．最大値は160まで．
+
+MAX_UP_JINMYAKU = 160 - S_JINMYAKU[7]	;王妃
+UP_JINMYAKU = V_KIDATE / 10				;気だて
+
+IF ( UP_JINMYAKU > MAX_UP_JINMYAKU )
+	UP_JINMYAKU = MAX_UP_JINMYAKU
+
+IF ( UP_JINMYAKU > 80 ) UP_JINMYAKU = 80
+
+IF ( MAX_UP_JINMYAKU <= 0 )				;人脈値上限に達している場合
+	@2
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+
+;礼儀作法90以上の場合 
+
+TXOPEN(3)
+TXGIRL(0)	;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C			;王妃・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PLAY(1003)	;B3 要人と面会
+MUSIC(8,60)
+TXOPEN(10)
+TXA(NAME_FIRST)は王妃にお茶をご馳走になった・・・・・・
+WAIT1
+@P
+TXCLOSE(10)
+PLAY(9)		;P9 お城
+@2
+@C
+「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+IF ( UP_JINMYAKU = 0 )
+	RET
+
+JINMYAKU_UP(7)			;王妃
+RET
+
+;**************
+;	国王を選んだ場合
+;**************
+
+*SLC_KOKUOH
+TXOPEN(2)
+TXFACE("F086")		;国王・普通
+「＊＊＊＊＊＊」
+@P
+
+IF ( V_REIGI < 95 )		;礼儀作法95未満の場合 
+	TXOPEN(3)
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TIMER1(30)WAIT1
+	TXOPEN(2)
+	TXFACE("F081")			;近衛騎士・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXCLOSE(3)
+	RET
+
+RUN_OSHIRO[8]++		;「面会・国王」実行回数
+
+;《戦士名声／10》人脈値がアップ．最大値は300まで．
+
+MAX_UP_JINMYAKU = 300 - S_JINMYAKU[8]	;国王
+UP_JINMYAKU = H_SENSHI / 10				;戦士評価
+
+IF ( UP_JINMYAKU > MAX_UP_JINMYAKU )
+	UP_JINMYAKU = MAX_UP_JINMYAKU
+
+IF ( UP_JINMYAKU > 150 ) UP_JINMYAKU = 150
+
+IF ( MAX_UP_JINMYAKU <= 0 )				;人脈値上限に達している場合
+	@2
+	@C
+	「＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+
+;礼儀作法95以上の場合 
+
+TXOPEN(3)
+TXGIRL(0)				;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+「＊＊＊TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PLAY(1003)	;B3 要人と面会
+MUSIC(8,60)
+TXOPEN(10)
+TXA(NAME_FIRST)は国王としばしの間，歓談した・・・・・・
+WAIT1
+@P
+TXCLOSE(10)
+PLAY(9)		;P9 お城
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+IF ( UP_JINMYAKU = 0 )
+	RET
+
+JINMYAKU_UP(8)			;国王
+RET
+
+;**************
+;	道化師を選んだ場合
+;**************
+
+*SLC_DOUKESI
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+IF ( V_WAJYUTU < 40 )			;話術が40未満の場合 
+	TXOPEN(2)
+	TXFACE("F087")			;道化師・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+
+RUN_OSHIRO[9]++		;「面会・道化師」実行回数
+
+;話術が40以上の場合 
+
+TXOPEN(3)
+TXGIRL(0)				;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F087")			;道化師・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+PLAY(1003)	;B3 要人と面会
+MUSIC(8,60)
+TXOPEN(10)
+TXA(NAME_FIRST)は道化師との会話を楽しんだ・・・・・・
+WAIT1
+@P
+TXCLOSE(10)
+PLAY(9)		;P9 お城
+@2
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+TXCLOSE(3)
+
+;感受性が《15》アップ．社交名声が《15》ダウン．
+;イベント「道化師の訪問」の発生条件（道化師と７回面会する）．
+
+TXOPEN(1)
+GR_OPEN
+IGRP_TBL1[0] = "感受性"
+IGRP_TBL3[0] = 	B_KANJUSEI
+IGRP_CNT=1
+IF ( H_SYAKOH > 0 )	;社交評価
+	IGRP_TBL1[1] = "社交評価"
+	IGRP_TBL3[1] = 	H_SYAKOH
+	IGRP_CNT=2
+IGRP_X=32
+IGRP_Y=172
+GRPOPEN(1,1)				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+IF ( H_SYAKOH > 0 )			;社交評価
+	感受性が１５上がった．
+	B_KANJUSEI += 15			;感受性
+	IF ( H_SYAKOH > 15 )		;社交評価
+		社交評価が１５下がった．
+		C2 = 15
+	IF ( H_SYAKOH <= 15 )		;社交評価
+		社交評価がTXPOINT(H_SYAKOH)下がった．
+		C2 = H_SYAKOH
+	H_SYAKOH -= C2				;社交評価
+
+	GRPUPD(1,0,B_KANJUSEI)		;感受性
+	GRPUPD(1,1,H_SYAKOH)		;社交評価
+	@P
+	GR_CLOSE
+	TXCLOSE(1)
+	RET
+
+感受性が１５上がった．
+B_KANJUSEI += 15			;感受性
+GRPUPD(1,0,B_KANJUSEI)		;感受性
+@P
+GR_CLOSE
+TXCLOSE(1)
+RET
+
+;**************
+;	青年武官
+;	44 青年武官と面会
+;	【 概　要 】お城で青年武官（実は正体を隠した王子様）とデートする．
+;	【 いつ？ 】１月，メインコマンド「お城に行く」実行中
+;	【発生条件】お城で青年武官と面会する
+;	【 効　果 】青年武官は実は修行中の王子様．
+;	彼と面会すると「来年も会いたい」と言ってくるので，
+;	承知すれば隠しパラメータの「王子との関係」値が12上がる．
+;	断れば変化なし．
+;**************
+
+*SLC_BUKAN
+
+PLAY(1003)	;B3 要人と面会
+MUSIC(8,60)
+
+LOAD("EVNT044")
+
+;
+;	end of "SCNCASTL.TXT"
+;
+

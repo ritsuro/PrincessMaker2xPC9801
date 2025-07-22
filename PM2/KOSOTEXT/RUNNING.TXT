@@ -1,0 +1,318 @@
+;"RUNNING.TXT"
+;
+;	スケジュール実行
+;
+;
+
+.S_SECTION		; スケジュール項目
+.S_WORKS		; スケジュール内容
+.S_STARTDAY		; スケジュール開始日
+.S_ENDDAY		; スケジュール終了日
+.FFLNAME="        ,         "
+		; 123456789012345678
+
+TXTSZ(0)	; テキストバッファサイズの変更 0=65500,1=32000
+
+CLENDER(12)	;１旬次処理
+
+IF ( SCH_NOW > 0  E_EV_SKIP=0 )			;イベントスキップ
+	BORTHCHECKX		;数日遅れの誕生日
+	C1 = SCH_NOW - 1
+	S_SECTION	= SCHED_SECTION[C1]			; スケジュール項目
+	S_WORKS		= SCHED_WORKS[C1]			; スケジュール内容
+	EVENT022		;武芸者の挑戦
+	EVENT026		;ライバル登場
+	EVENT021		;妾
+	EVENT025		;悪い虫
+	IF ( E_ETC[35] = 1 )				;強制的に「ムダ使い」が発生する
+		E_ETC[35] = 0					;強制的に「ムダ使い」が発生する
+		IF ( S_BYOUKI<90 )				;病気指数(%)
+			GOLDCMP(200)				; 娘の所持金
+			IF ( AX ! 2 ) 				; 娘の所持金
+				E_ETC[9] = 1			;「無駄遣い」実行中
+				LOAD("KAIMONO")			;買い物
+
+E_EV_SKIP=0
+
+*START
+
+IF ( SCH_NOW = SCH_COUNT )			;if ( 実行中項目 = スケジュール数 )
+	C6 = SCH_NOW - 1				;
+	C1 = SCHED_SECTION[C6]			; スケジュール項目
+	C2 = SCHED_WORKS[C6]			; スケジュール内容
+	LOAD("MAINEVNT")				; then  スケジュール終わり
+
+TXLC(1,4,290,0)			; text window locate.
+TXLC(2,17,148,1)		; text window locate.
+TXLC(3,31,270,2)		; text window locate.
+WWIVENT(5,0,6,40)		; ivent window locate.
+
+S_SECTION	= SCHED_SECTION[SCH_NOW]		; スケジュール項目
+S_WORKS		= SCHED_WORKS[SCH_NOW]			; スケジュール内容
+S_STARTDAY	= SCH_STARTDAY[SCH_NOW]			; スケジュール開始日
+S_ENDDAY	= SCH_ENDDAY[SCH_NOW]			; スケジュール終了日
+
+;<====夜明けと共にスタートなのでカレンダーそのまま
+IF ( S_SECTION ! 2	) ; 2=武者修行に出す
+	CLENDER(3)					; カレンダー・更新処理
+	CLENDER(2)					; カレンダー・再表示
+
+IF ( S_SECTION = 0 ) ; 0=娘を鍛える
+
+	PLAY(13)	;P13 訓練
+	IF ( S_WORKS = 0 )	LOADXX("TRG000")		; 0=自然科学
+	IF ( S_WORKS = 1 )	LOADXX("TRG001")		; 1=詩文
+	IF ( S_WORKS = 2 )	LOADXX("TRG002")		; 2=神学
+	IF ( S_WORKS = 3 )	LOADXX("TRG003")		; 3=軍学
+	IF ( S_WORKS = 4 )	LOADXX("TRG004")		; 4=剣術
+	IF ( S_WORKS = 5 )	LOADXX("TRG005")		; 5=格闘術
+	IF ( S_WORKS = 6 )	LOADXX("TRG006")		; 6=魔法
+	IF ( S_WORKS = 7 )	LOADXX("TRG007")		; 7=礼法
+	IF ( S_WORKS = 8 )	LOADXX("TRG008")		; 8=絵画
+	IF ( S_WORKS = 9 )	LOADXX("TRG009")		; 9=舞踊
+
+IF ( S_SECTION = 1	) ; 1=娘を働かせる
+
+	PLAY(12)	;P12 ｱﾙﾊﾞｲﾄ
+	IF ( S_WORKS = 0 )	LOADXX("JOB000")		; 0=家の手伝い
+	IF ( S_WORKS = 1 )	LOADXX("JOB001")		; 1=子守
+	IF ( S_WORKS = 2 )	LOADXX("JOB002")		; 2=宿屋
+	IF ( S_WORKS = 3 )	LOADXX("JOB003")		; 3=農場
+	IF ( S_WORKS = 4 )	LOADXX("JOB004")		; 4=教会
+	IF ( S_WORKS = 5 )	LOADXX("JOB005")		; 5=料理屋
+	IF ( S_WORKS = 6 )	LOADXX("JOB006")		; 6=木コリ
+	IF ( S_WORKS = 7 )	LOADXX("JOB007")		; 7=髪結い
+	IF ( S_WORKS = 8 )	LOADXX("JOB008")		; 8=左官
+	IF ( S_WORKS = 9 )	LOADXX("JOB009")		; 9=狩人
+	IF ( S_WORKS = 10 )	LOADXX("JOB010")		; 10=墓守
+	IF ( S_WORKS = 11 )	LOADXX("JOB011")		; 11=家庭教師
+	IF ( S_WORKS = 12 )	LOADXX("JOB012")		; 12=酒場
+	IF ( S_WORKS = 13 )	LOADXX("JOB013")		; 13=ヤミ酒場
+	IF ( S_WORKS = 14 )	LOADXX("JOB014")		; 14=夜の殿堂
+
+IF ( S_SECTION = 2	) ; 2=武者修行に出す
+
+	FFDISK(4)		;ﾌﾛｯﾋﾟｰﾃﾞｨｽｸを使用するか
+	IF ( AX=0 )
+		IF ( S_WORKS ! 3 )	FFDISK(5,6)	; チェンジディスク指定
+		IF ( S_WORKS = 3 )	FFDISK(5,7)	; チェンジディスク指定
+
+	TXTSZ(1)		; テキストバッファサイズの変更 0=65500,1=32000
+	LOAD("RPGRUN")
+
+IF ( S_SECTION = 3	) ; 3=休みをあげる
+
+	IF ( S_WORKS = 0 )	LOADXX("SCNKYUSO")		; 0=自由行動
+	IF ( S_WORKS = 1 )	LOAD("SCNVACAN,EVNT036"); 1=バカンス+マーメイドに会う
+	IF ( S_WORKS = 2 )	LOADXX("SCNKYUSO")		; 2=監視
+	IF ( S_WORKS = 3 )	LOADXX("SCNKYUSO")		; 3=安静
+	IF ( S_WORKS = 4 )	LOADXX("SCNKYUSO")		; 4=サナトリウム
+
+GOTO START
+
+
+;************************************
+;	＋誕生日ロード
+;************************************
+
+*LOADXX
+IF ( P_BORTHMONTH = VAL_MONTH )			; 誕生月
+	IF ( P_BORTHDAY >= S_STARTDAY )		; スケジュール開始日
+		IF ( P_BORTHDAY <= S_ENDDAY )	; スケジュール終了日
+			STRCOPY(FFLNAME)			; SI -> FFLNAME
+			STRLEN(FFLNAME)				; 文字列長さ
+			C1 = FFLNAME + AX
+			STRCOPY(",EVNT042",C1)		; 42 娘の誕生日
+			SI=FFLNAME
+			LOAD
+IF ( P_BORTHMONTH[1] = VAL_MONTH )		; 父の誕生月
+	IF ( P_BORTHDAY[1] >= S_STARTDAY )	; スケジュール開始日
+		IF ( P_BORTHDAY[1] <= S_ENDDAY ); スケジュール終了日
+			STRCOPY(FFLNAME)			; SI -> FFLNAME
+			STRLEN(FFLNAME)				; 文字列長さ
+			C1 = FFLNAME + AX
+			STRCOPY(",EVNT042",C1)		; 43 父の誕生日
+			SI=FFLNAME
+			LOAD
+LOAD
+RET
+
+
+;************************************
+;
+;	「スケジュール１旬終了時」に発生するイベントの種類と内容
+;
+;************************************
+
+;21 妾
+;【 概　要 】街の金持ちが，娘を妾にしようとします．
+;【 いつ？ 】アルバイト１旬終了時．
+;【発生条件】１５歳以上．基本能力中で，色気が最も高いとき，
+;				《１／６》の確率で発生．
+;【 効　果 】街の金持ちは，《色気値の１／３》の金額（ただし下１桁切捨て）
+;				を提示します．
+;				娘は，《モラル値／提示額》の確率で申し出を断る．
+;				断らない場合は，娘は妾となってしまい，
+;				以後，毎月一ヶ月の最初にイベント「妾のお手当」が発生．
+
+*EVENT021
+IF ( E_ETC[2]  ! 0	) RET	;「妾」状態
+IF ( S_SECTION ! 1	) RET	; 1=娘を働かせる
+IF ( P_NENREI  < 15 ) RET	; １５歳以上．基本能力中で，色気が最も高いとき，
+IF ( B_IROKE   < 3 ) RET	; 色気
+
+IF (  B_IROKE < B_TAIRYOKU	)	GOTO EVENT021_EXIT	; 体力
+IF (  B_IROKE < B_KINRYOKU	)	GOTO EVENT021_EXIT	; 筋力
+IF (  B_IROKE < B_CHINOH	)	GOTO EVENT021_EXIT	; 知能
+IF (  B_IROKE < B_KIHIN		)	GOTO EVENT021_EXIT	; 気品
+IF (  B_IROKE < B_MORALS	)	GOTO EVENT021_EXIT	; モラル
+IF (  B_IROKE < B_SHINKOH	)	GOTO EVENT021_EXIT	; 信仰
+IF (  B_IROKE < B_INGYO		)	GOTO EVENT021_EXIT	; 因業
+IF (  B_IROKE < B_KANJUSEI	)	GOTO EVENT021_EXIT	; 感受性
+
+RANDAM(10)
+IF( IRND=1 )
+        LOAD("EVNT021")
+
+*EVENT021_EXIT
+RET
+
+
+;22 武芸者の挑戦
+;【 概　要 】武芸者が娘に挑戦してきます．
+;【 いつ？ 】休息，バカンス以外のスケジュール１旬終了時．
+;				メインコマンド，「街へ行く」実行時．
+;【発生条件】戦士評価または魔法評価２００未満では起らない．
+;　　　　　　　　　〃　　　〃　　が２００～３００のとき，確率《１／２０》．
+;　　　　　　　　　〃　　　〃　　が３００以上のとき，確率《１／１０》．
+;			ただし，病気のときは発生せず．
+; "KAIMONO.TXT"にもあります
+
+*EVENT022
+IF ( FLAG_BYOUKI ! 0 ) RET	;ただし，病気のときは発生せず．
+IF ( S_SECTION = 3	) RET	;3=休みをあげる
+
+IF ( H_SENSHI >= H_MAHO )	C2 = H_SENSHI		;戦士評価
+IF ( H_SENSHI <  H_MAHO )	C2 = H_MAHO			;魔法評価
+
+IF ( C2 < 200 ) RET
+
+IF ( C2 < 300 ) 			;２００～３００のとき，確率《１／２０》．
+	RANDAM(20)				;確率《１／２０》
+	IF ( IRND=2 )
+		C1 = 1				;mode 1=RUNNING.TXT 2=KAIMONO.TXT
+		LOAD("EVNT022")
+	RET
+
+RANDAM(10)					;確率《１／１０》．
+IF ( IRND=2 )
+	C1 = 1					;mode 1=RUNNING.TXT 2=KAIMONO.TXT
+	LOAD("EVNT022")
+RET
+
+
+;23 
+道場破り
+; "TRG004.TXT"へ移動
+
+
+;24 年寄りに親切
+;		＊＊＊＊＊＊このイベントは廃止します＊＊＊＊＊＊
+
+
+;25 悪い虫
+;【 概　要 】男の子からナンパされる．
+;【 いつ？ 】アルバイトの１旬終了時，「町に行く」の終了時．
+;【発生条件】14歳以上，基本能力中で色気が最も高いとき《１／１０》の確率で発生
+;【 効　果 】娘は《モラル＋信仰》が《色気》より高ければ，１００％ナンパを断る
+;			低ければ《モラル＋信仰／色気》の確率でナンパを断る．
+;			断れなかった場合ナンパ成功で，以後娘は「恋愛状態」に入る．
+
+*EVENT025
+IF ( P_NENREI  < 14 ) RET	; 14歳以上
+IF ( FLAG_RENAI ! 0 ) RET	; 状態・恋愛
+IF ( S_SECTION = 3	) RET	;3=休みをあげる
+
+IF (  B_IROKE < B_TAIRYOKU	)	GOTO EVENT025_EXIT	; 体力
+IF (  B_IROKE < B_KINRYOKU	)	GOTO EVENT025_EXIT	; 筋力
+IF (  B_IROKE < B_CHINOH	)	GOTO EVENT025_EXIT	; 知能
+IF (  B_IROKE < B_KIHIN		)	GOTO EVENT025_EXIT	; 気品
+IF (  B_IROKE < B_MORALS	)	GOTO EVENT025_EXIT	; モラル
+IF (  B_IROKE < B_SHINKOH	)	GOTO EVENT025_EXIT	; 信仰
+IF (  B_IROKE < B_INGYO		)	GOTO EVENT025_EXIT	; 因業
+IF (  B_IROKE < B_KANJUSEI	)	GOTO EVENT025_EXIT	; 感受性
+
+RANDAM(10)				;《１／１０》の確率で発生
+IF ( IRND = 1 )
+	LOAD("EVNT025")
+*EVENT025_EXIT
+RET
+
+
+;26 ライバル登場
+;【 概　要 】戦士，魔法，社交，家事のうち，娘が最も得意な分野に
+;				ライバルが名乗りをあげる．
+;【 いつ？ 】14歳になって以降，どれか予定の実行終了時．
+;【発生条件】14歳以上で修行を実行．
+;【 効　果 】ライバル候補は４人いるが，実際に登場するのは一人．
+;				１４歳になった時点で，戦士，魔法，社交，家事の評価のうち
+;				最も高く，かつ１５０以上の分野のライバル候補が，
+;				ライバルとして登場．
+;				ライバルの挑戦に心機一転して，娘のストレスは０になる．
+;				以後は，ライバルは関連するイベントで最初と
+;				最後にコメントを発する．
+;				戦士タイプと魔法タイプは，武闘会で必ず一回戦であたる．
+;				イベント「ライバルを意識する」の発生条件．
+;
+
+*EVENT026
+IF ( P_NENREI ! 14 ) RET	; 14歳
+IF ( E_RIVAL ! 0 ) RET		;ライバル登場 0=いない,1=戦士,2=魔法,3=社交,4=家事
+IF ( S_SECTION ! 0 ) RET	; 0=娘を鍛える
+
+C1 = 0
+IF ( H_SENSHI > C1 ) C1 = H_SENSHI		; 戦士評価
+IF ( H_MAHO   > C1 ) C1 = H_MAHO		; 魔法評価
+IF ( H_SYAKOH > C1 ) C1 = H_SYAKOH		; 社交評価
+IF ( H_KAJI   > C1 ) C1 = H_KAJI		; 家事評価
+IF ( C1 >= 150 )
+	LOAD("EVNT026")
+RET
+
+
+;27 NONE.
+
+
+;	数日遅れの誕生日（イベント４２，４３の未処理チェック）
+;	42 娘の誕生日
+;	【 概　要 】娘の誕生日を祝ってあげる．
+;	【 いつ？ 】娘の誕生日に随時．
+;	【発生条件】日付が娘の誕生日になる．
+;	43 父の誕生日
+;	【 概　要 】父の誕生日を娘が祝ってくれる．
+;	【 いつ？ 】父の誕生日に随時．
+;	【発生条件】日付が父の誕生日になる．父との関係値が６０以上．
+
+*BORTHCHECKX
+IF ( P_NENREI>E_ETC[18] )		;「娘の誕生日」をチェックした年齢
+	IF ( P_NENREI[1]>E_ETC[14] );
+		E_ETC[14]=P_NENREI[1]	;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )	;父との関係値が６０以上
+			E_EV_SKIP=1			;イベントスキップ
+			LOAD("EVE4243S,EVNT042")
+
+IF ( P_NENREI>E_ETC[18] )		;「娘の誕生日」をチェックした年齢
+	E_EV_SKIP=1					;イベントスキップ
+	LOAD("EVNT042S,EVNT042")
+
+IF ( P_NENREI[1]>E_ETC[14] )	;
+	E_ETC[14]=P_NENREI[1]		;「父の誕生日」をチェックした年齢
+	IF ( URA_FATHER >=60 )		;父との関係値が６０以上
+		E_EV_SKIP=1				;イベントスキップ
+		LOAD("EVNT043S,EVNT042")
+RET
+
+;
+;	end of "RUNNING.TXT"
+;
+
