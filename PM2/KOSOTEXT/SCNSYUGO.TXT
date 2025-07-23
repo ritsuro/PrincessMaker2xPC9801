@@ -1,0 +1,760 @@
+; "SCNSYUGO.TXT"
+;
+;
+;
+;	C1 :1="MAINLOOP.TXT"
+;		2="PARAINIT.TXT"(初期ロード)
+;		3="PARAINIT.TXT"(再スタートロード)
+;
+
+STRSCLEAR
+
+.FLG_LOAD_MODE
+FLG_LOAD_MODE = C1
+
+.ERR_DISK = 0
+.FLG_EXIT = 0
+
+.SDAT_YEAR		; 年
+.SDAT_MONTH		; 月
+.SDAT_WEEK		; 曜日
+.SDAT_DAY		; 日
+.SDAT_NAME		; 娘の名前
+
+.DAT_FILE_NUM	=	0			; データファイル番号
+
+.STATUS_FFDISK
+
+.MSG_ADRS
+
+.COUNT_INTO_DATA
+.TBL_DATA_FLAG[12]
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(5,1,90,0)		; text window locate.
+;;TXLC(11,31,220,2)	; text window locate.
+TXLC(11,48,275,4)	; text window locate.
+
+IF ( FLG_LOAD_MODE = 2 )	;2="PARAINIT.TXT"(初期ロード)
+	PARC(1,"DSKTOOL.COM",1,0)	; 初期処理<==========================
+	START_SYUGOSEI
+	C1 = 1				; 1=初期スタートモード
+	LOAD("PARAINIT")
+
+IF ( FLG_LOAD_MODE = 3 )	;3="PARAINIT.TXT"(再スタートロード)
+	PARC(1,"DSKTOOL.COM",1,0)	; 初期処理<==========================
+	START_SYUGOSEI
+	C1 = 2				; 2=再スタート
+	LOAD("PARAINIT")
+
+SYUGOSEI
+
+FFDISK(4)		;ﾌﾛｯﾋﾟｰﾃﾞｨｽｸを使用するか
+IF ( AX=0 )
+	IF ( P_NENREI < 15 )
+		FFDISK(5,3)		; チェンジディスク指定
+	IF ( P_NENREI >=15 )
+		FFDISK(5,12)	; チェンジディスク指定
+
+LOAD("MAINLOOP")
+
+;***************************************
+;	スタート時ロード
+;***************************************
+
+*START_SYUGOSEI
+
+TXLC(11,48,275,0)	; text window locate.
+TXOPEN(11)
+どの記録まで時を戻しますか．
+DDISK_LOAD
+TXSLCT(11)
+IF ( ERR_DISK = 101 )		;101=file not found.
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+TXCLOSE(11)
+
+IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+	TXOPEN(1)
+	「＊＊＊TXPOINT(VAL_YEAR)＊TXPOINT(VAL_MONTH)＊」
+	「TXA(NAME_FIRST)＊TXA(NAME_FAMILY)」
+	時間を戻します．
+	@P
+	TXCLOSE(1)
+	FREAM_GIRL
+	LOAD("MAINLOOP")
+RET
+
+
+;***************************************
+;	守護星
+;***************************************
+
+*SYUGOSEI
+TXOPEN(1)
+「＊＊＊＊＊＊」
+SLCPOS(4)		; 4=メインSLCT発生位置
+SLCT("時を刻む,時を戻す,ひとときの別れ")
+TXCLOSE(1)
+IF ( ISLCT=0 )
+	TIME_STORE
+	GOTO SYUGOSEI
+IF ( ISLCT=1 )
+	BACK_TO_FUTURE
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		TXOPEN(1)
+		「＊＊＊TXPOINT(VAL_YEAR)＊TXPOINT(VAL_MONTH)＊」
+		「TXA(NAME_FIRST)＊TXA(NAME_FAMILY)」
+		時間を戻します．
+		@P
+		TXCLOSE(1)
+		FREAM_GIRL
+		RET
+	GOTO SYUGOSEI
+IF ( ISLCT=2 )
+	XDBG(5)			; now demo mode.
+	IF ( AX=1 )		; 0=normal,1=demo.
+		RET
+	QUIT_OF_GAME
+	GOTO SYUGOSEI
+RET
+
+
+*OPEN_SYUGO
+TXOPEN(11)
+TXSYU(P_SYUGOSEI)
+TXA(DEF_STR_STAR[P_SYUGOSEI])
+@L
+RET
+
+*CLOSE_SYUGO
+TXCLOSE(11)
+RET
+
+*FREAM_GIRL
+MUSIC(2)			;音楽ﾌｪｰﾄﾞｱｳﾄ
+EFC(1)				; Ｆ・Ｏ（フェードアウト）
+WWFRAME(1)			;
+CLENDER(1)			;
+WWPROF(1)			;
+IF ( E_RWAY = 0 )	;ｲﾍﾞﾝﾄ｢家出」
+	WWGIRL(3)		; girl quick put.
+EFC(0)				; Ｆ・Ｉ（フェードイン）
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+
+IF ( E_RWAY ! 0 )	;ｲﾍﾞﾝﾄ｢家出」
+	TXOPEN(1)
+	娘は家出中です
+	@P
+	TXCLOSE(1)
+RET
+
+;**************
+;	セーブ
+;**************
+
+*TIME_STORE
+
+IF ( P_SYUGOSEI = 0 )	;太陽神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P@C
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_SAVE
+	TXSLCT(11)
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		@C
+		「＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 1 )	;月神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FAMILY)＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_SAVE
+	TXSLCT(11)
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		@C
+		「＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 2 )	;火星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_SAVE
+	TXSLCT(11)
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		@C
+		「＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 3 )	;水星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FAMILY)＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_SAVE
+	TXSLCT(11)
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		@C
+		「＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 4 )	;木星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_SAVE
+	TXSLCT(11)
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 5 )	;金星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊」
+	@P@C
+	「＊＊＊＊＊＊＊＊＊＊」
+	DDISK_SAVE
+	TXSLCT(11)
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 6 )	;土星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊」
+	@P@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_SAVE
+	TXSLCT(11)
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		@C
+		「＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 7 )	;天王星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FAMILY)＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_SAVE
+	TXSLCT(11)
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 8 )	;海王星神・普通
+	OPEN_SYUGO
+	「TXA(NAME_FAMILY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P@C
+	「＊＊＊＊＊＊＊＊＊」
+	DDISK_SAVE
+	TXSLCT(11)
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		@C
+		「＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 9 )	;冥王星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FAMILY)＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_SAVE
+	TXSLCT(11)
+	IF ( ERR_DISK = 0  FLG_EXIT = 0 )
+		@C
+		「＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+RET
+
+
+;**************
+;	ロード
+;**************
+
+*BACK_TO_FUTURE
+
+IF ( P_SYUGOSEI = 0 )	;太陽神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_LOAD
+	TXSLCT(11)
+	IF ( ERR_DISK = 101 )		;101=file not found.
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 1 )	;月神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_LOAD
+	TXSLCT(11)
+	IF ( ERR_DISK = 101 )		;101=file not found.
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 2 )	;火星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_LOAD
+	TXSLCT(11)
+	IF ( ERR_DISK = 101 )		;101=file not found.
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 3 )	;水星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_LOAD
+	TXSLCT(11)
+	IF ( ERR_DISK = 101 )		;101=file not found.
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 4 )	;木星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_LOAD
+	TXSLCT(11)
+	IF ( ERR_DISK = 101 )		;101=file not found.
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 5 )	;金星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_LOAD
+	TXSLCT(11)
+	IF ( ERR_DISK = 101 )		;101=file not found.
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 6 )	;土星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_LOAD
+	TXSLCT(11)
+	IF ( ERR_DISK = 101 )		;101=file not found.
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 7 )	;天王星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_LOAD
+	TXSLCT(11)
+	IF ( ERR_DISK = 101 )		;101=file not found.
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 8 )	;海王星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_LOAD
+	TXSLCT(11)
+	IF ( ERR_DISK = 101 )		;101=file not found.
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+IF ( P_SYUGOSEI = 9 )	;冥王星神・普通
+	OPEN_SYUGO
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	DDISK_LOAD
+	TXSLCT(11)
+	IF ( ERR_DISK = 101 )		;101=file not found.
+		@C
+		「＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	CLOSE_SYUGO
+	RET
+RET
+
+;**************
+;	ゲーム終了
+;**************
+
+*QUIT_OF_GAME
+TXOPEN(1)
+いったん「プリンセスメーカー」の世界に別れを告げるのですか？
+SLCTX("はい,いいえ")
+TXCLOSE(1)
+IF ( ISLCT ! 0 ) RET
+
+OPEN_SYUGO
+QUIT_MESSAGE
+@P
+CLOSE_SYUGO
+EFC(1)		; Ｆ・Ｏ（フェードアウト）
+GRPCLS		; graphics clear screen.
+TIMER1(30)
+WAIT1
+FFDISK(4)			;ﾌﾛｯﾋﾟｰﾃﾞｨｽｸを使用するか
+IF ( AX=1 )			;-o- AX : 1=使用しない,0=使用する
+	GRPCLS			; graphics clear screen.
+	TXOPEN(1)
+	EFC(0)			; Ｆ・Ｉ（フェードイン）
+	ＤＯＳへ戻ります．
+	SLCTX("はい,いいえ")
+	IF ( ISLCT=0 )
+		MUSIC(2)	; 音楽ﾌｪｰﾄﾞｱｳﾄ
+		EFC(1)		; Ｆ・Ｏ（フェードアウト）
+		GRPCLS		; graphics clear screen.
+		END			; ===> exit DOS
+	TXCLOSE(1)
+	FREAM_GIRL
+	LOAD("MAINLOOP")
+GRPCLS			; graphics clear screen.
+TXOPEN(1)
+MUSIC(2)		; 音楽ﾌｪｰﾄﾞｱｳﾄ
+EFC(0)			; Ｆ・Ｉ（フェードイン）
+ディスクを抜いてから電源を止めてください．
+@P@P@P@P@P@P@P@P@P
+FREAM_GIRL
+LOAD("MAINLOOP")
+
+
+
+*QUIT_MESSAGE
+
+IF ( P_SYUGOSEI = 0 )	;太陽神・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+IF ( P_SYUGOSEI = 1 )	;月神・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+IF ( P_SYUGOSEI = 2 )	;火星神・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+IF ( P_SYUGOSEI = 3 )	;水星神・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+IF ( P_SYUGOSEI = 4 )	;木星神・普通
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+IF ( P_SYUGOSEI = 5 )	;金星神・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+IF ( P_SYUGOSEI = 6 )	;土星神・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+IF ( P_SYUGOSEI = 7 )	;天王星神・普通
+	「＊＊＊＊＊＊＊」
+	RET
+IF ( P_SYUGOSEI = 8 )	;海王星神・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+IF ( P_SYUGOSEI = 9 )	;冥王星神・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+RET
+
+;**************
+;	disk save.
+;**************
+
+*DDISK_SAVE
+ERR_DISK = 0
+FLG_EXIT = 0
+
+INST_NEW_DISK
+IF ( FLG_EXIT=1 )	RET			; 1=ユーザの強制終了
+
+DSKTOOLREAD
+
+MSG_ADRS="やめる"
+PARC(2,8,11,MSG_ADRS)		; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ文字表示
+
+*DDISK_SAVE_RETRY
+PARC(2,7)				; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳSLCT
+DAT_FILE_NUM = BX
+
+IF ( DAT_FILE_NUM = 11 )( DAT_FILE_NUM = -1 )
+	PARC(2,3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+	FLG_EXIT = 1
+	RET
+
+TXOPEN(5)
+TXPOINT(DAT_FILE_NUM)番へ時間を記録します．
+SLCPOS(6,48,180)
+SLCTBAK(6)
+SLCT("時間を記録する,やめる")
+TXCLOSE(5)
+IF ( ISLCT ! 0 ) GOTO DDISK_SAVE_RETRY
+
+INST_USER_DISK
+IF ( FLG_EXIT=1 )
+	TXOPEN(5)
+	時間を記録するのをやめました
+	@P
+	TXCLOSE(5)
+	PARC(2,3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+	RET
+
+FFDISK(1,DAT_FILE_NUM)	; データセーブ
+
+IF ( AX ! 0 )			; 0=normal,1=error.
+	TXOPEN(5)
+	ディスクエラーの為，時間を記録出来ません．
+	@P
+	TXCLOSE(5)
+	PARC(2,3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+	FLG_EXIT = 1
+	RET
+
+DSKTOOL_1_RD
+
+TXOPEN(5)
+TXPOINT(DAT_FILE_NUM)番へ時間を記録しました．
+@P
+TXCLOSE(5)
+
+PARC(2,3)				; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+RET
+
+;**************
+;	disk load.
+;**************
+
+*DDISK_LOAD
+ERR_DISK = 0
+FLG_EXIT = 0
+
+INST_USER_DISK
+IF ( FLG_EXIT=1 )	RET			; 1=ユーザの強制終了
+
+DSKTOOLREAD
+
+MSG_ADRS="やめる"
+PARC(2,8,11,MSG_ADRS)		; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ文字表示
+
+IF ( COUNT_INTO_DATA = 0 )
+	PARC(2,3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+	ERR_DISK = 101
+	RET
+
+*DDISK_LOAD_RETRY
+PARC(2,7)				; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳSLCT
+DAT_FILE_NUM = BX
+
+IF ( DAT_FILE_NUM = 11 )( DAT_FILE_NUM = -1 )
+	PARC(2,3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+	FLG_EXIT = 1
+	RET
+
+IF ( TBL_DATA_FLAG[DAT_FILE_NUM] = 0 )
+	TXOPEN(5)
+	その番号は記録されていません
+	@P
+	TXCLOSE(5)
+	GOTO DDISK_LOAD_RETRY
+
+TXOPEN(5)
+TXPOINT(DAT_FILE_NUM)番の時間を戻します．
+SLCPOS(6,48,180)
+SLCTBAK(6)
+SLCT("時間を戻す,やめる")
+TXCLOSE(5)
+IF ( ISLCT ! 0 ) GOTO DDISK_LOAD_RETRY
+
+INST_USER_DISK
+IF ( FLG_EXIT=1 )
+	TXOPEN(5)
+	時間を戻すのをやめました
+	@P
+	TXCLOSE(5)
+	PARC(2,3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+	RET
+
+FFDISK(2,DAT_FILE_NUM)	; データロード
+
+IF ( AX ! 0 )			; 0=normal,1=error.
+	TXOPEN(5)
+	ディスクエラーの為，時間を戻せません．
+	@P
+	TXCLOSE(5)
+	PARC(2,3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+	FLG_EXIT = 1
+	RET
+
+PARC(2,3)				; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+RET
+
+*MSG_READ_ERR
+ディスクが壊れています．
+@
+FLG_EXIT = 1
+RET
+
+
+*DSKTOOLREAD
+STRSCLEAR
+MSG_ADRS =	"diskcheck......"
+DSKTOOLOPEN
+DAT_FILE_NUM = 1			; データファイル番号
+COUNT_INTO_DATA = 0
+C1 = 10
+	PARC(2,8,DAT_FILE_NUM,MSG_ADRS)		; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ文字表示
+
+	FFDISK(3,DAT_FILE_NUM)	;データチェック AX:0=normal,1=error,101=file not found.
+	STATUS_FFDISK = AX		;
+	SDAT_YEAR	=	BX		; 年
+	SDAT_MONTH	=	CX		; 月
+	SDAT_WEEK	=	DX		; 曜日
+	SDAT_DAY	=	SI		; 日
+	SDAT_NAME	=	DI		; 娘の名前
+
+	IF ( STATUS_FFDISK=0 )	; 0=normal
+		TBL_DATA_FLAG[DAT_FILE_NUM] = 1
+		COUNT_INTO_DATA++
+
+	IF ( STATUS_FFDISK=1 )	; 1=error
+		PARC(2,3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳCLOSE
+		MSG_READ_ERR		;
+		FLG_EXIT = 1		;
+		RET
+
+	IF ( STATUS_FFDISK=101 ) ; 101=file not found
+		SDAT_YEAR	=	0	; 年
+		TBL_DATA_FLAG[DAT_FILE_NUM] = 0
+
+	PARC(2,4,DAT_FILE_NUM,SDAT_YEAR,SDAT_MONTH,SDAT_WEEK,SDAT_DAY,SDAT_NAME)
+	PARC(2,5,DAT_FILE_NUM)	; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ項目表示
+	DAT_FILE_NUM++			; データファイル番号
+LOOP C1
+RET
+
+*DSKTOOLOPEN
+;*;PARC(1,"DSKTOOL.COM",1,0)	; 初期処理<==========================
+PARC(2,9,1)					; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ ｻｲﾄﾞﾒﾆｭｰ行数
+PARC(2,2)					; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳOPEN
+C1="番号"
+;C2="   日　　付"
+ C2="   王 国 暦"
+C3="     名　　前"
+PARC(2,6,C1,C2,C3)			; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳﾍｯﾀﾞ表示
+RET
+
+
+*DSKTOOL_1_RD
+FFDISK(3,DAT_FILE_NUM)	;データチェック AX:0=normal,1=error,101=file not found.
+STATUS_FFDISK = AX		;
+SDAT_YEAR	=	BX		; 年
+SDAT_MONTH	=	CX		; 月
+SDAT_WEEK	=	DX		; 曜日
+SDAT_DAY	=	SI		; 日
+SDAT_NAME	=	DI		; 娘の名前
+PARC(2,4,DAT_FILE_NUM,SDAT_YEAR,SDAT_MONTH,SDAT_WEEK,SDAT_DAY,SDAT_NAME)
+PARC(2,5,DAT_FILE_NUM)	; ﾃﾞｰﾀ選択ｳｲﾝﾄﾞｳ項目表示
+RET
+
+*INST_USER_DISK
+FLG_EXIT = 0
+FFDISK(4)			;ﾌﾛｯﾋﾟｰﾃﾞｨｽｸを使用するか
+IF ( AX=1 ) RET		;-o- AX : 1=使用しない,0=使用する
+
+PARC(2,202)			; ﾕｰｻﾞｰﾃﾞｨｽｸをセットさせる
+FLG_EXIT = BX		; 1=ユーザの強制終了
+RET
+
+*INST_NEW_DISK
+FLG_EXIT = 0
+FFDISK(4)			;ﾌﾛｯﾋﾟｰﾃﾞｨｽｸを使用するか
+IF ( AX=1 ) RET		;-o- AX : 1=使用しない,0=使用する
+
+PARC(2,201)			; ﾕｰｻﾞｰﾃﾞｨｽｸか新しいﾃﾞｨｽｸｾｯﾄ
+IF ( BX=-1 )		; -1=ユーザの強制終了
+	FLG_EXIT = 1
+	RET
+IF ( BX=1 )			; 1=ユーザディスク
+	RET
+IF ( BX=2 )			; 2=新しいディスク
+	USER_DISK_MAKE
+	RET
+IF ( BX=3 )			; 3=別のソフトが入っている
+	TXOPEN(1)
+	別のソフトのディスクですが，ユーザーディスクにしてもよいですか？
+	SLCTBAK(5)
+	SLCT("ユーザーディスクを作る,やめる")
+	TXCLOSE(1)
+	IF ( ISLCT=0 )
+		USER_DISK_MAKE
+		RET
+	FLG_EXIT = 1
+	RET
+IF ( BX=4 )			; 4=ライトプロテクト
+	TXOPEN(1)
+	ディスクのライトプロテクトを外してください．
+	@P
+	TXCLOSE(1)
+	GOTO INST_NEW_DISK
+RET
+
+
+*USER_DISK_MAKE
+FLG_EXIT = 0
+PARC(2,203)			; ﾕｰｻﾞｰﾃﾞｨｽｸの作成
+IF ( BX=0 )			; 0=正常
+	RET
+IF ( BX=4 )			; 4=ライトプロテクト
+	TXOPEN(1)
+	ライトプロテクトがついているので外してください．
+	@P
+	TXCLOSE(1)
+	FLG_EXIT = 1
+	RET
+TXOPEN(1)
+ディスクエラーのためユーザーディスクが作れません．
+@P
+TXCLOSE(1)
+FLG_EXIT = 1
+RET
+
+;
+;	end of "SCNSYUGO.TXT"
+;
+

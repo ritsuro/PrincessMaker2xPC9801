@@ -1,0 +1,367 @@
+;"SCNVACAN.TXT"
+;
+;	バカンスシナリオ
+;
+;
+
+.DAY_COUNTER		; 日付カウンタ
+
+.S_STARTDAY		; スケジュール開始日
+.S_ENDDAY		; スケジュール終了日
+
+.NOW_PLACE
+.POCKET_MONEY
+
+.UNDER_WIGHT=1000
+
+S_STARTDAY	= SCH_STARTDAY[SCH_NOW]		; スケジュール開始日
+S_ENDDAY	= SCH_ENDDAY[SCH_NOW]		; スケジュール終了日
+
+SCH_NOW++		; スケジュール実行中項目
+
+TXLC(1,20,250,0)		; text window locate.
+TXLC(2,20,250,2)		; text window locate.
+
+R_VACANCES		; バカンス
+
+PTBK(0)
+LOAD("RUNNING")
+
+
+;***************************************
+;
+;		バカンス
+;
+;***************************************
+
+*R_VACANCES		; 1=バカンス
+
+;＊バカンスは行き先として，山と海のどちらかを選択出来ます．
+;＊山と海では，メッセージ，グラフィックはもちろん，実際の効果も若干異なります．
+;＊山と海にはそれぞれ，季節によって効果が若干変わります（季節効果）．
+;＊イベント「厳寒」が発生すると，３月になるまで山のバカンスは選択出来ません．
+;＊バカンスを実行すると，行き先，季節，日数を問わず，「父との関係」が３上昇します．
+;＊イベント「厳寒」が発生した場合，３月になるまでは山は選択出来ません．
+
+GOLDCMP(E_ETC[81])		;ﾊﾞｶﾝｽの値段
+IF ( AX = 2 )			;2=upper
+	TXOPEN(1)
+	バカンスへ行く，お金がありません．
+	GR_OPEN
+	IGRP_TBL3[0]=E_ETC[81]
+	IGRP_TBL1[0]="費用"
+	IGRP_CNT=1
+	IGRP_X=50
+	IGRP_Y=110
+	GOLDOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+	@P
+	GR_CLOSE
+	TXCLOSE(1)
+	DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+		TIMER1(10)
+		WAIT1
+		IF ( DAY_COUNTER ! 1 )
+			CLENDER(3)			;カレンダー・更新処理
+			CLENDER(2)			;カレンダー・再表示
+	LOOP DAY_COUNTER
+	RET
+
+GOLDSUB(E_ETC[81])
+WWPROF(3)					;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+
+*VACAN_START
+
+TXOPEN(1)
+どこに行きますか？
+SLCTX("山,海")
+TXCLOSE(1)
+
+NOW_PLACE=ISLCT
+
+IF ( NOW_PLACE = 0 )		;山
+	PLAY(19)				;P19 ﾊﾞｶﾝｽ山
+
+IF ( NOW_PLACE = 1 )		;海
+	PLAY(18)				;P18 ﾊﾞｶﾝｽ海
+
+IF ( NOW_PLACE = 0 )		;山
+	IF ( E_COOL ! 0	)	;厳寒の場合
+		TXOPEN(2)
+		TXFACE("F046")	;執事・困り
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(2)
+		GOTO VACAN_START
+
+	;山を選んだ場合
+
+	TXOPEN(1)
+	親子そろって，SEASON_NAMEの山に遊びに行った・・・
+	@P
+	TXCLOSE(1)
+
+	VACA_OPEN
+	GR_OPEN				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	STRSCLEAR			;
+	IGRP_TBL1[0]="ストレス"	IGRP_TBL3[0]=B_STRESS		;ストレス
+	IGRP_TBL1[1]="感受性"	IGRP_TBL3[1]=B_KANJUSEI		;感受性
+	IGRP_CNT=2
+	IGRP_X=52
+	IGRP_Y=340
+	GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	IF ( TM_SEASON = 3 )	;秋
+		IGRP_TBL1[0]="体重"	IGRP_TBL3[0]=P_TAIJYU		; 体重
+		IGRP_CNT=1
+		IGRP_X=12
+		IGRP_Y=340
+		PROPROPEN(1,3)		;ﾌﾟﾛﾎﾟｰｼｮﾝ･ｳｲﾝﾄﾞｳ
+
+	DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+		IF ( TM_SEASON ! 3 )	;秋
+			B_STRESS -= 3		;ストレス３低下
+			B_KANJUSEI++		;感受性１上昇
+		IF ( TM_SEASON = 3 )	;秋
+			B_STRESS -= 6		;ストレス６低下
+			B_KANJUSEI += 2		;感受性２上昇
+			P_TAIJYU += 10		;体重が１日ごとに０．１ｋｇ増
+			PROPRUPD(3,0,P_TAIJYU)	;ﾌﾟﾛﾎﾟｰｼｮﾝ･ｳｲﾝﾄﾞｳ更新
+		IF ( B_STRESS < 0 ) B_STRESS = 0
+		TIMER1(10)
+		GRPUPD(1,0,B_STRESS)	;ストレス
+		GRPUPD(1,1,B_KANJUSEI)	;感受性
+		WAIT1
+		IF ( DAY_COUNTER ! 1 )
+			CLENDER(3)			;カレンダー・更新処理
+			CLENDER(2)			;カレンダー・再表示
+	LOOP DAY_COUNTER
+	URA_FATHER += 3				; バカンス１回につき，「父との関係」３上昇
+	IF ( URA_FATHER >100 ) URA_FATHER = 100
+	SLCTBAK(5)					; SLCTの一時的な退避バンクの変更
+	SLCT("家に帰ります")
+	GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	VACA_CLOSE
+
+	;山のバカンス終了時（秋）
+
+	TXOPEN(2)
+	IF ( TM_SEASON = 3 )		;秋
+		TXFACE("F040")			;執事・嬉しい
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+	IF ( TM_SEASON ! 3 )		;山のバカンス終了時（秋以外の季節）
+		TXFACE("F041")			;GF執事・すまし
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+
+	RUN_BACANCE[0]++	;「休みをあげる」実行回数
+	RUN_BACANCE[2]++	;「バカンス」実行回数
+	RET
+
+IF ( NOW_PLACE = 1 )		;海
+
+	;海を選んだ場合
+
+	TXOPEN(1)
+	親子そろって，SEASON_NAMEの海へ遊びに行った・・・
+	@P
+	TXCLOSE(1)
+
+	VACA_OPEN
+	GR_OPEN				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	STRSCLEAR			;
+	IGRP_TBL1[0]="ストレス"	IGRP_TBL3[0]=B_STRESS		;ストレス
+	IGRP_CNT=1
+	IGRP_X=52
+	IGRP_Y=340
+	GRPOPEN(1,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	IF ( TM_SEASON = 2 )	; 2:夏
+		IGRP_TBL1[0]="体重"	IGRP_TBL3[0]=P_TAIJYU		; 体重
+		IGRP_CNT=1
+		IGRP_X=12
+		IGRP_Y=340
+		PROPROPEN(1,3)		;ﾌﾟﾛﾎﾟｰｼｮﾝ･ｳｲﾝﾄﾞｳ
+	DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+		IF ( TM_SEASON = 1 )( TM_SEASON = 3 )
+			B_STRESS -= 3		;ストレス３低下
+		IF ( TM_SEASON = 2 )	; 2:夏
+			B_STRESS -= 6		;ストレス６低下
+			P_TAIJYU -= 10		;１日ごとに体重が体重が０．１ｋｇ減
+			IF ( P_TAIJYU < UNDER_WIGHT ) P_TAIJYU = UNDER_WIGHT
+			PROPRUPD(3,0,P_TAIJYU)	;ﾌﾟﾛﾎﾟｰｼｮﾝ･ｳｲﾝﾄﾞｳ更新
+		IF ( TM_SEASON = 4 )	; 4:冬
+			B_STRESS -= 2		;ストレス２低下
+		TIMER1(10)
+		IF ( B_STRESS < 0 ) B_STRESS = 0
+		GRPUPD(1,0,B_STRESS)	;ストレス
+		WAIT1
+		IF ( DAY_COUNTER ! 1 )
+			CLENDER(3)			;カレンダー・更新処理
+			CLENDER(2)			;カレンダー・再表示
+	LOOP DAY_COUNTER
+	URA_FATHER += 3				; バカンス１回につき，「父との関係」３上昇
+	IF ( URA_FATHER >100 ) URA_FATHER = 100
+	SLCTBAK(5)					; SLCTの一時的な退避バンクの変更
+	SLCT("家に帰ります")
+	GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	EVENT036								; マーメイドに会う
+
+	VACA_CLOSE
+	TXOPEN(2)
+	IF ( TM_SEASON = 2 )	; 2:夏
+		TXFACE("F040")		;執事・嬉しい
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( TM_SEASON = 4 )	; 4:冬
+		TXFACE("F042")		;執事・心配
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( TM_SEASON = 1 )( TM_SEASON = 3 )
+		TXFACE("F041")		;執事・すまし
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	RET
+RET
+
+*VACA_OPEN
+IF ( P_NENREI <= 11 )		; 年齢
+	IF ( TM_SEASON = 1 )	; 1:春
+		IF ( NOW_PLACE=0 ) WIDVACA("V001") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V002") RET
+	IF ( TM_SEASON = 2 )	; 2:夏
+		IF ( NOW_PLACE=0 ) WIDVACA("V003") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V004") RET
+	IF ( TM_SEASON = 3 )	; 3:秋
+		IF ( NOW_PLACE=0 ) WIDVACA("V005") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V006") RET
+	IF ( TM_SEASON = 4 )	; 4:冬
+		IF ( NOW_PLACE=0 ) WIDVACA("V007") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V008") RET
+
+IF ( P_NENREI <= 13 )		; 年齢
+	IF ( TM_SEASON = 1 )	; 1:春
+		IF ( NOW_PLACE=0 ) WIDVACA("V009") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V010") RET
+	IF ( TM_SEASON = 2 )	; 2:夏
+		IF ( NOW_PLACE=0 ) WIDVACA("V011") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V012") RET
+	IF ( TM_SEASON = 3 )	; 3:秋
+		IF ( NOW_PLACE=0 ) WIDVACA("V013") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V014") RET
+	IF ( TM_SEASON = 4 )	; 4:冬
+		IF ( NOW_PLACE=0 ) WIDVACA("V015") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V016") RET
+
+IF ( P_NENREI <= 15 )		; 年齢
+	IF ( TM_SEASON = 1 )	; 1:春
+		IF ( NOW_PLACE=0 ) WIDVACA("V017") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V018") RET
+	IF ( TM_SEASON = 2 )	; 2:夏
+		IF ( NOW_PLACE=0 ) WIDVACA("V019") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V020") RET
+	IF ( TM_SEASON = 3 )	; 3:秋
+		IF ( NOW_PLACE=0 ) WIDVACA("V021") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V022") RET
+	IF ( TM_SEASON = 4 )	; 4:冬
+		IF ( NOW_PLACE=0 ) WIDVACA("V023") RET
+		IF ( NOW_PLACE=1 ) WIDVACA("V024") RET
+
+IF ( TM_SEASON = 1 )	; 1:春
+	IF ( NOW_PLACE=0 ) WIDVACA("V025") RET
+	IF ( NOW_PLACE=1 ) WIDVACA("V026") RET
+IF ( TM_SEASON = 2 )	; 2:夏
+	IF ( NOW_PLACE=0 ) WIDVACA("V027") RET
+	IF ( NOW_PLACE=1 ) WIDVACA("V028") RET
+IF ( TM_SEASON = 3 )	; 3:秋
+	IF ( NOW_PLACE=0 ) WIDVACA("V029") RET
+	IF ( NOW_PLACE=1 ) WIDVACA("V030") RET
+IF ( TM_SEASON = 4 )	; 4:冬
+	IF ( NOW_PLACE=0 ) WIDVACA("V031") RET
+	IF ( NOW_PLACE=1 ) WIDVACA("V032") RET
+RET
+
+*VACA_CLOSE
+EFC(7)				; ブラックアウト
+GRPCLS				; graphics clear screen.
+PALET_SET(0)		;
+WWFRAME(1)			;
+CLENDER(1)			;
+WWPROF(1)			:
+WWGIRL(3)			; girl quick put.
+RET
+
+
+*WIDVACA
+;	WIDVACA("filename")
+
+PTBK(0)
+PTMD(0)
+PTLD
+PTLA("FRMVACNM")
+
+PTBK(2)
+PTMD(0)
+PTLD("FRMVACNL")
+PTLA("FRMVACNR")
+
+EFC(1)				; Ｆ・Ｏ（フェードアウト）
+
+PTBK(2)
+PTX(0,0,0)
+PTX(40,0,1)
+
+PTBK(0)
+PTX(13,104,0)
+PTM(13,104,1)
+CLENDER(1)			;
+
+IF ( NOW_PLACE = 0 )		;山
+	IF ( TM_SEASON=1 )( TM_SEASON=2 )( TM_SEASON=3 )
+		PALET_SET(9)		; 9=PM2-V1.ALG バカンス山・春夏秋
+	IF ( TM_SEASON = 4 )	; 4:春
+		PALET_SET(10)		; 10=PM2-V2.ALG	バカンス山・冬
+
+IF ( NOW_PLACE = 1 )		;海
+	IF ( TM_SEASON=1 )
+		PALET_SET(0)		;  0=PM2_1.ALG 通常
+	IF ( TM_SEASON=2 )
+		PALET_SET(11)		; 11=PM2-V3.ALG	バカンス海・夏
+	IF ( TM_SEASON=3 )
+		PALET_SET(12)		; 12=PM2-V4.ALG	バカンス海・秋
+	IF ( TM_SEASON=4 )
+		PALET_SET(13)		; 13=PM2-V5.ALG	バカンス海・冬
+RET
+
+;＠は季節の名前．．．	冬→12.1.2月	春→3.4.5月
+;	夏→6.7.8月	秋→9.10.11月
+
+*SEASON_NAME
+IF ( TM_SEASON = 1 )	春 RET
+IF ( TM_SEASON = 2 )	夏 RET
+IF ( TM_SEASON = 3 )	秋 RET
+IF ( TM_SEASON = 4 )	冬 RET
+RET
+
+;36 マーメイドに会う
+;【 概　要 】バカンスで海へ行くと，マーメイドが「人魚の涙」の返還を
+;			求めてくる．
+;【 いつ？ 】バカンス実行中．
+;【発生条件】バカンスで海に行く．アイテム「人魚の涙」を持っている．
+;【 効　果 】マーメイドはフィッシュマンを怨んでいるので，
+;			フィッシュマンを倒した○○○にお礼として
+;			感受性を２０，色気を５０上げてくれる．
+
+*EVENT036
+IF ( NOW_PLACE ! 1 ) RET		; 海
+IF ( E_MERMAID = 0 ) RET		;ｲﾍﾞﾝﾄ｢マーメイドに会う｣発生条件
+ITEM_SRCH(1,29)					; ICON search. 29=人魚の涙
+IF ( AX = 0 ) RET				; 0=none,1=search.
+MERGE_FILE_JUMP					; = LOAD("EVNT036")
+RET
+
+
+*MERGE_FILE_JUMP
+
+;
+;	end of "SCNVACAN.TXT"
+;
+
