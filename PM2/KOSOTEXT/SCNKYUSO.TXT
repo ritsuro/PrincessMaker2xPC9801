@@ -1,0 +1,649 @@
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;R_OBSERVE			; 2=監視
+;LOAD("TEST")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;"SCNKYUSO.TXT"
+;
+;	休息
+;
+;
+
+.DAY_COUNTER		; 日付カウンタ
+
+.S_WORKS		; スケジュール内容
+.S_STARTDAY		; スケジュール開始日
+.S_ENDDAY		; スケジュール終了日
+
+.DAY_TIMER=10
+
+.XSLCT
+.POCKET_MONEY
+
+.XSLCT_PAIR
+.PAY_MONEY
+.PAY_MONEY_DAY
+
+.FLAG_ALLOPEN=0
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,1,260,2)		; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+TXLC(9,48,260,2)	; text window locate.
+TXLC(5,5,260,0)		; text window locate.
+WWIVENT(5,0,6,90)	; ivent window locate.
+
+S_WORKS		= SCHED_WORKS[SCH_NOW]		; スケジュール内容
+S_STARTDAY	= SCH_STARTDAY[SCH_NOW]		; スケジュール開始日
+S_ENDDAY	= SCH_ENDDAY[SCH_NOW]		; スケジュール終了日
+
+SCH_NOW++	; スケジュール実行中項目
+
+PLAY(20)	;P20 休息
+
+IF ( S_WORKS = 0 )
+	R_FREE				; 0=自由行動
+	EVENT018								; ムダ使い
+IF ( S_WORKS = 2 )
+	R_OBSERVE			; 2=監視
+IF ( S_WORKS = 3 )
+	R_RESTCURE			; 3=安静
+	EVENT018								; ムダ使い
+IF ( S_WORKS = 4 )
+	R_SANATORIUM		; 4=サナトリウム
+	EVENT018								; ムダ使い
+
+LOAD("RUNNING")
+
+;***************************************
+;
+;		自由行動
+;
+;＊自由行動の実行する時，最初に「おこづかいを与えるかどうか」質問されます．
+;＊おこづかいの金額は，10G×日数分です．
+;＊「おこづかいを与える」と答えても，所持金が足りない場合は選択できません．
+;＊おこづかいを与えた場合，ストレスが１日10低下します．
+;＊　　　〃　　与えない場合，　　〃　　　 5低下します．
+;＊どちらの場合でも，「父との関係」１日あたり1低下します．
+;
+;***************************************
+
+*R_FREE			; 0=自由行動
+
+;**	自由行動の最初
+
+TXOPEN(1)
+おこづかいを与えますか？
+
+SLCTX("与える,与えない")
+XSLCT=ISLCT
+
+IF ( XSLCT = 0 )	;おこづかいを与える場合
+
+	C1 = S_ENDDAY - S_STARTDAY + 1		;おこづかいの金額は，10G×日数分です
+	POCKET_MONEY = 10 * C1
+
+	GOLDCMP(POCKET_MONEY)
+	IF ( AX ! 2 )		;所持金が必要な額ある場合 : 1=same,2=upper,3=under.
+
+		GOLDSUB(POCKET_MONEY)
+		WWPROF(3)						; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+
+		TXA(NAME_FIRST)におこづかいTXGOLD(POCKET_MONEY)与えました．
+		@P
+		TXCLOSE(1)
+
+		TXOPEN(3)
+		IF ( FLAG_HIKOUKA = 0 ) 		;娘が非行化していない
+			TXGIRL(1)	;娘・嬉しい
+			「＊＊＊＊＊＊＊」
+		IF ( FLAG_HIKOUKA ! 0 ) 		;娘が非行化している場合
+			TXGIRL(12)	;娘・不愉快
+			「＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(3)
+
+		TXOPEN(1)
+		TXA(NAME_FIRST)は町に遊びに出た・・・
+		@P
+		TXCLOSE(1)
+		GOTO KYUSOKU_SRT
+
+	IF ( AX = 2 )		;所持金が足りない場合
+
+		POCKET_MONEY = 0
+
+		TXCLOSE(1)
+
+		TXOPEN(2)
+		TXFACE("F043")	;執事・安心
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(2)
+
+		TXOPEN(3)
+		IF ( FLAG_HIKOUKA = 0 ) 		;娘が非行化していない
+			TXGIRL(0)	;娘・普通
+			「＊＊＊＊＊＊＊」
+		IF ( FLAG_HIKOUKA ! 0 ) 		;娘が非行化している場合
+			TXGIRL(12)	;娘・不愉快
+			「＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(3)
+
+		TXOPEN(1)
+		TXA(NAME_FIRST)はおこづかいなしで町に遊びに行った・・・
+		@P
+		TXCLOSE(1)
+		GOTO KYUSOKU_SRT
+
+IF ( XSLCT = 1 )	;おこづかいを与えない場合
+
+	POCKET_MONEY = 0
+
+	TXCLOSE(1)
+
+	TXOPEN(3)
+	IF ( FLAG_HIKOUKA = 0 ) 		;娘が非行化していない
+		TXGIRL(0)	;娘・普通
+		「＊＊＊＊＊＊＊」
+	IF ( FLAG_HIKOUKA ! 0 ) 		;娘が非行化している場合
+		TXGIRL(12)	;娘・不愉快
+		「＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+
+	TXOPEN(1)
+	TXA(NAME_FIRST)はおこづかいなしで町に遊びに行った・・・
+	@P
+	TXCLOSE(1)
+
+*KYUSOKU_SRT
+ALL_OPEN
+DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+	IF ( POCKET_MONEY ! 0 )		;おこづかいを与えた場合，ストレスが１日10低下します．
+		B_STRESS -= 10			; ストレス
+	IF ( POCKET_MONEY = 0 )		;与えない場合,5低下します．
+		B_STRESS -= 5			; ストレス
+	URA_FATHER--				;「父との関係」１日あたり1低下します
+	IF ( B_STRESS < 0 ) B_STRESS=0		; ストレス
+	IF ( URA_FATHER < 0 ) URA_FATHER=0	; 父との関係
+	TIMER1(DAY_TIMER)			;
+	GRPUPD(1,0,B_STRESS)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ 更新
+	WAIT1
+
+	BORTH_CHECK
+
+	IF ( DAY_COUNTER ! 1 )
+		CLENDER(3)				;カレンダー・更新処理
+		CLENDER(2)				;カレンダー・再表示
+LOOP DAY_COUNTER
+ALL_CLOSE
+
+TXOPEN(3)
+IF ( FLAG_HIKOUKA ! 0 ) 		;娘が非行化している場合
+	TXGIRL(12)	;娘・不愉快
+	「＊＊＊＊＊＊＊＊」
+
+IF ( FLAG_HIKOUKA = 0 ) 		;娘が非行化していない
+
+	IF ( B_STRESS = 0 ) ;残りストレス0の場合
+		TXGIRL(1)	;娘・嬉しい
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( B_STRESS >=1 	B_STRESS <=30 )	;残りストレス1～30の場合 
+		TXGIRL(0)	;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( B_STRESS >=31 B_STRESS <=60 )	;残りストレス31～60の場合
+		TXGIRL(0)	;娘・普通
+		「＊＊＊＊」
+	IF ( B_STRESS >=61 )				;残りストレス61以上の場合
+		TXGIRL(0)	;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+RUN_BACANCE[0]++	;「休みをあげる」実行回数
+RUN_BACANCE[1]++	;「自由行動」実行回数
+@P
+TXCLOSE(3)
+RET
+
+
+;***************************************
+;
+;		監視
+;
+;＊「監視」は非行化時のみ選択できるオプションです．
+;＊「監視」は自由行動を取らせながら，実に執事に見張らせるという陰険なオプションです．
+;＊おこづかいは与えません．
+;＊「監視」実行中は，自由行動で発生するイベントは起こりません．
+;＊　　　　〃　　　　ストレスが１日あたり2低下します．
+;＊父との関係が１日あたり2低下します．
+;
+;***************************************
+
+*R_OBSERVE		; 2=監視
+
+;** 監視の最初
+
+TXOPEN(1)
+TXA(NAME_FIRST)は町に遊びに行った・・・
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F049")	;執事・真剣
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+TXOPEN(1)
+執事はこっそりTXA(NAME_FIRST)の後をつけた
+@P
+TXCLOSE(1)
+
+ALL_OPEN
+DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+	B_STRESS -= 2			;ストレスが１日あたり2低下します．
+	URA_FATHER-=2			; 父との関係が１日あたり2低下します．
+	IF ( B_STRESS < 0 ) B_STRESS=0		; ストレス
+	IF ( URA_FATHER < 0 ) URA_FATHER=0	; 父との関係
+	TIMER1(DAY_TIMER)				;
+	GRPUPD(1,0,B_STRESS)	; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ 更新
+	WAIT1
+
+	BORTH_CHECK
+
+	IF ( DAY_COUNTER ! 1 )
+		CLENDER(3)				;カレンダー・更新処理
+		CLENDER(2)				;カレンダー・再表示
+LOOP DAY_COUNTER
+EVENT018X2ND							; ムダ使い防止
+ALL_CLOSE
+
+;監視の終了時
+TXOPEN(3)
+TXGIRL(12)	;娘・不愉快
+「＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+TXOPEN(2)
+TXFACE("F039")	;執事・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+RUN_BACANCE[0]++	;「休みをあげる」実行回数
+RUN_BACANCE[3]++	;「監視」実行回数
+
+RET
+
+
+;***************************************
+;
+;		安静
+;
+;＊「安静」は病気時（病気指数10以上＝風邪気味状態以上）のみ選択できるオプションです．
+;＊「安静」実行中は，ストレスが１日あたり2低下します．
+;＊最初につきそいを決めます．父か執事のどちらかから選びます．
+;＊父がつきそえば，１日あたり所持金が10Gづつ減り，父との関係が1づつ上がります．
+;＊執事がつきそえば，１日当たり執事との関係が1上がります．お金はかかりません．
+;
+;***************************************
+
+*R_RESTCURE		; 3=安静
+
+C1 = S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+PAY_MONEY = C1 * 10
+PAY_MONEY_DAY = 10
+
+TXOPEN(1)
+TXA(NAME_FIRST)はしばらく安静です．誰がつきそいますか？
+SLCTX("父,執事")
+TXCLOSE(1)
+XSLCT_PAIR = ISLCT
+
+IF ( XSLCT_PAIR = 1 )	;執事がつきそうを選択した場合
+	TXOPEN(2)
+	TXFACE("F039")	;執事・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(2)
+	TXOPEN(1)
+	執事はTXA(NAME_FIRST)につきっきりで看病した・・・
+	@P
+	TXCLOSE(1)
+
+IF ( XSLCT_PAIR = 0 )	;父がつきそう場合を選んだ場合
+	TXOPEN(2)
+	TXFACE("F042")	;執事・心配
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXGOLD(PAY_MONEY)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	SLCTX("かまわない,やめる")
+	IF ( ISLCT=0 )					;かまわないを選択した場合
+		GOLDCMP(PAY_MONEY)			;お金が足りている場合
+		IF ( AX ! 2 )				;お金が足りている場合
+			TXCLOSE(2)
+			TXOPEN(1)
+			あなたはTXA(NAME_FIRST)につきっきりで看病した・・・
+			@P
+			TXCLOSE(1)
+			GOTO R_REST_SRT
+		IF ( AX = 2 )				;お金が足りない場合
+			TXFACE("F043")			;執事・安心
+			「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+			@P
+			TXCLOSE(2)
+			TXOPEN(1)
+			結局，執事が看病することになった・・・
+			@P
+			TXCLOSE(1)
+			XSLCT_PAIR=1	;執事がつきそうを選択した場合
+			GOTO R_REST_SRT
+	IF ( ISLCT=1 )
+		TXFACE("F039")	;執事・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(2)
+		TXOPEN(1)
+		執事が看病することになった・・・
+		@P
+		TXCLOSE(1)
+		XSLCT_PAIR=1	;執事がつきそうを選択した場合
+
+*R_REST_SRT
+
+ALL_OPEN
+DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+	IF ( XSLCT_PAIR = 0 )				;父がつきそう場合を選んだ場合
+		GOLDSUB(PAY_MONEY_DAY)			;１日あたり所持金が10Gづつ減り
+		WWPROF(3)						; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+		URA_FATHER++					;父との関係が1づつ上がります
+		IF ( URA_FATHER >100 ) URA_FATHER = 100
+	IF ( XSLCT_PAIR = 1 )				;執事がつきそうを選択した場合
+		URA_STEWARD++					;１日当たり執事との関係が1上がります
+		IF ( URA_STEWARD>100 ) URA_STEWARD=100	; 執事との関係
+	TIMER1(DAY_TIMER)							;
+	B_STRESS -= 2						;ストレスが１日あたり2低下します．
+	IF ( B_STRESS < 0 ) B_STRESS=0		; ストレス
+	IF ( URA_FATHER < 0 ) URA_FATHER=0	; 父との関係
+	IF ( URA_STEWARD < 0 ) URA_STEWARD=0 ; 執事との関係
+	GRPUPD(1,0,B_STRESS)				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ 更新
+	WAIT1
+
+	BORTH_CHECK
+
+	IF ( DAY_COUNTER ! 1 )
+		CLENDER(3)			;カレンダー・更新処理
+		CLENDER(2)			;カレンダー・再表示
+LOOP DAY_COUNTER
+ALL_CLOSE
+
+RUN_BACANCE[0]++	;「休みをあげる」実行回数
+RUN_BACANCE[4]++	;「安静」実行回数
+RET
+
+;***************************************
+;
+;		サナトリウム
+;
+;＊「サナトリウム」は郊外にある静養施設です．
+;＊１日あたり20Gかかります．
+;＊１日あたりストレスが11減ります．
+;
+;***************************************
+
+*R_SANATORIUM	; 4=サナトリウム
+
+TXOPEN(1)
+TXA(NAME_FAMILY)親子は郊外のサナトリウムに出かけた・・・
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F039")	;執事・普通
+「＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+PAY_MONEY_DAY=20		;１日あたり20Gかかります．
+
+ALL_OPEN
+DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+	GOLDCMP(PAY_MONEY_DAY)
+	IF ( AX = 2 )
+		TXOPEN(1)
+		所持金がなくなりました。
+		@P
+		TXCLOSE(1)
+			TIMER1(DAY_TIMER)
+			BORTH_CHECK
+			WAIT1
+			IF ( DAY_COUNTER <=1 ) GOTO R_SANATO_END
+			CLENDER(3)				;カレンダー・更新処理
+			CLENDER(2)				;カレンダー・再表示
+		LOOP DAY_COUNTER
+		GOTO R_SANATO_END
+	IF ( AX ! 2 )
+		GOLDSUB(PAY_MONEY_DAY)		;１日あたり所持金が10Gづつ減り
+		WWPROF(3)					; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+		B_STRESS -= 11				;＊１日あたりストレスが11減
+	IF ( B_STRESS < 0 ) B_STRESS=0	; ストレス
+
+	TIMER1(DAY_TIMER)				;
+	GRPUPD(1,0,B_STRESS)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ 更新
+	WAIT1
+
+	BORTH_CHECK
+
+	IF ( DAY_COUNTER ! 1 )
+		CLENDER(3)				;カレンダー・更新処理
+		CLENDER(2)				;カレンダー・再表示
+LOOP DAY_COUNTER
+*R_SANATO_END
+ALL_CLOSE
+
+RUN_BACANCE[0]++	;「休みをあげる」実行回数
+RUN_BACANCE[5]++	;「サナトリウム」実行回数
+
+RET
+
+*ALL_OPEN
+FLAG_ALLOPEN=1
+IF ( S_WORKS = 0 )			; 0=自由行動
+	WWIVENT(1,0,"E009")		; ivent window open.
+	GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	STRSCLEAR				;
+	IGRP_TBL1[0]="ストレス"	IGRP_TBL3[0]=B_STRESS		; ストレス
+	IGRP_CNT=1
+	IGRP_X=52
+	IGRP_Y=192
+	GRPOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	RET
+IF ( S_WORKS = 2 )			; 2=監視
+	WWIVENT(1,0,"E009")		; ivent window open.
+	GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	STRSCLEAR				;
+	IGRP_TBL1[0]="ストレス"	IGRP_TBL3[0]=B_STRESS		; ストレス
+	IGRP_CNT=1
+	IGRP_X=52
+	IGRP_Y=192
+	GRPOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	RET
+IF ( S_WORKS = 3 )			; 3=安静
+	::WWIVENT(1,0,"E009")		; ivent window open.
+	GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	STRSCLEAR
+	IGRP_TBL1[0]="ストレス"	IGRP_TBL3[0]=B_STRESS		; ストレス
+	IGRP_CNT=1
+	IGRP_X=32
+	IGRP_Y=340
+	GRPOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	RET
+IF ( S_WORKS = 4 )			; 4=サナトリウム
+	GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	STRSCLEAR
+	IGRP_TBL1[0]="ストレス"	IGRP_TBL3[0]=B_STRESS		; ストレス
+	IGRP_CNT=1
+	IGRP_X=32
+	IGRP_Y=340
+	GRPOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	RET
+RET
+
+*ALL_CLOSE
+IF ( FLAG_ALLOPEN=1 )
+	FLAG_ALLOPEN=0
+	IF ( S_WORKS = 0 )		; 0=自由行動
+		GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+		WWIVENT(2,0)		; ivent window close.
+		RET
+	IF ( S_WORKS = 2 )		; 2=監視
+		GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+		WWIVENT(2,0)		; ivent window close.
+		RET
+	IF ( S_WORKS = 3 )		; 3=安静
+		GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+		;;WWIVENT(2,0)		; ivent window close.
+		RET
+	IF ( S_WORKS = 4 )		; 4=サナトリウム
+		GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+		RET
+RET
+
+;18 ムダ使い
+;【 概　要 】娘が勝手に買物をしてしまう．
+;【 いつ？ 】休息の１旬終了時．
+;【発生条件】非行化指数が１以上で，かつ，所持金が仕立屋，雑貨屋，料理屋のいずれか
+;				で買物出来る額あるときに，《非行化指数％》の確率で発生．
+;【 効　果 】仕立屋，雑貨屋，料理屋のなかから，ランダムにどれか一つ買物をする．
+;				手に入れた品物は，通常の買物同様の効果がある．
+;				持物がいっぱいの場合は，料理屋を選ぶ．
+
+*EVENT018
+IF ( S_BYOUKI>=90 )					; 病気指数(%)
+	E_ETC[35] = 0					;強制的に「ムダ使い」が発生する
+	RET
+IF ( E_ETC[35] = 1 )				;強制的に「ムダ使い」が発生する
+	E_ETC[35] = 0					;強制的に「ムダ使い」が発生する
+	GOLDCMP(200)					; 娘の所持金
+	IF ( AX ! 2 ) 					; 娘の所持金
+		E_ETC[9] = 1				;「無駄遣い」実行中
+		LOAD("KAIMONO")				;買い物
+IF ( S_HIKOUKA >= 1 )				; 非行化指数(%)
+	GOLDCMP(200)					; 娘の所持金
+	IF ( AX ! 2 ) 					; 娘の所持金
+		RANDAM(100)					;
+		IF ( IRND <= S_HIKOUKA )	;《非行化指数％》の確率で発生．
+			E_ETC[9] = 1			;「無駄遣い」実行中
+			LOAD("KAIMONO")			;買い物
+RET
+
+;	ムダ使い防止
+;	監視の追加
+;	監視により執事が無駄使いを阻止します．
+;	【発生条件】非行化指数が１以上で，かつ，
+;	所持金が仕立屋，雑貨屋，料理屋のいずれか
+;	で買物出来る額あるときに，《非行化指数％》の確率で発生．
+;	（↑この発生条件はイベント「ムダ使い」と同じです）
+
+*EVENT018X2ND
+IF ( S_BYOUKI>=90 )					; 病気指数(%)
+	E_ETC[35] = 0					;強制的に「ムダ使い」が発生する
+	RET
+IF ( E_ETC[35] = 1 )				;強制的に「ムダ使い」が発生する
+	E_ETC[35] = 0					;強制的に「ムダ使い」が発生する
+	GOLDCMP(200)					; 娘の所持金
+	IF ( AX ! 2 ) 					; 娘の所持金
+		EV18X2ND
+		RET
+IF ( S_HIKOUKA >= 1 )				; 非行化指数(%)
+	GOLDCMP(200)					; 娘の所持金
+	IF ( AX ! 2 ) 					; 娘の所持金
+		RANDAM(100)					;
+		IF ( IRND <= S_HIKOUKA )	;《非行化指数％》の確率で発生．
+			EV18X2ND
+			RET
+RET
+
+
+*EV18X2ND
+TXLC(2,17,148,1)	; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+
+TXOPEN(3)
+TXGIRL(0)	;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(2)
+TXFACE("F046")		;執事・困り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(8)	;娘・すねる
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+;執事・困り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+TXGIRL(11)	;娘・不安
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@2
+@C
+TXFACE("F045")		;執事・怒り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@3
+@C
+;娘・不安
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXCLOSE(2)
+URA_STEWARD += 5		; 「執事との関係」が５上昇
+RET
+
+;************************************
+;	誕生日チェック
+;************************************
+
+*BORTH_CHECK
+
+IF ( P_BORTHMONTH = VAL_MONTH  P_BORTHDAY = VAL_DAY )			; 娘の誕生日
+	IF ( P_BORTHMONTH[1] = VAL_MONTH  P_BORTHDAY[1] = VAL_DAY )	; 父の誕生日
+		E_ETC[14]=P_NENREI[1]			;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )			;父との関係値が６０以上
+			ALL_CLOSE
+			EVE4243						;娘の誕生日と父の誕生日の合体
+			IF ( DAY_COUNTER ! 1 )
+				ALL_OPEN
+			RET
+
+IF ( P_BORTHMONTH = VAL_MONTH )			; 誕生月
+	IF ( P_BORTHDAY = VAL_DAY )			; 誕生日
+		ALL_CLOSE
+		EVENT042						; 42 娘の誕生日
+		IF ( DAY_COUNTER ! 1 )
+			ALL_OPEN
+		RET
+
+IF ( P_BORTHMONTH[1] = VAL_MONTH )		; 父の誕生月
+	IF ( P_BORTHDAY[1] = VAL_DAY )		; 父の誕生日
+		E_ETC[14]=P_NENREI[1]			;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )			;父との関係値が６０以上
+			ALL_CLOSE
+			EVENT043					; 43 父の誕生日
+			IF ( DAY_COUNTER ! 1 )
+				ALL_OPEN
+			RET
+RET
+
+;
+;	end of "SCNKYUSO.TXT"
+;
+

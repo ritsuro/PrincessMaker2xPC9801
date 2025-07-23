@@ -1,0 +1,144 @@
+; "SCNKENKO.TXT"
+;
+;メインコマンド「健康管理」シナリオ
+
+
+.SELECT_FLAG=0
+
+.STR_HEALTH
+
+TXLC(2,1,260,2)		; text window locate.
+TXLC(5,1,170,0)		; text window locate.
+TXLC(11,31,220,2)	; text window locate.
+
+SYUKENKO
+
+LOAD("MAINLOOP")
+
+;***************************************
+;	健康管理
+;***************************************
+
+*SYUKENKO
+TXOPEN(2)
+TXFACE("F039")	; 執事・普通
+「＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+SLCPOS(4)		; 4=メインSLCT発生位置
+SLCT("無理はさせない,とにかく丈夫な子に,おしとやかな子に,ダイエットさせる")
+@C
+IF ( ISLCT=0 )
+	SL_MIRI_WA_SA
+	TXCLOSE(2)
+	WWPROF(2)						; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+	RET
+IF ( ISLCT=1 )
+	SL_TONIKAKU_J
+	TXCLOSE(2)
+	WWPROF(2)						; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+	RET
+IF ( ISLCT=2 )
+	SL_OSHITOYAKA
+	TXCLOSE(2)
+	WWPROF(2)						; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+	RET
+IF ( ISLCT=3 )
+	SL_DIET
+	TXCLOSE(2)
+	WWPROF(2)						; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・再表示
+	RET
+TXCLOSE(2)
+RET
+
+*SL_MIRI_WA_SA
+	SELECT_FLAG=0
+	TXOPEN(5)
+	STR_HEALTH="無理はさせない"
+	TXA(STR_HEALTH)
+	@2
+	TXFACE("F039")	; 執事・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	HOUSHIN_CHECK
+	TXCLOSE(5)
+	RET
+
+*SL_TONIKAKU_J
+	SELECT_FLAG=1
+	TXOPEN(5)
+	STR_HEALTH="とにかく丈夫な子に"
+	TXA(STR_HEALTH)
+	STR_HEALTH="とにかく丈夫な子"
+	@2
+	TXFACE("F039")	; 執事・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	HOUSHIN_CHECK
+	TXCLOSE(5)
+	RET
+
+*SL_OSHITOYAKA
+	SELECT_FLAG=2
+	TXOPEN(5)
+	STR_HEALTH="おしとやかな子に"
+	TXA(STR_HEALTH)
+	@2
+	TXFACE("F039")	; 執事・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	HOUSHIN_CHECK
+	TXCLOSE(5)
+	RET
+
+*SL_DIET
+	SELECT_FLAG=3
+	TXOPEN(5)
+	STR_HEALTH="ダイエットさせる"
+	TXA(STR_HEALTH)
+	@2
+	;体重が《（身長×０．９）－１０５》以上の場合
+
+	C1=P_SHINCHO * 9 / 10 -105		; 身長
+
+	IF ( P_TAIJYU >= C1 )			; 体重
+		TXFACE("F039")	; 執事・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+
+	IF ( P_TAIJYU < C1 )
+		; 体重が《（身長×０．９）－１０５》未満の場合
+		TXFACE("F046")	; 執事・困り
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+	HOUSHIN_CHECK
+	TXCLOSE(5)
+	RET
+
+
+*HOUSHIN_CHECK
+SLCTX("この方針でいこう,今まで通り")
+
+IF ( ISLCT=1 ) RET
+
+;この方針でいこうを選択した場合
+IF ( FLAG_KENKO ! SELECT_FLAG )			; 健康管理
+	;選択した方針がこれまでの方針と違う場合
+	TXFACE("F041")	; 執事・すまし
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+
+	SI = STR_HEALTH					; セットする文字列
+	STRCOPY(S_HEALTH_CARE)			; 健康管理 string
+
+	FLAG_KENKO = SELECT_FLAG		; 健康管理
+	RET
+;選択した方針がこれまでの方針と同じ場合
+TXFACE("F040")	; 執事・嬉しい
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+RET
+
+;
+;	end of "SCNKENKO.TXT"
+;
+

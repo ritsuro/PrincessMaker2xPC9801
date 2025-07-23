@@ -1,0 +1,1055 @@
+; "SCNGIRL.TXT"
+;
+;
+;	メインコマンド「娘と話す」シナリオ
+;
+;	C1 = 0	:	親子の語らい
+;			C2 = 0	:	近頃の調子
+;			C2 = 1	:	勉強のこと
+;			C2 = 2	:	その他の話題
+;	C1 = 1	:	おこづかい
+;	C1 = 2	:	お説教
+;	C1 = 3	:	全会話(デバック用)
+;
+
+.GIVE_GOLD = 0
+
+TXLC(1,20,250,0)	; text window locate.
+TXLC(3,20,250,2)	; text window locate.
+
+SCNGIRL
+
+LOAD("MAINLOOP")
+
+;***************************************
+;	娘と話す
+;***************************************
+
+*SCNGIRL
+
+E_ETC[91]=VAL_DAY			;最新の「娘と話す」日
+E_ETC[38]=VAL_MONTH			;最新の「娘と話す」月
+E_ETC[39]=VAL_YEAR			;最新の「娘と話す」年
+
+RUN_TALK[0]++				;「娘と話す」実行回数
+
+IF ( C1 = 0 )				;親子の語らい
+	RUN_TALK[1]++			;「親子の語らい」実行回数
+	SLC_TALK
+	RET
+IF ( C1 = 1 )				;おこづかい
+	RUN_TALK[2]++			;「おこづかい」実行回数
+	SLC_MONEY
+	RET
+IF ( C1 = 2 )				;お説教
+	RUN_TALK[3]++			;「お説教」実行回数
+	SLC_SERMON
+	RET
+;;IF ( C1 = 3 )				;全会話
+;;	ALL_TEST				;全会話テスト
+;;	RET
+RET
+
+;**************
+;	親子の語らいを選択した場合
+;			C2 = 0	:	近頃の調子
+;			C2 = 1	:	勉強のこと
+;			C2 = 2	:	その他の話題
+;**************
+
+*SLC_TALK
+IF ( C2 = 0 )	SAIKIN_CHO		RET
+IF ( C2 = 1 )	SAIKIN_STUDY	RET
+IF ( C2 = 2 )	SAIKIN_SONOTA	RET
+RET
+
+;**************
+;	近頃の調子を選択した場合
+;	＊娘の反応メッセージは，平常時，病気時，非行化時で大きく変わります．
+;	＊病気時は，病状の程度によって，娘の反応メッセージが決定します．
+;	この時，「父との関係」が５上がります．
+;	＊非行化時は，非行化の程度によって，娘の反応メッセージが決定します．
+;	この時，「父との関係」が３上がります．
+;**************
+
+*SAIKIN_CHO
+
+IF ( FLAG_BYOUKI ! 0 )	CHO_BYOUKI	RET		;状態・病気
+IF ( FLAG_HIKOUKA ! 0 )	CHO_HIKOUKA	RET		;状態・非行化
+
+;各項目の中からランダムに選ばれ，それぞれの数値によって決定されます．
+;この時，「父との関係」が１上がります．
+
+URA_FATHER += 1			;父との関係
+IF ( URA_FATHER >100 ) URA_FATHER = 100
+
+RANDAM(7)
+IF ( IRND=1 )	CHO_FATHER		RET			;父との関係
+IF ( IRND=2 )	CHO_STEWARD		RET			;執事との関係
+IF ( IRND=3 )	CHO_MOTHER_LOVE	RET			;母性
+IF ( IRND=4 )	CHO_KILL_MONSTR	RET			;モンスター殺戮数
+IF ( IRND=5 )	CHO_SHINKOH		RET			;信仰
+IF ( IRND=6 ) 	CHO_KANJUSEI	RET			;感受性
+IF ( IRND=7 )	CHO_STRESS		RET			;ストレス
+RET
+
+;**************
+;	病気
+;**************
+
+*CHO_BYOUKI
+URA_FATHER += 5			;父との関係が５上がる
+IF ( URA_FATHER >100 ) URA_FATHER = 100
+
+TXOPEN(3)
+IF ( S_BYOUKI < 20 )	;風邪気味の場合
+	TXGIRL(7)			;娘・苦しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( S_BYOUKI < 50 )	;軽い肺炎の場合
+	TXGIRL(7)			;娘・苦しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( S_BYOUKI < 80 )	;悪性の肺炎の場合
+	TXGIRL(7)			;娘・苦しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( S_BYOUKI >= 80 )	;重態の場合
+	TXGIRL(7)				;娘・苦しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	非行化
+;**************
+
+*CHO_HIKOUKA
+URA_FATHER += 3			;父との関係が３上がる
+IF ( URA_FATHER >100 ) URA_FATHER = 100
+
+TXOPEN(3)
+IF ( S_HIKOUKA < 20 )	;やや反抗的の場合
+	TXGIRL(8)			;娘・すねる
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( S_HIKOUKA < 50 )	;反抗的の場合
+	TXGIRL(12)			;娘・不愉快
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( S_HIKOUKA < 80 )	;非行化の場合
+	TXGIRL(12)			;娘・不愉快
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( S_HIKOUKA >= 80 )	;愚連隊の仲間
+	TXGIRL(8)			;娘・すねる
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	【父との関係】の場合
+;**************
+
+*CHO_FATHER
+
+TXOPEN(3)
+IF ( URA_FATHER < 20 )	;２０未満
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_FATHER < 50 )	;２０～４９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_FATHER < 80 )	;５０～７９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_FATHER >= 80 )	;８０以上
+	TXGIRL(1)			;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	【執事との関係】の場合
+;**************
+
+*CHO_STEWARD
+
+TXOPEN(3)
+IF ( URA_STEWARD < 20 )		;２０未満
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_STEWARD < 50 )		;２０～４９
+	TXGIRL(9)				;娘・不思議
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_STEWARD < 80 )		;５０～７９
+	TXGIRL(1)				;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_STEWARD >= 80 )	;８０以上
+	TXGIRL(9)				;娘・不思議
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	【母性】の場合
+;**************
+
+*CHO_MOTHER_LOVE
+
+TXOPEN(3)
+IF ( URA_MOTHER_LOVE < 20 )		;２０未満
+	TXGIRL(3)					;娘・悲しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_MOTHER_LOVE < 50 )		;２０～４９
+	TXGIRL(0)					;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_MOTHER_LOVE < 80 )		;５０～７９
+	TXGIRL(0)					;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_MOTHER_LOVE >= 80 )	;８０以上
+	TXGIRL(0)					;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	【モンスター殺戮数】の場合
+;**************
+
+*CHO_KILL_MONSTR
+
+TXOPEN(3)
+IF ( URA_KILL_MONSTR = 0 )		;０
+	TXGIRL(0)					;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_KILL_MONSTR >=1  URA_KILL_MONSTR < 10 )		;１～９
+	TXGIRL(0)					;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_KILL_MONSTR >=10 URA_KILL_MONSTR < 50 )		;１０～５０
+	TXGIRL(0)					;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( URA_KILL_MONSTR >=50 )		;５０以上
+	TXGIRL(0)					;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	【信仰】の場合
+;**************
+
+*CHO_SHINKOH
+
+TXOPEN(3)
+IF ( B_SHINKOH < 30 )	;３０未満
+	TXGIRL(9)			;娘・不思議
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( B_SHINKOH < 80 )	;３０～７９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( B_SHINKOH < 200 )	;８０～２００
+	TXGIRL(1)			;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( B_SHINKOH >= 200 )	;２００以上
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	【感受性】の場合
+;**************
+
+*CHO_KANJUSEI
+
+TXOPEN(3)
+IF ( B_KANJUSEI < 30 )	;３０未満
+	TXGIRL(8)			;娘・すねる
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( B_KANJUSEI < 80 )	;３０～７９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( B_KANJUSEI < 200 )	;８０～２００
+	TXGIRL(1)			;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( B_KANJUSEI >= 200 )	;２００以上
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	【ストレス】の場合
+;**************
+
+*CHO_STRESS
+
+TXOPEN(3)
+IF ( B_STRESS < 30 )	;３０未満
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( B_STRESS < 60 )	;３０～５９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( B_STRESS < 100 )	;６０～９９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( B_STRESS >= 100 )	;１００以上
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	勉強のことを選択した場合
+;
+;	＊娘は，技能別能力の評価値が一番高い項目（戦士，魔法，社交，家事）に
+;	ついて話します．
+;	＊それぞれ，３つある技能のうちから，ランダムに選ばれた技能の数値の高さ
+;	によって，娘の反応メッセージが決定します．
+;**************
+
+*SAIKIN_STUDY
+
+URA_FATHER += 1				;父との関係が１上がる
+IF ( URA_FATHER >100 ) URA_FATHER = 100
+
+CHK_MAX4(H_SENSHI,H_MAHO,H_SYAKOH,H_KAJI)	;戦士，魔法，社交，家事
+IF ( SI = 1 )	STUDY_SENSHI	RET			;戦士
+IF ( SI = 2 )	STUDY_MAHO		RET			;魔法
+IF ( SI = 3 )	STUDY_SYAKOH	RET			;社交
+IF ( SI = 4 )	STUDY_KAJI		RET			;家事
+RET
+
+;**************
+;	戦士評価が最も高い場合
+;**************
+
+*STUDY_SENSHI
+RANDAM(3)
+IF ( IRND=1 )	SENSHI_SENTOH	RET		;戦闘技術
+IF ( IRND=2 )	SENSHI_KOUGEKI	RET		;攻撃力
+IF ( IRND=3 )	SENSHI_BOUGYO	RET		;防御力
+RET
+
+;**************
+;	戦闘技術
+;**************
+
+*SENSHI_SENTOH
+TXOPEN(3)
+IF ( V_SENTOH < 30 )	;１～２９
+	TXGIRL(11)			;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_SENTOH < 60 )	;３０～５９
+	TXGIRL(1)			;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_SENTOH < 90 )	;６０～８９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_SENTOH >= 90 )	;９０～１００
+	TXGIRL(14)			;娘・りりしい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	攻撃力
+;**************
+
+*SENSHI_KOUGEKI
+TXOPEN(3)
+IF ( V_KOUGEKI < 30 )	;１～２９
+	TXGIRL(11)			;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_KOUGEKI < 60 )	;３０～５９
+	TXGIRL(9)			;娘・不思議
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_KOUGEKI < 90 )	;６０～８９
+	TXGIRL(11)			;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_KOUGEKI >= 90 )	;９０～１００
+	TXGIRL(1)			;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	防御力
+;**************
+
+*SENSHI_BOUGYO
+TXOPEN(3)
+IF ( V_BOUGYO < 30 )	;１～２９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_BOUGYO < 60 )	;３０～５９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_BOUGYO < 90 )	;６０～８９
+	TXGIRL(1)			;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_BOUGYO >= 90 )	;９０～１００
+	TXGIRL(14)			;娘・りりしい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	魔法評価が最も高い場合
+;**************
+
+*STUDY_MAHO
+RANDAM(3)
+IF ( IRND=1 )	MAHO_MAHOGI		RET		;魔法技術
+IF ( IRND=2 )	MAHO_MARYOKU	RET		;魔力
+IF ( IRND=3 )	MAHO_KOHMAR		RET		;抗魔力
+RET
+
+;**************
+;	魔法技術
+;**************
+
+*MAHO_MAHOGI
+TXOPEN(3)
+IF ( V_MAHOGIJUTSU < 30 )	;１～２９
+	TXGIRL(11)				;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_MAHOGIJUTSU < 60 )	;３０～５９
+	TXGIRL(1)				;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_MAHOGIJUTSU < 90 )	;６０～８９
+	TXGIRL(11)				;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_MAHOGIJUTSU >= 90 )	;９０～１００
+	TXGIRL(1)				;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	魔力
+;**************
+
+*MAHO_MARYOKU
+TXOPEN(3)
+IF ( V_MARYOKU < 30 )	;１～２９
+	TXGIRL(11)			;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_MARYOKU < 60 )	;３０～５９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_MARYOKU < 90 )	;６０～８９
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_MARYOKU >= 90 )	;９０～１００
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	抗魔力
+;**************
+
+*MAHO_KOHMAR
+TXOPEN(3)
+IF ( V_KOHMARYOKU < 30 )	;１～２９
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_KOHMARYOKU < 60 )	;３０～５９
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_KOHMARYOKU < 90 )	;６０～８９
+	TXGIRL(14)				;娘・りりしい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_KOHMARYOKU >= 90 )	;９０～１００
+	TXGIRL(14)				;娘・りりしい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	社交評価が最も高い場合
+;**************
+
+*STUDY_SYAKOH
+RANDAM(3)
+IF ( IRND=1 )	SYAKOH_REIGI	RET		;礼儀作法
+IF ( IRND=2 )	SYAKOH_GEIJ		RET		;芸術
+IF ( IRND=3 )	SYAKOH_WAJYU	RET		;話術
+RET
+
+;**************
+;	礼儀作法
+;**************
+
+*SYAKOH_REIGI
+TXOPEN(3)
+IF ( V_REIGI < 30 )		;１～２９
+	TXGIRL(11)			;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_REIGI < 60 )		;３０～５９
+	TXGIRL(11)			;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_REIGI < 90 )		;６０～８９
+	TXGIRL(1)			;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_REIGI >= 90 )	;９０～１００
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	芸術
+;**************
+
+*SYAKOH_GEIJ
+TXOPEN(3)
+IF ( V_GEIJYUTSU < 30 )		;１～２９
+	TXGIRL(11)				;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_GEIJYUTSU < 60 )		;３０～５９
+	TXGIRL(1)				;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_GEIJYUTSU < 90 )		;６０～８９
+	TXGIRL(9)			;娘・不思議
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_GEIJYUTSU >= 90 )	;９０～１００
+	TXGIRL(1)				;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+
+;**************
+;	話術
+;**************
+
+*SYAKOH_WAJYU
+TXOPEN(3)
+IF ( V_WAJYUTU < 30 )		;１～２９
+	TXGIRL(11)				;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_WAJYUTU < 60 )		;３０～５９
+	TXGIRL(9)				;娘・不思議
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_WAJYUTU < 90 )		;６０～８９
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_WAJYUTU >= 90 )		;９０～１００
+	TXGIRL(1)				;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+
+;**************
+;	家事評価が最も高い場合
+;**************
+
+*STUDY_KAJI
+RANDAM(3)
+IF ( IRND = 1 )		KAJI_RYOURI		RET		;料理
+IF ( IRND = 2 )		KAJI_SOUJISE	RET		;掃除洗濯
+IF ( IRND = 3 )		KAJI_KIDATE		RET		;気だて
+RET
+
+;**************
+;	料理
+;**************
+
+*KAJI_RYOURI
+TXOPEN(3)
+IF ( V_RYOURI < 30 )		;１～２９
+	TXGIRL(11)				;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_RYOURI < 60 )		;３０～５９
+	TXGIRL(1)				;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_RYOURI < 90 )		;６０～８９
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_RYOURI >= 90 )		;９０～１００
+	TXGIRL(14)				;娘・りりしい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	掃除洗濯
+;**************
+
+*KAJI_SOUJISE
+TXOPEN(3)
+IF ( V_SOUJISENTAKU < 30 )	;１～２９
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_SOUJISENTAKU < 60 )	;３０～５９
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_SOUJISENTAKU < 90 )	;６０～８９
+	TXGIRL(1)				;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_SOUJISENTAKU >= 90 )	;９０～１００
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	気だて
+;**************
+
+*KAJI_KIDATE
+TXOPEN(3)
+IF ( V_KIDATE < 30 )		;１～２９
+	TXGIRL(11)				;娘・不安
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_KIDATE < 60 )		;３０～５９
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_KIDATE < 90 )		;６０～８９
+	TXGIRL(0)				;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+IF ( V_KIDATE >= 90 )		;９０～１００
+	TXGIRL(1)				;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+GOTO KAIWA_RET
+
+;**************
+;	その他の話題を選択した場合
+;	＊どの話題になるかはランダムです．
+;**************
+
+*SAIKIN_SONOTA
+
+URA_FATHER += 1			;父との関係
+IF ( URA_FATHER >100 ) URA_FATHER = 100
+
+RANDAM(13)
+*SAIKIN_SONOTA_TEST
+TXOPEN(3)
+IF ( IRND = 1 )				;名前の場合
+	TXGIRL(0)				;娘・普通
+	「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+
+IF ( IRND = 2 )				;血液型の場合
+	IF ( P_BLOOD = 0 )		;Ａ型の場合
+		TXGIRL(1)			;娘・嬉しい
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_BLOOD = 1 )		;Ｂ型の場合
+		TXGIRL(1)			;娘・嬉しい
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_BLOOD = 2 )		;Ｏ型の場合
+		TXGIRL(0)			;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_BLOOD = 3 )		;ＡＢ型の場合
+		TXGIRL(1)			;娘・嬉しい
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+
+IF ( IRND = 3 )				;誕生日の場合
+	TXGIRL(0)				;娘・普通
+	「TXPOINT(P_BORTHMONTH)＊TXPOINT(P_BORTHDAY)＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+
+IF ( IRND = 4 )				;子宮名の場合
+	TXGIRL(0)				;娘・普通
+	IF ( P_SHIKYU = 0 )		;0="白羊宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU = 1 )		;1="金牛宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU = 2 )		;2="双児宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU = 3 )		;3="巨蟹宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU = 4 )		;4="獅子宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU = 5 )		;5="処女宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU = 6 )		;6="天秤宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU = 7 )		;7="天蠍宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU = 8 )		;8="人馬宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU = 9 )		;9="磨羯宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU = 10 )	;10="宝瓶宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHIKYU =	11 )	;11="双魚宮"
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+
+IF ( IRND = 5 )		;身長の場合
+	IF ( P_SHINCHO < 15000 )				;身長150ｾﾝﾁ未満の場合
+		TXGIRL(0)							;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHINCHO >=15000 P_SHINCHO<16300)	;150ｾﾝﾁ以上163ｾﾝﾁ未満
+		TXGIRL(9)							;娘・不思議
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHINCHO >=16300 P_SHINCHO<17000)	;163ｾﾝﾁ以上170ｾﾝﾁ未満
+		TXGIRL(0)							;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_SHINCHO >=17000 )				;身長170ｾﾝﾁ以上の場合
+		TXGIRL(10)							;娘・恥らう
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+
+IF ( IRND = 6 )		;体重の場合
+	IF ( P_TAIJYU < 4500 )					;45ｷﾛ未満の場合
+		TXGIRL(11)							;娘・不安
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( P_TAIJYU >=4500 P_TAIJYU<5200 )	;45ｷﾛ以上，52ｷﾛ未満
+		TXGIRL(0)							;娘・普通
+		「＊＊＊＊＊＊＊＊＊」
+	IF ( P_TAIJYU >=5200 )					;52ｷﾛ以上の場合
+		TXGIRL(11)							;娘・不安
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+
+IF ( IRND = 7 )		;着衣の場合
+	TXGIRL(0)							;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+
+IF ( IRND = 8 )		;バストの大中小タイプの分類の場合
+	IF ( URA_BREAST_TYPE = 3 )			;大
+		IF ( B_IROKE >= 120 )			;色気が１２０以上の場合
+			TXGIRL(1)					;娘・嬉しい
+			「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		IF ( B_IROKE < 120 )			;色気が１２０未満の場合
+			TXGIRL(11)					;娘・不安
+			「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_BREAST_TYPE = 2 )			;中
+		IF ( B_IROKE >= 120 )			;色気が１２０以上の場合
+			TXGIRL(1)					;娘・嬉しい
+			「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		IF ( B_IROKE < 120 )			;色気が１２０未満の場合
+			TXGIRL(10)					;娘・恥らう
+			「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_BREAST_TYPE = 1 )			;小
+		IF ( B_IROKE >= 120 )			;色気が１２０以上の場合
+			TXGIRL(11)					;娘・不安
+			「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		IF ( B_IROKE < 120 )			;色気が１２０未満の場合
+			TXGIRL(1)					;娘・嬉しい
+			「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+
+IF ( IRND = 9 )		;ヒップの大中小タイプの分類の場合
+	IF ( URA_HIP_TYPE = 3 )				;大
+		TXGIRL(0)						;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( URA_HIP_TYPE = 2 )				;中
+		TXGIRL(11)						;娘・不安
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( URA_HIP_TYPE = 1 )				;小
+		TXGIRL(0)						;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO KAIWA_RET
+
+IF ( IRND = 10 )		;父との関係の場合
+	IF ( URA_FATHER < 30 )					;３０未満
+		TXGIRL(0)							;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_FATHER>=30 URA_FATHER<60 )		;３０以上６０未満
+		TXGIRL(0)							;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_FATHER>=60 URA_FATHER<90 )		;６０以上９０未満
+		TXGIRL(1)							;娘・嬉しい
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_FATHER >= 90 )					;９０以上
+		TXGIRL(1)							;娘・嬉しい
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+
+IF ( IRND = 11 )		;執事との関係の場合
+	IF ( URA_STEWARD < 50 )					;５０未満
+		TXGIRL(0)							;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_STEWARD >=50  URA_STEWARD<80 )	;５０以上８０未満
+		TXGIRL(0)							;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_STEWARD >=80 )					;８０以上
+		TXGIRL(10)							;娘・恥らう
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+
+IF ( IRND =12 )			;母性の場合
+	IF ( URA_MOTHER_LOVE < 30 )				;３０未満
+		TXGIRL(0)							;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_MOTHER_LOVE>=30  URA_MOTHER_LOVE <80 )	;３０以上８０未満
+		TXGIRL(0)							;娘・普通
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_MOTHER_LOVE >=80 )				;８０以上
+		TXGIRL(1)							;娘・嬉しい
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+
+IF ( IRND =13 )			;モンスター殺戮数の場合
+	IF ( URA_KILL_MONSTR = 0 )						;０
+		TXGIRL(11)									;娘・不安
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_KILL_MONSTR>=1 URA_KILL_MONSTR<10 )	;１～９
+		TXGIRL(1)									;娘・嬉しい
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_KILL_MONSTR>=10 URA_KILL_MONSTR<50 )	;１０～５０
+		TXGIRL(9)									;娘・不思議
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+	IF ( URA_KILL_MONSTR >= 50 )					;５０以上
+		TXGIRL(17)									;娘・真剣
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		GOTO KAIWA_RET
+GOTO KAIWA_RET
+
+*KAIWA_RET
+@P
+TXCLOSE(3)
+RET
+
+;**************
+;	おこづかいを選択した場合
+;**************
+
+*SLC_MONEY
+
+C1 = P_NENREI - 10		; 年齢
+C1 = C1 * 10
+GIVE_GOLD = 20 + C1
+
+IF ( FLAG_HIKOUKA ! 0 )			; 状態・非行化
+	TXOPEN(3)
+	TXGIRL(8)					;娘・すねる
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+
+	TXOPEN(1)
+	TXA(NAME_FIRST)にTXGOLD(GIVE_GOLD)渡した．
+	GOLDSUB(GIVE_GOLD)			; 娘の所持金
+	WWPROF(3)					; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+	@P
+	TXCLOSE(1)
+	E_ETC[35]=1					;強制的に「ムダ使い」が発生する
+								;翌月にイベント「ムダ使い」発生
+	RET
+
+IF ( FLAG_BYOUKI ! 0 )			; 状態・病気
+	TXOPEN(3)
+	TXGIRL(7)					;娘・苦しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	;（パラメータ変化なし）
+	@P
+	TXCLOSE(3)
+	RET
+
+;平常時
+TXOPEN(3)
+TXGIRL(0)						;娘・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+
+TXOPEN(1)
+TXA(NAME_FIRST)にTXGOLD(GIVE_GOLD)渡した．
+GOLDSUB(GIVE_GOLD)			;
+WWPROF(3)					; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+
+IF ( B_STRESS > 0 )
+	GR_OPEN
+	IGRP_TBL1[0] = "ストレス"
+	IGRP_TBL3[0] = B_STRESS
+	IGRP_CNT=1
+	IGRP_X=35
+	IGRP_Y=192
+	GRPOPEN(1,1)				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	;（所持金が一定額減り，ストレスが２０下がる）
+	IF ( B_STRESS < 20 )
+		ストレスがTXPOINT(B_STRESS)下がった．
+		B_STRESS = 0
+	IF ( B_STRESS >= 20 )
+		ストレスが２０下がった．
+		B_STRESS -= 20			; ストレス
+	GRPUPD(1,0,B_STRESS)
+	@P
+	GR_CLOSE
+	TXCLOSE(1)
+	RET
+@P
+TXCLOSE(1)
+RET
+
+;**************
+;	お説教を選択した場合
+;**************
+
+*SLC_SERMON
+TXOPEN(1)
+TXA(NAME_FAMILY)はTXA(NAME_FIRST)にお説教した．
+@P
+TXCLOSE(1)
+
+IF ( FLAG_HIKOUKA ! 0 )			; 状態・非行化
+	TXOPEN(3)
+	TXGIRL(3)					;娘・悲しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+
+	;（父との関係の数値分ストレスが下がる．父との関係が５上がる）
+
+	IF ( B_STRESS > 0 )
+		TXOPEN(1)
+		GR_OPEN
+		IGRP_TBL1[0] = "ストレス"
+		IGRP_TBL3[0] = B_STRESS
+		IGRP_CNT=1
+		IGRP_X=35
+		IGRP_Y=192
+		GRPOPEN(1,1)				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+		IF ( B_STRESS < URA_FATHER )
+			ストレスがTXPOINT(B_STRESS)下がった．
+			B_STRESS = 0
+		IF ( B_STRESS >= URA_FATHER )		; 父との関係
+			C1 = URA_FATHER
+			IF ( C1 = 0 ) C1 = 1
+			ストレスがTXPOINT(C1)下がった．
+			B_STRESS -= C1			; ストレス
+		GRPUPD(1,0,B_STRESS)
+		@P
+		GR_CLOSE
+		TXCLOSE(1)
+	URA_FATHER += 5			; 父との関係
+	IF ( URA_FATHER >100 ) URA_FATHER = 100
+	RET
+
+IF ( FLAG_BYOUKI ! 0 )		; 状態・病気
+	TXOPEN(3)
+	TXGIRL(3)				;娘・悲しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(3)
+
+	;（ストレスが５上がる．父との関係が５下がる）
+	
+	TXOPEN(1)
+	GR_OPEN
+	IGRP_TBL1[0] = "ストレス"
+	IGRP_TBL3[0] = B_STRESS
+	IGRP_CNT=1
+	IGRP_X=35
+	IGRP_Y=192
+	GRPOPEN(1,1)				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+	ストレスが５上がった．
+	B_STRESS += 5				; ストレス
+	GRPUPD(1,0,B_STRESS)
+	@P
+	GR_CLOSE
+	TXCLOSE(1)
+	URA_FATHER -= 5				; 父との関係
+	IF ( URA_FATHER < 0 ) URA_FATHER = 0
+	RET
+
+;平常時
+TXOPEN(3)
+TXGIRL(11)					;娘・不安
+「＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(3)
+TXOPEN(1)
+TXA(NAME_FIRST)は釈然としない風だった・・・・・・
+@P
+TXCLOSE(1)
+;（父との関係が２下がる）
+URA_FATHER -= 2				; 父との関係
+IF ( URA_FATHER < 0 ) URA_FATHER = 0
+RET
+
+;**************
+;	lib.
+;**************
+
+*CHK_MAX4
+IF ( AX >= BX )
+	IF ( AX >= CX )
+		IF ( AX >= DX )
+			SI = 1
+			RET
+		SI = 4
+		RET
+	IF ( CX >= DX )
+		SI = 3
+		RET
+	SI = 4
+	RET
+IF ( BX >= CX )
+	IF ( BX >= DX )
+		SI = 2
+		RET
+	SI = 4
+	RET
+IF ( CX >= DX )
+	SI = 3
+	RET
+SI = 4
+RET
+
+;
+;	end of "SCNGIRL.TXT"
+;
+
