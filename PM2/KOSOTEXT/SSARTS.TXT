@@ -1,0 +1,911 @@
+; "SSARTS.TXT"
+;
+;	「王国芸術祭」
+;
+;
+;	E_ETC[60]	;娘の絵の点数
+
+STRSCLEAR
+
+;;ROOM_PIC=0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;E_ETC[60]=120	;娘の絵の点数
+
+.R_MN_NUMBER	=0		;競技者番号
+.R_FACE			=0		;フェイス
+.R_NAME			=0		;名前
+.R_SCORE		=0		;点数
+.R_TITLE		=0		;作品名
+
+.ALCX[10]
+.ALCY[10]
+.ALCC[10]
+.ALCF[10]
+.ALCCNT[10]
+
+.APUTNUM
+
+.ANM_LOP1
+.ANM_CNT1
+
+.TBL_NAME[8]			;名前
+.TBL_FACE[8]			;ﾌｪｲｽ
+.TBL_SCORE[8]			;得点
+.TBL_TITLE[8]			;ﾀｲﾄﾙ
+.TBL_WORKS[8]			;得点
+
+.ITEM_KOUKA[1]			;効果
+.ITEM_ATTRBUTE[1]		;種別
+
+.NN_CHALENG				;競技者
+
+.FLAG_TAKE_BRUSH=0
+.CATCH_GOLD
+
+.ENTRY_YUSHO=0			;優勝
+.ENTRY_2II=0			;２位
+.ENTRY_3II=0			;３位
+
+.POINT_YUSHO=0			;優勝
+.POINT_2II=0			;２位
+.POINT_3II=0			;３位
+
+.TIMEWAIT1
+
+.TBL_ANM_X[9]	= 24, 40, 72,136,168,224,280,320,392
+.TBL_ANM_Y[9]	=160,156,168,152,153,158,152,158,161
+.TBL_LINK_LC[9]	=4, 2, 1, 6, 7, 9, 8, 3, 5
+
+.PICXX=31
+.PICYY=60
+.XXX
+.YYY
+.XXX1
+.YYY1
+.FXX1
+.FYY1
+.SHOFRM_TYPE
+.SHOWPOINT
+
+.STR_WORK="11223344556677"
+
+.CLENDCOUNT=0
+.CLENDMAX=0
+
+.ANM_NONE_MAN=0
+
+.WTIME_ARTS=4
+.WTIME_ARTS2=60
+
+;TXLC(1,21,260,0)		;text window locate.
+;TXLC(2,32,260,1)		;text window locate.
+;TXLC(3,32,260,1)		;text window locate.
+
+ARTS_MAIN				;「王国芸術祭」
+
+C1 = 2				;2=「王国芸術祭」
+LOAD("SSALEND")
+
+;**************
+;	「王国芸術祭」
+;**************
+
+*ARTS_MAIN
+
+TXLC(18,23,252,0)		;text window locate.
+TXLC(16,32,252,1)		;text window locate.
+TXLC(17,23,252,0)		;text window locate.
+
+FRAME_OPEN				;フレーム
+ANM_PTN_LOAD
+ANIME_INIT
+ANIME_LOCSET
+ANIME_START
+EFC(16)					;ノーマルカラー
+
+TXOPEN(17)
+大勢の作品に混じって，TXA(NAME_FIRST)の描いた絵も展示された．
+@P
+TXCLOSE(17)
+
+OPEN_GIRL_PIC
+
+TXOPEN(16)
+IF ( V_GEIJYUTSU <= 50 );20 )	;芸術値１～２０
+	TXFACE("F124")			;若者・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO ARTS_MAIN_33
+IF ( V_GEIJYUTSU <= 55 );30 )	;芸術値２１～３０
+	TXFACE("F129")			;狩人・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO ARTS_MAIN_33
+IF ( V_GEIJYUTSU <= 64 );40 )	;芸術値３１～４０
+	TXFACE("F125")			;商人・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO ARTS_MAIN_33
+IF ( V_GEIJYUTSU <= 70 );50 )	;芸術値４１～５０
+	TXFACE("F123")			;村娘・普通
+	「＊＊＊＊＊＊＊＊＊」
+	GOTO ARTS_MAIN_33
+IF ( V_GEIJYUTSU <= 78 );60 )	;芸術値５１～６０
+	TXFACE("F128")			;農夫・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO ARTS_MAIN_33
+IF ( V_GEIJYUTSU <= 92 );70 )	;芸術値６１～７０
+	TXFACE("F126")			;老人・普通
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO ARTS_MAIN_33
+IF ( V_GEIJYUTSU <= 95 );80 )	;芸術値７１～８０
+	TXFACE("F072")			;紳士(支配人サバ)
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO ARTS_MAIN_33
+IF ( V_GEIJYUTSU <= 99 );90 )	;芸術値８１～９０
+	TXFACE("F082")			;大臣・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	GOTO ARTS_MAIN_33
+;芸術値９１以上
+TXFACE("F083")			;司教・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+*ARTS_MAIN_33
+@P
+TXCLOSE(16)
+CLOSE_GIRL_PIC
+
+CLENDER(1)		; カレンダー・表示
+ANIME_ARTS(20)			;カレンダー２０日まで進む．
+
+TXOPEN(17)
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@P
+@C
+IF ( V_GEIJYUTSU <= 30 )	;芸術値１～３０
+	＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	GOTO ARTS_MAIN_44
+
+IF ( V_GEIJYUTSU <= 60 )	;芸術値３１～６０
+	＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	GOTO ARTS_MAIN_44
+
+IF ( V_GEIJYUTSU <= 90 )	;芸術値６１～９０
+	＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	GOTO ARTS_MAIN_44
+
+IF ( V_GEIJYUTSU >= 91 )	;芸術値９０以上
+	＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+
+*ARTS_MAIN_44
+
+@P
+TXCLOSE(17)
+
+TXOPEN(16)
+TXFACE("F078")			;係官
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+
+ANM_NONE_MAN=1
+
+ANIME_ARTS(10)			;カレンダーさらに３０日まで進む．
+
+MUSIC(2)				;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(17)
+そして，審査の発表の日・・・・・・
+@P
+TXCLOSE(17)
+
+;**************
+;	授賞式
+;**************
+
+FRAME_HYOSHO			;授賞frame.
+
+PLAY(26)				;P26 表彰
+
+TXLC(18,21,260,0)		;text window locate.
+TXLC(16,34,260,1)		;text window locate.
+TXLC(17,19,124,2)		;text window locate.
+
+CHLNG_TBL_SET				;集計
+IF ( IDBG[3]=1 ) DBG_LIST	;芸術祭の得点一覧
+
+TXOPEN(16)
+TXFACE("F078")			;係官
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+「＊＊＊TXA(TBL_NAME[ENTRY_3II])＊＊＊＊＊TXA(TBL_TITLE[ENTRY_3II])＊＊＊＊TXPOINT(POINT_3II)＊」
+R_NAME = TBL_NAME[ENTRY_3II]
+SHOWPOINT = POINT_3II
+SHOFRM_TYPE=0
+FRM_SHO_ENTRY
+@P
+@C
+「TXA(TBL_NAME[ENTRY_3II])＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+IF ( ENTRY_3II ! 1 )
+	TXOPEN(17)
+	SI = TBL_FACE[ENTRY_3II] TXFACE
+	「＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+IF ( ENTRY_3II = 1 )	;娘の場合
+	TXOPEN(17)
+	TXGIRL(1)		;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+TXSLCT(16)
+@C
+「＊＊＊＊＊＊TXA(TBL_NAME[ENTRY_2II])＊＊＊TXA(TBL_TITLE[ENTRY_2II])＊＊＊＊＊TXPOINT(POINT_2II)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+R_NAME = TBL_NAME[ENTRY_2II]
+SHOWPOINT = POINT_2II
+SHOFRM_TYPE=1
+FRM_SHO_ENTRY
+@P
+IF ( ENTRY_2II ! 1 )
+	TXOPEN(17)
+	SI = TBL_FACE[ENTRY_2II] TXFACE
+	「＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+IF ( ENTRY_2II = 1 )	;娘の場合
+	TXOPEN(17)
+	TXGIRL(1)		;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+TXSLCT(16)
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+「TXA(TBL_NAME[ENTRY_YUSHO])＊＊＊＊＊TXA(TBL_TITLE[ENTRY_YUSHO])＊＊＊＊＊＊＊＊TXPOINT(POINT_YUSHO)＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+R_NAME = TBL_NAME[ENTRY_YUSHO]
+SHOWPOINT = POINT_YUSHO
+SHOFRM_TYPE=2
+FRM_SHO_ENTRY
+@P
+IF ( ENTRY_YUSHO ! 1 )
+	TXOPEN(17)
+	SI = TBL_FACE[ENTRY_YUSHO] TXFACE
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+
+IF ( ENTRY_YUSHO = 1 )	;娘の場合
+	TXOPEN(17)
+	TXGIRL(1)		;娘・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+
+TXCLOSE(16)
+
+TXOPEN(16)
+TXFACE("F086")		;国王・普通
+「TXA(TBL_NAME[ENTRY_YUSHO])＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+TXCLOSE(17)
+
+CATCH_GOLD=0
+FLAG_TAKE_BRUSH=0
+
+IF ( ENTRY_3II=1 )		;娘が３位入賞の場合
+	CATCH_GOLD = 800
+	GOLDADD(CATCH_GOLD)
+	XGRP_OPEN
+	TXOPEN(18)
+	TXA(NAME_FIRST)は芸術祭銅賞の賞金８００Ｇをもらった！
+	社交評価が１０上がった！
+	H_SYAKOH += 10			;社交評価
+	GRPUPD(1,0,H_SYAKOH)
+	@P
+	TXCLOSE(18)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+IF ( ENTRY_2II=1 )		;娘が２位入賞の場合
+	CATCH_GOLD = 1200
+	GOLDADD(CATCH_GOLD)
+	XGRP_OPEN
+	TXOPEN(18)
+	TXA(NAME_FIRST)は芸術祭銀賞の賞金１２００Ｇをもらった！
+	社交評価が２０上がった！
+	H_SYAKOH += 20			;社交評価
+	GRPUPD(1,0,H_SYAKOH)
+	@P
+	TXCLOSE(18)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+IF ( ENTRY_YUSHO=1 )	;娘が優勝の場合
+	CATCH_GOLD = 4000
+	GOLDADD(CATCH_GOLD)
+	XGRP_OPEN
+	TXOPEN(18)
+	TXA(NAME_FIRST)は芸術祭金賞の賞金４０００Ｇ@@
+	IF ( ITEM_MAX >= ITEM_DIM )		;所有最大アイテム数
+		をもらった！
+	IF ( ITEM_MAX < ITEM_DIM )		;所有最大アイテム数
+		と，副賞の『名匠の絵筆』をもらった！
+		SHOW_ITEMS				;アイテム表示
+		TAKE_ITEM				;アイテム取得
+		FLAG_TAKE_BRUSH=1
+	社交評価が３０上がった！
+	H_SYAKOH += 30			;社交評価
+	GRPUPD(1,0,H_SYAKOH)
+	@P
+	IF ( FLAG_TAKE_BRUSH=1 )	ITEMPRN(2)	;マルチアイテム復帰
+	TXCLOSE(18)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+IF ( ENTRY_YUSHO!1  ENTRY_2II!1  ENTRY_3II!1 )
+	TIMER1(30)
+	WAIT1
+	TXOPEN(17)
+	TXFACE("F043")	;執事・安心
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXPOINT(TBL_SCORE[1])＊＊＊＊」
+	@P
+	TXCLOSE(17)
+RET
+
+;**************
+;	集計
+;**************
+
+*CHLNG_TBL_SET
+NN_CHALENG = 1
+*CHLNG_TBL_SET_LOP
+	CHALNG_PARA_SET
+	TBL_NAME[NN_CHALENG]=R_NAME		;名前
+	TBL_FACE[NN_CHALENG]=R_FACE		;ﾌｪｲｽ
+	TBL_SCORE[NN_CHALENG]=R_SCORE	;得点
+	TBL_TITLE[NN_CHALENG]=R_TITLE	;ﾀｲﾄﾙ
+	NN_CHALENG++
+IF ( NN_CHALENG <= 7 ) GOTO CHLNG_TBL_SET_LOP
+CHLNG_CHECK
+RET
+
+*DBG_LIST
+TXOPEN(18)
+C1 = 7  C2 = 1
+	TXA(TBL_NAME[C2])（TXA(TBL_FACE[C2])）はTXA(TBL_TITLE[C2])，得点TXPOINT(TBL_SCORE[C2])．
+	C2++
+	@P
+LOOP C1
+TXCLOSE(18)
+RET
+
+*CHLNG_CHECK
+C1 = 7  C2 = 1
+	TBL_WORKS[C2] = TBL_SCORE[C2]
+	C2++
+LOOP C1
+
+SCORE_CHK
+ENTRY_YUSHO=C4			;優勝
+POINT_YUSHO=C3
+TBL_WORKS[C4]=0
+
+SCORE_CHK
+ENTRY_2II=C4			;２位
+POINT_2II=C3
+TBL_WORKS[C4]=0
+
+SCORE_CHK
+ENTRY_3II=C4			;３位
+POINT_3II=C3
+RET
+
+*SCORE_CHK
+C4 = 1		;最高得点ｴﾝﾄﾘ
+C3 = 0		;最高得点
+C2 = 1
+C1 = 7
+	IF ( TBL_WORKS[C2] > C3 )
+		C3 = TBL_WORKS[C2]		;最高得点
+		C4 = C2					;最高得点ｴﾝﾄﾘ
+	C2++
+LOOP C1
+RET
+
+*CHALNG_PARA_SET
+C1 = NN_CHALENG
+IF ( C1 = 1 )	CHLG_PARA_SET_01	RET
+IF ( C1 = 2 )	CHLG_PARA_SET_02	RET
+IF ( C1 = 3 )	CHLG_PARA_SET_03	RET
+IF ( C1 = 4 )	CHLG_PARA_SET_04	RET
+IF ( C1 = 5 )	CHLG_PARA_SET_05	RET
+IF ( C1 = 6 )	CHLG_PARA_SET_06	RET
+IF ( C1 = 7 )	CHLG_PARA_SET_07	RET
+RET
+
+*CHLG_PARA_SET_01
+R_MN_NUMBER = 1
+R_FACE	=	""
+R_NAME	=	NAME_FIRST
+R_SCORE	=	E_ETC[60]	;娘の絵の点数
+IF ( ROOM_PIC=0 )	R_TITLE="＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( ROOM_PIC=1 )	R_TITLE="＊＊＊＊＊＊＊＊＊＊"
+IF ( ROOM_PIC=2 )	R_TITLE="＊＊＊＊＊＊＊＊"
+IF ( ROOM_PIC=3 )	R_TITLE="＊＊＊"
+IF ( ROOM_PIC=4 )	R_TITLE="＊＊＊＊＊＊"
+RET
+
+*CHLG_PARA_SET_02
+R_MN_NUMBER = 2
+R_FACE	=	"F073"
+R_NAME	=	"テレマーク男爵"
+;得点50･･･85
+RANDAM(36)
+R_SCORE = 49 + IRND
+C1 = RUN_SYUKAKUSAI[0]
+IF ( C1=1 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=2 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=3 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=4 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=5 )	R_TITLE = "＊＊＊＊＊＊＊＊＊"
+IF ( C1=6 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=7 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=8 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊"
+RET
+
+*CHLG_PARA_SET_03
+R_MN_NUMBER = 3
+R_FACE	=	"F100"
+R_NAME	=	"パトレイシア"
+;得点50･･･85
+RANDAM(36)
+R_SCORE = 49 + IRND
+IF ( E_RIVAL=3 )
+	R_SCORE = 0		; パトレイシアはダンスへ
+C1 = RUN_SYUKAKUSAI[0]
+IF ( C1=1 )	R_TITLE = "＊＊＊＊＊＊＊＊"
+IF ( C1=2 )	R_TITLE = "＊＊＊＊＊＊＊"
+IF ( C1=3 )	R_TITLE = "＊＊＊＊＊＊＊"
+IF ( C1=4 )	R_TITLE = "＊＊＊＊＊＊＊＊＊"
+IF ( C1=5 )	R_TITLE = "＊＊＊＊＊＊"
+IF ( C1=6 )	R_TITLE = "＊＊＊＊＊＊＊＊"
+IF ( C1=7 )	R_TITLE = "＊＊＊＊＊＊＊＊"
+IF ( C1=8 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊"
+RET
+
+*CHLG_PARA_SET_04
+R_MN_NUMBER = 4
+R_FACE	=	"F059"
+R_NAME	=	"フィルキンス"
+;得点75･･･95
+RANDAM(21)
+R_SCORE = 74 + IRND
+C1 = RUN_SYUKAKUSAI[0]
+IF ( C1=1 )	R_TITLE = "＊＊＊＊＊＊＊＊"
+IF ( C1=2 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=3 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=4 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=5 )	R_TITLE = "＊＊＊＊＊＊"
+IF ( C1=6 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=7 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=8 )	R_TITLE = "＊＊＊＊＊＊"
+RET
+
+*CHLG_PARA_SET_05
+R_MN_NUMBER = 5
+R_FACE	=	"F115"
+R_NAME	=	"レーシッチ"
+;得点40･･･80
+RANDAM(41)
+R_SCORE = 39 + IRND
+C1 = RUN_SYUKAKUSAI[0]
+IF ( C1=1 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=2 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=3 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=4 )	R_TITLE = "＊＊＊＊＊"
+IF ( C1=5 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=6 )	R_TITLE = "＊＊＊"
+IF ( C1=7 )	R_TITLE = "＊＊＊＊＊＊＊"
+IF ( C1=8 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+*CHLG_PARA_SET_06
+R_MN_NUMBER = 6
+R_FACE	=	"F116"
+R_NAME	=	"アイケルバーガー"
+;得点50･･･85
+RANDAM(36)
+R_SCORE = 49 + IRND
+C1 = RUN_SYUKAKUSAI[0]
+IF ( C1=1 )	R_TITLE = "＊＊＊＊＊"
+IF ( C1=2 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=3 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=4 )	R_TITLE = "＊＊＊＊＊"
+IF ( C1=5 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=6 )	R_TITLE = "＊＊＊＊＊＊＊＊＊"
+IF ( C1=7 )	R_TITLE = "＊＊＊＊＊＊＊"
+IF ( C1=8 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+*CHLG_PARA_SET_07
+R_MN_NUMBER = 7
+R_FACE	=	"F117"
+R_NAME	=	"ロードン"
+;得点50･･･85
+RANDAM(36)
+R_SCORE = 49 + IRND
+C1 = RUN_SYUKAKUSAI[0]
+IF ( C1=1 )	R_TITLE = "＊＊＊＊＊＊＊＊"
+IF ( C1=2 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=3 )	R_TITLE = "＊＊＊＊＊＊＊＊"
+IF ( C1=4 )	R_TITLE = "＊＊＊＊＊＊＊＊＊"
+IF ( C1=5 )	R_TITLE = "＊＊＊＊＊＊＊＊"
+IF ( C1=6 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=7 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊"
+IF ( C1=8 )	R_TITLE = "＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+*OPEN_GIRL_PIC
+PTBK(12)		;VVVRAM_TOP+32768  #12  32,766byte
+PTCLR
+PTGT(PICXX,PICYY,19,154)
+XXX = PICXX - 4
+YYY = PICYY + 156
+PTGT(XXX,YYY,26,26)
+PTBK(5)
+PTLD("SSGAKU")
+PIC(16,15,0,1)				; 標準文字設定
+XXX = PICXX + 1
+YYY = PICYY + 160
+IF ( ROOM_PIC=0 )
+	XXX = PICXX - 4
+	YYY = PICYY + 156
+	PIC(17,1,XXX,YYY,26,26)
+	XXX++
+	YYY = YYY + 5
+	PIC(15,XXX,YYY,"陶土の壷に活けられた花束")
+	PTLA("P001")
+IF ( ROOM_PIC=1 )
+	XXX = PICXX - 2
+	YYY = PICYY + 156
+	PIC(17,1,XXX,YYY,22,26)
+	XXX++
+	YYY = YYY + 5
+	PIC(15,XXX,YYY,"酒瓶と林檎のある静物")
+	PTLA("P002")
+IF ( ROOM_PIC=2 )
+	XXX = PICXX
+	YYY = PICYY + 156
+	PIC(17,1,XXX,YYY,18,26)
+	XXX++
+	YYY = YYY + 5
+	PIC(15,XXX,YYY,"蒼色を帯びた山脈")
+	PTLA("P003")
+IF ( ROOM_PIC=3 )
+	XXX = PICXX + 5
+	YYY = PICYY + 156
+	PIC(17,1,XXX,YYY,8,26)
+	XXX++
+	YYY = YYY + 5
+	PIC(15,XXX,YYY,"自画像")
+	PTLA("P004")
+IF ( ROOM_PIC=4 )
+	XXX = PICXX + 2
+	YYY = PICYY + 156
+	PIC(17,1,XXX,YYY,14,26)
+	XXX++
+	YYY = YYY + 5
+	PIC(15,XXX,YYY,"降臨する天使")
+	PTLA("P005")
+XXX = PICXX + 3
+YYY = PICYY + 26
+PTM(PICXX,PICYY,0)			; マスクパーツＰＵＴ
+PTX(XXX,YYY,2)				; パーツ座標ＰＵＴ
+PTBK(0)
+RET
+
+*CLOSE_GIRL_PIC
+PTBK(12)
+PTF(0,0,0)
+PTF(0,0,1)
+PTBK(0)
+RET
+
+;**************
+;	授賞ﾌﾚｰﾑ
+;**************
+
+;芸術点１位のグラフィック，名前，得点表示．
+
+*FRM_SHO_ENTRY
+IF ( SHOFRM_TYPE=0 )	;0=銅賞
+	FXX1=55
+	FYY1=148
+	C1 = 14
+IF ( SHOFRM_TYPE=1 )	;1=銀賞
+	FXX1=5
+	FYY1=148
+	C1 = 12
+IF ( SHOFRM_TYPE=2 )	;2=金賞
+	FXX1=30
+	FYY1=148
+	C1 = 10
+PTBK(0)
+PTLD("SSMOJI")
+XXX1 = FXX1 + 3
+YYY1 = FYY1 + 8
+PTM(XXX1,YYY1,C1)			; マスクパーツＰＵＴ
+
+XXX1 = FXX1 + 3
+YYY1 = FYY1 + 44
+PIC(16,15,0,2)		;PIC(16,color,size,type)
+STRLEN(R_NAME)	; 文字列長さ
+AX = AX / 2
+XXX1 = XXX1 + 6 - AX
+SI = R_NAME			;
+PIC(15,XXX1,YYY1)	;
+
+XXX1 = FXX1 + 3
+YYY1 = FYY1 + 68
+TXF(9,SHOWPOINT)	;ﾎﾟｲﾝﾄの文字列化
+STRCOPY(STR_WORK)	;文字列を文字列アドレスへコピーする
+STRLEN(STR_WORK)	; 文字列長さ
+C3 = STR_WORK + AX	;
+SI = "点"
+STRCOPY(C3)			;文字列を文字列アドレスへコピーする
+PIC(16,15,0,1)		;PIC(16,color,size,type)
+
+STRLEN(STR_WORK)	; 文字列長さ
+AX = AX / 2
+XXX1 = XXX1 + 6 - AX
+SI = STR_WORK		;
+PIC(15,XXX1,YYY1)	;
+
+RET
+
+;**************
+;	anime draw.
+;**************
+
+*ANIME_START
+WWANIME(4,1)			;put BG.
+ANM_LOP1=9  ANM_CNT1=0
+	APUTS(ANM_CNT1)
+	ANM_CNT1++
+LOOP ANM_LOP1
+WWANIME(5,1)			;pictuer copy vvram -> CRT.
+RET
+
+*ANIME_ARTS
+CLENDMAX=AX
+WWANIME(10,1,0,88,54,92)		;anime window size set.高速化の為
+TIMER2(WTIME_ARTS)
+CLENDCOUNT = 0
+*ANIME_ARTS_LOOP
+	WWANIME(4,1)				;put BG.
+	TIMER1(TIMEWAIT1)
+	IF ( ANM_NONE_MAN=0 )
+		ANM_LOP1=9  ANM_CNT1=0
+			APUTS(ANM_CNT1)
+			ANM_CNT1++
+		LOOP ANM_LOP1
+	WAIT1
+	WWANIME(5,1)				;pictuer copy vvram -> CRT.
+	TMCHK2						;タイマーチェック２
+	IF ( DX = 0 )
+		CLENDER(3)			;カレンダー・更新処理
+		CLENDER(2)			;カレンダー・再表示
+		CLENDCOUNT++
+		IF ( CLENDCOUNT>=CLENDMAX ) GOTO ANIME_ARTS_LOP_E
+		TIMER2(WTIME_ARTS)
+GOTO ANIME_ARTS_LOOP
+*ANIME_ARTS_LOP_E
+RET
+
+
+;**************
+;	anime set.
+;**************
+
+*ANIME_INIT
+TIMEWAIT1=8
+;黒ｺｰﾄ
+ALCX[0]	=0
+ALCY[0]	=0
+ALCC[0]	=0
+ALCCNT[0]=15
+.FILM0[15]=1,1,1,1,1, 1,1,2,2,2, 2,2,2,2,2
+;ﾁｮｯｷの女
+ALCX[1]	=0
+ALCY[1]	=0
+ALCC[1]	=0
+ALCCNT[1]=18
+.FILM1[18]=3,3,3,3,3, 4,4,4,4,4, 3,3,4,4,4, 4,4,4
+;ﾎﾞｳﾔ
+ALCX[2]	=0
+ALCY[2]	=0
+ALCC[2]	=0
+ALCCNT[2]=16
+.FILM2[16]=5,5,5,5,6, 6,6,6,5,5, 5,6,6,6,6, 6
+;ｸﾞﾚｲのおっさん
+ALCX[3]	=0
+ALCY[3]	=0
+ALCC[3]	=0
+ALCCNT[3]=19
+.FILM3[19]=7,7,7,7, 8,8,8,8, 7,7,7,7, 8,8,8,8, 8,8,8
+;アイヌ
+ALCX[4]	=0
+ALCY[4]	=0
+ALCC[4]	=0
+ALCCNT[4]=13
+.FILM4[13]=9, 9,9,9,9, 9,9,9,9,  10,10,10,10
+;農場主
+ALCX[5]	=0
+ALCY[5]	=0
+ALCC[5]	=0
+ALCCNT[5]=1
+.FILM5[1]=11
+;金髪
+ALCX[6]	=0
+ALCY[6]	=0
+ALCC[6]	=0
+ALCCNT[6]=1
+.FILM6[1]=12
+;青のｺｰﾄ
+ALCX[7]	=0
+ALCY[7]	=0
+ALCC[7]	=0
+ALCCNT[7]=1
+.FILM7[1]=13
+;子供
+ALCX[8]	=0
+ALCY[8]	=0
+ALCC[8]	=0
+ALCCNT[8]=1
+.FILM8[1]=14
+RET
+
+*ANIME_LOCSET
+C1 = 9  C2 = 0
+	C3 = TBL_LINK_LC[C2] -1
+	ALCX[C2] = TBL_ANM_X[C3] / 8
+	ALCY[C2] = TBL_ANM_Y[C3] - 79
+	C2++
+LOOP C1
+RET
+
+*APUTS
+APUTNUM = AX
+ANIM_NUM(APUTNUM)
+APUT(ALCX[APUTNUM],ALCY[APUTNUM],C1)
+ALCC[APUTNUM]++
+RET
+
+*ANIM_NUM
+;ANIM_NUM(filmnumber)
+;-O- DX pattern number.
+IF ( ALCC[AX] >= ALCCNT[AX] )
+	ALCC[AX] = 0
+BX = ALCC[AX]
+IF (AX=0) DX=FILM0[BX]
+IF (AX=1) DX=FILM1[BX]
+IF (AX=2) DX=FILM2[BX]
+IF (AX=3) DX=FILM3[BX]
+IF (AX=4) DX=FILM4[BX]
+IF (AX=5) DX=FILM5[BX]
+IF (AX=6) DX=FILM6[BX]
+IF (AX=7) DX=FILM7[BX]
+IF (AX=8) DX=FILM8[BX]
+DX--	;DX pattern number.
+C1 = DX
+RET
+
+*APUT
+;anime pattern put vvram.
+;APUT(x,y,pattern)
+IF ( CX < 0 ) RET
+DI = CX * 2
+SI = BX
+DX = AX
+AX = 13
+BX = 1
+CX = 6
+;	WWANIME(13,1,6,ALCX[0],ALCY[0],ALCC[0]))     : (bank)anime pattern put vvram.
+WWANIME	;anime pattern put vvram.
+RET
+
+*ANM_PTN_LOAD
+WWANIME(14,1)				;anime window open.(no frame open)
+WWANIME(3,1,"C003B")		;BG load.
+WWANIME(11,1,"C003A",6)		;(bank)pictuer load.
+RET
+
+*XGRP_OPEN
+;GR_OPEN			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+GR_F(1,2)
+IGRP_TBL3[0]=H_SYAKOH
+IGRP_TBL1[0]="社交評価"
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=328
+GRPOPEN(1,1)	;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+IGRP_TBL3[0]=CATCH_GOLD
+IGRP_TBL1[0]="賞金"
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=290
+GOLDOPEN(1,2)	;ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+RET
+
+;**************
+;	フレーム
+;**************
+
+*FRAME_OPEN
+PTLD("FRMSYUKL")
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+GRPCLS
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+PTX(40,0,0)
+PTLD("SSBASEUP")
+PTLA("SSBASEDN")
+PTLA("SSW003")
+PTMF(0,0,0)
+PTMF(0,0,2)
+PTMF(0,0,4)
+RET
+
+;**************
+;	授賞frame.
+;**************
+
+*FRAME_HYOSHO
+PTLD("FRMSYUKL")
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+GRPCLS			;
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+PTX(40,0,0)
+PTLD("E19HONO")	;「表彰式」
+PTM(23,20,0)
+PTLD("SSSHOU")
+PTM(3,131,0)
+PTM(28,131,0)
+PTM(53,131,0)
+EFC(16)			;ノーマルカラー
+RET
+
+;**************
+;	アイテム表示
+;**************
+
+*SHOW_ITEMS
+ITEMID_TBL1[0]="名匠の絵筆"
+ITEMID_TBL2[0]=35				;ＩＣＯＮ
+ITEMID_TBL3[0]=2100				;金
+ITEMID_TBL4[0]="芸術+50"		;
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEM_KOUKA[0]="V_GEIJYUTSU+50"	;
+ITEM_ATTRBUTE[0]=4000			;4000番台=効能有
+ITEMID_CNT=1					;アイテムＩＤ数
+ITEMPRN(3,46,200)				;マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)					;マルチアイテム表示
+RET
+
+;**************
+;	アイテム取得
+;**************
+
+*TAKE_ITEM
+BX=ITEMID_TBL2[0]		;ＩＣＯＮ
+CX=ITEMID_TBL3[0]		;定価
+DX=ITEM_ATTRBUTE[0]		;種別
+SI=ITEMID_TBL1[0]		;所有アイテム名前 string
+DI=ITEM_KOUKA[0]		;所有アイテム効果 string
+BP=ITEMID_TBL4[0]		;所有アイテム説明 string
+ITEM_INST(1)
+RET
+
+;
+;	end of "SSARTS.TXT"
+;
+

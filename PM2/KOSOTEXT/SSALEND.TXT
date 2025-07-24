@@ -1,0 +1,95 @@
+;"SSALEND.TXT"
+;
+;
+;	収穫祭・終了処理
+;
+;
+;	C1 = 1			;1=武闘会
+;	C1 = 2			;2=「王国芸術祭」
+;	C1 = 3			;3=ダンスパーティー
+;	C1 = 4			;4=お料理コンクール
+;
+
+.SLCT_SYUKAKU
+SLCT_SYUKAKU = C1
+
+TXLC(1,21,268,0)		;text window locate.
+
+SYUKAKU_AFTER
+
+LOAD("RUNNING")
+
+;**************
+;	収穫祭・終了処理
+;**************
+
+*SYUKAKU_AFTER
+MUSIC(2)		;音楽ﾌｪｰﾄﾞｱｳﾄ
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+MAIN_FRAME		;main frame
+
+E_EV_SKIP = 1		;イベントスキップ
+SCH_NOW = 1			;スケジュール実行中項目
+
+IF ( VAL_DAY < 31 )	; 日
+	C1 = 31 - VAL_DAY
+		TIMER1(10)
+		CLENDER(3)	;カレンダー・更新処理
+		WAIT1
+	LOOP C1
+
+CLENDER(2)		;カレンダー・再表示
+EFC(16)			;ノーマルカラー
+
+TXOPEN(1)
+収穫祭は終わった．
+@P
+TXCLOSE(1)
+
+BORTHCHECKX
+
+RET
+
+;**************
+;	main frame
+;**************
+
+*MAIN_FRAME
+CLENDER(6,0,0)		; カレンダー・セットアップ
+WWIVENT(5,0,6,40)	; ivent window locate.
+WWFRAME(1)			;
+CLENDER(1)			;
+WWPROF(1)			; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・表示
+WWGIRL(3)			; girl quick put.
+RET
+
+;	数日遅れの誕生日（イベント４２，４３の未処理チェック）
+;	42 娘の誕生日
+;	【 概　要 】娘の誕生日を祝ってあげる．
+;	【 いつ？ 】娘の誕生日に随時．
+;	【発生条件】日付が娘の誕生日になる．
+;	43 父の誕生日
+;	【 概　要 】父の誕生日を娘が祝ってくれる．
+;	【 いつ？ 】父の誕生日に随時．
+;	【発生条件】日付が父の誕生日になる．父との関係値が６０以上．
+
+*BORTHCHECKX
+IF ( P_NENREI>E_ETC[18] )		;「娘の誕生日」をチェックした年齢
+	IF ( P_NENREI[1]>E_ETC[14] );
+		E_ETC[14]=P_NENREI[1]	;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )	;父との関係値が６０以上
+			LOAD("EVE4243S,EVNT042")
+
+IF ( P_NENREI>E_ETC[18] )		;「娘の誕生日」をチェックした年齢
+	LOAD("EVNT042S,EVNT042")
+
+IF ( P_NENREI[1]>E_ETC[14] )	;
+	E_ETC[14]=P_NENREI[1]		;「父の誕生日」をチェックした年齢
+	IF ( URA_FATHER >=60 )		;父との関係値が６０以上
+		LOAD("EVNT043S,EVNT042")
+RET
+
+;
+;	end of "SSALEND.TXT"
+;
+

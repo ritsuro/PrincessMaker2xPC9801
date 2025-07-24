@@ -1,0 +1,1801 @@
+;"SSBATL.TXT"
+;
+;	C1=33333 は、なんでも屋
+;
+
+STRSCLEAR
+
+.CMN_FUNC				;機能
+.CMN_SHIAI				;第何試合(1-n)
+.CMN_LINK				;組み合せ番号(1-n)
+.CMN_VIC_FLG			;勝敗 1=娘勝ち,2=敵勝ち
+
+CMN_FUNC	= C1		;機能
+CMN_SHIAI	= C2		;第何試合(1-n)
+CMN_LINK	= C3		;組み合せ番号(1-n)
+CMN_VIC_FLG	= C4		;勝敗 1=娘勝ち,2=敵勝ち
+
+.TIMELOP
+.TIMELOPMAX
+.TIMEWAIT1
+.SLCANM=0
+.SLCATK=0
+.ALCX[15]
+.ALCY[15]
+.ALCC[15]
+.ALCF[15]
+.ALCCNT[15]
+.APUTNUM
+
+.BLCX[38]
+.BLCY[38]
+.BLCC[38]
+.BLCF[38]
+.BLCCNT[38]
+
+.CHAR_SEQ_TBL[24]
+.CHAR_LEG_SEQ_TBL[10]
+
+.BANK_BG_CHAR=6			;#6 text buffer.後半
+
+.OFST_GIRL=1			;1
+.OFST_FITER=27			;1+13*2
+.OFST_SLCATK=7
+
+.GIRL_XX = 0
+.GIRL_YY = 0
+.GIRL_SHOT = 0
+
+.FITER_XX= 0
+.FITER_YY= 0
+.FITER_SHOT= 0
+
+.BOUGYO_TK = 0
+.FITER_WALK_WAIT= 0
+
+.WAIT_MAGIC = 0
+.COUNT_ATTACK=0
+
+.LENG_ATTACK_GR=5			;通常攻撃
+.LENG_MAGIC_GR=1			;魔法攻撃
+.LENG_ATTACK_TK=4			;敵・通常攻撃
+.LENG_MAGIC_TK=-4			;敵・魔法攻撃
+							;"SSBTnn.TXT"の処理によっては変更
+.XX1.YY1
+.FLAG_BATLE_EXIT=0			;戦闘の終了フラグ
+
+.BATLE_TK_SLCT				;1=通常攻撃,2=魔法攻撃
+.BATLE_GR_SLCT				;1=通常攻撃,2=魔法攻撃
+
+.A_TEXT_HDL=6				;アニメ中テキストハンドル
+
+;**************
+;	戦闘パラメータ
+;**************
+
+.FLAG_VICTORY	;勝利フラグ
+.FLAG_KAIWA_OK	;会話条件成立
+.FLAG_BATLE = 0	;0=戦闘中,1=娘勝ち,2=敵勝ち,3=娘逃げる,4=敵逃げる
+.G_DAMEG
+.T_DAMEG
+.REC_TBL[50]
+.TOOL_BUKI
+
+.ATTACK_VAL		;攻撃バリュー
+.DEFENS_VAL		;防御バリュー
+.BATLE_NOW		;1=命中,2=失敗
+
+.MY_KAISHIN		;会心率(%)
+
+.R_HP		=0	;ＨＰ
+.R_MP		=0	;ＭＰ
+
+.MNSTR_X
+.MNSTR_Y
+
+.R_MS_NUMBER	=0	;モンスター番号
+.R_FACE			=0	;フェイス
+
+.R_NAME			=0	;名前
+.R_SENTOH		=0	;戦闘技術
+.R_KOUGEKI		=0	;攻撃力
+.R_BOUGYO		=0	;防御力
+.R_SOUKOU		=0	;装甲
+.R_SKNAME		=0	;装甲名
+.R_MAHOGIJUTSU	=0	;魔法技術
+.R_MARYOKU		=0	;魔力
+.R_KOHMARYOKU	=0	;抗魔力
+.R_SENI			=0	;戦意
+.R_DASSYUTU		=0	;脱出率(%)
+.R_TSUKON		=0	;痛恨率(%)
+.R_MAX_HP		=0	;最大ＨＰ
+.R_MAX_MP		=0	;最大ＭＰ
+
+.R_SENSHI		=0	;戦士評価
+.R_MAHO			=0	;魔法評価
+
+.R_GOLD			=0	;懸賞金
+.R_SE_ATTACK	=0	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+.GIRL_SE_ATTACK	=0	;娘に当たる(1=皮,2=鉄,3=体毛)
+
+.MONSTR[6]
+.M_HELLO	=0	;対戦時の口上
+.M_VICTRY	=1	;勝利の台詞
+.M_DEFEAT	=2	;敗戦の台詞
+.M_HELP		=3	;降参の台詞
+.M_AWARD	=4	;優勝の台詞
+.M_STEWARD	=5	;執事の評価
+
+.STR_WORK="12345678123456781234567812345678.."
+
+.FLAG_KAISHIN	;会心ﾌﾗｸﾞ
+.FLAG_TSUKON	;痛恨ﾌﾗｸﾞ
+
+.BATL_COUNT	=0
+
+.FLG_HABAM	=0
+
+TXLC(16,32,210,1)		;text window locate.
+
+FRAME_OPEN					;フレーム
+
+CHECK_GIRL_DATA				;娘データ
+CHECK_BATLER				;対戦相手データ
+
+R_HP = R_MAX_HP				;最大ＨＰ
+R_MP = R_MAX_MP				;最大ＭＰ
+R_SENSHI = R_SENTOH + R_KOUGEKI + R_BOUGYO
+R_MAHO   = R_MAHOGIJUTSU + R_MARYOKU + R_KOHMARYOKU
+
+GRAPSHOW
+
+ANIME_INIT
+BG_ANIME_INIT				;BG chara set.
+ANIME_OPEN
+
+EFC(16)						;ノーマルカラー
+
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+ANIME_BG_CHAR(120)			;BG chara put.
+ANIME_FIRST_PUT
+
+PLAY(23)	;P23 試合
+
+START_TEXT
+
+ANIME_BG_CHAR(30)
+ANIME_BATL
+MUSIC(2)					;音楽ﾌｪｰﾄﾞｱｳﾄ
+ANIME_BG_CHAR(120)
+
+IF ( CMN_VIC_FLG=1 )		;勝敗 1=娘勝ち
+	E_ETC[59]++				;最近の武闘会勝った回数
+
+*X_FINALE
+
+C1 = CMN_FUNC				;機能
+C2 = CMN_SHIAI				;第何試合(1-n)
+C3 = CMN_LINK				;組み合せ番号(1-n)
+C4 = CMN_VIC_FLG			;勝敗 1=娘勝ち,2=敵勝ち
+
+IF ( C1=33333 ) LOAD("TEST02")	;なんでも屋
+
+LOAD("SSTOUR")
+
+;**************
+;	戦闘
+;**************
+
+*ANIME_BATL
+
+BATLE_MODE				;戦闘モード
+
+IF ( FLAG_BATLE=0 )			; 0=戦闘中
+	TXOPEN(16)
+	TXFACE("F054")		;将軍・普通
+	IF ( CMN_VIC_FLG=1 )	; 勝敗 1=娘勝ち
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊」
+	IF ( CMN_VIC_FLG!1 )	; 勝敗 2=敵勝ち
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(R_NAME)＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(16)
+	TXSLCT(12)
+	ANIME_ANM_LD
+
+@C
+IF ( CMN_VIC_FLG=1 )	;勝敗 1=娘勝ち
+	SSBATL_GR_VICTORY	;
+IF ( CMN_VIC_FLG=2 )	;勝敗 2=敵勝ち
+	SSBATL_TK_VICTORY	;
+@C
+IF (FLAG_BATLE=1) GIRL_VIC_TEXT
+IF (FLAG_BATLE=2) TEKI_VIC_TEXT
+IF (FLAG_BATLE=3) GIRL_DOWN_TEXT
+IF (FLAG_BATLE=4) TEKI_DOWN_TEXT
+
+RET
+
+*SSBATL_TAIKI
+SLCATK=0
+SLCANM=0
+ANIME_PLAY(10)
+RET
+
+*SSBATL_TK_ATTACK
+SLCATK=1
+SLCANM=0
+ANIME_PLAY(40)
+RET
+
+*SSBATL_TK_MAGIC
+SE_MAGIC
+SLCATK=2
+SLCANM=0
+ANIME_PLAY(40)
+RET
+
+*SSBATL_GR_ATTACK
+SLCATK=0
+SLCANM=1
+ANIME_PLAY(40)
+RET
+
+*SSBATL_GR_MAGIC
+SE_MAGIC
+SLCATK=0
+SLCANM=2
+ANIME_PLAY(40)
+RET
+
+*SSBATL_GR_VICTORY
+SLCATK=5
+SLCANM=4
+ANIME_PLAY(16)
+RET
+
+*SSBATL_TK_VICTORY
+SLCATK=4
+SLCANM=5
+ANIME_PLAY(16)
+RET
+
+;**************
+;	text.
+;**************
+
+*START_TEXT
+
+R_GOLD = 0			;懸賞金
+
+IF ( R_GOLD < R_SENSHI )	R_GOLD = R_SENSHI		;戦士
+IF ( R_GOLD < R_MAHO )		R_GOLD = R_MAHO			;魔法
+IF ( R_GOLD < H_SENSHI )	R_GOLD = H_SENSHI 		;戦士
+IF ( R_GOLD < H_MAHO )		R_GOLD = H_MAHO 		;魔法
+
+IF ( R_GOLD>300 ) R_GOLD=300
+
+TXOPEN(12)
+「TXPOINT(CMN_SHIAI)＊＊」
+「TXA(R_NAME)＊＊＊＊TXA(NAME_FIRST)＊TXA(NAME_FAMILY)」
+「＊＊＊TXGOLD(R_GOLD)」
+@P
+FACEOPEN(17)
+@C
+IF ( E_RIVAL=1  R_MS_NUMBER=17 )
+	「＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊」
+	@P
+	FACECLOSE
+	@C
+	RET
+IF ( E_RIVAL=2  R_MS_NUMBER=18 )
+	「＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊」
+	@P
+	FACECLOSE
+	@C
+	RET
+TXA(MONSTR[M_HELLO])
+@P
+FACECLOSE
+@C
+RET
+
+*GIRL_DOWN_TEXT		;降参の台詞（娘）
+FACEOPEN(3)			;娘・悲しい
+TEKI_VICT_MES(M_VICTRY)
+@P
+@C
+IF ( CMN_SHIAI=4 )		;最後の試合
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( CMN_SHIAI!4 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+TXA(NAME_FIRST)は戦意を失った．
+@P
+FACECLOSE
+RET
+
+*TEKI_DOWN_TEXT		;降参の台詞（敵）
+P100PAR(W_HP,W_HP_MAX)
+C1 = AX
+IF ( CMN_SHIAI=4 )		;最後の試合
+	FACEOPEN(1)				;娘・嬉しい
+	TXA(R_NAME)は戦意を失った．
+	@P
+	@C
+	TEKI_DEFEAT_MES(M_HELP)
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	GOTO TEKI_DOWN_TXT2
+IF ( C1 >= 90 )		;HPが90%以上
+	FACEOPEN(14)	;娘・りりしい
+	TXA(R_NAME)は戦意を失った．
+	@P
+	@C
+	TEKI_DEFEAT_MES(M_HELP)
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	GOTO TEKI_DOWN_TXT2
+IF ( C1 >= 40 C1 <= 89 )	;HPが40-89%
+	FACEOPEN(1)				;娘・嬉しい
+	TXA(R_NAME)は戦意を失った．
+	@P
+	@C
+	TEKI_DEFEAT_MES(M_HELP)
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	GOTO TEKI_DOWN_TXT2
+IF ( C1 < 40 )		;HPが40%未満
+	FACEOPEN(12)	;娘・不愉快
+	TXA(R_NAME)は戦意を失った．
+	@P
+	@C
+	TEKI_DEFEAT_MES(M_HELP)
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+*TEKI_DOWN_TXT2
+TXA(NAME_FIRST)はTXA(R_NAME)を打ち破った！
+@P
+FACECLOSE
+GOLD_CHATCH_TEXT
+RET
+
+*GIRL_VIC_TEXT		;勝利の台詞（娘）
+P100PAR(W_HP,W_HP_MAX)
+C1 = AX
+IF ( CMN_SHIAI=4 )		;最後の試合
+	FACEOPEN(1)				;娘・嬉しい
+	TEKI_DEFEAT_MES(M_DEFEAT)
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	GOTO GIRL_VIC_TXT2
+IF ( C1 >= 90 )			;HPが90%以上
+	FACEOPEN(14)		;娘・りりしい
+	TEKI_DEFEAT_MES(M_DEFEAT)
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	GOTO GIRL_VIC_TXT2
+IF ( C1 >= 40 C1 <= 89 )	;HPが40-89%
+	FACEOPEN(1)				;娘・嬉しい
+	TEKI_DEFEAT_MES(M_DEFEAT)
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	GOTO GIRL_VIC_TXT2
+IF ( C1 < 40 )		;HPが40%未満
+	FACEOPEN(12)	;娘・不愉快
+	TEKI_DEFEAT_MES(M_DEFEAT)
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+*GIRL_VIC_TXT2
+TXA(NAME_FIRST)はTXA(R_NAME)を打ち破った！
+@P
+FACECLOSE
+GOLD_CHATCH_TEXT
+RET
+
+
+*TEKI_DEFEAT_MES
+C1 = AX
+IF ( E_RIVAL=1  R_MS_NUMBER=17 )	;アニータの場合
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+IF ( E_RIVAL=2  R_MS_NUMBER=18 )	;ウェンディーの場合
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+	RET
+TXA(MONSTR[C1])
+RET
+
+*TEKI_VICT_MES
+C1 = AX
+IF ( E_RIVAL=1  R_MS_NUMBER=17 )	;アニータの場合
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( E_RIVAL=2  R_MS_NUMBER=18 )	;ウェンディーの場合
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+TXA(MONSTR[C1])
+RET
+
+
+*TEKI_VIC_TEXT			;敗戦の台詞（娘）
+FACEOPEN(6)				;娘・大怪我
+TEKI_VICT_MES(M_VICTRY)
+@P
+@C
+IF ( CMN_SHIAI=4 )		;最後の試合
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( CMN_SHIAI!4 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+TXA(NAME_FIRST)はTXA(R_NAME)の前に敗れ去った・・・
+@P
+FACECLOSE
+RET
+
+
+*GOLD_CHATCH_TEXT
+GR_F(1,3)
+IGRP_TBL3[0]=R_GOLD
+IGRP_TBL1[0]="懸賞金"
+IGRP_CNT=1
+IGRP_X=32
+IGRP_Y=160
+GOLDOPEN(1,2)			;ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+GOLDADD(R_GOLD)
+@C
+懸賞金TXGOLD(R_GOLD)をもらった！
+@P
+GR_CLOSE
+RET
+
+;******************
+
+*SE_TIME_GR_CHK
+AX = 0
+IF ( SLCANM=1 )		;通常攻撃
+	IF ( ALCC[1]=4 ) AX = 1
+IF ( SLCANM=2 )		;魔法攻撃
+	IF ( GIRL_SHOT!0 ) AX = 1
+RET
+
+*ANIME_INIT
+TIMEWAIT1=4		;6;8
+;待機
+ALCX[0]	=256/8
+ALCY[0]	=176-79
+ALCC[0]	=0
+ALCCNT[0]	=4
+.FILM0[4]=1,1,2,2
+;通常攻撃
+ALCX[1]	=256/8
+ALCY[1]	=176-79
+ALCC[1]	=0
+ALCCNT[1]	=6
+.FILM1[6]=1,2, 3,4,4,4
+;魔法攻撃
+ALCX[2]	=256/8
+ALCY[2]	=176-79
+ALCC[2]	=0
+ALCCNT[2]	=2
+.FILM2[2]=10,11
+;防御
+ALCX[3]	=256/8
+ALCY[3]	=176-79
+ALCC[3]	=0
+ALCCNT[3]	=1
+.FILM3[1]=5
+;勝ち
+ALCX[4]	=256/8
+ALCY[4]	=176-79
+ALCC[4]	=0
+ALCCNT[4]	=4
+.FILM4[4]=7,7,6,6
+;負け
+ALCX[5]	=256/8
+ALCY[5]	=176-79
+ALCC[5]	=0
+ALCCNT[5]	=4
+.FILM5[4]=8,8,9,9
+;火の玉
+ALCX[6]	=216/8
+ALCY[6]	=176-79
+ALCC[6]	=0
+ALCCNT[6]	=4
+.FILM6[4]=0,0,12,13
+
+BATLE_SET		;敵設定
+
+RET
+
+*ANIME_OPEN
+WWANIME(14,2)				;anime window open.(no frame open)
+ANIME_ANM_LD
+WWANIME(11,2,"G001A",BANK_BG_CHAR)		;(bank)pictuer load.
+WWANIME(10,2,0,0,54,180)	;anime window size set.
+WWANIME(4,2)				;put BG.
+WWANIME(5,2)				;pictuer copy vvram -> CRT.
+RET
+
+*ANIME_ANM_LD
+WWANIME(3,2,"G001B")		;pictuer load.
+C1 = 0								;43=普段着
+IF ( EQUIP_ICON = 11 )	C1 = 1		;11=皮の鎧
+IF ( EQUIP_ICON = 12 )	C1 = 2		;12=鎖帷子
+IF ( EQUIP_ICON = 13 )	C1 = 3		;13=鉄の鎧
+IF ( EQUIP_ICON = 14 )	C1 = 4		;14=ミスリルの鎧
+IF ( EQUIP_ICON = 15 )	C1 = 5		;15=シルクの鎧
+IF ( C1 = 0 ) WWANIME(6,2,"B001A")
+IF ( C1 = 1 ) WWANIME(6,2,"B001B")
+IF ( C1 = 2 ) WWANIME(6,2,"B001C")
+IF ( C1 = 3 ) WWANIME(6,2,"B001D")
+IF ( C1 = 4 ) WWANIME(6,2,"B001E")
+IF ( C1 = 5 ) WWANIME(6,2,"B001F")
+BATLE_LOAD
+RET
+
+*ANIME_FIRST_PUT
+WWANIME(10,2,0,97,54,80)	;anime window size set.高速化の為
+WWANIME(4,2)				;put BG.
+SLCANM = 0					;
+GIRL_BATLE					;娘アニメ
+SLCATK = 0					;
+BATLE_PLAY					;敵アニメ
+WWANIME(10,2,0,97,54,80)	;anime window size set.高速化の為
+WWANIME(5,2)				;pictuer copy vvram -> CRT.
+RET
+
+;**************
+;	BG chara set.
+;**************
+
+*BG_ANIME_INIT
+
+;王様
+BLCX[0]	=200/8
+BLCY[0]	=83-79
+BLCC[0]	=0
+BLCCNT[0]	=16
+.BFIL0[16]=1,1,1,1, 2,2,2,2, 2,2,2,2, 2,2,1,1
+;将軍
+BLCX[1]	=240/8
+BLCY[1]	=99-79
+BLCC[1]	=0
+BLCCNT[1]	=1
+.BFIL1[1]=22
+
+;観衆 2から25まで
+
+;黒
+BLCX[2]	=0/8
+BLCY[2]	=105-79
+BLCC[2]	=2
+BLCCNT[2]	=6
+.BFIL2[6]=3,3,3, 3,4,3
+;赤
+BLCX[3]	=32/8
+BLCY[3]	=105-79
+BLCC[3]	=3
+BLCCNT[3]	=6
+.BFIL3[6]=5,5,5, 6,6,6
+;茶
+BLCX[4]	=64/8
+BLCY[4]	=105-79
+BLCC[4]	=0
+BLCCNT[4]	=7
+.BFIL4[7]=7,7,7,8,7,7,7
+;紫女
+BLCX[5]	=96/8
+BLCY[5]	=105-79
+BLCC[5]	=1
+BLCCNT[5]	=8
+.BFIL5[8]=9,9,9,9, 9,9,9,10
+
+;どさんこ
+BLCX[6]	=-16/8
+BLCY[6]	=89-79
+BLCC[6]	=2
+BLCCNT[6]	=9
+.BFIL6[9]=11,11,11,12, 11,11,11,11, 11
+;おやじ
+BLCX[7]	=16/8
+BLCY[7]	=89-79
+BLCC[7]	=3
+BLCCNT[7]	=8
+.BFIL7[8]=13,13,13,14, 13,14,13,13
+;赤ﾁｮｯｷ
+BLCX[8]	=48/8
+BLCY[8]	=89-79
+BLCC[8]	=0
+BLCCNT[8]	=6
+.BFIL8[6]=15,15,15,16,15,15
+;紺ﾁｮｯｷ
+BLCX[9]	=80/8
+BLCY[9]	=89-79
+BLCC[9]	=1
+BLCCNT[9]	=5
+.BFIL9[5]=17,17,17,18,17
+
+;ﾋﾟﾝｸﾁｮｯｷ
+BLCX[10]	=296/8
+BLCY[10]	=105-79
+BLCC[10]	=2
+BLCCNT[10]	=7
+.BFIL10[7]=19,19,20,19, 19,19,19
+;ﾁｮﾋﾞﾋｹﾞ
+BLCX[11]	=320/8
+BLCY[11]	=105-79
+BLCC[11]	=3
+BLCCNT[11]	=1
+.BFIL11[1]=21
+;じじい
+BLCX[12]	=344/8
+BLCY[12]	=105-79
+BLCC[12]	=0
+BLCCNT[12]	=1
+.BFIL12[1]=23
+
+;赤の女
+BLCX[13]	=368/8
+BLCY[13]	=105-79
+BLCC[13]	=0
+BLCCNT[13]	=1
+.BFIL13[1]=24
+;皮鎧
+BLCX[14]	=296/8
+BLCY[14]	=89-79
+BLCC[14]	=0
+BLCCNT[14]	=1
+.BFIL14[1]=25
+;剃り
+BLCX[15]	=320/8
+BLCY[15]	=89-79
+BLCC[15]	=0
+BLCCNT[15]	=1
+.BFIL15[1]=26
+
+;(repart)黒
+BLCX[16]	=0/8
+BLCY[16]	=105-79
+BLCC[16]	=0
+BLCCNT[16]	=5
+.BFIL16[5]=3,4,3,3,3
+;(repart);赤
+BLCX[17]	=32/8
+BLCY[17]	=105-79
+BLCC[17]	=0
+BLCCNT[17]	=6
+.BFIL17[6]=5,5,6,5,5,5
+;(repart)茶
+BLCX[18]	=64/8
+BLCY[18]	=105-79
+BLCC[18]	=0
+BLCCNT[18]	=7
+.BFIL18[7]=7,7,8,7, 7,7,7
+;(repart)じじい
+BLCX[19]	=344/8
+BLCY[19]	=105-79
+BLCC[19]	=0
+BLCCNT[19]	=1
+.BFIL19[1]=23
+;(repart)赤の女
+BLCX[20]	=368/8
+BLCY[20]	=105-79
+BLCC[20]	=0
+BLCCNT[20]	=1
+.BFIL20[1]=24
+;(repart)皮鎧
+BLCX[21]	=296/8
+BLCY[21]	=89-79
+BLCC[21]	=0
+BLCCNT[21]	=1
+.BFIL21[1]=25
+;(repart)赤ﾁｮｯｷ
+BLCX[22]	=48/8
+BLCY[22]	=89-79
+BLCC[22]	=0
+BLCCNT[22]	=5
+.BFIL22[5]=15,15,15,16,15
+;(repart)紺ﾁｮｯｷ
+BLCX[23]	=80/8
+BLCY[23]	=89-79
+BLCC[23]	=0
+BLCCNT[23]	=6
+.BFIL23[6]=17,17,17,18, 17,17
+;皮鎧
+BLCX[24]	=296/8
+BLCY[24]	=89-79
+BLCC[24]	=0
+BLCCNT[24]	=1
+.BFIL24[1]=25
+;剃り
+BLCX[25]	=320/8
+BLCY[25]	=89-79
+BLCC[25]	=0
+BLCCNT[25]	=1
+.BFIL25[1]=26
+
+;足だけ 26から35まで
+
+;茶
+BLCX[26]	=64/8
+BLCY[26]	=105-79
+BLCC[26]	=0
+BLCCNT[26]	=1
+.BFIL26[1]=7
+;紫女
+BLCX[27]	=96/8
+BLCY[27]	=105-79
+BLCC[27]	=0
+BLCCNT[27]	=1
+.BFIL27[1]=9
+
+;どさんこ
+BLCX[28]	=-16/8
+BLCY[28]	=89-79
+BLCC[28]	=0
+BLCCNT[28]	=1
+.BFIL28[1]=11
+;おやじ
+BLCX[29]	=16/8
+BLCY[29]	=89-79
+BLCC[29]	=0
+BLCCNT[29]	=1
+.BFIL29[1]=13
+;赤ﾁｮｯｷ
+BLCX[30]	=48/8
+BLCY[30]	=89-79
+BLCC[30]	=0
+BLCCNT[30]	=1
+.BFIL30[1]=15
+;紺ﾁｮｯｷ
+BLCX[31]	=80/8
+BLCY[31]	=89-79
+BLCC[31]	=0
+BLCCNT[31]	=1
+.BFIL31[1]=17
+
+;ﾋﾟﾝｸﾁｮｯｷ
+BLCX[32]	=296/8
+BLCY[32]	=105-79
+BLCC[32]	=0
+BLCCNT[32]	=1
+.BFIL32[1]=19
+;ﾁｮﾋﾞﾋｹﾞ
+BLCX[33]	=320/8
+BLCY[33]	=105-79
+BLCC[33]	=0
+BLCCNT[33]	=1
+.BFIL33[1]=21
+
+;黒
+BLCX[34]	=0/8
+BLCY[34]	=105-79
+BLCC[34]	=0
+BLCCNT[34]	=1
+.BFIL34[1]=3
+;赤
+BLCX[35]	=32/8
+BLCY[35]	=105-79
+BLCC[35]	=0
+BLCCNT[35]	=1
+.BFIL35[1]=5
+
+BG_RND_SEQSET		;randam sequence set.
+BG_ANIME_LOCSET		;location set.
+
+RET
+
+;**************
+;	randam sequence set.
+;**************
+
+*BG_RND_SEQSET
+C1 = 24  C2 = 0
+	CHAR_SEQ_TBL[C2]=0
+	C2++
+LOOP C1
+C1 = 10  C2 = 0
+	CHAR_LEG_SEQ_TBL[C2]=0
+	C2++
+LOOP C1
+
+;観衆 2から25まで
+C2 = 2
+C1 = 24
+	RANDAM(24)
+	C3 = IRND - 1
+	C4 = 24
+		IF ( C3 >= 24 ) C3 -= 24
+		IF ( CHAR_SEQ_TBL[C3]=0 )
+			CHAR_SEQ_TBL[C3] = C2
+			GOTO BG_RND_SEQS_NEXT
+		C3++
+	LOOP C4
+	*BG_RND_SEQS_NEXT
+	C2++
+LOOP C1
+
+;足だけ 26から35まで
+C2 = 26
+C1 = 8
+	RANDAM(8)
+	C3 = IRND - 1
+	C4 = 8
+		IF ( C3 >= 8 ) C3 -= 8
+		IF ( CHAR_LEG_SEQ_TBL[C3]=0 )
+			CHAR_LEG_SEQ_TBL[C3] = C2
+			GOTO BG_RND_SEQS_NEXT2
+		C3++
+	LOOP C4
+	*BG_RND_SEQS_NEXT2
+	C2++
+LOOP C1
+
+RET
+
+LLF
+C1 = 24  C3 = 0
+	PRV(" :",CHAR_SEQ_TBL[C3])
+	C3++
+LOOP C1
+WAITU
+LLF
+C1 = 10  C3 = 0
+	PRV(" :",CHAR_LEG_SEQ_TBL[C3])
+	C3++
+LOOP C1
+WAITU
+RET
+
+;**************
+;	location set.
+;**************
+
+*BG_ANIME_LOCSET
+
+;右側
+XX1 = 0/8
+YY1 = 105-79
+C2 = 0
+C1 = 4
+	C5 = CHAR_SEQ_TBL[C2]
+	BLCX[C5] = XX1
+	BLCY[C5] = YY1
+	XX1 = XX1 + 4
+	C2++
+LOOP C1
+XX1 = -16/8
+YY1 = 89-79
+C1 = 4
+	C5 = CHAR_SEQ_TBL[C2]
+	BLCX[C5] = XX1
+	BLCY[C5] = YY1
+	XX1 = XX1 + 4
+	C2++
+LOOP C1
+XX1 = 0/8
+YY1 = 73-79
+C1 = 4
+	C5 = CHAR_SEQ_TBL[C2]
+	BLCX[C5] = XX1
+	BLCY[C5] = YY1
+	XX1 = XX1 + 4
+	C2++
+LOOP C1
+;左側
+XX1 = 320/8
+YY1 = 105-79
+C1 = 4
+	C5 = CHAR_SEQ_TBL[C2]
+	BLCX[C5] = XX1
+	BLCY[C5] = YY1
+	XX1 = XX1 + 4
+	C2++
+LOOP C1
+XX1 = 304/8
+YY1 = 89-79
+C1 = 4
+	C5 = CHAR_SEQ_TBL[C2]
+	BLCX[C5] = XX1
+	BLCY[C5] = YY1
+	XX1 = XX1 + 4
+	C2++
+LOOP C1
+XX1 = 320/8
+YY1 = 73-79
+C1 = 4
+	C5 = CHAR_SEQ_TBL[C2]
+	BLCX[C5] = XX1
+	BLCY[C5] = YY1
+	XX1 = XX1 + 4
+	C2++
+LOOP C1
+
+;足だけ・右
+XX1 = -16/8
+YY1 = 57-79
+C2 = 0
+C1 = 4
+	C5 = CHAR_LEG_SEQ_TBL[C2]
+	BLCX[C5] = XX1
+	BLCY[C5] = YY1
+	XX1 = XX1 + 4
+	C2++
+LOOP C1
+;足だけ・左
+XX1 = 304/8
+YY1 = 57-79
+C1 = 4
+	C5 = CHAR_LEG_SEQ_TBL[C2]
+	BLCX[C5] = XX1
+	BLCY[C5] = YY1
+	XX1 = XX1 + 4
+	C2++
+LOOP C1
+RET
+
+;**************
+;	anime BG character.
+;
+;	ANIME_BG_CHAR(timer)
+;**************
+
+*ANIME_BG_CHAR
+TIMER2
+*ANIME_BG_CHAR_LOOP
+	WWANIME(10,2,0,0,54,78)	;anime window size set.高速化の為
+	WWANIME(4,2)			;put BG.
+	TIMER1(8)
+	ANIME_BG_CHAR_L
+	ANIME_BG_CHAR_R
+	ANIME_BG_CHAR_OH
+	WAIT1
+	TMCHK2				;タイマーチェック２
+	IF ( DX = 0 ) GOTO ANIME_BG_CHAR_LOOP_E
+GOTO ANIME_BG_CHAR_LOOP
+*ANIME_BG_CHAR_LOOP_E
+C1 = 10  C2 = 0
+	BLCC[C2]=0
+	C2++
+LOOP C1
+ANIME_BG_CHAR_L
+ANIME_BG_CHAR_R
+ANIME_BG_CHAR_OH
+RET
+
+*ANIME_BG_CHAR_OH
+APUTSBG(0)
+APUTSBG(1)
+WWANIME(10,2,24,0,12,78)	;anime window size set.高速化の為
+WWANIME(5,2)				;pictuer copy vvram -> CRT.
+RET
+
+*ANIME_BG_CHAR_L
+C6 = 4  C5 = 4
+	C5--
+	C7 = CHAR_LEG_SEQ_TBL[C5]
+	APUTSBG(C7)
+LOOP C6
+C6 = 12  C5 = 12
+	C5--
+	C7 = CHAR_SEQ_TBL[C5]
+	APUTSBG(C7)
+LOOP C6
+WWANIME(10,2,0,0,17,72)		;anime window size set.高速化の為
+WWANIME(5,2)				;pictuer copy vvram -> CRT.
+RET
+
+*ANIME_BG_CHAR_R
+C6 = 4  C5 = 8
+	C5--
+	C7 = CHAR_LEG_SEQ_TBL[C5]
+	APUTSBG(C7)
+LOOP C6
+C6 = 12  C5 = 24
+	C5--
+	C7 = CHAR_SEQ_TBL[C5]
+	APUTSBG(C7)
+LOOP C6
+WWANIME(10,2,38,0,16,72)	;anime window size set.高速化の為
+WWANIME(5,2)				;pictuer copy vvram -> CRT.
+RET
+
+*APUTSBG
+APUTNUM = AX
+BG_ANIM_NUM(APUTNUM)
+APUTBG(BLCX[APUTNUM],BLCY[APUTNUM],C1)
+BLCC[APUTNUM]++
+RET
+
+*BG_ANIM_NUM
+;BG_ANIM_NUM(filmnumber)
+;-O- DX pattern number.
+IF ( BLCC[AX] >= BLCCNT[AX] )
+	BLCC[AX] = 0
+BX = BLCC[AX]
+IF (AX=0) DX=BFIL0[BX]
+IF (AX=1) DX=BFIL1[BX]
+IF (AX=2) DX=BFIL2[BX]
+IF (AX=3) DX=BFIL3[BX]
+IF (AX=4) DX=BFIL4[BX]
+IF (AX=5) DX=BFIL5[BX]
+IF (AX=6) DX=BFIL6[BX]
+IF (AX=7) DX=BFIL7[BX]
+IF (AX=8) DX=BFIL8[BX]
+IF (AX=9) DX=BFIL9[BX]
+IF (AX=10) DX=BFIL10[BX]
+IF (AX=11) DX=BFIL11[BX]
+IF (AX=12) DX=BFIL12[BX]
+IF (AX=13) DX=BFIL13[BX]
+IF (AX=14) DX=BFIL14[BX]
+IF (AX=15) DX=BFIL15[BX]
+IF (AX=16) DX=BFIL16[BX]
+IF (AX=17) DX=BFIL17[BX]
+IF (AX=18) DX=BFIL18[BX]
+IF (AX=19) DX=BFIL19[BX]
+IF (AX=20) DX=BFIL20[BX]
+IF (AX=21) DX=BFIL21[BX]
+IF (AX=22) DX=BFIL22[BX]
+IF (AX=23) DX=BFIL23[BX]
+IF (AX=24) DX=BFIL24[BX]
+IF (AX=25) DX=BFIL25[BX]
+IF (AX=26) DX=BFIL26[BX]
+IF (AX=27) DX=BFIL27[BX]
+IF (AX=28) DX=BFIL28[BX]
+IF (AX=29) DX=BFIL29[BX]
+IF (AX=30) DX=BFIL30[BX]
+IF (AX=31) DX=BFIL31[BX]
+IF (AX=32) DX=BFIL32[BX]
+IF (AX=33) DX=BFIL33[BX]
+IF (AX=34) DX=BFIL34[BX]
+IF (AX=35) DX=BFIL35[BX]
+DX--	;DX pattern number.
+C1 = DX
+RET
+
+*APUTBG
+;anime pattern put vvram.
+;APUTBG(x,y,pattern)
+IF ( CX < 0 ) RET
+DI = CX * 2
+DX = AX
+SI = BX
+AX = 13
+BX = 1
+CX = BANK_BG_CHAR
+;	WWANIME(13,2,BANK_BG_CHAR,x,y,n)	;(bank)anime pattern put vvram.
+WWANIME	;anime pattern put vvram.
+RET
+
+;**************
+;	娘データ
+;**************
+
+*CHECK_GIRL_DATA
+W_HP_MAX = B_TAIRYOKU - S_BYOUKI		;最大ＨＰ 体力－病気指数
+IF ( W_HP_MAX < 0 ) W_HP_MAX = 0
+W_MP_MAX = B_CHINOH						;最大ＭＰ 知能
+W_SENI = H_SENSHI						;戦士評価 -> 戦意
+IF ( H_MAHO > H_SENSHI ) W_SENI= H_MAHO	;魔法評価 -> 戦意
+W_HP = W_HP_MAX
+W_MP = W_MP_MAX
+					;娘に当たる(1=皮,2=鉄,3=体毛)
+IF ( EQUIP_ICON = 11 )	GIRL_SE_ATTACK=1		;11=皮の鎧
+IF ( EQUIP_ICON = 12 )	GIRL_SE_ATTACK=2		;12=鎖帷子
+IF ( EQUIP_ICON = 13 )	GIRL_SE_ATTACK=2		;13=鉄の鎧
+IF ( EQUIP_ICON = 14 )	GIRL_SE_ATTACK=2		;14=ミスリルの鎧
+IF ( EQUIP_ICON = 15 )	GIRL_SE_ATTACK=3		;15=シルクの鎧
+RET
+
+;******************
+;	SLCANM :
+;		0=待機
+;		1=通常攻撃
+;		2=魔法攻撃
+;		3=防御
+;		4=勝ち
+;		5=負け
+;
+;	SLCATK :
+;		0=待機
+;		1=通常攻撃
+;		2=魔法攻撃
+;		3=防御
+;		4=勝ち
+;		5=負け
+;******************
+
+*ANIME_PLAY
+TIMELOPMAX = AX
+
+WWANIME(10,2,2,97,50,80)		;anime window size set.高速化の為
+
+FLAG_BATLE_EXIT = 0
+FITER_SHOT = 0
+GIRL_SHOT = 0
+WAIT_MAGIC = 0
+COUNT_ATTACK=0
+BOUGYO_TK = 0
+
+C1 = 6  C2 = 0
+	ALCC[C2]=0
+	ALCX[C2]=256/8
+	ALCY[C2]=176-79
+	C2++
+LOOP C1
+
+ALCC[6]=0
+ALCX[6]=216/8
+ALCY[6]=176-79
+
+BATLE_PLAY_INIT
+
+TIMELOP=TIMELOPMAX
+	WWANIME(4,2)		;put BG.
+	TIMER1(TIMEWAIT1)
+
+	IF ( SLCANM=1 )		;通常攻撃
+		APUTS_XY(SLCANM)
+		APUTK_XY(SLCATK)
+		C2 = GIRL_XX - FITER_XX
+		IF ( GIRL_SHOT=0  C2<=LENG_ATTACK_GR )
+			SLCATK = 3			;敵防御
+			GIRL_SHOT = 1
+			FITER_XX = GIRL_XX - LENG_ATTACK_GR
+			APUTK_XY_WRT(SLCATK)
+
+	IF ( SLCANM=2 )		;魔法攻撃
+		SLCATK = 3			;敵防御
+		APUTS_XY(6)
+		APUTK_XY(SLCATK)
+		C2 = GIRL_XX - FITER_XX
+		IF ( GIRL_SHOT=0  C2<=LENG_MAGIC_GR )
+			GIRL_SHOT = 1
+			FITER_XX = GIRL_XX - LENG_MAGIC_GR
+			APUTK_XY_WRT(SLCATK)
+
+	IF ( SLCATK=1 )		;敵・通常攻撃
+		APUTS_XY(SLCANM)
+		APUTK_XY(SLCATK)
+		C2 = GIRL_XX - FITER_XX
+		IF ( FITER_SHOT=0  C2<=LENG_ATTACK_TK )
+			SLCANM = 3			;防御
+			FITER_SHOT = 1
+			FITER_XX = GIRL_XX - LENG_ATTACK_TK
+			APUTK_XY_WRT(SLCATK)
+
+	IF ( SLCATK=2 )		;敵・魔法攻撃
+		APUTS_XY(SLCANM)
+		APUTK_XY(6)
+		C2 = GIRL_XX - FITER_XX
+		IF ( FITER_SHOT=0  C2<=LENG_MAGIC_TK )	;敵・魔法攻撃
+			SLCANM = 3			;防御
+			FITER_SHOT = 1
+			GIRL_XX = FITER_XX + LENG_MAGIC_TK + 11
+			APUTS_XY_WRT(SLCATK)
+
+	IF ( SLCANM=1 )( SLCANM=2 )	;通常攻撃 魔法攻撃
+		BATLE_PLAY			;敵アニメ
+		GIRL_BATLE			;娘アニメ
+	IF ( SLCANM!1  SLCANM!2 )
+		GIRL_BATLE			;娘アニメ
+		BATLE_PLAY			;敵アニメ
+
+	WAIT1
+	NOW_SE_SET
+	WWANIME(5,2)		;pictuer copy vvram -> CRT.
+	IF ( FLAG_BATLE_EXIT!0 ) TIMELOP=0
+LOOP TIMELOP
+RET
+
+*NOW_SE_SET
+SE_TIME_GR_CHK
+IF ( AX=1 )
+	IF ( BATLE_NOW=1 )
+		IF ( FLAG_KAISHIN!0 )	;1=命中  会心ﾌﾗｸﾞ
+			SE_KAISHIN
+		IF ( FLAG_KAISHIN=0 )
+			IF ( FLG_HABAM=0 )
+				SE_TK_DAMEG
+			IF ( FLG_HABAM!0 )
+				SE_TK_DEFENS
+	IF ( BATLE_NOW=2 )
+		SE_TK_DEFENS
+SE_TIME_TK_CHK
+IF ( AX = 1 )
+	IF ( BATLE_NOW=1 )
+		IF ( FLAG_TSUKON!0 )	;1=命中  痛恨ﾌﾗｸﾞ
+			SE_GR_DAMEG
+		IF ( FLAG_TSUKON=0 )
+			IF ( FLG_HABAM=0 )
+				SE_TSUKON
+			IF ( FLG_HABAM!0 )
+				SE_GR_DEFENS
+	IF ( BATLE_NOW=2 )
+		SE_GR_DEFENS
+RET
+
+;**************
+;	girl batle.
+;**************
+
+*GIRL_BATLE
+
+IF ( SLCANM=1 )
+	IF ( GIRL_SHOT!0 )
+		IF ( COUNT_ATTACK = 0 ) ALCC[1]=2
+		COUNT_ATTACK++
+
+IF ( SLCANM=2 )
+	IF ( ALCC[2] = 2 ) ALCC[2] = 1
+	IF ( ALCC[6]>= 4 ) ALCC[6] = 2
+	IF ( GIRL_SHOT=0 )
+		APUTS(6)
+		ALCX[6] -= 2
+	IF ( GIRL_SHOT!0 )
+		IF ( WAIT_MAGIC=0 )
+			APUTS(6)
+		WAIT_MAGIC++
+		IF ( WAIT_MAGIC >=3 )
+			FLAG_BATLE_EXIT=1
+
+APUTS(SLCANM)
+
+IF ( SLCANM=1 )
+	IF ( GIRL_SHOT=0  ALCX[1] > C2 )
+		ALCX[1]--
+		IF ( ALCC[1] >= 2 ) ALCC[1] = 0
+	IF ( ALCC[1]>=6 )
+		FLAG_BATLE_EXIT=1
+RET
+
+*APUTS_XY
+APUTNUM = AX
+GIRL_XX = ALCX[APUTNUM]
+GIRL_YY = ALCY[APUTNUM]
+RET
+
+*APUTS_XY_WRT
+APUTNUM = AX
+ALCX[APUTNUM] = GIRL_XX
+ALCY[APUTNUM] = GIRL_YY
+RET
+
+*APUTS
+APUTNUM = AX
+ANIM_NUM(APUTNUM)
+APUT(ALCX[APUTNUM],ALCY[APUTNUM],C1,OFST_GIRL)
+ALCC[APUTNUM]++
+RET
+
+*ANIM_NUM
+;ANIM_NUM(filmnumber)
+;-O- DX pattern number.
+IF ( ALCC[AX] >= ALCCNT[AX] )
+	ALCC[AX] = 0
+BX = ALCC[AX]
+IF (AX=0) DX=FILM0[BX]
+IF (AX=1) DX=FILM1[BX]
+IF (AX=2) DX=FILM2[BX]
+IF (AX=3) DX=FILM3[BX]
+IF (AX=4) DX=FILM4[BX]
+IF (AX=5) DX=FILM5[BX]
+IF (AX=6) DX=FILM6[BX]
+BATLE_ANIM_NUM			;anime number.
+DX--	;DX pattern number.
+C1 = DX
+RET
+
+*APUT
+;anime pattern put vvram.
+;APUT(x,y,pattern,offset)
+IF ( CX < 0 ) RET
+SI = CX * 2 + DX
+DX = BX
+CX = AX
+AX = 7
+BX = 1
+;	WWANIME(7,2,ALCX[0],ALCY[0],ALCC[0])
+WWANIME	;anime pattern put vvram.
+RET
+
+
+;**************
+;	フレーム
+;**************
+
+*FRAME_OPEN
+PTBK(0)
+PTLD("FRMSYUKL")
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+GRPCLS
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+PTX(40,0,0)
+PTLD("SSBASEUP")
+PTLA("SSBASEDN")
+PTLA("SSTEXT")
+PTLA("SSPRAM")
+PTLA("SSW001")
+PTMF(0,0,0)
+PTMF(0,0,2)
+PTMF(0,0,4)
+PTM(0,262,6)
+PTM(54,262,6)
+PTMF(0,0,8)
+RET
+
+*FACEOPEN
+C2 = AX
+PTBK(1)
+PTCLR
+PTGT(0,86,16,140)
+PTGT(64,86,16,140)
+PTBK(2)
+PTLD("SSFACE")
+SI = R_FACE
+PTLA
+PIC(14,P_NENREI,C2)	; 娘の顔ファイル名
+PTLA
+PTM(0,86,0)
+PTX(2,104,2)
+PTM(64,86,0)
+PTX(66,104,3)
+PTBK(0)
+RET
+
+*FACECLOSE
+PTBK(1)
+PTF(0,0,0)
+PTF(0,0,1)
+PTBK(0)
+RET
+
+*STR_GIRL_NAMEX
+SI = NAME_FIRST
+STRCOPY(STR_WORK)
+STRLEN(NAME_FIRST)
+C2 = STR_WORK + AX
+SI = "･"
+STRCOPY(C2)
+C2 = C2 + 1
+SI = NAME_FAMILY
+STRCOPY(C2)
+TXF(4,STR_WORK,23)	; 漢字文字詰め処理
+SI = STR_WORK
+RET
+
+*STR_N_SHORT
+SI = AX
+STRCOPY(STR_WORK)
+TXF(4,STR_WORK,23)	; 漢字文字詰め処理
+SI = STR_WORK
+RET
+
+;**************
+;	戦闘モード
+;	-O- CMN_VIC_FLG : 勝敗 1=娘勝ち,2=敵勝ち
+;	    FLAG_BATLE  : 0=戦闘中
+;**************
+
+*BATLE_MODE			;戦闘モード
+SLCPOS(2)
+FLAG_VICTORY=0		;勝利フラグ
+FLAG_BATLE = 0		;0=戦闘中
+MY_KAISHIN = 3		;会心率(%)
+IF ( E_KAISIN ! 0 )	;会心の一撃発生倍率２倍
+	MY_KAISHIN = 6	;会心率(%)
+BATL_COUNT = 0
+
+TXF(11)			; 戦闘時ﾃｷｽﾄﾓｰﾄﾞ
+BTL_LOOP
+TXF(10)			; ﾉｰﾏﾙ時ﾃｷｽﾄﾓｰﾄﾞ
+
+VICTORY_SET
+RET
+
+;**************
+;	graph.
+;**************
+
+*GRAPSHOW
+GR_F(1,2)			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+STR_N_SHORT(R_NAME)
+IGRP_X = 2
+IGRP_Y = 279
+GR_F(6)
+
+IGRP_TBL1[0]="　ＨＰ"
+IGRP_TBL1[1]="　ＭＰ"
+IGRP_TBL1[2]="戦士評価"
+IGRP_TBL1[3]="魔法評価"
+IGRP_TBL1[4]="　戦意"
+IGRP_TBL3[0]=R_HP			;ＨＰ
+IGRP_TBL3[1]=R_MP			;ＭＰ
+IGRP_TBL3[2]=R_SENSHI		; 戦士評価
+IGRP_TBL3[3]=R_MAHO			; 魔法評価
+IGRP_TBL3[4]=R_SENI			; 戦意
+IGRP_CNT=5
+IGRP_X=1
+IGRP_Y=288
+GR_F(5,1,2)			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ･ﾌﾚｰﾑ無し
+;GRPOPEN(1,2)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+
+STR_GIRL_NAMEX
+IGRP_X = 56
+IGRP_Y = 279
+GR_F(6)
+
+IGRP_TBL1[0]="　ＨＰ"
+IGRP_TBL1[1]="　ＭＰ"
+IGRP_TBL1[2]="戦士評価"
+IGRP_TBL1[3]="魔法評価"
+IGRP_TBL1[4]="　戦意"
+IGRP_TBL3[0]=W_HP			;ＨＰ
+IGRP_TBL3[1]=W_MP			;ＭＰ
+IGRP_TBL3[2]=H_SENSHI		; 戦士評価
+IGRP_TBL3[3]=H_MAHO			; 魔法評価
+IGRP_TBL3[4]=W_SENI			; 戦意
+IGRP_CNT=5
+IGRP_X=55
+IGRP_Y=288
+GR_F(5,1,3)			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ･ﾌﾚｰﾑ無し
+;GRPOPEN(1,3)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+RET
+
+*DISP_HP
+GRPUPD(2,0,R_HP)
+GRPUPD(2,1,R_MP)
+GRPUPD(2,4,R_SENI)
+GRPUPD(3,0,W_HP)
+GRPUPD(3,1,W_MP)
+GRPUPD(3,4,W_SENI)
+RET
+
+*RDM
+;RDM(start,end)
+;-o- AX : randmize
+C1 = AX
+C2 = BX - AX + 1
+;*;RANDAM(C2)
+IRAND999X(C2)		;乱数９９９範囲指定
+AX = IRND + C1 - 1
+RET
+
+
+;**************
+;	戦闘モード
+;	FLAG_BATLE 0=戦闘中
+;**************
+
+*BTL_LOOP
+
+ATTAKE_GIRL
+DISP_HP
+IF ( FLAG_BATLE ! 0 ) RET
+
+ATTAKE_MONSTOR
+DISP_HP
+IF ( FLAG_BATLE ! 0 ) RET
+
+BATL_COUNT++
+IF ( BATL_COUNT>=10 ) RET
+
+GOTO BTL_LOOP
+
+
+*ATTAKE_GIRL
+SLCTBAK(1)
+SLCTX("攻撃する,魔法を使う")
+IF ( ISLCT=1   W_MP < 10 )
+	ＭＰが足りません．
+	GOTO ATTAKE_GIRL
+
+BATLE_GR_SLCT = ISLCT + 1
+
+SSBATL_TAIKI
+
+IF ( BATLE_GR_SLCT=1 )		;1=通常攻撃
+	GIRL_ATTAKE
+	TEKI_KAISHIN_DMG
+	SSBATL_GR_ATTACK
+	TXA(NAME_FIRST)の攻撃！
+	PPP1
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(V_KOUGEKI,R_BOUGYO)
+		TEKI_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		TEKI_DAMEG_NONE
+	RET
+IF ( BATLE_GR_SLCT=2 )		;2=魔法攻撃
+	IF ( E_MAX_MP=0 )		;ＭＰが減らない
+		W_MP -= 10
+	GIRL_MAGIC
+	TEKI_KAISHIN_DMG
+	SSBATL_GR_MAGIC
+	魔法攻撃をしかけた！！
+	PPP1
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(V_MARYOKU,R_KOHMARYOKU)
+		TEKI_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		TEKI_DAMEG_NONE
+	RET
+RET
+
+*ATTAKE_MONSTOR
+;魔力を持っている敵は，《現在のＭＰ：現在のＨＰ》の比率で魔法
+C1 = R_HP + R_MP		;
+P100PAR(R_MP,C1)		;百分率を求める
+C2 = AX					;parcent.
+RANDAM(100)				;
+
+IF ( C2 >= IRND )
+	BATLE_TK_SLCT=2			;2=魔法攻撃
+IF ( C2 < IRND )( R_MP < 10 )
+	BATLE_TK_SLCT=1			;1=通常攻撃
+
+SSBATL_TAIKI
+
+IF ( BATLE_TK_SLCT=1 )		;1=通常攻撃
+	TEKI_ATTAKE
+	GIRL_TSUKON_DMG
+	SSBATL_TK_ATTACK
+	TXA(R_NAME)の攻撃！
+	PPP1
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(R_KOUGEKI,V_BOUGYO)
+		GIRL_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		GIRL_DAMEG_NONE
+	RET
+
+IF ( BATLE_TK_SLCT=2 )		;2=魔法攻撃
+	R_MP -= 10
+	TEKI_MAGIC
+	GIRL_TSUKON_DMG
+	SSBATL_TK_MAGIC
+	魔法攻撃を受けた！！
+	PPP1
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(R_MARYOKU,V_KOHMARYOKU)
+		GIRL_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		GIRL_DAMEG_NONE
+	RET
+RET
+
+*GIRL_ATTAKE
+CALC_ATTACK(V_SENTOH)	ATTACK_VAL=AX
+CALC_DEFENS(R_SENTOH)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*GIRL_MAGIC
+TXA(NAME_FIRST)は呪文を唱えた．
+CALC_ATTACK(V_MAHOGIJUTSU)	ATTACK_VAL=AX
+CALC_DEFENS(R_MAHOGIJUTSU)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*TEKI_ATTAKE
+CALC_ATTACK(R_SENTOH)	ATTACK_VAL=AX
+CALC_DEFENS(V_SENTOH)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*TEKI_MAGIC
+TXA(R_NAME)は呪文を唱えた！
+CALC_ATTACK(R_MAHOGIJUTSU)	ATTACK_VAL=AX
+CALC_DEFENS(V_MAHOGIJUTSU)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*TEKI_KAISHIN_DMG
+FLAG_KAISHIN=0			;会心ﾌﾗｸﾞ
+RANDAM(100)
+IF ( MY_KAISHIN >=IRND )	;会心率(%)
+	FLAG_KAISHIN=1
+RET
+
+*TEKI_DAMEG
+T_DAMEG = AX
+IF ( FLAG_KAISHIN!0 )
+	T_DAMEG = T_DAMEG * 3
+	会心の一撃！@@
+	PPP1
+IF ( FLG_HABAM=0 )
+	命中！TXA(R_NAME)にTXPOINT(T_DAMEG)のダメージを与えた！
+IF ( FLG_HABAM!0 )
+	IF ( R_SOUKOU > 0 )		;装甲
+		命中！しかし，TXA(R_NAME)のTXA(R_SKNAME)に阻まれた！
+	IF ( R_SOUKOU = 0 )		;装甲
+		TXA(R_NAME)は攻撃を受けとめた！
+	TXA(R_NAME)はTXPOINT(T_DAMEG)のダメージ．
+PPP1
+TEKI_DAMEG_CHK
+RET
+
+*TEKI_DAMEG_NONE
+TXA(R_NAME)は攻撃を回避した！
+PPP1
+RET
+
+*TEKI_DAMEG_CHK
+R_HP -= T_DAMEG
+IF ( BATLE_GR_SLCT=1 )	E_ETC[100]+=T_DAMEG		;通常攻撃時ﾀﾞﾒｰｼﾞ合計
+IF ( BATLE_GR_SLCT=2 )	E_ETC[101]+=T_DAMEG		;魔法攻撃時ﾀﾞﾒｰｼﾞ合計
+IF ( R_HP <= 0 )
+	R_HP = 0
+	FLAG_BATLE=1	;1=娘勝ち
+	RET
+R_SENI -= T_DAMEG	;戦意
+IF ( R_SENI <= 0 )
+	R_SENI = 0
+	FLAG_BATLE=4	;4=敵逃げる
+RET
+
+*GIRL_TSUKON_DMG
+FLAG_TSUKON=0			;痛恨ﾌﾗｸﾞ
+RANDAM(100)
+IF ( R_TSUKON >=IRND )	;痛恨率(%)
+	FLAG_TSUKON=1
+RET
+
+*GIRL_DAMEG
+G_DAMEG = AX
+IF ( FLAG_TSUKON!0 )		;痛恨ﾌﾗｸﾞ
+	G_DAMEG = G_DAMEG * 3
+	痛恨の一撃！@@
+	PPP1
+IF ( FLG_HABAM=0 )
+	命中！TXA(NAME_FIRST)はTXPOINT(G_DAMEG)のダメージを受けた！
+IF ( FLG_HABAM!0 )
+	IF ( EQUIP_ICON ! 0 )
+		命中！しかし，TXA(NAME_FIRST)のTXA(EQUIP_NAME)に阻まれた！
+	IF ( EQUIP_ICON = 0 )
+		TXA(NAME_FIRST)は攻撃を受けとめた！
+	TXA(NAME_FIRST)はTXPOINT(G_DAMEG)のダメージ．
+PPP1
+GIRL_DAMEG_CHK
+RET
+
+*GIRL_DAMEG_NONE
+TXA(NAME_FIRST)は巧みに回避した！
+PPP1
+RET
+
+*GIRL_DAMEG_CHK
+W_HP -= G_DAMEG		;ＨＰ
+IF ( W_HP <= 0 )
+	W_HP = 0
+	FLAG_BATLE=2	;2=敵勝ち
+	RET
+W_SENI -= G_DAMEG	;戦意
+IF ( W_SENI <= 0 )
+	W_SENI = 0
+	FLAG_BATLE=3	;3=娘逃げる
+RET
+
+*CALC_ATTACK	;-I-戦闘技術 -O- AX : 攻撃バリュー
+;AX=AX+-30%randam
+C1 = AX
+IRNDPAR(C1,30)
+RET
+
+*CALC_DEFENS	;-I-戦闘技術 -O- AX : 攻撃バリュー
+;AX=AX+-30%randam
+C1 = AX
+IRNDPAR(C1,30)
+RET
+
+*CALC_DAMEG		;-I-攻撃力,防御側の防御力 -O- AX : ダメージ
+;AX = AX+-20%randam - BX
+FLG_HABAM=0
+C1 = AX
+C2 = BX
+IRNDPAR(C1,20)
+AX = AX - C2
+IF ( AX < 0 )
+	FLG_HABAM=1
+	AX = 1
+RET
+
+*PPP1
+TIMER1(10)
+WAIT1
+RET
+
+*PPP2
+@P
+RET
+
+*SE_TK_DEFENS
+IF(R_SE_ATTACK=1)MUSIC(6,7)	;1=皮
+IF(R_SE_ATTACK=2)MUSIC(6,8)	;2=鉄
+IF(R_SE_ATTACK=3)MUSIC(6,9)	;3=体毛
+IF(R_SE_ATTACK=4)MUSIC(6,10);4=固い体
+RET
+
+*SE_GR_DEFENS
+IF(GIRL_SE_ATTACK=0)MUSIC(6,9)	;3=体毛
+IF(GIRL_SE_ATTACK=1)MUSIC(6,7)	;1=皮
+IF(GIRL_SE_ATTACK=2)MUSIC(6,8)	;2=鉄
+IF(GIRL_SE_ATTACK=3)MUSIC(6,9)	;3=体毛
+RET
+
+*SE_MAGIC
+MUSIC(6,4)
+RET
+
+*SE_TK_DAMEG
+MUSIC(6,11)
+RET
+
+*SE_GR_DAMEG
+MUSIC(6,12)
+RET
+
+*SE_KAISHIN
+MUSIC(6,13)
+RET
+
+*SE_TSUKON
+MUSIC(6,14)
+RET
+
+*SE_HOUROKU
+MUSIC(6,16)
+RET
+
+;	victory set.
+;	-I- FLAG_BATLE  : 0=戦闘中
+;	-O- CMN_VIC_FLG : 勝敗 1=娘勝ち,2=敵勝ち
+
+*VICTORY_SET
+IF ( FLAG_BATLE=0 )		; 0=戦闘中
+	IF ( W_HP >= R_HP )	CMN_VIC_FLG=1	; 勝敗 1=娘勝ち
+	IF ( W_HP <  R_HP )	CMN_VIC_FLG=2	; 勝敗 2=敵勝ち
+IF ( FLAG_BATLE = 1 )( FLAG_BATLE = 4 )
+	CMN_VIC_FLG = 1
+IF ( FLAG_BATLE = 2 )( FLAG_BATLE = 3 )
+	CMN_VIC_FLG = 2
+RET
+
+;
+;	end of "SSBATL.TXT"
+;
+
