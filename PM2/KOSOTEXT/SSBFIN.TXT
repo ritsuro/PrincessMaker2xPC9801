@@ -1,0 +1,465 @@
+;"SSBFIN.TXT"
+;
+;
+;	収穫祭・武闘会の表彰式
+;
+;
+;	C1 : 優勝キャラクタ番号
+;	C2 : 準優勝キャラクタ番号
+;
+;
+;
+;
+;"MAINLOOP.TXT"からのデバック用
+;C1=14	; 優勝キャラクタ番号
+;C2=13	; 準優勝キャラクタ番号
+;E_ETC[59]=0
+;LOAD("SSBFIN")
+;LOAD("SSRUNS")
+;
+;
+
+STRSCLEAR
+
+.CMN_VICTORY1			;優勝ｷｬﾗｸﾀ番号
+.CMN_VICTORY2			;準優勝ｷｬﾗｸﾀ番号
+
+CMN_VICTORY1 = C1		;優勝ｷｬﾗｸﾀ番号
+CMN_VICTORY2 = C2		;準優勝ｷｬﾗｸﾀ番号
+
+.STR_E_NM[19]
+.STR_E_NM1[19]
+.STR_E_NM2[19]
+.R_FACES[19]
+.MONSMES[19]
+.CATCH_GOLD=0
+.ITEM_KOUKA[1]		;効果
+.ITEM_ATTRBUTE[1]	;種別
+
+.STR_WORK="12345678123456781234567812345678.."
+
+FRAME_MAIN				;frame.
+
+ENTRY_NAME_SET			;name set.
+FINALE_MAIN				;全試合終了後
+C1 = 1			;1=武闘会
+LOAD("SSALEND")
+
+;**************
+;	全試合終了後
+;**************
+
+*FINALE_MAIN
+
+TXLC(16,32,110,1)		;text window locate.
+
+PLAY(26)	;P26 表彰
+
+TXOPEN(16)
+TXFACE("F054")		;将軍・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+
+FRAME_SHO
+SHO_NAME
+
+TXLC(16,32,16,1)		;text window locate.
+TXLC(17,17,254,2)		;text window locate.
+TXLC(18,24,240,0)		;text window locate.
+
+IF ( CMN_VICTORY1 = 1 )		;娘が優勝した場合
+	TXOPEN(16)
+	TXFACE("F086")			;国王・普通
+	「TXA(STR_E_NM[CMN_VICTORY1])＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXOPEN(17)							;16=武闘会用２ window
+	ENTRY_FACE_FLN_SET(CMN_VICTORY1)	;face file name.
+	TXFACE
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+	TXCLOSE(16)
+
+	TXOPEN(18)
+	TXA(NAME_FIRST)は王から@@
+	IF ( ITEM_MAX < ITEM_DIM )	;所有最大アイテム数
+		『恩賜の剣』と，@@
+		SHOW_ITEMS				;アイテム表示
+	優勝賞金３０００Ｇをもらった！
+	CATCH_GOLD=3000			;
+	GR_F(1,3)				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	IGRP_TBL3[0]=CATCH_GOLD
+	IGRP_TBL1[0]="賞金"
+	IGRP_CNT=1
+	IGRP_X=58
+	IGRP_Y=304
+	GOLDOPEN(1,2)	;ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+	GOLDADD(CATCH_GOLD)		;
+	;;WWPROF(3)				;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+	@P
+	GR_CLOSE				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	IF ( ITEM_MAX < ITEM_DIM )	;所有最大アイテム数
+		ITEMPRN(2)				;マルチアイテム復帰
+		TAKE_ITEM				;アイテム取得
+	C5 = 20					;優勝	戦士or魔法　20
+	HYOUKA_UP				;評価アップ
+	TXCLOSE(18)
+
+	TXLC(17,32,240,1)		;text window locate.
+	TXOPEN(17)
+	TXFACE("F040")			;執事・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+	RET
+
+;娘が準優勝の場合
+
+TXOPEN(16)
+TXFACE("F086")			;国王・普通
+「TXA(STR_E_NM[CMN_VICTORY1])＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+
+TXOPEN(17)
+ENTRY_FACE_FLN_SET(CMN_VICTORY1)	;face file name.
+TXFACE
+MONSTAR_MESSAGE(CMN_VICTORY1)		;monstar message.
+@P
+TXCLOSE(17)
+
+IF ( CMN_VICTORY2 = 1 )		;娘が準優勝した場合
+
+	TXOPEN(18)
+	TXA(NAME_FIRST)は準優勝の賞金として１０００Ｇをもらった．
+	CATCH_GOLD=1000			;
+	GR_OPEN					;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+	IGRP_TBL3[0]=CATCH_GOLD
+	IGRP_TBL1[0]="賞金"
+	IGRP_CNT=1
+	IGRP_X=58
+	IGRP_Y=280
+	GOLDOPEN(1,2)	;ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+	GOLDADD(CATCH_GOLD)		;
+	;;WWPROF(3)				;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+	@P
+	GR_CLOSE				;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	C5 = 10					;準優勝	戦士or魔法　10
+	HYOUKA_UP				;評価アップ
+	TXCLOSE(18)
+
+	TXLC(17,32,240,1)		;text window locate.
+	TXOPEN(17)
+	TXFACE("F041")				;執事・すまし
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+	RET
+
+
+;娘が優勝も準優勝もできず，かつ１回以上は勝った場合
+IF ( E_ETC[59] > 0 )		;最近の武闘会勝った回数
+	TXLC(17,32,240,1)		;text window locate.
+	TXOPEN(17)
+	TXFACE("F040")			;執事・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+	RET
+
+;娘が一回戦で負けた場合
+
+TXLC(16,32,110,1)		;text window locate.
+TXOPEN(16)
+TXFACE("F046")		;執事・困り
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(17)
+TXGIRL(3)			;娘・悲しい
+「＊＊＊＊＊＊」
+@P
+TXCLOSE(17)
+TXCLOSE(16)
+
+URA_STEWARD += 5			; 執事との関係５上昇
+IF ( URA_STEWARD>100 ) URA_STEWARD=100	; 執事との関係
+RET
+
+;**************
+;	frame.
+;**************
+
+*FRAME_MAIN
+PTBK(0)
+PTLD("FRMSYUKL")
+MUSIC(2)		;音楽ﾌｪｰﾄﾞｱｳﾄ
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+GRPCLS			;
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+PTX(40,0,0)
+PTLD("E19HONO")	;「表彰式」
+PTM(23,20,0)
+EFC(16)			;ノーマルカラー
+RET
+
+*FRAME_SHO
+PTBK(0)
+PTLD("SSSHOU")
+PTLA("SSMOJI")
+PTM(16,128,0)
+PTM(42,128,0)
+PTM(20,152,2)
+PTM(47,152,4)
+RET
+
+*SHO_NAME
+PIC(16,15,0,2)		;PIC(16,color,size,type)
+CENTERING(STR_E_NM1[CMN_VICTORY1],19)
+PIC(15,C3,192)
+CENTERING(STR_E_NM2[CMN_VICTORY1],19)
+PIC(15,C3,216)
+CENTERING(STR_E_NM1[CMN_VICTORY2],45)
+PIC(15,C3,192)
+CENTERING(STR_E_NM2[CMN_VICTORY2],45)
+PIC(15,C3,216)
+RET
+
+*CENTERING
+C1 = AX
+C3 = BX
+STRLEN(C1)
+C2 = 16 - AX
+C2 = C2 / 2
+C3 = C3 + C2
+SI = C1
+RET
+
+
+;**************
+;	name set.
+;**************
+
+*ENTRY_NAME_SET
+
+STR_E_NM[2]="ホルスト・ハイムマン"
+STR_E_NM1[2]="ホルスト"
+STR_E_NM2[2]="ハイムマン"
+
+STR_E_NM[3]="バンバン・ビザロ"
+STR_E_NM1[3]=STR_E_NM[3]
+STR_E_NM2[3]=""
+
+STR_E_NM[4]="カールフォックス"
+STR_E_NM1[4]=STR_E_NM[4]
+STR_E_NM2[4]=""
+
+STR_E_NM[5]="ミィーア"
+STR_E_NM1[5]=STR_E_NM[5]
+STR_E_NM2[5]=""
+
+STR_E_NM[6]="ダムダム"
+STR_E_NM1[6]=STR_E_NM[6]
+STR_E_NM2[6]=""
+
+STR_E_NM[7]="フランソワ・モーレ"
+STR_E_NM1[7]="フランソワ"
+STR_E_NM2[7]="モーレ"
+
+STR_E_NM[8]="ﾄﾞン＝レオ・ジョナサン"
+STR_E_NM1[8]="ﾄﾞン＝レオ"
+STR_E_NM2[8]="ジョナサン"
+
+STR_E_NM[9]="タオ・ランファン"
+STR_E_NM1[9]=STR_E_NM[9]
+STR_E_NM2[9]=""
+
+STR_E_NM[10]="カタナ・テラー"
+STR_E_NM1[10]=STR_E_NM[10]
+STR_E_NM2[10]=""
+
+STR_E_NM[11]="ナターシャ・ドリプシコワ"
+STR_E_NM1[11]="ナターシャ"
+STR_E_NM2[11]="ドリプシコワ"
+
+STR_E_NM[12]="サラーム・ナセル"
+STR_E_NM1[12]=STR_E_NM[12]
+STR_E_NM2[12]=""
+
+STR_E_NM[13]="チャン・クーロン"
+STR_E_NM1[13]=STR_E_NM[13]
+STR_E_NM2[13]=""
+
+STR_E_NM[14]="ジェニファー・ザ・クィーン"
+STR_E_NM1[14]="ジェニファー"
+STR_E_NM2[14]="ザ・クィーン"
+
+STR_E_NM[15]="マッスル・ハルバル"
+STR_E_NM1[15]="マッスル"
+STR_E_NM2[15]="ハルバル"
+
+STR_E_NM[16]="剣士レフトール"
+STR_E_NM1[16]=STR_E_NM[16]
+STR_E_NM2[16]=""
+
+STR_E_NM[17]="アニータ・カサンドラ"
+STR_E_NM1[17]="アニータ"
+STR_E_NM2[17]="カサンドラ"
+
+STR_E_NM[18]="ウェンデｨｰ・ラキシス"
+STR_E_NM1[18]="ウェンデｨｰ"
+STR_E_NM2[18]="ラキシス"
+
+STR_E_NM[1]="12345678123456781234567812345678.."
+SI = NAME_FIRST
+STRCOPY(STR_E_NM[1])
+STRLEN(NAME_FIRST)
+C2 = STR_E_NM[1] + AX
+SI = "･"
+STRCOPY(C2)
+C2 = C2 + 1
+SI = NAME_FAMILY
+STRCOPY(C2)
+
+STRLEN(STR_E_NM[1])
+IF ( AX <= 16 )
+	STR_E_NM1[1]=STR_E_NM[1]
+	STR_E_NM2[1]=""
+	RET
+STR_E_NM1[1]=NAME_FIRST
+STR_E_NM2[1]=NAME_FAMILY
+RET
+
+;**************
+;	face file name.
+;**************
+
+*ENTRY_FACE_FLN_SET
+IF ( AX=1 )
+	PIC(14,P_NENREI,1)	; 娘の顔ファイル名
+	RET
+IF ( AX=2  ) SI="F102"
+IF ( AX=3  ) SI="F103"
+IF ( AX=4  ) SI="F056"
+IF ( AX=5  ) SI="F104"
+IF ( AX=6  ) SI="F105"
+IF ( AX=7  ) SI="F106"
+IF ( AX=8  ) SI="F107"
+IF ( AX=9  ) SI="F108"
+IF ( AX=10 ) SI="F109"
+IF ( AX=11 ) SI="F110"
+IF ( AX=12 ) SI="F111"
+IF ( AX=13 ) SI="F112"
+IF ( AX=14 ) SI="F113"
+IF ( AX=15 ) SI="F114"
+IF ( AX=16 ) SI="F055"
+IF ( AX=17 ) SI="F098"
+IF ( AX=18 ) SI="F099"
+RET
+
+
+;**************
+;	monstar message.
+;**************
+
+*MONSTAR_MESSAGE
+IF ( AX=2  ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( AX=3  ) 「＊＊＊＊＊＊＊＊＊＊＊」
+IF ( AX=4  ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( AX=5  ) 「＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( AX=6  ) 「＊＊＊＊」
+IF ( AX=7  ) 「＊＊＊＊＊」
+IF ( AX=8  ) 「＊＊＊＊」
+IF ( AX=9  ) 「＊＊＊＊」
+IF ( AX=10 ) 「＊＊＊＊＊＊＊」
+IF ( AX=11 ) 「＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( AX=12 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( AX=13 ) 「＊＊＊＊＊＊＊＊」
+IF ( AX=14 ) 「＊＊＊＊」
+IF ( AX=15 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( AX=16 ) 「＊＊＊＊」
+IF ( AX=17 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( AX=18 ) 「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+RET
+
+;**************
+;	アイテム表示
+;**************
+
+*SHOW_ITEMS
+C2 = 0
+ITEMID_TBL1[C2]="恩賜の剣"
+ITEMID_TBL2[C2]=8
+ITEMID_TBL3[C2]=2500
+ITEMID_TBL4[C2]="攻撃+12 気品+50"
+ITEMID_TBL5[C2]=0
+ITEMID_TBL6[C2]=""
+ITEMID_TBL7[C2]=0
+ITEM_KOUKA[C2]="V_KOUGEKI+12 B_KIHIN+50"
+ITEM_ATTRBUTE[C2]=2000			;武器
+ITEMID_CNT=1					;アイテムＩＤ数
+ITEMPRN(3,58,240)				;マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)					;マルチアイテム表示
+RET
+
+;**************
+;	アイテム取得
+;**************
+
+*TAKE_ITEM
+BX=ITEMID_TBL2[0]		;ＩＣＯＮ
+CX=ITEMID_TBL3[0]		;定価
+DX=ITEM_ATTRBUTE[0]		;種別
+SI=ITEMID_TBL1[0]		;所有アイテム名前 string
+DI=ITEM_KOUKA[0]		;所有アイテム効果 string
+BP=ITEMID_TBL4[0]		;所有アイテム説明 string
+ITEM_INST(1)
+RET
+
+
+*PRN_ENTRY_N_SHORT
+SI = AX
+STRCOPY(STR_WORK)
+TXF(4,STR_WORK,20)	;漢字文字詰め処理
+TXA(STR_WORK)
+RET
+
+
+;**************
+;	評価アップ
+;	-I- C5 : アップ値
+;**************
+
+*HYOUKA_UP
+GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+;通常ﾀﾞﾒｰｼﾞ合計 : 魔法ﾀﾞﾒｰｼﾞ合計
+IF ( E_ETC[100]>E_ETC[101] )	C4 = 1
+IF ( E_ETC[100]<E_ETC[101] )	C4 = 2
+IF ( E_ETC[100]=E_ETC[101] )
+	IF ( H_SENSHI>=H_MAHO )		C4 = 1
+	IF ( H_SENSHI< H_MAHO )		C4 = 2
+IF ( C4 = 1 )	IGRP_TBL1[0]="戦士評価"	IGRP_TBL3[0]=H_SENSHI
+IF ( C4 = 2 )	IGRP_TBL1[0]="魔法評価"	IGRP_TBL3[0]=H_MAHO
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=200
+GRPOPEN(2,1)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+C1 = C5				;娘が勝った場合，娘の戦士評価値（または魔法評価）が１０上昇します．
+IF ( C4 = 1 )
+	TXA(NAME_FIRST)の戦士評価がTXPOINT(C1)上がった．
+	H_SENSHI += C1			; 戦士評価
+	GRPUPD(1,0,H_SENSHI)	; 戦士評価
+IF ( C4 = 2 )
+	TXA(NAME_FIRST)の魔法評価がTXPOINT(C1)上がった．
+	H_MAHO += C1			; 魔法評価
+	GRPUPD(1,0,H_MAHO)		; 魔法評価
+@P
+GR_CLOSE				; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+RET
+
+;
+;	end of "SSBFIN.TXT"
+;
+
