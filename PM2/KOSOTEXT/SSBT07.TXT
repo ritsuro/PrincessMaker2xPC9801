@@ -1,0 +1,170 @@
+; "SSBT07.TXT"
+;
+;	武闘会の対戦相手
+;
+
+*SE_TIME_TK_CHK
+AX = 0
+IF ( SLCATK=1 )
+	IF ( ALCC[8]=4 ) AX = 1
+RET
+
+;**************
+;	敵設定
+;**************
+
+*BATLE_SET
+
+;待機
+ALCX[7]	=112/8
+ALCY[7]	=176-79
+ALCC[7]	=0
+ALCCNT[7]	=2
+.FILM7[2]=1,2
+
+;通常攻撃
+ALCX[8]	=112/8
+ALCY[8]	=176-79
+ALCC[8]	=0
+ALCCNT[8]	=8
+.FILM8[8]=3,4  ,5,6,6,6,  7,8
+
+;防御
+ALCX[10]	=112/8
+ALCY[10]	=176-79
+ALCC[10]	=0
+ALCCNT[10]	=3
+.FILM10[3]=1,2,9
+
+;勝ち
+ALCX[11]	=112/8
+ALCY[11]	=176-79
+ALCC[11]	=0
+ALCCNT[11]	=2
+.FILM11[4]=10,11
+
+;負け
+ALCX[12]	=112/8
+ALCY[12]	=176-79
+ALCC[12]	=0
+ALCCNT[12]	=1
+.FILM12[1]=12
+
+RET
+
+*BATLE_LOAD
+WWANIME(6,2,"B007")
+RET
+
+;**************
+;	敵アニメ
+;**************
+
+*BATLE_PLAY_INIT
+ALCX[8]  = ALCX[7]
+RET
+
+*BATLE_PLAY
+IF ( SLCATK=2 ) SLCATK=1
+
+IF ( GIRL_SHOT=0 )
+	IF ( ALCC[10]>=2 ) ALCC[10]=0
+IF ( GIRL_SHOT!0 )
+	ALCC[10]=2
+
+IF ( SLCATK=1 )
+	IF ( FITER_SHOT!0 )
+		IF ( COUNT_ATTACK = 0 ) ALCC[8]=2
+		COUNT_ATTACK++
+
+APUTK(SLCATK)
+
+IF ( SLCATK=1 )
+	IF ( FITER_SHOT=0 )
+		ALCX[8]++
+		IF ( ALCC[8] >= 2 )	ALCC[8] = 0
+	IF ( FITER_SHOT!0 )
+		IF ( ALCC[8]>=6 )
+			IF ( ALCC[8]>=8 ) ALCC[8]=6
+			ALCX[8]--
+		IF ( ALCX[8]<=14 )
+			FLAG_BATLE_EXIT=1
+RET
+
+*APUTK_XY
+APUTNUM = AX + OFST_SLCATK
+FITER_XX = ALCX[APUTNUM]
+FITER_YY = ALCY[APUTNUM]
+RET
+
+*APUTK_XY_WRT
+APUTNUM = AX + OFST_SLCATK
+ALCX[APUTNUM] = FITER_XX
+ALCY[APUTNUM] = FITER_YY
+RET
+
+*APUTK
+APUTNUM = AX + OFST_SLCATK
+ANIM_NUM(APUTNUM)
+APUT(ALCX[APUTNUM],ALCY[APUTNUM],C1,OFST_FITER)
+ALCC[APUTNUM]++
+RET
+
+;**************
+;	anime number.
+;**************
+
+*BATLE_ANIM_NUM
+IF (AX=7) DX=FILM7[BX]
+IF (AX=8) DX=FILM8[BX]
+;IF (AX=9) DX=FILM9[BX]
+IF (AX=10) DX=FILM10[BX]
+IF (AX=11) DX=FILM11[BX]
+IF (AX=12) DX=FILM12[BX]
+RET
+
+;**************
+;
+;	対戦相手データ
+;
+;**************
+
+*CHECK_BATLER
+MSR07N
+RET
+
+*MSR07N	;北
+R_MS_NUMBER		=7
+R_FACE			="F106"
+
+R_NAME			="フランソワ・モーレ"
+R_MAX_HP		=118
+R_MAX_MP		=0
+R_SENI			=60
+
+R_SENTOH		=50
+R_KOUGEKI		=45
+R_BOUGYO		=55
+R_SOUKOU		=50
+R_SKNAME		="ミスリルの鎧"
+R_TSUKON		=20
+
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=30
+
+R_DASSYUTU		=9999
+
+R_SE_ATTACK	=2	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MONSTR[0]="「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+MONSTR[1]="「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+MONSTR[2]="「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+MONSTR[3]="「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+
+RET
+
+;
+;	end of "SSBT07.TXT"
+;
+
