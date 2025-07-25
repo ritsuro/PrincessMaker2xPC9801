@@ -1,0 +1,217 @@
+; "SSBT12.TXT"
+;
+;	武闘会の対戦相手
+;
+
+*SE_TIME_TK_CHK
+AX = 0
+IF ( SLCATK=1 )
+	IF ( ALCC[8]=4 ) AX = 1
+IF ( SLCATK=2 )
+	IF ( FITER_SHOT!0 ) AX = 1
+RET
+
+;**************
+;	敵設定
+;**************
+
+*BATLE_SET
+LENG_MAGIC_GR=5				;魔法攻撃
+LENG_ATTACK_GR=5+1			;通常攻撃
+LENG_ATTACK_TK=4+1			;敵・通常攻撃
+;待機
+ALCX[7]	=80/8
+ALCY[7]	=176-79
+ALCC[7]	=0
+ALCCNT[7]	=2
+.FILM7[2]=1,2
+;通常攻撃
+ALCX[8]	=112/8
+ALCY[8]	=176-79
+ALCC[8]	=0
+ALCCNT[8]	=6
+.FILM8[6]=1,2,3,4,4,4
+;魔法攻撃
+ALCX[9]	=112/8
+ALCY[9]	=176-79
+ALCC[9]	=0
+ALCCNT[9]	=1
+.FILM9[1]=5
+;防御
+ALCX[10]	=112/8
+ALCY[10]	=176-79
+ALCC[10]	=0
+ALCCNT[10]	=2
+.FILM10[2]=3,1
+;勝ち
+ALCX[11]	=112/8
+ALCY[11]	=176-79
+ALCC[11]	=0
+ALCCNT[11]	=1
+.FILM11[1]=6
+;負け
+ALCX[12]	=112/8
+ALCY[12]	=176-79
+ALCC[12]	=0
+ALCCNT[12]	=2
+.FILM12[2]=7,8
+;火の玉
+ALCX[13]	=192/8
+ALCY[13]	=176-79
+ALCC[13]	=0
+ALCCNT[13]	=4
+.FILM13[4]=0,0,9,10
+;防御構え
+ALCX[14]	=112/8
+ALCY[14]	=176-79
+ALCC[14]	=0
+ALCCNT[14]	=1
+.FILM14[1]=3
+RET
+
+*BATLE_LOAD
+WWANIME(6,2,"B012")
+RET
+
+;**************
+;	敵アニメ
+;**************
+
+*BATLE_PLAY_INIT
+ALCX[8]  = ALCX[7]
+ALCX[9]  = ALCX[7]
+ALCX[13] = ALCX[7]+5
+ALCC[8]  =0
+ALCC[9]  =0
+ALCC[13] =0
+RET
+
+*BATLE_PLAY
+
+IF ( GIRL_SHOT=0 )
+	ALCC[10]=0
+IF ( GIRL_SHOT!0 )
+	ALCC[10]=1
+
+IF ( SLCATK=1 )
+	IF ( FITER_SHOT!0 )
+		IF ( COUNT_ATTACK = 0 ) ALCC[8]=2
+		COUNT_ATTACK++
+
+IF ( SLCATK=2 )
+	IF ( ALCC[9]  = 2 ) ALCC[9] = 1
+	IF ( ALCC[13]>= 4 ) ALCC[13]= 2
+	IF ( FITER_SHOT=0 )
+		APUTK(6)
+		ALCX[13] += 2
+	IF ( FITER_SHOT!0 )
+		IF ( WAIT_MAGIC=0 )
+			APUTK(6)
+		WAIT_MAGIC++
+		IF ( WAIT_MAGIC >=3 )
+			FLAG_BATLE_EXIT=1
+
+APUTK(SLCATK)
+
+IF ( GIRL_SHOT=0 SLCATK=0 )
+	IF ( ALCF[7] = 0 )
+		IF ( ALCX[7]>=18 )		;144/8
+			ALCF[7]=1
+		IF ( ALCX[7]<18 )		;144/8
+			ALCX[7]++
+	IF ( ALCF[7] = 1 )
+		IF ( ALCX[7]<=10 )		;80/8
+			ALCF[7]=0
+		IF ( ALCX[7]>10 )		;80/8
+			ALCX[7]--
+	ALCX[8]  = ALCX[7]
+	ALCX[10] = ALCX[7]
+
+IF ( SLCATK=1 )
+	IF ( FITER_SHOT=0 )
+		ALCX[8]++
+		IF ( ALCC[8] >= 2 )	ALCC[8] = 0
+	IF ( FITER_SHOT!0 )
+		IF ( ALCC[8]>=6 )
+			FLAG_BATLE_EXIT=1
+
+RET
+
+*APUTK_XY
+APUTNUM = AX + OFST_SLCATK
+FITER_XX = ALCX[APUTNUM]
+FITER_YY = ALCY[APUTNUM]
+RET
+
+*APUTK_XY_WRT
+APUTNUM = AX + OFST_SLCATK
+ALCX[APUTNUM] = FITER_XX
+ALCY[APUTNUM] = FITER_YY
+RET
+
+*APUTK
+APUTNUM = AX + OFST_SLCATK
+ANIM_NUM(APUTNUM)
+APUT(ALCX[APUTNUM],ALCY[APUTNUM],C1,OFST_FITER)
+ALCC[APUTNUM]++
+RET
+
+;**************
+;	anime number.
+;**************
+
+*BATLE_ANIM_NUM
+IF (AX=7) DX=FILM7[BX]
+IF (AX=8) DX=FILM8[BX]
+IF (AX=9) DX=FILM9[BX]
+IF (AX=10) DX=FILM10[BX]
+IF (AX=11) DX=FILM11[BX]
+IF (AX=12) DX=FILM12[BX]
+IF (AX=13) DX=FILM13[BX]
+IF (AX=14) DX=FILM14[BX]
+RET
+
+;**************
+;
+;	対戦相手データ
+;
+;**************
+
+*CHECK_BATLER
+MSR12N
+RET
+
+*MSR12N
+R_MS_NUMBER		=12
+R_FACE			="F111"
+
+R_NAME			="サラーム・ナセル"
+R_MAX_HP		=298
+R_MAX_MP		=355
+R_SENI			=240
+
+R_SENTOH		=70
+R_KOUGEKI		=70
+R_BOUGYO		=38
+R_SOUKOU		=18
+R_SKNAME		="屈強な肉体"
+R_TSUKON		=0
+
+R_MAHOGIJUTSU	=77
+R_MARYOKU		=80
+R_KOHMARYOKU	=32
+
+R_DASSYUTU		=9999
+
+R_SE_ATTACK	=4	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MONSTR[0]="「＊＊＊＊＊＊＊＊＊」"
+MONSTR[1]="「＊＊＊＊＊＊＊＊＊」"
+MONSTR[2]="「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+MONSTR[3]="「＊＊＊＊＊＊＊＊＊＊＊＊」"
+
+RET
+;
+;	end of "SSBT12.TXT"
+;
+
