@@ -1,0 +1,1061 @@
+;"SSCOOK.TXT"
+;
+;	お料理コンクール
+;
+;	影響するｲﾍﾞﾝﾄﾌﾗｸﾞ
+;
+;	E_COOK_WIN			;ｲﾍﾞﾝﾄ｢料理コンクール｣優勝出来る
+;	E_EAT_EGG			;ｲﾍﾞﾝﾄ｢極楽鳥の卵を食べる｣発生条件
+
+STRSCLEAR
+
+.ALCX[16]
+.ALCY[16]
+.ALCC[16]
+.ALCF[16]
+.ALCCNT[16]
+
+.BLCX[10]
+.BLCY[10]
+.BLCC[10]
+.BLCF[10]
+.BLCCNT[10]
+
+.SINSAIN[6]=1,2,3,4,5,6
+.SINSAPNT=0
+.SINSANOW=0
+
+.APUTNUM
+
+.ANM_LOP1
+.ANM_CNT1
+
+.NOW_BANK=6
+
+.NN_CHALENG				;競技者
+
+.R_MN_NUMBER	=0		;競技者番号
+.R_FACE			=0		;フェイス
+.R_NAME			=0		;名前
+.R_KANJUSEI		=0		;感受性
+.R_RYOURI		=0		;料理
+.R_MSG_YUSHO	=0		;優勝の台詞
+
+.TBL_SCORE[7]			;得点
+.TBL_NAME[7]			;名前
+.TBL_FACE[7]			;ﾌｪｲｽ
+.TBL_WORKS[7]			;得点
+
+.ITEM_KOUKA[1]			;効果
+.ITEM_ATTRBUTE[1]		;種別
+
+.ENTRY_YUSHO=0			;優勝
+.ENTRY_2II=0			;２位
+.ENTRY_3II=0			;３位
+
+.POINT_YUSHO=0			;優勝
+.POINT_2II=0			;２位
+.POINT_3II=0			;３位
+
+.TIMEWAIT1
+
+.WTIME_COOK=420
+.WTIME_COOK2=60
+.WTIME_EATS=120
+.WTIME_SINSA=60
+.COUNT_COOK=0
+
+.FLAG_TAKE_EGG=0
+
+.CATCH_GOLD
+
+.FLAG_SINSA_OPEN=0
+
+.XXX1
+.YYY1
+.FXX1
+.FYY1
+.SHOFRM_TYPE
+.SHOWPOINT
+
+.STR_WORK="11223344556677"
+
+ANIME_INIT
+ANIME_EATS_INIT
+
+COOK_MAIN				;お料理ｺﾝｸｰﾙﾒｲﾝ
+
+C1 = 4			;4=お料理コンクール
+LOAD("SSALEND")
+
+;**************
+;	お料理コンクール
+;**************
+
+*COOK_MAIN				;お料理ｺﾝｸｰﾙﾒｲﾝ
+
+TXLC(18,23,252,0)		;text window locate.
+TXLC(16,32,252,1)		;text window locate.
+TXLC(17,32,252,1)		;text window locate.
+
+FRAME_OPEN				;フレーム
+ANM_PTN_LOAD			;
+ANIME_START				;
+EFC(16)					;ノーマルカラー
+
+IF ( E_RIVAL=4 )		;4=家事
+	TXOPEN(17)
+	TXFACE("F101")		;マルシア・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+
+TXOPEN(16)
+TXFACE("F117")		;係官・画家のロードン
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+ANM_PTN_LOAD_NABE
+@P
+TXCLOSE(16)
+
+;**************
+;	アニメーション．どんどん夕方になる．みんな忙しく料理する．
+;**************
+
+ANIME_COOK		;料理中
+ANIME_COOK_END	;料理終り
+EFC(16)			;ノーマルカラー
+
+TXOPEN(16)
+TXFACE("F117")		;係官・画家のロードン
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+ANM_PTN_LOAD2N
+@P
+TXCLOSE(16)
+
+;**************
+;	試食シーンのアニメーション．
+;**************
+
+ANIME_EATS		;試食中
+
+CHLNG_TBL_SET	;集計
+
+MUSIC(2)		;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+TXOPEN(18)
+審査は終った．
+@P
+TXCLOSE(18)
+
+;**************
+;	授賞式
+;**************
+
+FRAME_HYOSHO			;授賞frame.
+
+PLAY(26)				;P26 表彰
+
+TXLC(18,21,260,0)		;text window locate.
+TXLC(16,34,260,1)		;text window locate.
+TXLC(17,19,124,2)		;text window locate.
+
+TXOPEN(16)
+TXFACE("F086")		;国王・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+
+TXOPEN(16)
+TXFACE("F117")		;係官
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+FRM_ALL_SHO
+@C
+「TXPOINT(POINT_YUSHO)＊＊＊＊＊＊＊TXA(TBL_NAME[ENTRY_YUSHO])＊＊＊＊＊@@
+RANDAM(10)
+IF ( IRND=1 )	＊＊＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=2 )	＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=3 )	＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=4 )	＊＊＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=5 )	＊＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=6 )	＊＊＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=7 )	＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=8 )	＊＊＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=9 )	＊＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=10 )	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=11 )	＊＊＊＊＊＊＊＊＊＊＊＊@@
+IF ( IRND=12 )	＊＊＊＊＊＊＊＊＊＊＊@@
+＊＊＊＊」
+@P
+TXOPEN(17)
+IF ( ENTRY_YUSHO = 1 )	TXGIRL(1)
+IF ( ENTRY_YUSHO ! 1 )	SI=TBL_FACE[ENTRY_YUSHO] TXFACE
+NN_CHALENG = ENTRY_YUSHO
+CHALNG_MESS_SET
+TXA(R_MSG_YUSHO)
+@P
+TXCLOSE(16)
+
+TXOPEN(16)
+TXFACE("F086")		;国王・普通
+「TXA(TBL_NAME[ENTRY_YUSHO])＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+TXCLOSE(17)
+
+TXOPEN(16)
+TXFACE("F117")		;係官
+「＊＊＊＊＊＊TXA(TBL_NAME[ENTRY_2II])＊＊＊TXPOINT(POINT_2II)＊＊＊＊＊TXA(TBL_NAME[ENTRY_3II])＊＊＊TXPOINT(POINT_3II)＊＊＊＊」
+@P
+TXCLOSE(16)
+
+CATCH_GOLD = 0
+FLAG_TAKE_EGG=0
+
+IF ( ENTRY_3II=1 )		;娘が３位入賞の場合
+	CATCH_GOLD = 500
+	GOLDADD(CATCH_GOLD)
+	XGRP_OPEN
+	TXOPEN(18)
+	TXA(NAME_FIRST)は，お料理コンクール３位の賞金５００Ｇをもらった！
+	家事評価が１５上がった！
+	H_KAJI += 15			;家事評価
+	GRPUPD(1,0,H_KAJI)
+	@P
+	TXCLOSE(18)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+IF ( ENTRY_2II=1 )		;娘が２位入賞の場合
+	CATCH_GOLD = 1000
+	GOLDADD(CATCH_GOLD)
+	XGRP_OPEN
+	TXOPEN(18)
+	TXA(NAME_FIRST)は，お料理コンクール２位の賞金１０００Ｇをもらった！
+	家事評価が２５上がった！
+	H_KAJI += 25			;家事評価
+	GRPUPD(1,0,H_KAJI)
+	@P
+	TXCLOSE(18)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+IF ( ENTRY_YUSHO=1 )	;娘が優勝の場合
+	CATCH_GOLD = 3000
+	GOLDADD(CATCH_GOLD)
+	XGRP_OPEN
+	TXOPEN(18)
+	TXA(NAME_FIRST)は，お料理コンクール優勝の賞金３０００Ｇ@@
+	IF ( ITEM_MAX < ITEM_DIM )		;所有最大アイテム数
+		と，副賞の『極楽鳥の卵』をもらった！
+		SHOW_ITEMS				;アイテム表示
+		TAKE_ITEM				;アイテム取得
+		FLAG_TAKE_EGG=1
+		E_EAT_EGG=1				;ｲﾍﾞﾝﾄ｢極楽鳥の卵を食べる｣発生条件
+
+	IF ( ITEM_MAX >= ITEM_DIM )		;所有最大アイテム数
+		をもらった！
+	家事評価が４０上がった！
+	H_KAJI += 40			;家事評価
+	GRPUPD(1,0,H_KAJI)
+	@P
+	IF ( FLAG_TAKE_EGG=1 )	ITEMPRN(2)	;マルチアイテム復帰
+	TXCLOSE(18)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+
+IF ( E_RIVAL=4 )	;4=家事
+	C2 = 3
+	IF ( ENTRY_YUSHO=1 ) C2 = 1		;優勝
+	IF ( ENTRY_YUSHO=2 ) C2 = 2		;優勝
+	IF ( C2 = 3 )
+		IF ( ENTRY_2II=1 ) C2 = 1	;２位
+		IF ( ENTRY_2II=2 ) C2 = 2	;２位
+	IF ( C2 = 3 )
+		IF ( ENTRY_3II=1 ) C2 = 1	;３位
+		IF ( ENTRY_3II=2 ) C2 = 2	;３位
+	TXOPEN(17)
+	TXFACE("F101")		;マルシア・普通
+	IF ( C2 = 1 )		;娘の勝ち
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( C2 = 2 )		;娘の負け
+		「＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( C2 = 3 )		;どっちも受賞しなかった場合
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+
+IF ( ENTRY_YUSHO!1  ENTRY_2II!1  ENTRY_3II!1 )
+	TIMER1(30)
+	WAIT1
+	TXOPEN(17)
+	TXFACE("F043")	;執事・安心
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXPOINT(TBL_SCORE[1])＊＊＊＊」
+	@P
+	TXCLOSE(17)
+RET
+
+
+;**************
+;	集計
+;**************
+
+*CHLNG_TBL_SET
+NN_CHALENG = 1
+*CHLNG_TBL_SET_LOP
+	CHALNG_PARA_SET
+	TBL_NAME[NN_CHALENG]=R_NAME		;名前
+	TBL_FACE[NN_CHALENG]=R_FACE		;ﾌｪｲｽ
+	;審査（採点）の方法
+	;Ｘ＝感受性の料理値％
+	;得点＝Ｘの＋－３０％の範囲の乱数．
+	;＊得点は正の整数です．０以下の場合は０点．
+	P1X100(R_KANJUSEI,R_RYOURI)
+	C2 = AX
+	IRNDPAR(C2,30)		; +-%の乱数
+	C2 = AX
+	TBL_SCORE[NN_CHALENG] = C2		;得点
+	NN_CHALENG++
+IF ( NN_CHALENG <= 6 ) GOTO CHLNG_TBL_SET_LOP
+CHLNG_CHECK
+RET
+
+*CHLNG_CHECK
+C1 = 6  C2 = 1
+	TBL_WORKS[C2] = TBL_SCORE[C2]
+	C2++
+LOOP C1
+
+SCORE_CHK
+IF ( E_COOK_WIN!0 )			;ｲﾍﾞﾝﾄ｢料理コンクール｣優勝出来る
+	ENTRY_YUSHO=1			;優勝
+	RANDAM(90)				;
+	POINT_YUSHO=C3+IRND+10	;優勝
+	TBL_WORKS[1]=0			;
+
+IF ( E_COOK_WIN=0 )			;ｲﾍﾞﾝﾄ｢料理コンクール｣優勝出来る
+	ENTRY_YUSHO=C4			;優勝
+	POINT_YUSHO=C3			;優勝
+	TBL_WORKS[C4]=0
+
+SCORE_CHK
+ENTRY_2II=C4			;２位
+POINT_2II=C3			;２位
+TBL_WORKS[C4]=0
+
+SCORE_CHK
+ENTRY_3II=C4			;３位
+POINT_3II=C3			;３位
+RET
+
+
+
+*SCORE_CHK
+C4 = 1		;最高得点ｴﾝﾄﾘ
+C3 = 0		;最高得点
+C2 = 1
+C1 = 6
+	IF ( TBL_WORKS[C2] > C3 )
+		C3 = TBL_WORKS[C2]		;最高得点
+		C4 = C2					;最高得点ｴﾝﾄﾘ
+	C2++
+LOOP C1
+RET
+
+*CHALNG_PARA_SET
+C1 = NN_CHALENG
+IF ( C1 = 1 )	CHLG_PARA_SET_01	RET
+IF ( C1 = 2 )	CHLG_PARA_SET_02	RET
+IF ( C1 = 3 )	CHLG_PARA_SET_03	RET
+IF ( C1 = 4 )	CHLG_PARA_SET_04	RET
+IF ( C1 = 5 )	CHLG_PARA_SET_05	RET
+IF ( C1 = 6 )	CHLG_PARA_SET_06	RET
+RET
+
+*CHALNG_MESS_SET
+C1 = NN_CHALENG
+IF ( C1 = 1 )	CHLG_MESS_SET_01	RET
+IF ( C1 = 2 )	CHLG_MESS_SET_02	RET
+IF ( C1 = 3 )	CHLG_MESS_SET_03	RET
+IF ( C1 = 4 )	CHLG_MESS_SET_04	RET
+IF ( C1 = 5 )	CHLG_MESS_SET_05	RET
+IF ( C1 = 6 )	CHLG_MESS_SET_06	RET
+RET
+
+*CHLG_PARA_SET_01
+R_MN_NUMBER	=	1			;競技者番号
+R_FACE		=	""			;フェイス
+R_NAME		=	NAME_FIRST	;名前
+R_KANJUSEI	=	B_KANJUSEI	;感受性
+R_RYOURI	=	V_RYOURI	;料理
+RET
+*CHLG_MESS_SET_01
+R_MSG_YUSHO	=	"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+RET
+
+*CHLG_PARA_SET_02
+R_MN_NUMBER	=	2
+R_FACE		=	"F101"
+R_NAME		=	"マルシア"
+R_KANJUSEI	=	E_ETC[74]		;ﾏﾙｼｱ感受性
+R_RYOURI	=	E_ETC[73]		;ﾏﾙｼｱ料理
+RET
+*CHLG_MESS_SET_02
+R_MSG_YUSHO	=	"「＊＊＊＊＊」"
+RET
+
+*CHLG_PARA_SET_03
+R_MN_NUMBER	=	3
+R_FACE		=	"F064"
+R_NAME		=	"バルボン"
+R_KANJUSEI	=	777
+R_RYOURI	=	77
+RET
+*CHLG_MESS_SET_03
+R_MSG_YUSHO	=	"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+RET
+
+*CHLG_PARA_SET_04
+R_MN_NUMBER	=	4
+R_FACE		=	"F062"
+R_NAME		=	"デシンセイ"
+R_KANJUSEI	=	777
+R_RYOURI	=	77
+RET
+*CHLG_MESS_SET_04
+R_MSG_YUSHO	=	"「＊＊＊＊」"
+RET
+
+*CHLG_PARA_SET_05
+R_MN_NUMBER	=	5
+R_FACE		=	"F071"
+R_NAME		=	"ドミトリィ"
+R_KANJUSEI	=	777
+R_RYOURI	=	77
+RET
+*CHLG_MESS_SET_05
+R_MSG_YUSHO	=	"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+RET
+
+*CHLG_PARA_SET_06
+R_MN_NUMBER	=	6
+R_FACE		=	"F053"
+R_NAME		=	"シスター　リイ"
+R_KANJUSEI	=	777
+R_RYOURI	=	77
+RET
+*CHLG_MESS_SET_06
+R_MSG_YUSHO	=	"「＊＊＊＊＊＊＊＊＊＊」"
+RET
+
+;**************
+;	審査中
+;**************
+
+*SINSACYU
+
+SINSANOW = SINSAIN[SINSAPNT]
+SINSAPNT++
+
+PTBK(18)	;TEXT_END-16000		; #18	16,000byte
+PTCLR
+PTGT(35,252,31,127)				;14,880
+PTBK(16)	;PROCWRK_END-13000	; #16	13,000byte
+PTCLR
+PTGT(16,246,19,140)				;6,720
+PTBK(0)
+
+;;TXLC(16,34,260,1)		;text window locate.
+
+TXF(1,1)		; ﾃｷｽﾄｳｲﾝﾄﾞｳ退避のを止める
+TXOPEN(16)
+TXF(1,0)
+SINSA_NAME
+IF ( SINSANOW=1 )	;寵姫
+	TXFACE("F084")
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( SINSANOW=2 )	;クルーガー将軍
+	TXFACE("F054")
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( SINSANOW=3 )	;詩人カムストック（詩文の先生）
+	TXFACE("F052")
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( SINSANOW=4 )	;古老バートサス（礼法の先生）
+	TXFACE("F058")
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( SINSANOW=5 )	;支配人テレマーク男爵（夜の殿堂）
+	TXFACE("F073")
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( SINSANOW=6 )	;伯爵夫人
+	TXFACE("F070")
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+RET
+
+*SINSACYU_CLOSE
+PTBK(18)
+PTF(0,0,0)
+PTBK(16)
+PTF(0,0,0)
+PTBK(0)
+RET
+
+*SINSA_NAME
+IF ( SINSAPNT=1 )
+	審査員Ａ
+IF ( SINSAPNT=2 )
+	審査員Ｂ
+IF ( SINSAPNT=3 )
+	審査員Ｃ
+RET
+
+*SLCT_SINSAIN
+C1 = 20							;順番をかき混ぜる
+	RANDAM(6) C2 = IRND-1
+	RANDAM(6) C3 = IRND-1
+	AX = SINSAIN[C2]
+	BX = SINSAIN[C3]
+	SINSAIN[C2] = BX
+	SINSAIN[C3] = AX
+LOOP C1
+RET
+
+
+;**************
+;	授賞ﾌﾚｰﾑ
+;**************
+
+*FRM_ALL_SHO
+R_NAME = TBL_NAME[ENTRY_YUSHO]
+SHOWPOINT = POINT_YUSHO
+SHOFRM_TYPE=2
+FRM_SHO_ENTRY
+R_NAME = TBL_NAME[ENTRY_2II]
+SHOWPOINT = POINT_2II
+SHOFRM_TYPE=1
+FRM_SHO_ENTRY
+R_NAME = TBL_NAME[ENTRY_3II]
+SHOWPOINT = POINT_3II
+SHOFRM_TYPE=0
+FRM_SHO_ENTRY
+RET
+
+
+*FRM_SHO_ENTRY
+IF ( SHOFRM_TYPE=0 )	;0=銅賞
+	FXX1=55
+	FYY1=148
+	C1 = 18
+IF ( SHOFRM_TYPE=1 )	;1=銀賞
+	FXX1=5
+	FYY1=148
+	C1 = 16
+IF ( SHOFRM_TYPE=2 )	;2=金賞
+	FXX1=30
+	FYY1=148
+	C1 = 0
+PTBK(0)
+PTLD("SSMOJI")
+XXX1 = FXX1 + 3
+YYY1 = FYY1 + 8
+PTM(XXX1,YYY1,C1)			; マスクパーツＰＵＴ
+
+XXX1 = FXX1 + 3
+YYY1 = FYY1 + 44
+PIC(16,15,0,2)		;PIC(16,color,size,type)
+STRLEN(R_NAME)	; 文字列長さ
+AX = AX / 2
+XXX1 = XXX1 + 6 - AX
+SI = R_NAME			;
+PIC(15,XXX1,YYY1)	;
+
+XXX1 = FXX1 + 3
+YYY1 = FYY1 + 68
+TXF(9,SHOWPOINT)	;ﾎﾟｲﾝﾄの文字列化
+STRCOPY(STR_WORK)	;文字列を文字列アドレスへコピーする
+STRLEN(STR_WORK)	; 文字列長さ
+C3 = STR_WORK + AX	;
+SI = "点"
+STRCOPY(C3)			;文字列を文字列アドレスへコピーする
+PIC(16,15,0,1)		;PIC(16,color,size,type)
+
+STRLEN(STR_WORK)	; 文字列長さ
+AX = AX / 2
+XXX1 = XXX1 + 6 - AX
+SI = STR_WORK		;
+PIC(15,XXX1,YYY1)	;
+
+RET
+
+
+;**************
+;	anime set.
+;**************
+
+*ANIME_INIT
+TIMEWAIT1=8
+
+;娘待機
+ALCX[0]	=29
+ALCY[0]	=168-79
+ALCC[0]	=0
+ALCCNT[0]=1
+.FILM0[1]=6
+;娘料理
+ALCX[1]	=29
+ALCY[1]	=168-79
+ALCC[1]	=0
+ALCCNT[1]=30
+.FILM1[30]=1,2,1,2, 1,2,1,2, 1,2,1,2, 3,4,3,4, 3,4,3,4, 3,4,3,4, 5,5,5,5,5,5
+
+;マルシア（料理のライバル）待機
+ALCX[2]	=40
+ALCY[2]	=168-79
+ALCC[2]	=0
+ALCCNT[2]=1
+.FILM2[1]=12
+;マルシア（料理のライバル）料理
+ALCX[3]	=40
+ALCY[3]	=168-79
+ALCC[3]	=0
+ALCCNT[3]=25
+.FILM3[25]=7,8,7,8, 7,8,7,8, 9,10,  11,10,11,10,11, 9, 11,10,11,10,11, 10,11,10,11
+
+;バルボン（料理屋の主人）待機
+ALCX[4]	=23
+ALCY[4]	=168-79
+ALCC[4]	=0
+ALCCNT[4]=1
+.FILM4[1]=25
+;バルボン（料理屋の主人）料理
+ALCX[5]	=23
+ALCY[5]	=168-79
+ALCC[5]	=0
+ALCCNT[5]=12
+.FILM5[12]=21,22,21,22, 23,24,23,24, 23,24,23,24
+
+;デシンセイ（宿屋の主）待機
+ALCX[6]	=14
+ALCY[6]	=168-79
+ALCC[6]	=0
+ALCCNT[6]=1
+.FILM6[1]=20
+;デシンセイ（宿屋の主）料理
+ALCX[7]	=14	
+ALCY[7]	=168-79
+ALCC[7]	=8
+ALCCNT[7]=20
+.FILM7[20]=17,18,17,18, 17,18,17,18, 17,18,17,18, 17,18,17,18, 19,19,19,19
+
+;ドミトリィ（酒場の亭主）待機
+ALCX[8]	=44
+ALCY[8]	=168-79
+ALCC[8]	=0
+ALCCNT[8]=1
+.FILM8[1]=30
+;ドミトリィ（酒場の亭主）料理
+ALCX[9]	=44
+ALCY[9]	=168-79
+ALCC[9]	=0
+ALCCNT[9]=20
+.FILM9[20]=26,27,26,27, 26,27,26,27, 26,27, 28,29, 28,29,28,29, 28,29,28,29
+
+;シスター　リイ（教会）待機
+ALCX[10]	=1
+ALCY[10]	=168-79
+ALCC[10]	=0
+ALCCNT[10]	=1
+.FILM10[1]	=16
+;シスター　リイ（教会）料理
+ALCX[11]	=1
+ALCY[11]	=168-79
+ALCC[11]	=4
+ALCCNT[11]	=24
+.FILM11[24]	=13,14,13,14, 13,14,13,14, 13,14,13,14, 13,14,13,14, 13,14,13,14, 15,15,15,15
+
+;釜
+ALCX[12]	=88/8
+ALCY[12]	=176-79
+ALCC[12]	=0
+ALCCNT[12]	=1
+.FILM12[1]	=4
+;釜
+ALCX[13]	=88/8
+ALCY[13]	=176-79
+ALCC[13]	=0
+ALCCNT[13]	=4
+.FILM13[4]	=1,2,3,4
+
+;鍋
+ALCX[14]	=296/8
+ALCY[14]	=176-79
+ALCC[14]	=0
+ALCCNT[14]	=1
+.FILM14[1]	=5
+;鍋
+ALCX[15]	=296/8
+ALCY[15]	=176-79
+ALCC[15]	=0
+ALCCNT[15]	=4
+.FILM15[4]	=5,6,7,8
+
+RET
+
+*ANIME_EATS_INIT
+;寵姫
+BLCX[0]	=5
+BLCY[0]	=168-79
+BLCC[0]	=0
+BLCCNT[0]=30
+.BFLM0[30]=1,1,2,2,2, 2,2,2,2,2, 2,2,2,2,2, 1,3,4,3,4, 3,4,3,4,3, 4,3,3,3,3
+;クルーガー将軍
+BLCX[1]	=18
+BLCY[1]	=168-79
+BLCC[1]	=0
+BLCCNT[1]=14
+.BFLM1[14]=5,6, 5,6, 5,6, 5,6, 5,6,  5,5,5,5
+;詩人カムストック（詩文の先生）
+BLCX[2]	=26
+BLCY[2]	=168-79
+BLCC[2]	=0
+BLCCNT[2]=14
+.BFLM2[14]=7,8, 7,8, 7,8, 7,8, 7,8, 8,8,8,8
+;古老バートサス（礼法の先生）
+BLCX[3]	=32
+BLCY[3]	=168-79
+BLCC[3]	=0
+BLCCNT[3]=22
+.BFLM3[22]=9,10, 9,10, 9,10, 9,10, 9,10, 9,10, 9,10, 9,10, 11,11, 11,11, 11,11
+;支配人テレマーク男爵（夜の殿堂）
+BLCX[4]	=42
+BLCY[4]	=168-79
+BLCC[4]	=0
+BLCCNT[4]=2
+.BFLM4[2]=12,13
+;伯爵夫人
+BLCX[5]	=47
+BLCY[5]	=168-79
+BLCC[5]	=0
+BLCCNT[5]=20
+.BFLM5[20]=15,14,15,14,15, 14,15,14,15, 16,14,15,14,15, 16,14,15,14,15,14
+RET
+
+
+*APUTSMEN
+NOW_BANK=6
+APUTS
+RET
+
+*APUTSNABE
+NOW_BANK=5
+APUTS
+RET
+
+*APUTS
+APUTNUM = AX
+ANIM_NUM(APUTNUM)
+APUT(ALCX[APUTNUM],ALCY[APUTNUM],C1)
+ALCC[APUTNUM]++
+RET
+
+*ANIM_NUM
+;ANIM_NUM(filmnumber)
+;-O- DX pattern number.
+IF ( ALCC[AX] >= ALCCNT[AX] )
+	ALCC[AX] = 0
+BX = ALCC[AX]
+IF (AX=0) DX=FILM0[BX]
+IF (AX=1) DX=FILM1[BX]
+IF (AX=2) DX=FILM2[BX]
+IF (AX=3) DX=FILM3[BX]
+IF (AX=4) DX=FILM4[BX]
+IF (AX=5) DX=FILM5[BX]
+IF (AX=6) DX=FILM6[BX]
+IF (AX=7) DX=FILM7[BX]
+IF (AX=8) DX=FILM8[BX]
+IF (AX=9) DX=FILM9[BX]
+IF (AX=10) DX=FILM10[BX]
+IF (AX=11) DX=FILM11[BX]
+IF (AX=12) DX=FILM12[BX]
+IF (AX=13) DX=FILM13[BX]
+IF (AX=14) DX=FILM14[BX]
+IF (AX=15) DX=FILM15[BX]
+DX--	;DX pattern number.
+C1 = DX
+RET
+
+*APUT
+;anime pattern put vvram.
+;APUT(x,y,pattern)
+IF ( CX < 0 ) RET
+DI = CX * 2
+SI = BX
+DX = AX
+AX = 13
+BX = 1
+CX = NOW_BANK
+;	WWANIME(13,1,6,ALCX[0],ALCY[0],ALCC[0]))     : (bank)anime pattern put vvram.
+WWANIME	;anime pattern put vvram.
+RET
+
+*BPUTS
+APUTNUM = AX
+BANIM_NUM(APUTNUM)
+BAPUT(BLCX[APUTNUM],BLCY[APUTNUM],C1)
+BLCC[APUTNUM]++
+RET
+
+*BANIM_NUM
+;BANIM_NUM(filmnumber)
+;-O- DX pattern number.
+IF ( BLCC[AX] >= BLCCNT[AX] )
+	BLCC[AX] = 0
+BX = BLCC[AX]
+IF (AX=0) DX=BFLM0[BX]
+IF (AX=1) DX=BFLM1[BX]
+IF (AX=2) DX=BFLM2[BX]
+IF (AX=3) DX=BFLM3[BX]
+IF (AX=4) DX=BFLM4[BX]
+IF (AX=5) DX=BFLM5[BX]
+DX--	;DX pattern number.
+C1 = DX
+RET
+
+*BAPUT
+;anime pattern put vvram.
+;BAPUT(x,y,pattern)
+IF ( CX < 0 ) RET
+DI = CX * 2
+SI = BX
+DX = AX
+AX = 13
+BX = 1
+CX = 6
+;	WWANIME(13,1,6,ALCX[0],ALCY[0],ALCC[0]))     : (bank)anime pattern put vvram.
+WWANIME	;anime pattern put vvram.
+RET
+
+
+;**************
+;	anime cook.
+;**************
+
+*ANIME_START
+WWANIME(4,1)			;put BG.
+ANM_LOP1=6  ANM_CNT1=0
+	APUTSMEN(ANM_CNT1)
+	ANM_CNT1 += 2
+LOOP ANM_LOP1
+APUTSNABE(12)
+APUTSNABE(14)
+WWANIME(17,1,0,0,0,1)	;(bank)anime ptn ofset maskput vvram.
+WAIT1
+WWANIME(5,1)			;pictuer copy vvram -> CRT.
+RET
+
+*ANIME_COOK
+COUNT_COOK=0
+WWANIME(10,1,0,88,54,92)	;anime window size set.高速化の為
+TIMER2(WTIME_COOK)
+*ANIME_COOK_LOOP
+	WWANIME(4,1)			;put BG.
+	TIMER1(TIMEWAIT1)
+	ANM_LOP1=6  ANM_CNT1=1
+		APUTSMEN(ANM_CNT1)
+		ANM_CNT1 += 2
+	LOOP ANM_LOP1
+	APUTSNABE(13)
+	APUTSNABE(15)
+	WWANIME(17,1,0,0,0,1)		;anime pattern offset put vvram.
+	WAIT1
+	WWANIME(5,1)			;pictuer copy vvram -> CRT.
+	TMCHK2					;タイマーチェック２
+	IF ( DX = 0 )
+		IF ( COUNT_COOK >= 1 ) GOTO ANIME_COOK_LOP_E
+		TIMER2(WTIME_COOK2)
+		EFC(20)			; 割り込みＦ・Ｏ(ﾌｪｰﾄﾞｱｳﾄ)
+		COUNT_COOK++
+GOTO ANIME_COOK_LOOP
+*ANIME_COOK_LOP_E
+;GOTO ANIME_COOK_LOOP
+RET
+
+*ANIME_COOK_END
+WWANIME(10,1,0,0,54,180)	;anime window size set.高速化の為
+WWANIME(4,1)				;put BG.
+ANM_LOP1=6  ANM_CNT1=0
+	APUTSMEN(ANM_CNT1)
+	ANM_CNT1 += 2
+LOOP ANM_LOP1
+WWANIME(17,1,0,0,0,3)	;(bank)anime pattern offset put vvram.
+WWANIME(5,1)			;pictuer copy vvram -> CRT.
+RET
+
+*ANIME_EATS
+SINSAPNT=0
+SLCT_SINSAIN
+WWANIME(17,1,0,0,0,5)		;(bank)anime pattern offset put vvram.
+WWANIME(10,1,0,0,54,180)	;anime window size set.高速化の為
+TIMER2(WTIME_EATS)
+FLAG_SINSA_OPEN=0
+*ANIME_EATS_LOOP
+	WWANIME(4,1)			;put BG.
+	TIMER1(TIMEWAIT1)
+	ANM_LOP1=6  ANM_CNT1=0
+		BPUTS(ANM_CNT1)
+		ANM_CNT1++
+	LOOP ANM_LOP1
+	WWANIME(17,1,0,0,0,3)		;anime pattern offset put vvram.
+	WWANIME(17,1,0,0,0,5)		;anime pattern offset put vvram.
+	WAIT1
+	WWANIME(5,1)				;pictuer copy vvram -> CRT.
+	TMCHK2						;タイマーチェック２
+	IF ( DX = 0 )
+		IF ( FLAG_SINSA_OPEN=1 )
+			SINSACYU_CLOSE
+			TIMER2(WTIME_EATS)
+		IF ( SINSAPNT >= 3 ) GOTO ANIME_EATS_LOP_E
+		IF ( FLAG_SINSA_OPEN=0 )
+			SINSACYU				;審査中
+			TIMER2(WTIME_SINSA)
+		IF ( FLAG_SINSA_OPEN=0 ) C1 = 1
+		IF ( FLAG_SINSA_OPEN=1 ) C1 = 0
+		FLAG_SINSA_OPEN = C1
+	WWANIME(10,1,0,88,54,92)	;anime window size set.高速化の為
+GOTO ANIME_EATS_LOOP
+*ANIME_EATS_LOP_E
+;GOTO ANIME_EATS_LOOP
+RET
+
+
+
+*XGRP_OPEN
+;GR_OPEN			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+GR_F(1,2)
+IGRP_TBL3[0]=H_KAJI
+IGRP_TBL1[0]="家事評価"
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=328
+GRPOPEN(1,1)	;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+IGRP_TBL3[0]=CATCH_GOLD
+IGRP_TBL1[0]="賞金"
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=290
+GOLDOPEN(1,2)	;ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+RET
+
+;**************
+;	フレーム
+;**************
+
+*FRAME_OPEN
+PTLD("FRMSYUKL")
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+GRPCLS
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+PTX(40,0,0)
+PTLD("SSBASEUP")
+PTLA("SSBASEDN")
+PTLA("SSW004")
+PTMF(0,0,0)
+PTMF(0,0,2)
+PTMF(0,0,4)
+RET
+
+;C001B1   PT1     23334 93-01-24   15:01
+;C001B2   PT1      3418 93-01-24   15:12
+;C001B3   PT1      3784 93-01-24   15:12
+;C001B4   PT1      1446 93-01-24   22:21
+;C001A1   PT1     29570 93-01-24   15:03
+;C001A2   PT1      6486 93-01-24   15:03
+
+*ANM_PTN_LOAD
+WWANIME(14,1)				;anime window open.(no frame open)
+WWANIME(3,1,"C001B1")		;BG load.
+WWANIME(6,1,"C001B2")		;材料 load.
+WWANIME(6,1,"C001B3")		;料理 load.
+WWANIME(6,1,"C001B4")		;夕焼け load.
+WWANIME(11,1,"C001A1",6)	;#6に人間load.
+RET
+
+*ANM_PTN_LOAD_NABE
+WWANIME(11,1,"C001A2",5)	;#5に鍋load.
+RET
+
+*ANM_PTN_LOAD2N
+WWANIME(11,1,"C002A",6)		;#6に審査員load.
+RET
+
+;*LOOPLOOP
+;ANIME_COOK		; anime cook.
+;ANIME_COOK_END	;
+;ANM_PTN_LOAD2N
+;ANIME_EATS		;
+;TIMER1(60)
+;WAIT1
+;WWANIME(4,1)	;put BG.
+;WWANIME(5,1)	;pictuer copy vvram -> CRT.
+;GOTO LOOPLOOP
+
+;**************
+;	授賞frame.
+;**************
+
+*FRAME_HYOSHO
+PTLD("FRMSYUKL")
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+GRPCLS			;
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+PTX(40,0,0)
+PTLD("E19HONO")	;「表彰式」
+PTM(23,20,0)
+PTLD("SSSHOU")
+PTM(3,131,0)
+PTM(28,131,0)
+PTM(53,131,0)
+EFC(16)			;ノーマルカラー
+RET
+
+;**************
+;	アイテム表示
+;**************
+
+*SHOW_ITEMS
+ITEMID_TBL1[0]="極楽鳥の卵"
+ITEMID_TBL2[0]=34				;ＩＣＯＮ
+ITEMID_TBL3[0]=1400				;金
+ITEMID_TBL4[0]=""				;
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEM_KOUKA[0]="E_EAT_EGG!"		;ｲﾍﾞﾝﾄ｢極楽鳥の卵を食べる｣発生条件
+ITEM_ATTRBUTE[0]=4000			;4000番台=効能有
+ITEMID_CNT=1					;アイテムＩＤ数
+ITEMPRN(3,46,200)				;マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)					;マルチアイテム表示
+RET
+
+;**************
+;	アイテム取得
+;**************
+
+*TAKE_ITEM
+BX=ITEMID_TBL2[0]		;ＩＣＯＮ
+CX=ITEMID_TBL3[0]		;定価
+DX=ITEM_ATTRBUTE[0]		;種別
+SI=ITEMID_TBL1[0]		;所有アイテム名前 string
+DI=ITEM_KOUKA[0]		;所有アイテム効果 string
+BP=ITEMID_TBL4[0]		;所有アイテム説明 string
+ITEM_INST(1)
+RET
+
+;
+;	end of "SSCOOK.TXT"
+;
+

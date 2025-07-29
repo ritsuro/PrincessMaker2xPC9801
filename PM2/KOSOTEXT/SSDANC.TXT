@@ -1,0 +1,1473 @@
+;"SSDANC.TXT"
+;
+;	ダンスパーティー
+;
+;	-I- C1 : 機能  0=ダンス開始前,1=ダンス終了
+;
+;
+;	1	娘
+;	2	ジュリエッタ
+;	3	フィオリナ
+;	4	アーニス
+;	5	パトレイシア（＝パトレイシア・ハーン）
+;	6	ランファン（＝タオ・ランファン）
+;	7	ジェニファー（＝ジェニファー・ザ・クィーン）
+;	8	フランソワ（＝フランソワ・モーレ）
+;	9	ナターシャ（＝ナターシャ・ドリプシコワ）
+;	10	マルシア（＝マルシア・シェアウェア）
+;	11	トーベ（＝舞踊の先生トーベ）
+;
+
+.CMN_FUNC				;機能
+CMN_FUNC	= C1		;機能
+
+.NN_CHALENG				;競技者
+.NN_GIRL_DRS			;娘のドレス
+
+.R_MN_NUMBER	=0		;競技者番号
+.R_FACE			=0		;フェイス
+.R_NAME			=0		;名前
+.R_NENREI		=0		;年齢
+.R_TAIRYOKU		=0		;体力
+.R_IROKE		=0		;色気
+.R_GEIJYUTSU	=0		;芸術
+.R_BYOUKI		=0		;病気指数(%)
+.R_HIKOUKA		=0		;非行化指数(%)
+.R_MSG_BUMON	=0		;部門賞の台詞
+.R_MSG_YUSHO	=0		;総合優勝の台詞
+
+;;.SEQ_ORG_TBL[10]=	2,3,4,5,6,7,8,9,10,11
+.SEQ_ORG_TBL[6]=	6,7,8,9,11,10
+
+.SEQ_PLAYER[8]	=	1,2,3,4,5,6,7,8
+.SEQ_PLAYER_MAX	=	8
+.SEQ_PLAYER_PNT	=	0
+.SEQ_PLAYER_GIRL=	1
+
+.SEQ_POINT_TECH[8]		;技術点
+.SEQ_POINT_ARTS[8]		;芸術点
+.SEQ_POINT_TOTAL[8]		;総合点
+.SEQ_GIRL_P_TOTAL		;娘の本当の総合点
+
+.SHO_ENTRY_TECH			;技術賞のｴﾝﾄﾘ番号
+.SHO_ENTRY_ARTS			;芸術賞のｴﾝﾄﾘ番号
+.SHO_ENTRY_TOTAL		;総合優勝のｴﾝﾄﾘ番号
+.SHO_NOGIRL_TOTAL		;娘以外で総合優勝のｴﾝﾄﾘ番号
+
+.ITEM_KOUKA[1]		;効果
+.ITEM_ATTRBUTE[1]	;種別
+
+.TIMELOP
+.TIMELOPMAX
+.TIMEWAIT1
+.ALCX[5]
+.ALCY[5]
+.ALCC[5]
+.ALCF[5]
+.ALCCNT[5]
+.FILM0[16]			;ﾀﾞﾝｽ
+.FILM1[8]			;挨拶
+.FILM2[16]			;おまけ
+.APUTNUM
+
+.DV_STEP
+
+.LOOPCNT
+.GR_FULL_NAME
+.CNTINTV
+
+.CATCH_GOLD
+
+.FXX1
+.FYY1
+.XXX1
+.YYY1
+.XXX2
+.YYY2
+.SHOWPOINT
+
+.SHOFRM_TYPE	;0=技術賞,1=芸術賞,2=総合優勝
+
+.FLAG_TAKE_RING=0
+
+.STR_WORK
+
+STRSCLEAR
+
+;TXLC(1,21,268,0)		;text window locate.
+;TXLC(2,32,268,1)		;text window locate.
+;TXLC(3,32,268,1)		;text window locate.
+;TXLC(3,31,270,2)		;text window locate.
+
+TXLC(16,32,262,1)		;text window locate.
+TXLC(18,23,262,0)		;text window locate.
+
+ICON_TO_DRS
+
+
+;*;SLCT_MEMBER
+;*;C1 = 8  C2 = 0
+;*;	PRV("    NO",C2)
+;*;	PRV(", ",SEQ_PLAYER[C2])		;競技者
+;*;	C2++
+;*;LOOP C1
+;*;LLF
+;*;WAITU
+;*;LOAD("SSDANC");;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+DANCE_STARTMAIN			;ダンス開始メイン
+DANCE_MAIN				;ダンス競技メイン
+DANCE_FINMAIN			;ダンス終了メイン
+
+C1 = 3			;3=ダンスパーティー
+LOAD("SSALEND")
+
+;**************
+;	ダンス開始メイン
+;**************
+
+*DANCE_STARTMAIN
+
+FRAME_OPEN					;フレーム
+EFC(16)						;ノーマルカラー
+
+IF ( E_RIVAL=3 )			;3=社交
+	TXLC(17,32,100,1)		;text window locate.
+	TXOPEN(17)
+	TXFACE("F100")	;ﾊﾟﾄﾚｲｼｱ
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+
+TXOPEN(18)
+集まった淑女達は次々と自慢の踊りを披露した．
+@P
+TXCLOSE(18)
+
+TXOPEN(16)
+TXFACE("F082")		;大臣・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+RET
+
+;**************
+;	ダンス競技メイン
+;**************
+
+*DANCE_MAIN
+SLCT_MEMBER
+SEQ_PLAYER_PNT = 0
+LOOPCNT = SEQ_PLAYER_MAX
+	NN_CHALENG = SEQ_PLAYER[SEQ_PLAYER_PNT]		;競技者
+	SSDNCIN					;ダンス競技中
+	SEQ_PLAYER_PNT++
+LOOP LOOPCNT
+RET
+
+*SKIP1
+;NN_GIRL_DRS	=	0
+;NN_CHALENG	=	1
+;SSDNCIN				;ダンス競技中
+;LOAD("SSDANC")
+;GOTO SKIP1
+NN_GIRL_DRS		=	0
+NN_CHALENG		=	1
+LOOPCNT = 1;8
+	SSDNCIN				;ダンス競技中
+	NN_GIRL_DRS++
+LOOP LOOPCNT
+NN_CHALENG	=	6;	2
+LOOPCNT = 6;	10
+	SSDNCIN				;ダンス競技中
+	NN_CHALENG++
+LOOP LOOPCNT
+GOTO DANCE_MAIN
+RET
+
+
+*SLCT_MEMBER
+C5 =  6
+IF ( E_RIVAL = 4 )	;マルシアがライバルなら料理へ
+	C5 = 5
+C1 = 20							;順番をかき混ぜる
+	RANDAM(C5) C2 = IRND-1
+	RANDAM(C5) C3 = IRND-1
+	AX = SEQ_ORG_TBL[C2]
+	BX = SEQ_ORG_TBL[C3]
+	SEQ_ORG_TBL[C2] = BX
+	SEQ_ORG_TBL[C3] = AX
+LOOP C1
+
+SEQ_PLAYER[0] = SEQ_ORG_TBL[0]
+SEQ_PLAYER[1] = SEQ_ORG_TBL[1]
+SEQ_PLAYER[2] = SEQ_ORG_TBL[2]
+SEQ_PLAYER[3] = 2
+SEQ_PLAYER[4] = 3
+SEQ_PLAYER[5] = 4
+SEQ_PLAYER[6] = 5		; <== rival.
+
+C1 = 20							;順番をかき混ぜる
+	RANDAM(7) C2 = IRND-1
+	RANDAM(7) C3 = IRND-1
+	AX = SEQ_PLAYER[C2]
+	BX = SEQ_PLAYER[C3]
+	SEQ_PLAYER[C2] = BX
+	SEQ_PLAYER[C3] = AX
+LOOP C1
+
+C1 = SEQ_PLAYER_MAX - 1
+SEQ_PLAYER[C1] = 1 
+SEQ_PLAYER_GIRL= C1
+RET
+
+
+;**************
+;	ダンス終了メイン
+;**************
+
+*DANCE_FINMAIN
+
+SHO_ENTRY_CALC		;集計
+
+;PRV("SHO_ENTRY_TECH  :",SHO_ENTRY_TECH) LLF
+;PRV("SHO_ENTRY_ARTS  :",SHO_ENTRY_ARTS) LLF
+;PRV("SHO_ENTRY_TOTAL :",SHO_ENTRY_TOTAL) LLF
+;PRV("SHO_NOGIRL_TOTAL:",SHO_NOGIRL_TOTAL)
+
+MSG_HYOSHO			;表彰式
+
+RET
+
+;**************
+;	採点法
+;**************
+
+*POINT_SHOW
+POINT_CALC
+POINT_GRAPH
+RET
+
+*POINT_CALC
+
+;		技術点・・・
+;		Ｘ＝芸術値－病気指数
+;		技術点＝Ｘの＋－３０％の範囲の乱数．
+;		＊得点は正の整数です．０以下の場合は０点．
+
+C2 = R_GEIJYUTSU - R_BYOUKI
+IRNDPAR(C2,30)		; +-%の乱数
+SEQ_POINT_TECH[SEQ_PLAYER_PNT] = AX		;技術点
+
+;		芸術点・・・
+;		Ｙ＝色気値－非行化指数
+;		芸術点＝Ｘの＋－３０％の範囲の乱数．
+;		＊得点は正の整数です．０以下の場合は０点．
+
+C2 = R_IROKE - R_HIKOUKA
+IRNDPAR(C2,30)		; +-%の乱数
+SEQ_POINT_ARTS[SEQ_PLAYER_PNT] = AX		;芸術点
+
+;		総合点・・・
+;		技術点＋芸術点＋大臣の人脈値
+
+C1 = SEQ_POINT_TECH[SEQ_PLAYER_PNT]
+C2 = SEQ_POINT_ARTS[SEQ_PLAYER_PNT]
+SEQ_POINT_TOTAL[SEQ_PLAYER_PNT] = C1 + C2
+IF ( NN_CHALENG=1 )	;娘
+	SEQ_GIRL_P_TOTAL = SEQ_POINT_TOTAL[SEQ_PLAYER_PNT]
+	SEQ_POINT_TOTAL[SEQ_PLAYER_PNT] += S_JINMYAKU[4]	;人脈・大臣
+
+;PRV(":",SEQ_POINT_TECH[SEQ_PLAYER_PNT])	LLF
+;PRV(":",SEQ_POINT_ARTS[SEQ_PLAYER_PNT])	LLF
+;PRV(":",SEQ_POINT_TOTAL[SEQ_PLAYER_PNT])	LLF
+
+RET
+
+;**************
+;	集計
+;**************
+
+*SHO_ENTRY_CALC
+SHO_ENTRY_TOTAL = 0				;総合優勝のｴﾝﾄﾘ番号
+SHO_NOGIRL_TOTAL = 0			;娘以外で総合優勝のｴﾝﾄﾘ番号
+C1 = 0
+C3 = 0
+C2 = SEQ_PLAYER_MAX
+	IF ( SEQ_POINT_TOTAL[C3] > C1 )	;総合点
+		C1  = SEQ_POINT_TOTAL[C3]
+		SHO_ENTRY_TOTAL = C3		;総合優勝のｴﾝﾄﾘ番号
+		IF ( SEQ_PLAYER_GIRL ! C3 )
+			SHO_NOGIRL_TOTAL = C3	;娘以外で総合優勝のｴﾝﾄﾘ番号
+	C3++
+LOOP C2
+SHO_ENTRY_ARTS = 0				;芸術賞のｴﾝﾄﾘ番号
+C1 = 0
+C3 = 0
+C2 = SEQ_PLAYER_MAX
+	IF ( SEQ_POINT_ARTS[C3] > C1 )	;芸術点
+		IF ( SHO_ENTRY_TOTAL ! C3 )
+			C1  = SEQ_POINT_ARTS[C3]
+			SHO_ENTRY_ARTS = C3		;芸術賞のｴﾝﾄﾘ番号
+	C3++
+LOOP C2
+SHO_ENTRY_TECH = 0				;技術賞のｴﾝﾄﾘ番号
+C1 = 0
+C3 = 0
+C2 = SEQ_PLAYER_MAX
+	IF ( SEQ_POINT_TECH[C3] > C1 )	;技術点
+		IF ( SHO_ENTRY_TOTAL ! C3 )
+			IF ( SHO_ENTRY_ARTS ! C3 )
+				C1  = SEQ_POINT_TECH[C3]
+				SHO_ENTRY_TECH = C3			;技術賞のｴﾝﾄﾘ番号
+	C3++
+LOOP C2
+RET
+
+;**************
+;	本当の総合優勝者計算
+;**************
+
+*SHO_ENTRY_CALC
+SEQ_POINT_TOTAL[SEQ_PLAYER_GIRL] = SEQ_GIRL_P_TOTAL
+C1 = 0
+C3 = 0
+C2 = 8
+	IF ( C1 < SEQ_POINT_TOTAL[C3] )		;総合点
+		SHO_ENTRY_TOTAL = C3		;総合優勝のｴﾝﾄﾘ番号
+LOOP C2
+RET
+
+;**************
+;	大臣のコメント
+;**************
+
+*MSG_DAIJIN
+TXLC(17,20,100,1)		;text window locate.
+TXOPEN(17)
+TXFACE("F082")			;大臣・普通
+IF ( S_JINMYAKU[4]=0 )	;人脈・大臣
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( S_JINMYAKU[4]>=1 S_JINMYAKU[4]<60 )
+	「＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( S_JINMYAKU[4]>=60 )
+	「＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(17)
+RET
+
+
+;**************
+;	表彰式
+;**************
+
+*MSG_HYOSHO
+
+STRSCLEAR
+
+TXLC(18,21,260,0)		;text window locate.
+TXLC(16,34,260,1)		;text window locate.
+TXLC(17,19,262,2)		;text window locate.
+;TXLC(3,18,64,2)		;text window locate.
+
+MUSIC(2)				;音楽ﾌｪｰﾄﾞｱｳﾄ
+
+FRAME_HYOSHO
+
+PLAY(26)				;P26 表彰
+
+TXOPEN(16)
+TXFACE("F079")	;女官・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+
+;技術点１位のグラフィック，名前，得点表示．
+NN_CHALENG = SEQ_PLAYER[SHO_ENTRY_TECH]	;技術賞のｴﾝﾄﾘ番号
+SHOWPOINT = SEQ_POINT_TECH[SHO_ENTRY_TECH] ;技術点
+CHALNG_PARA_SET				;parameter set.
+SHOFRM_TYPE = 0				;0=技術賞
+FRM_SHO_ENTRY				;授賞ﾌﾚｰﾑ
+
+TXOPEN(16)
+TXFACE("F079")	;女官・普通
+「TXA(R_NAME)＊＊＊＊」
+@P
+TXCLOSE(16)
+
+CHALNG_MESS_SET			;message set.
+
+TXOPEN(17)
+IF ( R_MN_NUMBER=1 )
+	TXGIRL(1)
+IF ( R_MN_NUMBER!1 )
+	SI=R_FACE TXFACE
+TXA(R_MSG_BUMON)		;部門賞の台詞
+@P
+TXCLOSE(17)
+
+
+TXOPEN(16)
+TXFACE("F079")	;女官・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+
+;芸術点１位のグラフィック，名前，得点表示．
+NN_CHALENG = SEQ_PLAYER[SHO_ENTRY_ARTS]	;芸術賞のｴﾝﾄﾘ番号
+SHOWPOINT = SEQ_POINT_ARTS[SHO_ENTRY_ARTS] ;芸術点
+CHALNG_PARA_SET				;parameter set.
+SHOFRM_TYPE = 1				;1=芸術賞
+FRM_SHO_ENTRY				;授賞ﾌﾚｰﾑ
+
+TXOPEN(16)
+TXFACE("F079")	;女官・普通
+「TXA(R_NAME)＊＊＊＊」
+@P
+TXCLOSE(16)
+
+CHALNG_MESS_SET			;message set.
+
+TXOPEN(17)
+IF ( R_MN_NUMBER=1 )
+	TXGIRL(1)
+IF ( R_MN_NUMBER!1 )
+	SI=R_FACE TXFACE
+TXA(R_MSG_BUMON)		;部門賞の台詞
+@P
+TXCLOSE(17)
+
+
+TXOPEN(16)
+TXFACE("F079")	;女官・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+
+;総合点１位のグラフィック．名前，得点表示．
+NN_CHALENG = SEQ_PLAYER[SHO_ENTRY_TOTAL]	;総合優勝のｴﾝﾄﾘ番号
+SHOWPOINT = SEQ_POINT_TOTAL[SHO_ENTRY_TOTAL];総合点
+CHALNG_PARA_SET				;parameter set.
+SHOFRM_TYPE = 2				;2=総合優勝
+FRM_SHO_ENTRY				;授賞ﾌﾚｰﾑ
+
+TXOPEN(16)
+TXFACE("F079")	;女官・普通
+「TXA(R_NAME)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+
+CHALNG_MESS_SET			;message set.
+
+TXOPEN(17)
+IF ( R_MN_NUMBER=1 )
+	TXGIRL(1)
+IF ( R_MN_NUMBER!1 )
+	SI=R_FACE TXFACE
+TXA(R_MSG_YUSHO)		;総合優勝の台詞
+@P
+TXCLOSE(17)
+
+;娘が受賞したとき
+
+CATCH_GOLD = 0
+FLAG_TAKE_RING=0
+
+IF ( SEQ_PLAYER[SHO_ENTRY_TECH] = 1 )	;技術賞のｴﾝﾄﾘ番号
+	CATCH_GOLD = 500
+	GOLDADD(CATCH_GOLD)
+	XGRP_OPEN
+	TXOPEN(18)
+	TXA(NAME_FIRST)はダンスコンテスト技術賞の賞金５００Ｇをもらった！
+	社交評価が２０上がった！
+	H_SYAKOH += 20			;社交評価
+	GRPUPD(1,0,H_SYAKOH)
+	@P
+	TXCLOSE(18)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+IF ( SEQ_PLAYER[SHO_ENTRY_ARTS] = 1 )	;芸術賞のｴﾝﾄﾘ番号
+	CATCH_GOLD = 1000
+	GOLDADD(CATCH_GOLD)
+	XGRP_OPEN
+	TXOPEN(18)
+	TXA(NAME_FIRST)はダンスコンテスト芸術賞の賞金１０００Ｇをもらった！
+	社交評価が２０上がった！
+	H_SYAKOH += 20			;社交評価
+	GRPUPD(1,0,H_SYAKOH)
+	@P
+	TXCLOSE(18)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+IF ( SEQ_PLAYER[SHO_ENTRY_TOTAL] = 1 )	;総合優勝のｴﾝﾄﾘ番号
+	CATCH_GOLD = 3000
+	GOLDADD(CATCH_GOLD)
+	XGRP_OPEN
+	TXOPEN(18)
+	TXA(NAME_FIRST)はダンスコンテスト優勝の賞金３０００Ｇ@@
+	IF ( ITEM_MAX >= ITEM_DIM )		;所有最大アイテム数
+		をもらった！
+	IF ( ITEM_MAX < ITEM_DIM )		;所有最大アイテム数
+		と，副賞の『貴婦人のリング』をもらった！
+		SHOW_ITEMS				;アイテム表示
+		TAKE_ITEM				;アイテム取得
+		FLAG_TAKE_RING=1
+	社交評価が４０上がった！
+	H_SYAKOH += 40			;社交評価
+	GRPUPD(1,0,H_SYAKOH)
+	@P
+	IF ( FLAG_TAKE_RING=1 )	ITEMPRN(2)	;マルチアイテム復帰
+	TXCLOSE(18)
+	GR_CLOSE			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+
+IF ( CATCH_GOLD ! 0 )
+	TXOPEN(16)
+	TXFACE("F040")		;執事・嬉しい
+	「＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(16)
+
+IF ( E_RIVAL=3 )		;3=社交
+	C2 = 3
+	IF ( SEQ_PLAYER[SHO_ENTRY_TOTAL] = 1 )	C2=1	;総合優勝娘
+	IF ( SEQ_PLAYER[SHO_ENTRY_TOTAL] = 5 )	C2=2	;総合優勝ﾊﾟﾄﾚｲｼｱ
+	IF ( C2 = 3 )
+		IF ( SEQ_PLAYER[SHO_ENTRY_ARTS] = 1 ) C2=1	;芸術賞
+		IF ( SEQ_PLAYER[SHO_ENTRY_ARTS] = 5 ) C2=2	;
+	IF ( C2 = 3 )
+		IF ( SEQ_PLAYER[SHO_ENTRY_TECH] = 1 ) C2=1	;技術賞
+		IF ( SEQ_PLAYER[SHO_ENTRY_TECH] = 5 ) C2=2	;
+
+	TXOPEN(17)
+	TXFACE("F100")	;ﾊﾟﾄﾚｲｼｱ
+	IF ( C2 = 1 )	;娘の勝ち
+		「＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( C2 = 2 )	;娘の負け
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊」
+	IF ( C2 = 3 )	;引き分け
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(17)
+
+;娘が大臣の人脈値のおかげで優勝した場合
+
+IF ( SHO_ENTRY_TOTAL = SEQ_PLAYER_GIRL )	;総合優勝は娘？
+	;娘の本当の総合点と次点の娘の比較
+	IF ( SEQ_POINT_TOTAL[SHO_NOGIRL_TOTAL] > SEQ_GIRL_P_TOTAL )
+		NN_CHALENG = SEQ_PLAYER[SHO_NOGIRL_TOTAL]	;総合優勝のｴﾝﾄﾘ番号
+		CHALNG_PARA_SET			;parameter set.
+		TXOPEN(17)
+		SI=R_FACE TXFACE
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(17)
+
+IF ( SEQ_PLAYER[SHO_ENTRY_TECH]!1  SEQ_PLAYER[SHO_ENTRY_ARTS]!1  SEQ_PLAYER[SHO_ENTRY_TOTAL]!1 )
+	TIMER1(30)
+	WAIT1
+	TXOPEN(17)
+	TXFACE("F043")	;執事・安心
+	C1 = SEQ_PLAYER_MAX - 1
+	C2 = SEQ_POINT_TECH[C1]		;技術点
+	C3 = SEQ_POINT_ARTS[C1]		;芸術点
+	C4 = SEQ_POINT_TOTAL[C1]	;総合点
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXPOINT(C2)＊＊＊＊＊＊TXPOINT(C3)＊＊＊＊＊＊TXPOINT(C4)＊＊＊＊」
+	@P
+	TXCLOSE(17)
+
+TXOPEN(18)
+かくてダンスパーティーは盛況のうちに終った・・・・・・
+@P
+TXCLOSE(18)
+RET
+
+
+*XGRP_OPEN
+;GR_OPEN			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+GR_F(1,2)
+IGRP_TBL3[0]=H_SYAKOH
+IGRP_TBL1[0]="社交評価"
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=328
+GRPOPEN(1,1)	;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+IGRP_TBL3[0]=CATCH_GOLD
+IGRP_TBL1[0]="賞金"
+IGRP_CNT=1
+IGRP_X=54
+IGRP_Y=290
+GOLDOPEN(1,2)	;ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+RET
+
+
+;**************
+;	授賞ﾌﾚｰﾑ
+;**************
+
+;芸術点１位のグラフィック，名前，得点表示．
+
+*FRM_SHO_ENTRY
+IF ( SHOFRM_TYPE=0 )	;0=技術賞
+	FXX1=5
+	FYY1=148
+	C1 = 8
+IF ( SHOFRM_TYPE=1 )	;1=芸術賞
+	FXX1=55
+	FYY1=148
+	C1 = 6
+IF ( SHOFRM_TYPE=2 )	;2=総合優勝
+	FXX1=30
+	FYY1=148
+	C1 = 4
+
+PTBK(0)
+PTLD("SSMOJI")
+XXX1 = FXX1 + 3
+YYY1 = FYY1 + 8
+PTM(XXX1,YYY1,C1)			; マスクパーツＰＵＴ
+
+XXX1 = FXX1 + 3
+YYY1 = FYY1 + 44
+PIC(16,15,0,2)		;PIC(16,color,size,type)
+STRLEN(R_NAME)	; 文字列長さ
+AX = AX / 2
+XXX1 = XXX1 + 6 - AX
+SI = R_NAME			;
+PIC(15,XXX1,YYY1)	;
+
+XXX1 = FXX1 + 3
+YYY1 = FYY1 + 68
+TXF(9,SHOWPOINT)	;ﾎﾟｲﾝﾄの文字列化
+STR_WORK="11223344556677"
+STRCOPY(STR_WORK)	;文字列を文字列アドレスへコピーする
+STRLEN(STR_WORK)	; 文字列長さ
+C3 = STR_WORK + AX	;
+SI = "点"
+STRCOPY(C3)			;文字列を文字列アドレスへコピーする
+PIC(16,15,0,1)		;PIC(16,color,size,type)
+
+STRLEN(STR_WORK)	; 文字列長さ
+AX = AX / 2
+XXX1 = XXX1 + 6 - AX
+SI = STR_WORK		;
+PIC(15,XXX1,YYY1)	;
+
+;IF ( R_MN_NUMBER=1 )
+;	TXF(6,0,XXX1,YYY1)			;テキストウインドウ 娘ﾌｪｲｽのみ
+;IF ( R_MN_NUMBER!1 )
+;	SI=R_FACE TXF(5,XXX1,YYY1)	;テキストウインドウ ﾌｪｲｽのみ
+RET
+
+;**************
+;	show parameter.
+;**************
+
+*GRAPOPEN
+PTBK(6)
+PTCLR
+PTGT(21,256,42,140)
+PTBK(0)
+FACEOPEN(0)
+GR_F(1,16)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+SI = R_NAME		;名前
+IGRP_X = 38
+IGRP_Y = 292
+GR_F(6)
+
+C2 = "123456"
+VALSTR(R_NENREI)	;数値を文字列化
+SI = SI + 3			;
+STRCOPY(C2)			;文字列を文字列アドレスへコピーする
+SI = "歳"			;
+C3 = C2 + 2			;
+STRCOPY(C3)			;文字列を文字列アドレスへコピーする
+PIC(16,15,0,2)		;PIC(16,color,size,type)
+SI = C2				;
+PIC(15,55,292)		;
+
+IGRP_TBL1[0]="体力"
+IGRP_TBL1[1]="色気"
+IGRP_TBL1[2]="芸術"
+IGRP_TBL3[0]=R_TAIRYOKU
+IGRP_TBL3[1]=R_IROKE
+IGRP_TBL3[2]=R_GEIJYUTSU
+IGRP_CNT=3
+IGRP_X = 37
+IGRP_Y = 301
+GR_F(5,1,2)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ･ﾌﾚｰﾑ無し
+RET
+
+*GRAPCLOSE
+FACECLOSE
+PTBK(6)
+PTF(0,0,0)
+PTBK(0)
+RET
+
+*FACEOPEN
+C2 = AX
+IF ( R_MN_NUMBER=1 )
+	PTBK(2)
+	PTLD("SSFACE")
+	PIC(14,P_NENREI,C2)	; 娘の顔ファイル名
+	PTLA
+	PTLA("SSPRAM2")
+	PTM(21,256,0)
+	PTX(23,274,2)
+	PTM(36,275,3)
+	PTBK(0)
+	RET
+PTBK(2)
+PTLD("SSFACE")
+SI = R_FACE
+PTLA
+PTLA("SSPRAM2")
+PTM(21,256,0)
+PTX(23,274,2)
+PTM(36,275,3)
+PTBK(0)
+RET
+
+*FACECLOSE
+RET
+
+;**************
+;**************
+
+*POINT_GRAPH
+IGRP_TBL1[0]="技術点"
+IGRP_TBL1[1]="芸術点"
+IGRP_TBL1[2]="総合点"
+IGRP_TBL3[0]="99999"
+IGRP_TBL3[1]="99999"
+IGRP_TBL3[2]="99999"
+STRVALSETS(SEQ_POINT_TECH[SEQ_PLAYER_PNT], IGRP_TBL3[0])	;技術点
+STRVALSETS(SEQ_POINT_ARTS[SEQ_PLAYER_PNT], IGRP_TBL3[1])	;芸術点
+STRVALSETS(SEQ_POINT_TOTAL[SEQ_PLAYER_PNT],IGRP_TBL3[2])	;総合点
+IGRP_CNT=3
+;IGRP_X=42
+;IGRP_Y=160
+IGRP_X=27
+IGRP_Y=80
+PROFILE(1,2)		;プロフィール･ｳｲﾝﾄﾞｳ
+RET
+
+*STRVALSETS
+C2 = BX
+VALSTR
+;SI = SI + 2
+STRCOPY(C2)
+RET
+
+;**************
+;	parameter set.
+;**************
+
+*CHALNG_PARA_SET
+C1 = NN_CHALENG
+IF ( C1 = 1 )  	;1	娘
+	CHLG_PARA_SET_01
+	RET
+IF ( C1 = 2 )  	;2	ジュリエッタ
+	CHLG_PARA_SET_02
+	RET
+IF ( C1 = 3 )  	;3	フィオリナ
+	CHLG_PARA_SET_03
+	RET
+IF ( C1 = 4 )  	;4	アーニス
+	CHLG_PARA_SET_04
+	RET
+IF ( C1 = 5 )  	;5	パトレイシア
+	CHLG_PARA_SET_05
+	RET
+IF ( C1 = 6 )  	;6	ランファン
+	CHLG_PARA_SET_06
+	RET
+IF ( C1 = 7 )  	;7	ジェニファー
+	CHLG_PARA_SET_07
+	RET
+IF ( C1 = 8 )  	;8	フランソワ
+	CHLG_PARA_SET_08
+	RET
+IF ( C1 = 9 )  	;9	ナターシャ
+	CHLG_PARA_SET_09
+	RET
+IF ( C1 = 10 ) 	;10 マルシア
+	CHLG_PARA_SET_10
+	RET
+IF ( C1 = 11 ) 	;11	トーベ
+	CHLG_PARA_SET_11
+	RET
+RET
+
+;**************
+;	message set.
+;**************
+
+*CHALNG_MESS_SET
+C1 = NN_CHALENG
+IF ( C1 = 1 )  	;1	娘
+	CHLG_MESS_SET_01
+	RET
+IF ( C1 = 2 )  	;2	ジュリエッタ
+	CHLG_MESS_SET_02
+	RET
+IF ( C1 = 3 )  	;3	フィオリナ
+	CHLG_MESS_SET_03
+	RET
+IF ( C1 = 4 )  	;4	アーニス
+	CHLG_MESS_SET_04
+	RET
+IF ( C1 = 5 )  	;5	パトレイシア
+	CHLG_MESS_SET_05
+	RET
+IF ( C1 = 6 )  	;6	ランファン
+	CHLG_MESS_SET_06
+	RET
+IF ( C1 = 7 )  	;7	ジェニファー
+	CHLG_MESS_SET_07
+	RET
+IF ( C1 = 8 )  	;8	フランソワ
+	CHLG_MESS_SET_08
+	RET
+IF ( C1 = 9 )  	;9	ナターシャ
+	CHLG_MESS_SET_09
+	RET
+IF ( C1 = 10 ) 	;10 マルシア
+	CHLG_MESS_SET_10
+	RET
+IF ( C1 = 11 ) 	;11	トーベ
+	CHLG_MESS_SET_11
+	RET
+RET
+
+;参加者のデータ・・・全部で１２人．この中から７人が参加します．
+;		　　＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+;		　　＊＊＊＊＊＊＊＊＊＊＊＊
+;		　　＊＊＊＊＊＊＊＊＊＊＊
+;	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+;	　＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+;	　＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+;	　＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+;	　＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+
+*CHLG_PARA_SET_01
+R_MN_NUMBER		=	1
+R_FACE			=	""
+R_NAME			=	NAME_FIRST		;名前
+R_NENREI		=	P_NENREI		;年齢
+R_TAIRYOKU		=	B_TAIRYOKU		;体力
+R_IROKE			=	B_IROKE			;色気
+R_GEIJYUTSU		=	V_GEIJYUTSU		;芸術
+R_BYOUKI		=	S_BYOUKI		;病気指数(%)
+R_HIKOUKA		=	S_HIKOUKA		;非行化指数(%)
+RET
+*CHLG_MESS_SET_01
+R_MSG_BUMON		=	"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+RET
+
+*CHLG_PARA_SET_02
+R_MN_NUMBER		=	2
+R_FACE			=	"F118"
+R_NAME			=	"ジュリエッタ"
+R_NENREI		=	E_ETC[65]		;ｼﾞｭﾘｴｯﾀ年齢
+R_TAIRYOKU		=	777
+R_IROKE			=	777
+R_GEIJYUTSU		=	77
+R_BYOUKI		=	0
+R_HIKOUKA		=	0
+RET
+*CHLG_MESS_SET_02
+R_MSG_BUMON		=	"「＊＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+RET
+;備考	常連の中では安定した実力で，優勝のガイドライン的存在．
+
+*CHLG_PARA_SET_03
+R_MN_NUMBER		=	3
+R_FACE			=	"F119"
+R_NAME			=	"フィオリナ"
+R_NENREI		=	E_ETC[66]		;ﾌｨｵﾘﾅ年齢
+R_TAIRYOKU		=	777
+R_IROKE			=	777
+R_GEIJYUTSU		=	77
+R_BYOUKI		=	0
+R_HIKOUKA		=	0
+RET
+*CHLG_MESS_SET_03
+R_MSG_BUMON		=	"「＊＊＊＊＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊＊＊＊＊＊＊＊＊」"
+RET
+;備考	ジュリエッタに匹敵する実力だが，地味で損をしている．
+
+*CHLG_PARA_SET_04
+R_MN_NUMBER		=	4
+R_FACE			=	"F120"
+R_NAME			=	"アーニス"
+R_NENREI		=	E_ETC[67]		;ｱｰﾆｽ年齢
+R_TAIRYOKU		=	777
+R_IROKE			=	777
+R_GEIJYUTSU		=	77
+R_BYOUKI		=	0
+R_HIKOUKA		=	0
+RET
+*CHLG_MESS_SET_04
+R_MSG_BUMON		=	"「＊＊＊＊＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊＊＊＊＊＊＊＊」"
+RET
+;備考	色気が自慢．部門賞狙い．
+
+*CHLG_PARA_SET_05
+R_MN_NUMBER		=	5
+R_FACE			=	"F100"
+R_NAME			=	"パトレイシア"
+R_NENREI		=	E_ETC[61]	;ﾊﾟﾄﾚｲｼｱ年齢
+R_TAIRYOKU		=	E_ETC[62]	;ﾊﾟﾄﾚｲｼｱ体力
+R_IROKE			=	E_ETC[63]	;ﾊﾟﾄﾚｲｼｱ色気
+R_GEIJYUTSU		=	E_ETC[64]	;ﾊﾟﾄﾚｲｼｱ芸術
+R_BYOUKI		=	0
+R_HIKOUKA		=	0
+RET
+*CHLG_MESS_SET_05
+R_MSG_BUMON		=	"「＊＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊」"
+RET
+;備考	社交のライバル．実力は中の上．運がよければ技術賞．
+
+*CHLG_PARA_SET_06
+R_MN_NUMBER		=	6
+R_FACE			=	"F108"
+R_NAME			=	"ランファン"
+R_NENREI		=	E_ETC[68]		;ﾗﾝﾌｧﾝ年齢
+R_TAIRYOKU		=	777
+R_IROKE			=	777
+R_GEIJYUTSU		=	77
+R_BYOUKI		=	0
+R_HIKOUKA		=	0
+RET
+*CHLG_MESS_SET_06
+R_MSG_BUMON		=	"「＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊」"
+RET
+;備考	中国風．武闘会とふたまた．色気がまあまあの芸術賞狙い．
+
+*CHLG_PARA_SET_07
+R_MN_NUMBER		=	7
+R_FACE			=	"F113"
+R_NAME			=	"ジェニファー"
+R_NENREI		=	E_ETC[69]		;ｼﾞｪﾆﾌｧｰ年齢
+R_TAIRYOKU		=	777
+R_IROKE			=	777
+R_GEIJYUTSU		=	77
+R_BYOUKI		=	0
+R_HIKOUKA		=	0
+RET
+*CHLG_MESS_SET_07
+R_MSG_BUMON		=	"「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊＊＊＊＊＊＊＊」"
+RET
+;備考	実力は低いが，衣装が物凄い人気者．
+
+*CHLG_PARA_SET_08
+R_MN_NUMBER		=	8
+R_FACE			=	"F106"
+R_NAME			=	"フランソワ"
+R_NENREI		=	E_ETC[70]		;ﾌﾗﾝｿﾜ年齢
+R_TAIRYOKU		=	777
+R_IROKE			=	777
+R_GEIJYUTSU		=	77
+R_BYOUKI		=	0
+R_HIKOUKA		=	0
+RET
+*CHLG_MESS_SET_08
+R_MSG_BUMON		=	"「＊＊＊＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊」"
+RET
+;備考	派手さで勝負！武闘会兼用組では実力上々．ダークホース的存在．
+
+*CHLG_PARA_SET_09
+R_MN_NUMBER		=	9
+R_FACE			=	"F110"
+R_NAME			=	"ナターシャ"
+R_NENREI		=	E_ETC[71]		;ﾅﾀｰｼｬ年齢
+R_TAIRYOKU		=	777
+R_IROKE			=	777
+R_GEIJYUTSU		=	77
+R_BYOUKI		=	0
+R_HIKOUKA		=	0
+RET
+*CHLG_MESS_SET_09
+R_MSG_BUMON		=	"「＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊」"
+RET
+;備考	武闘会で活躍の大女．美人だが踊りは駄目のようだ．
+
+*CHLG_PARA_SET_10
+R_MN_NUMBER		=	10
+R_FACE			=	"F101"
+R_NAME			=	"マルシア"
+R_NENREI		=	E_ETC[72]		;ﾏﾙｼｱ年齢
+R_TAIRYOKU		=	777
+R_IROKE			=	777
+R_GEIJYUTSU		=	77
+R_BYOUKI		=	0
+R_HIKOUKA		=	0
+RET
+*CHLG_MESS_SET_10
+R_MSG_BUMON		=	"「＊＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊＊」"
+RET
+;備考	本来は料理のライバル．トロい女と自称するだけあって，踊りも下手．
+
+*CHLG_PARA_SET_11
+R_MN_NUMBER		=	11
+R_FACE			=	"F060"
+R_NAME			=	"トーベ"
+R_NENREI		=	E_ETC[75]		;ﾄｰﾍﾞ年齢
+R_TAIRYOKU		=	777
+R_IROKE			=	777
+R_GEIJYUTSU		=	77
+R_BYOUKI		=	0
+R_HIKOUKA		=	0
+RET
+*CHLG_MESS_SET_11
+R_MSG_BUMON		=	"「＊＊＊＊＊＊＊＊」"
+R_MSG_YUSHO		=	"「＊＊＊＊＊＊」"
+RET
+;備考	娘の踊りの師匠だけに，技術力高し．参加すれば強力な優勝候補．
+
+
+;**************
+;	フレーム
+;**************
+
+*FRAME_OPEN
+PTBK(0)
+PTLD("FRMSYUKL")
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+GRPCLS
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+
+PTX(40,0,0)
+PTLD("SSBASEUP")
+PTLA("SSBASEDN")
+PTLA("SSW002")
+PTMF(0,0,0)
+PTMF(0,0,2)
+PTMF(0,0,4)
+
+WWANIME(14,1)				;anime window open.(no frame open)
+WWANIME(3,1,"G004")			;pictuer load.
+WWANIME(4,1)				;put BG.
+WWANIME(5,1)				;pictuer copy vvram -> CRT.
+RET
+
+;**************
+;	授賞frame.
+;**************
+
+*FRAME_HYOSHO
+PTBK(0)
+PTLD("FRMSYUKL")
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+GRPCLS			;
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+PTX(40,0,0)
+PTLD("E19HONO")	;「表彰式」
+PTM(23,20,0)
+PTLD("SSSHOU")
+PTM(3,131,0)
+PTM(28,131,0)
+PTM(53,131,0)
+EFC(16)			;ノーマルカラー
+RET
+
+;**************
+;	ダンス競技中
+;**************
+
+*SSDNCIN
+TIMER1(60)
+CHALNG_PARA_SET		;parameter set.
+GRAPOPEN			;show parameter.
+ANIME_OPEN
+ANIME_SETS
+IF ( NN_CHALENG=1 )	;娘
+	ANIME_CHAR_PUT	;anime char put.
+	MSG_DAIJIN		;大臣のコメント
+WAIT1
+ANIME_MAIN
+POINT_SHOW
+
+TIMER1(70)
+WAIT1
+
+ANM_CHAR_CLEAR
+
+GRAPCLOSE
+
+RET
+
+;**************
+;	anime data.
+;**************
+
+*ANIME_OPEN
+TIMEWAIT1=5;6	;8
+WWANIME(3,1,"G004")			;pictuer load.
+ANIME_DATA_SET				;
+WWANIME(10,1,0,0,54,180)	;anime window size set.
+WWANIME(4,1)				;put BG.
+WWANIME(5,1)				;pictuer copy vvram -> CRT.
+WWANIME(10,1,0,89,54,80)	;anime window size set.
+RET
+
+*ANIME_DATA_SET
+IF ( NN_CHALENG = 1 )  AN_DATA_GIRL			;1	娘
+IF ( NN_CHALENG = 2 )  WWANIME(6,1,"S002")	;2	ジュリエッタ
+IF ( NN_CHALENG = 3 )  WWANIME(6,1,"S003")	;3	フィオリナ
+IF ( NN_CHALENG = 4 )  WWANIME(6,1,"S004")	;4	アーニス
+IF ( NN_CHALENG = 5 )  WWANIME(6,1,"S005")	;5	パトレイシア
+IF ( NN_CHALENG = 6 )  WWANIME(6,1,"S006")	;6	ランファン
+IF ( NN_CHALENG = 7 )  WWANIME(6,1,"S007")	;7	ジェニファー
+IF ( NN_CHALENG = 8 )  WWANIME(6,1,"S008")	;8	フランソワ
+IF ( NN_CHALENG = 9 )  WWANIME(6,1,"S009")	;9	ナターシャ
+IF ( NN_CHALENG = 10 ) WWANIME(6,1,"S012")	;10 マルシア
+IF ( NN_CHALENG = 11 ) WWANIME(6,1,"S013")	;11	トーベ
+RET
+
+*AN_DATA_GIRL
+IF ( NN_GIRL_DRS = 0 ) WWANIME(6,1,"S001A")
+IF ( NN_GIRL_DRS = 1 ) WWANIME(6,1,"S001B")
+IF ( NN_GIRL_DRS = 2 ) WWANIME(6,1,"S001C")
+IF ( NN_GIRL_DRS = 3 ) WWANIME(6,1,"S001D")
+IF ( NN_GIRL_DRS = 4 ) WWANIME(6,1,"S001E")
+IF ( NN_GIRL_DRS = 5 ) WWANIME(6,1,"S001F")
+IF ( NN_GIRL_DRS = 6 ) WWANIME(6,1,"S001G")
+IF ( NN_GIRL_DRS = 7 ) WWANIME(6,1,"S001H")
+RET
+
+*ICON_TO_DRS
+IF ( DRESS_ICON = 46 )	NN_GIRL_DRS=0	;46=木綿のドレス
+IF ( DRESS_ICON = 47 )	NN_GIRL_DRS=1	;47=シルクのドレス
+IF ( DRESS_ICON = 48 )	NN_GIRL_DRS=2	;48=レザーのドレス
+IF ( DRESS_ICON = 49 )	NN_GIRL_DRS=3	;49=トゲトゲの服
+IF ( DRESS_ICON = 50 )	NN_GIRL_DRS=4	;50=傾国のローブ
+IF ( DRESS_ICON = 51 )	NN_GIRL_DRS=5	;51=見えないドレス
+IF ( DRESS_ICON = 52 )	NN_GIRL_DRS=6	;52=悪魔のドレス
+IF ( DRESS_ICON = 53 )	NN_GIRL_DRS=7	;53=龍のレオタード
+RET
+
+;**************
+;	anime set.
+;**************
+
+*ANIME_SETS
+IF ( NN_CHALENG=1 )	ANM_SET_01	RET
+IF ( NN_CHALENG=2 )	ANM_SET_01	RET
+IF ( NN_CHALENG=3 )	ANM_SET_03	RET
+IF ( NN_CHALENG=4 )	ANM_SET_01	RET
+IF ( NN_CHALENG=5 )	ANM_SET_01	RET
+IF ( NN_CHALENG=6 )	ANM_SET_06	RET
+IF ( NN_CHALENG=7 )	ANM_SET_07	RET
+IF ( NN_CHALENG=8 )	ANM_SET_01	RET
+IF ( NN_CHALENG=9 )	ANM_SET_09	RET
+IF ( NN_CHALENG=10)	ANM_SET_10	RET
+IF ( NN_CHALENG=11)	ANM_SET_01	RET
+
+RET
+
+*ANM_SET_01
+SETDCXY(0,4)	SETFL0(2,3,4,1 )			;ﾀﾞﾝｽ
+SETDCXY(1,8)	SETFL1(5,5,5,6, 6,6,5,5 )	;挨拶
+RET
+
+*ANM_SET_03
+SETDCXY(0,4)	SETFL0(2,3,4,1 )			;ﾀﾞﾝｽ
+SETDCXY(1,8)	SETFL1(5,5,5,5, 5,5,5,5 )	;挨拶
+RET
+
+*ANM_SET_06
+SETDCXY(0,2)	SETFL0(3,4 )				;ﾀﾞﾝｽ
+SETDCXY(1,8)	SETFL1(5,5,5,6, 6,6,5,5 )	;挨拶
+SETDCXY(2,2)	SETFL2(1,2 )				;おまけ
+RET
+
+*ANM_SET_07
+SETDCXY(0,3)	SETFL0(1,2,3 )				;ﾀﾞﾝｽ
+SETDCXY(1,6)	SETFL1(7,7,7,7, 7,7 )		;挨拶
+SETDCXY(2,3)	SETFL2(4,5,6 )				;おまけ
+RET
+
+*ANM_SET_09
+SETDCXY(0,14)	SETFL0(1,2,1,2,1,2,1,2 )	;ﾀﾞﾝｽ
+				SETFL0B(1,2,3,4,5,6 )		;ﾀﾞﾝｽ
+SETDCXY(1,8)	SETFL1(7,7,7,8, 8,8,7,7 )	;挨拶
+RET
+
+*ANM_SET_10
+SETDCXY(0,8)	SETFL0(2,1,2,1,2, 3,4,3 )	;ﾀﾞﾝｽ
+SETDCXY(1,8)	SETFL1(5,5,5,6, 6,6,5,5 )	;挨拶
+RET
+
+*SETDCXY
+ALCX[AX]	=0
+ALCY[AX]	=168-79
+ALCC[AX]	=0
+ALCCNT[AX]	=BX
+RET
+*SETFL0		;ﾀﾞﾝｽ
+FILM0[0]=AX	FILM0[1]=BX	FILM0[2]=CX	FILM0[3]=DX
+FILM0[4]=SI	FILM0[5]=DI	FILM0[6]=BP	FILM0[7]=ES
+RET
+*SETFL0B	;ﾀﾞﾝｽ
+FILM0[8]=AX  FILM0[9]=BX  FILM0[10]=CX FILM0[11]=DX
+FILM0[12]=SI FILM0[13]=DI FILM0[14]=BP FILM0[15]=ES
+RET
+*SETFL1		;挨拶
+FILM1[0]=AX	FILM1[1]=BX	FILM1[2]=CX	FILM1[3]=DX
+FILM1[4]=SI	FILM1[5]=DI	FILM1[6]=BP	FILM1[7]=ES
+RET
+*SETFL2		;おまけ
+FILM2[0]=AX	FILM2[1]=BX	FILM2[2]=CX	FILM2[3]=DX
+FILM2[4]=SI	FILM2[5]=DI	FILM2[6]=BP	FILM2[7]=ES
+RET
+
+*APUTS
+APUTNUM = AX
+ANIM_NUM(APUTNUM)
+APUT(ALCX[APUTNUM],ALCY[APUTNUM],C1)
+ALCC[APUTNUM]++
+RET
+
+*ANIM_NUM
+;ANIM_NUM(filmnumber)
+;-O- DX pattern number.
+IF ( ALCC[AX] >= ALCCNT[AX] )
+	ALCC[AX] = 0
+BX = ALCC[AX]
+IF (AX=0) DX=FILM0[BX]
+IF (AX=1) DX=FILM1[BX]
+IF (AX=2) DX=FILM2[BX]
+DX--	;DX pattern number.
+C1 = DX
+RET
+
+*APUT
+;anime pattern put vvram.
+;APUT(x,y,pattern)
+IF ( CX < 0 ) RET
+SI = CX * 2 + 1
+DX = BX
+CX = AX
+AX = 7
+BX = 1
+;	WWANIME(7,1,ALCX[0],ALCY[0],ALCC[0])
+WWANIME	;anime pattern put vvram.
+RET
+
+;**************
+;	anime char put.
+;**************
+
+*ANIME_CHAR_PUT
+ALCX[1] = 38
+APUTS(1)
+ALCC[1]=0
+WWANIME(5,1)				;pictuer copy vvram -> CRT.
+RET
+
+;**************
+;	anime main.
+;**************
+
+*ANIME_MAIN
+IF ( NN_CHALENG=6 )		ANIME_MAIN06	RET
+IF ( NN_CHALENG=7 )		ANIME_MAIN07	RET
+IF ( NN_CHALENG=9 )		ANIME_MAIN09	RET
+IF ( NN_CHALENG=10)		ANIME_MAIN10	RET
+ALCX[0] = 38
+ALCX[1] = ALCX[0]
+TIMELOP = ALCCNT[1]
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	APUTS(1)			;挨拶
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+ALCX[0] = ALCX[1]
+TIMELOP = 32
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	ALCX[0]--
+	APUTS(0)			;ﾀﾞﾝｽ
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+ALCX[1] = ALCX[0]
+TIMELOP = ALCCNT[1]
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	APUTS(1)			;挨拶
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+RET
+
+*ANM_CHAR_CLEAR
+WWANIME(10,1,0,0,54,180)	;anime window size set.
+WWANIME(4,1)				;put BG.
+TIMER1(TIMEWAIT1)
+WAIT1
+WWANIME(5,1)		;pictuer copy vvram -> CRT.
+RET
+
+*ANIME_MAIN06
+DV_STEP=2
+ANIME_MAIN_06_07
+RET
+
+*ANIME_MAIN07
+DV_STEP=2
+ANIME_MAIN_06_07
+RET
+
+*ANIME_MAIN_06_07
+TIMEWAIT1=8
+ALCX[0] = 38
+ALCX[1] = ALCX[0]
+TIMELOP = ALCCNT[1]
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	APUTS(1)			;挨拶
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+ALCX[0] = ALCX[1]
+TIMELOP = 30 / DV_STEP
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	APUTS(0)			;ﾀﾞﾝｽ
+	ALCX[0] -= DV_STEP
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+ALCX[2] = ALCX[0]
+TIMELOP = 14 / DV_STEP
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	ALCX[2] += DV_STEP
+	APUTS(2)			;おまけ
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+ALCX[1] = ALCX[2]
+TIMELOP = ALCCNT[1]
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	APUTS(1)			;挨拶
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+RET
+
+*ANIME_MAIN09
+ALCX[0] = 38
+ALCX[1] = ALCX[0]
+TIMELOP = ALCCNT[1]
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	APUTS(1)			;挨拶
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+ALCX[0] = ALCX[1]
+TIMELOP = 32+10
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	IF ( ALCC[0] < 8 )	ALCX[0]--
+	IF ( ALCC[0]>=8 ALCC[0]<12 ) ALCX[0]--
+	APUTS(0)			;ﾀﾞﾝｽ
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+ALCX[1] = ALCX[0]
+TIMELOP = ALCCNT[1]
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	APUTS(1)			;挨拶
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+RET
+
+*ANIME_MAIN10
+ALCX[0] = 38
+ALCX[1] = ALCX[0]
+TIMELOP = ALCCNT[1]
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	APUTS(1)			;挨拶
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+TIMELOP = 32+8
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	IF ( ALCC[0] = 1 )	ALCX[0]--
+	IF ( ALCC[0] <= 5 )	ALCX[0]--
+	APUTS(0)			;ﾀﾞﾝｽ
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+ALCX[1] = ALCX[0]
+TIMELOP = ALCCNT[1]
+	WWANIME(4,1)		;put BG.
+	TIMER1(TIMEWAIT1)
+	APUTS(1)			;挨拶
+	WAIT1
+	WWANIME(5,1)		;pictuer copy vvram -> CRT.
+LOOP TIMELOP
+RET
+
+;**************
+;	アイテム表示
+;**************
+
+*SHOW_ITEMS
+ITEMID_TBL1[0]="貴婦人のリング"
+ITEMID_TBL2[0]=33				;ＩＣＯＮ
+ITEMID_TBL3[0]=2500				;金
+ITEMID_TBL4[0]="気品+25"
+ITEMID_TBL5[0]=0				;
+ITEMID_TBL6[0]=""				;
+ITEMID_TBL7[0]=0				;
+ITEM_KOUKA[0]="B_KIHIN+25"
+ITEM_ATTRBUTE[0]=4000			;4000番台=効能有
+ITEMID_CNT=1					;アイテムＩＤ数
+ITEMPRN(3,46,200)				;マルチアイテム TYPE 5 位置
+ITEMPRN(1,5)					;マルチアイテム表示
+RET
+
+;**************
+;	アイテム取得
+;**************
+
+*TAKE_ITEM
+BX=ITEMID_TBL2[0]		;ＩＣＯＮ
+CX=ITEMID_TBL3[0]		;定価
+DX=ITEM_ATTRBUTE[0]		;種別
+SI=ITEMID_TBL1[0]		;所有アイテム名前 string
+DI=ITEM_KOUKA[0]		;所有アイテム効果 string
+BP=ITEMID_TBL4[0]		;所有アイテム説明 string
+ITEM_INST(1)
+RET
+
+
+;
+;	end of "SSDANC.TXT"
+;
+
