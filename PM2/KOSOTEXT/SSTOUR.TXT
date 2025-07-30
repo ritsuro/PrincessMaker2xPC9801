@@ -1,0 +1,1190 @@
+;"SSTOUR.TXT"
+;
+;	トーナメント表
+;
+;	C1 : 機能 1=トーナメント開始,2=トーナメント中
+;	C2 : 第何試合(1-n)
+;	C3 : 組み合せ番号(1-n)
+;	C4 : 勝敗 1=娘勝ち,2=敵勝ち
+;
+;	E_RIVAL	ライバル登場 1=戦士,2=魔法
+;
+;	このなかには"SSBT02.TXT"から"SSBT18.TXT"までのパラメータと
+;	同じ物がふくまれていますので、変更時には注意してください。
+;
+
+STRSCLEAR
+
+.CMN_FUNC				;機能
+.CMN_SHIAI				;第何試合(1-n)
+.CMN_LINK				;組み合せ番号(1-n)
+.CMN_VIC_FLG			;勝敗 1=娘勝ち,2=敵勝ち
+
+CMN_FUNC	= C1		;機能
+CMN_SHIAI	= C2		;第何試合(1-n)
+CMN_LINK	= C3		;組み合せ番号(1-n)
+CMN_VIC_FLG	= C4		;勝敗 1=娘勝ち,2=敵勝ち
+
+.STR_ENTRY_NAME[19]
+.TBL_MENBER[18]
+
+.LCNT_SHIAI				;第何試合(1-n)
+.LCNT_LINK				;組み合せ番号(1-n)
+
+.BATL_MAN1				;キャラクタ番号・甲チーム
+.BATL_MAN2				;キャラクタ番号・乙チーム
+
+.BATL_TEKI				;キャラクタ番号・娘の敵
+.BATL_GIRL_LINK			;娘の対戦組み合せ番号(1-n)
+
+.FLAG_VICTRY			;ﾄｰﾅﾒﾝﾄ試合・勝敗  1=甲が勝ち,2=乙が勝ち
+
+.BATLE_GR_SLCT			;1=通常攻撃,2=魔法攻撃
+.BATLE_TK_SLCT			;1=通常攻撃,2=魔法攻撃
+
+.FLAG_BATLE = 0			;0=戦闘中,1=娘勝ち,2=敵勝ち,3=娘逃げる,4=敵逃げる
+.G_DAMEG
+.T_DAMEG
+
+.ATTACK_VAL				;攻撃バリュー
+.DEFENS_VAL				;防御バリュー
+.BATLE_NOW				;1=命中,2=失敗
+
+.MY_KAISHIN				;会心率(%)
+
+.INS_BTL_COUNT
+.INS_BTL_LINK
+
+.CMN_VICTORY1			;優勝ｷｬﾗｸﾀ番号
+.CMN_VICTORY2			;準優勝ｷｬﾗｸﾀ番号
+
+.STR_WORK="12345678123456781234567812345678.."
+
+;**************
+;	batle parameter.
+;**************
+
+.R_NAME			=0		;名前
+.R_SENTOH		=0		;戦闘技術
+.R_KOUGEKI		=0		;攻撃力
+.R_BOUGYO		=0		;防御力
+.R_MAHOGIJUTSU	=0		;魔法技術
+.R_MARYOKU		=0		;魔力
+.R_KOHMARYOKU	=0		;抗魔力
+.R_SENI			=0		;戦意
+.R_DASSYUTU		=0		;脱出率(%)
+.R_TSUKON		=0		;痛恨率(%)
+.R_HP			=0		;ＨＰ
+.R_MP			=0		;ＭＰ
+
+.Q_NAME			=0		;名前
+.Q_SENTOH		=0		;戦闘技術
+.Q_KOUGEKI		=0		;攻撃力
+.Q_BOUGYO		=0		;防御力
+.Q_MAHOGIJUTSU	=0		;魔法技術
+.Q_MARYOKU		=0		;魔力
+.Q_KOHMARYOKU	=0		;抗魔力
+.Q_SENI			=0		;戦意
+.Q_DASSYUTU		=0		;脱出率(%)
+.Q_TSUKON		=0		;痛恨率(%)
+.Q_HP			=0		;ＨＰ
+.Q_MP			=0		;ＭＰ
+
+;TXLC(2,34,146,1)		;text window locate.
+;TXLC(3,19,270,2)		;text window locate.
+TXLC(16,32,110,1)		;text window locate.
+TXLC(17,17,254,2)		;text window locate.
+
+TOUR_MAIN				;tournament main.
+
+C1 = CMN_FUNC			;機能
+C2 = CMN_SHIAI			;第何試合(1-n)
+C3 = CMN_LINK			;組み合せ番号(1-n)
+C4 = CMN_VIC_FLG		;勝敗 1=娘勝ち,2=敵勝ち
+
+LOAD("SSRUNS")
+
+;**************
+;	収穫祭・武闘会の表彰式
+;**************
+
+*FINALE_LOAD
+C1 = CMN_VICTORY1		;優勝ｷｬﾗｸﾀ番号
+C2 = CMN_VICTORY2		;準優勝ｷｬﾗｸﾀ番号
+LOAD("SSBFIN")			;収穫祭・武闘会の表彰式
+
+;**************
+;	batle load.
+;**************
+
+*BATLE_LOAD
+C1 = CMN_FUNC			;機能
+C2 = CMN_SHIAI			;第何試合(1-n)
+C3 = CMN_LINK			;組み合せ番号(1-n)
+C4 = CMN_VIC_FLG		;勝敗 1=娘勝ち,2=敵勝ち
+IF(AX=2)	LOAD("SSBATL,SSBT02")
+IF(AX=3)	LOAD("SSBATL,SSBT03")
+IF(AX=4)	LOAD("SSBATL,SSBT04")
+IF(AX=5)	LOAD("SSBATL,SSBT05")
+IF(AX=6)	LOAD("SSBATL,SSBT06")
+IF(AX=7)	LOAD("SSBATL,SSBT07")
+IF(AX=8)	LOAD("SSBATL,SSBT08")
+IF(AX=9)	LOAD("SSBATL,SSBT09")
+IF(AX=10)	LOAD("SSBATL,SSBT10")
+IF(AX=11)	LOAD("SSBATL,SSBT11")
+IF(AX=12)	LOAD("SSBATL,SSBT12")
+IF(AX=13)	LOAD("SSBATL,SSBT13")
+IF(AX=14)	LOAD("SSBATL,SSBT14")
+IF(AX=15)	LOAD("SSBATL,SSBT15")
+IF(AX=16)	LOAD("SSBATL,SSBT16")
+IF(AX=17)	LOAD("SSBATL,SSBT17")
+IF(AX=18)	LOAD("SSBATL,SSBT18")
+
+;**************
+;	フレーム
+;**************
+
+*FRAME_OPEN
+PTBK(0)
+PTLD("FRMSYUKL")
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+GRPCLS			;
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+PTX(40,0,0)
+ENTRY_NAME_SET
+WWTOUR(13)		;トーナメント表飾り再描画
+WWTOUR(11)		;ﾄｰﾅﾒﾝﾄ表・再描画
+CHARA_NAME_SHOW
+EFC(16)			;ノーマルカラー
+RET
+
+
+;**************
+;	tournament main.
+;**************
+
+*TOUR_MAIN
+
+IF ( CMN_FUNC = 1 )				;機能 1=トーナメント開始
+	CMN_FUNC = 2				;機能 2=トーナメント中
+	E_ETC[100]=0				;通常攻撃時ﾀﾞﾒｰｼﾞ合計
+	E_ETC[101]=0				;魔法攻撃時ﾀﾞﾒｰｼﾞ合計
+	TOUR_START					;tournament start.
+	CMN_SHIAI=1					;第何試合(1-n)
+	WWTOUR(5,CMN_SHIAI)			;トーナメント試合・キックオフ
+	TOUR_TALK					;tournament talk.
+	TOUR_BATLE_GIRL				;batle girl.
+
+PLAY(22)	;P22 武闘会
+
+FRAME_OPEN						;フレーム
+VICTORY_SET						;victory set.
+
+IF ( CMN_SHIAI=4 )				;第何試合(1-n)
+	WWTOUR(9)					;トーナメント試合・オフサイド
+	CMN_VICTORY1=SI				;優勝ｷｬﾗｸﾀ番号
+	CMN_VICTORY2=DI				;準優勝ｷｬﾗｸﾀ番号
+	;;PRV("CMN_VICTORY1=",CMN_VICTORY1)
+	FINALE_LOAD					;収穫祭・武闘会の表彰式
+
+IF ( CMN_VIC_FLG!1 )			;勝敗 1=娘勝ち,2=敵勝ち
+	ALL_INSTANT_BATLE			;all instant batle.
+	WWTOUR(9)					;トーナメント試合・オフサイド
+	CMN_VICTORY1=SI				;優勝ｷｬﾗｸﾀ番号
+	CMN_VICTORY2=DI				;準優勝ｷｬﾗｸﾀ番号
+	;;PRV("CMN_VICTORY1=",CMN_VICTORY1)
+	;;PRV("CMN_VICTORY2=",CMN_VICTORY2)
+	;;WAITU
+	FINALE_LOAD					;収穫祭・武闘会の表彰式
+
+INS_BATLE_AFTER
+
+IF ( CMN_SHIAI=1 )
+	CMN_SHIAI = 2				;第何試合(1-n)
+	WWTOUR(5,CMN_SHIAI)			;トーナメント試合・キックオフ
+	TOUR_TALK					;tournament talk.
+	TOUR_BATLE_GIRL				;batle girl.
+
+IF ( CMN_SHIAI=2 )
+	CMN_SHIAI = 3				;第何試合(1-n)
+	WWTOUR(5,CMN_SHIAI)			;トーナメント試合・キックオフ
+	TOUR_TALK					;tournament talk.
+	TOUR_BATLE_GIRL				;batle girl.
+
+IF ( CMN_SHIAI=3 )
+	CMN_SHIAI = 4				;第何試合(1-n)
+	WWTOUR(5,CMN_SHIAI)			;トーナメント試合・キックオフ
+	TOUR_TALK					;tournament talk.
+	TOUR_BATLE_GIRL				;batle girl.
+
+GOTO TOUR_MAIN
+
+;**************
+;	victory set.
+;	-i- CMN_LINK    : 組み合せ番号(1-n)
+;	    CMN_VIC_FLG : 勝敗 1=娘勝ち,2=敵勝ち
+;**************
+
+*VICTORY_SET
+
+;C2 = 8  C3 = 1
+;	WWTOUR(6,C3)
+;	C1 = AX
+;	PRV(" ",C3)
+;	PRV(":",C1)
+;	C3++
+;LOOP C2
+;WAITU
+
+;PRV(" CMN_LINK=",CMN_LINK)
+;PRV(" : ",C1) LLF
+;AX = C1
+
+WWTOUR(6,CMN_LINK)			;ﾄｰﾅﾒﾝﾄ試合・組み合せ
+IF ( AX = 1 )				;試合属性 1=甲自分の娘
+	IF ( CMN_VIC_FLG = 1 )	;1=娘勝ち
+		C1 = 1				;1=甲が勝ち
+	IF ( CMN_VIC_FLG = 2 )	;2=敵勝ち
+		C1 = 2				;2=乙が勝ち
+IF ( AX = 2 )				;試合属性 2=乙自分の娘
+	IF ( CMN_VIC_FLG = 1 )	;1=娘勝ち
+		C1 = 2				;2=乙が勝ち
+	IF ( CMN_VIC_FLG = 2 )	;2=敵勝ち
+		C1 = 1				;1=甲が勝ち
+;;PRV(" ::",C1)
+WWTOUR(8,C1,CMN_SHIAI,CMN_LINK)	;ﾄｰﾅﾒﾝﾄ試合・勝敗  1=甲が勝ち,2=乙が勝ち
+CHARA_NAME_SHOW
+WWTOUR(13)		; トーナメント表飾り再描画
+WWTOUR(11)					;トーナメント表・再描画<======
+RET
+
+;CMN_FUNC	= C1		;機能
+;CMN_SHIAI	= C2		;第何試合(1-n)
+;CMN_LINK	= C3		;組み合せ番号(1-n)
+;CMN_VIC_FLG	= C4		;勝敗 1=娘勝ち,2=敵勝ち
+
+;**************
+;	all instant batle.
+;**************
+
+*ALL_INSTANT_BATLE
+IF ( CMN_SHIAI<=1 )
+	INSTANT_BATLE			;instant batle.
+	CMN_LINK=0				;組み合せ番号(1-n)
+	CMN_SHIAI=2				;第何試合(1-n)
+	WWTOUR(5,CMN_SHIAI)		;トーナメント試合・キックオフ
+
+IF ( CMN_SHIAI<=2 )
+	INSTANT_BATLE			;instant batle.
+	CMN_LINK=0				;組み合せ番号(1-n)
+	CMN_SHIAI=3				;第何試合(1-n)
+	WWTOUR(5,CMN_SHIAI)		;トーナメント試合・キックオフ
+
+IF ( CMN_SHIAI<=3 )
+	INSTANT_BATLE			;instant batle.
+	CMN_LINK=0				;組み合せ番号(1-n)
+	CMN_SHIAI=4				;第何試合(1-n)
+	WWTOUR(5,CMN_SHIAI)		;トーナメント試合・キックオフ
+
+IF ( CMN_SHIAI<=4 )
+	INSTANT_BATLE			;instant batle.
+RET
+
+;**************
+;	instant batle.
+;**************
+
+*INSTANT_BATLE
+IF ( CMN_SHIAI=1 )	INS_BTL_COUNT=8
+IF ( CMN_SHIAI=2 )	INS_BTL_COUNT=4
+IF ( CMN_SHIAI=3 )	INS_BTL_COUNT=2
+IF ( CMN_SHIAI=4 )	INS_BTL_COUNT=1
+INS_BTL_LINK=1
+	IF ( INS_BTL_LINK ! CMN_LINK )	;組み合せ番号(1-n)
+		WWTOUR(6,INS_BTL_LINK)		;ﾄｰﾅﾒﾝﾄ試合・組み合せ
+		BATL_MAN1=SI				;キャラクタ番号・甲チーム
+		BATL_MAN2=DI				;キャラクタ番号・乙チーム
+		WWTOUR(7)					;トーナメント試合・衝撃！
+		INSTANT_BTL					;インスタント戦闘モード
+		;;PRV(" :",FLAG_VICTRY)
+		;;TIMER1(120)
+		;;WAIT1
+		WWTOUR(8,FLAG_VICTRY,CMN_SHIAI,INS_BTL_LINK)	;ﾄｰﾅﾒﾝﾄ試合・勝敗  1=甲が勝ち,2=乙が勝ち
+		CHARA_NAME_SHOW				;
+		WWTOUR(11)					;トーナメント表・再描画
+	INS_BTL_LINK++
+LOOP INS_BTL_COUNT
+RET
+
+
+*INS_BATLE_FIRST
+INS_BTL_COUNT = CMN_LINK - 1
+IF ( INS_BTL_COUNT = 0 )	RET
+INS_BTL_LINK=1
+	WWTOUR(6,INS_BTL_LINK)		;ﾄｰﾅﾒﾝﾄ試合・組み合せ
+	BATL_MAN1=SI				;キャラクタ番号・甲チーム
+	BATL_MAN2=DI				;キャラクタ番号・乙チーム
+	WWTOUR(7)					;トーナメント試合・衝撃！
+	INSTANT_BTL					;インスタント戦闘モード
+	WWTOUR(8,FLAG_VICTRY,CMN_SHIAI,INS_BTL_LINK)	;ﾄｰﾅﾒﾝﾄ試合・勝敗  1=甲が勝ち,2=乙が勝ち
+	CHARA_NAME_SHOW				;
+	WWTOUR(11)					;トーナメント表・再描画
+	INS_BTL_LINK++
+LOOP INS_BTL_COUNT
+RET
+
+*INS_BATLE_AFTER
+IF ( CMN_SHIAI=1 )	INS_BTL_COUNT = 8 - CMN_LINK
+IF ( CMN_SHIAI=2 )	INS_BTL_COUNT = 4 - CMN_LINK
+IF ( CMN_SHIAI=3 )	INS_BTL_COUNT = 2 - CMN_LINK
+IF ( CMN_SHIAI=4 )	INS_BTL_COUNT = 1 - CMN_LINK
+IF ( INS_BTL_COUNT = 0 )	RET
+INS_BTL_LINK = CMN_LINK + 1
+	WWTOUR(6,INS_BTL_LINK)		;ﾄｰﾅﾒﾝﾄ試合・組み合せ
+	BATL_MAN1=SI				;キャラクタ番号・甲チーム
+	BATL_MAN2=DI				;キャラクタ番号・乙チーム
+	WWTOUR(7)					;トーナメント試合・衝撃！
+	INSTANT_BTL					;インスタント戦闘モード
+	WWTOUR(8,FLAG_VICTRY,CMN_SHIAI,INS_BTL_LINK)	;ﾄｰﾅﾒﾝﾄ試合・勝敗  1=甲が勝ち,2=乙が勝ち
+	CHARA_NAME_SHOW				;
+	WWTOUR(11)					;トーナメント表・再描画
+	INS_BTL_LINK++
+LOOP INS_BTL_COUNT
+RET
+
+
+;**************
+;	batle girl.
+;	-I- BATL_GIRL_LINK : 娘の対戦組み合せ番号(1-n)
+;	    BATL_TEKI      : 検索された対戦相手
+;**************
+
+*TOUR_BATLE_GIRL
+CMN_FUNC = 3				;機能 3=試合を処理
+CMN_LINK = BATL_GIRL_LINK	;娘の対戦組み合せ番号(1-n)
+BATLE_LOAD(BATL_TEKI)		;batle load.
+
+;**************
+;	tournament talk.
+;	-O- BATL_GIRL_LINK : 娘の対戦組み合せ番号(1-n)
+;	    BATL_TEKI      : 検索された対戦相手
+;**************
+
+*TOUR_TALK
+
+WWTOUR(12,1)				;対戦相手の検索
+BATL_GIRL_LINK=BX			;娘の対戦組み合せ番号(1-n)
+BATL_TEKI=CX				;検索された対戦相手
+
+CMN_LINK = BATL_GIRL_LINK	;娘の対戦組み合せ番号(1-n)
+INS_BATLE_FIRST
+
+;組み合せ表表示．
+
+IF ( CMN_SHIAI = 1 )	;一回戦の場合
+	TXOPEN(16)
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(STR_ENTRY_NAME[BATL_TEKI])＊＊＊」
+	@P
+	TXOPEN(17)
+	TXFACE("F041")		;執事・すまし
+	STEWARD_CHECK		;執事の評価
+	@P
+	TXCLOSE(17)
+	TXCLOSE(16)
+
+IF ( CMN_SHIAI = 2 )	;二回戦以降の場合
+	TXOPEN(16)
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(STR_ENTRY_NAME[BATL_TEKI])＊＊＊」
+	@P
+	TXOPEN(17)
+	TXFACE("F049")		;執事・真剣
+	STEWARD_CHECK		;執事の評価
+	@P
+	TXCLOSE(17)
+	TXCLOSE(16)
+
+IF ( CMN_SHIAI = 3 )	;準決勝の場合
+	TXOPEN(16)
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(STR_ENTRY_NAME[BATL_TEKI])＊＊＊」
+	@P
+	TXOPEN(17)
+	TXFACE("F049")		;執事・真剣
+	STEWARD_CHECK		;執事の評価
+	@P
+	TXCLOSE(17)
+	TXCLOSE(16)
+
+IF ( CMN_SHIAI = 4 )	;決勝戦の場合
+	TXOPEN(16)
+	TXGIRL(0)			;娘・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊TXA(STR_ENTRY_NAME[BATL_TEKI])＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXOPEN(17)
+	TXFACE("F049")		;執事・真剣
+	STEWARD_CHECK		;執事の評価
+	@P
+	TXCLOSE(17)
+	TXCLOSE(16)
+
+RET
+
+
+;**************
+;	執事の評価
+;**************
+
+*STEWARD_CHECK
+IF ( BATL_TEKI=2 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=3 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=4 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=5 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=6 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=7 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( BATL_TEKI=8 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=9 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=10 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=11 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=12 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=13 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=14 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=15 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=16 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=17 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+IF ( BATL_TEKI=18 )
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+RET
+
+;**************
+;	tournament start.
+;**************
+
+*TOUR_START
+ENTRY_NAME_SET
+CHARA_SELECT
+CHARA_SET
+WWTOUR(1)		;ﾄｰﾅﾒﾝﾄ表ｽﾀｰﾄ
+WWTOUR(13)		; トーナメント表飾り再描画
+WWTOUR(11)		;ﾄｰﾅﾒﾝﾄ表・再描画
+CHARA_NAME_SHOW
+RET
+
+*CHARA_NAME_SHOW
+C1 = 16  C2 = 1
+	WWTOUR(10,C2)					;トーナメント・キャラクタ番号取得
+	C3 = CX							;キャラクタ番号
+	STR_ENTRY_N_SHORT(STR_ENTRY_NAME[C3])
+	WWTOUR(3,C2,STR_WORK)			;エントリィ名前表示
+	C2++
+LOOP C1
+RET
+
+*CHARA_SET
+C1 = 16  C2 = 1  C3 = 0
+	WWTOUR(4,C2,TBL_MENBER[C3])	;トーナメント・エントリィ登録
+	C2++
+	C3++
+LOOP C1
+RET
+
+*CHARA_SELECT
+C1 = 16  C2 = 0  C3 = 1			;ﾗｲﾊﾞﾙ(17,18)の2人を除く16人をｾｯﾄ
+	TBL_MENBER[C2] = C3
+	C2++
+	C3++
+LOOP C1
+
+C1 = 40							;順番をかき混ぜる
+	RANDAM(16) C2 = IRND-1
+	RANDAM(16) C3 = IRND-1
+	AX = TBL_MENBER[C2]
+	BX = TBL_MENBER[C3]
+	TBL_MENBER[C2] = BX
+	TBL_MENBER[C3] = AX
+LOOP C1
+
+IF ( E_RIVAL = 1 )		;1=戦士
+	GIRL_RIVAL_SET(17)	;娘の隣を17=ｱﾆｰﾀと入れ替える
+
+IF ( E_RIVAL = 2 )		;2=魔法
+	GIRL_RIVAL_SET(18)	;娘の隣を18=ｳｪﾝﾃﾞｨｰを入れ替える
+
+RET
+
+*GIRL_RIVAL_SET
+C3 = AX
+C1 = 8  C2 = 0
+	IF ( TBL_MENBER[C2] = 1 )
+		C2++
+		TBL_MENBER[C2]=C3			;娘の隣を入れ替える
+		RET
+	C2 = C2 + 2
+LOOP C1
+C1 = 8  C2 = 1
+	IF ( TBL_MENBER[C2] = 1 )
+		C2--
+		TBL_MENBER[C2]=C3			;娘の隣を入れ替える
+		RET
+	C2 = C2 + 2
+LOOP C1
+RET
+
+*ENTRY_NAME_SET
+STR_ENTRY_NAME[2]="ホルスト・ハイムマン"
+STR_ENTRY_NAME[3]="バンバン・ビザロ"
+STR_ENTRY_NAME[4]="カールフォックス"
+STR_ENTRY_NAME[5]="ミィーア"
+STR_ENTRY_NAME[6]="ダムダム"
+STR_ENTRY_NAME[7]="フランソワ・モーレ"
+STR_ENTRY_NAME[8]="ﾄﾞン＝レオ・ジョナサン"
+STR_ENTRY_NAME[9]="タオ・ランファン"
+STR_ENTRY_NAME[10]="カタナ・テラー"
+STR_ENTRY_NAME[11]="ナターシャ・ドリプシコワ"
+STR_ENTRY_NAME[12]="サラーム・ナセル"
+STR_ENTRY_NAME[13]="チャン・クーロン"
+STR_ENTRY_NAME[14]="ジェニファー・ザ・クィーン"
+STR_ENTRY_NAME[15]="マッスル・ハルバル"
+STR_ENTRY_NAME[16]="剣士レフトール"
+STR_ENTRY_NAME[17]="アニータ・カサンドラ"
+STR_ENTRY_NAME[18]="ウェンデｨｰ・ラキシス"
+STR_ENTRY_NAME[1]="12345678123456781234567812345678.."
+SI = NAME_FIRST
+STRCOPY(STR_ENTRY_NAME[1])
+STRLEN(NAME_FIRST)
+C2 = STR_ENTRY_NAME[1] + AX
+SI = "･"
+STRCOPY(C2)
+C2 = C2 + 1
+SI = NAME_FAMILY
+STRCOPY(C2)
+RET
+
+*STR_ENTRY_N_SHORT
+SI = AX
+STRCOPY(STR_WORK)
+TXF(4,STR_WORK,20)	;漢字文字詰め処理
+RET
+
+;**************
+;	インスタント戦闘モード
+;	-I- BATL_MAN1 : キャラクタ番号・甲チーム
+;	    BATL_MAN2 : キャラクタ番号・乙チーム
+;	-O- FLAG_VICTRY : ﾄｰﾅﾒﾝﾄ試合・勝敗  1=甲が勝ち,2=乙が勝ち
+;**************
+
+*INSTANT_BTL
+BTL_SETTING			;対戦キャラ設定
+FLAG_BATLE = 0		;0=戦闘中
+GRAPOPEN			;
+BTL_LOOP			;戦闘処理
+GRAPCLOSE			;
+IF ( FLAG_BATLE=1 )( FLAG_BATLE=4 )	;1=娘勝ち,4=敵逃げる
+	FLAG_VICTRY=1					;ﾄｰﾅﾒﾝﾄ試合・勝敗  1=甲が勝ち
+IF ( FLAG_BATLE=2 )( FLAG_BATLE=3 )	;2=敵勝ち,3=娘逃げる
+	FLAG_VICTRY=2					;ﾄｰﾅﾒﾝﾄ試合・勝敗  2=乙が勝ち
+RET
+
+;**************
+;	対戦キャラ設定
+;	-I- BATL_MAN1 : キャラクタ番号・甲チーム
+;	    BATL_MAN2 : キャラクタ番号・乙チーム
+;**************
+
+*BTL_SETTING
+
+CHAR_DATA_SET(BATL_MAN1)				;キャラクタ番号・甲チーム
+
+Q_NAME			=	R_NAME				;名前
+Q_SENTOH		=	R_SENTOH			;戦闘技術
+Q_KOUGEKI		=	R_KOUGEKI			;攻撃力
+Q_BOUGYO		=	R_BOUGYO			;防御力
+Q_MAHOGIJUTSU	=	R_MAHOGIJUTSU		;魔法技術
+Q_MARYOKU		=	R_MARYOKU			;魔力
+Q_KOHMARYOKU	=	R_KOHMARYOKU		;抗魔力
+Q_SENI			=	R_SENI				;戦意
+Q_DASSYUTU		=	R_DASSYUTU			;脱出率(%)
+Q_TSUKON		=	R_TSUKON			;痛恨率(%)
+Q_HP			=	R_HP				;ＨＰ
+Q_MP			=	R_MP				;ＭＰ
+
+CHAR_DATA_SET(BATL_MAN2)				;キャラクタ番号・乙チーム
+
+RET
+
+;**************
+;	戦闘処理
+;**************
+
+*BTL_LOOP
+
+TIMER1(2)
+ATTAKE_GIRL
+WAIT1
+
+DISP_HP
+IF ( FLAG_BATLE ! 0 ) RET
+
+ATTAKE_MONSTOR
+
+DISP_HP
+IF ( FLAG_BATLE ! 0 ) RET
+
+GOTO BTL_LOOP
+
+*ATTAKE_GIRL
+;魔力を持っている敵は，《現在のＭＰ：現在のＨＰ》の比率で魔法
+C1 = Q_HP + Q_MP		;
+P100PAR(Q_MP,C1)		;百分率を求める
+C2 = AX					;parcent.
+RANDAM(100)				;
+IF ( C2 >= IRND )
+	BATLE_GR_SLCT=2			;2=魔法攻撃
+IF ( C2 < IRND )( Q_MP < 10 )
+	BATLE_GR_SLCT=1			;1=通常攻撃
+IF ( BATLE_GR_SLCT=1 )		;1=通常攻撃
+	GIRL_ATTAKE
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(Q_KOUGEKI,R_BOUGYO)
+		TEKI_KAISHIN_DMG
+		TEKI_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		TEKI_DAMEG_NONE
+	RET
+IF ( BATLE_GR_SLCT=2 )		;2=魔法攻撃
+	Q_MP -= 10
+	IF ( Q_MP<0 ) Q_MP=0
+	GIRL_MAGIC
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(Q_MARYOKU,R_KOHMARYOKU)
+		TEKI_KAISHIN_DMG
+		TEKI_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		TEKI_DAMEG_NONE
+	RET
+RET
+
+*ATTAKE_MONSTOR
+;魔力を持っている敵は，《現在のＭＰ：現在のＨＰ》の比率で魔法
+C1 = R_HP + R_MP		;
+P100PAR(R_MP,C1)		;百分率を求める
+C2 = AX					;parcent.
+RANDAM(100)				;
+IF ( C2 >= IRND )
+	BATLE_TK_SLCT=2			;2=魔法攻撃
+IF ( C2 < IRND )( R_MP < 10 )
+	BATLE_TK_SLCT=1			;1=通常攻撃
+IF ( BATLE_TK_SLCT=1 )		;1=通常攻撃
+	TEKI_ATTAKE
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(R_KOUGEKI,Q_BOUGYO)
+		GIRL_TSUKON_DMG
+		GIRL_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		GIRL_DAMEG_NONE
+	RET
+IF ( BATLE_TK_SLCT=2 )		;2=魔法攻撃
+	R_MP -= 10
+	IF ( R_MP<0 ) R_MP=0
+	TEKI_MAGIC
+	IF ( BATLE_NOW=1 )		;1=命中
+		CALC_DAMEG(R_MARYOKU,Q_KOHMARYOKU)
+		GIRL_TSUKON_DMG
+		GIRL_DAMEG
+	IF ( BATLE_NOW=2 )		;2=失敗
+		GIRL_DAMEG_NONE
+	RET
+RET
+
+*GIRL_ATTAKE
+CALC_ATTACK(Q_SENTOH)	ATTACK_VAL=AX
+CALC_DEFENS(R_SENTOH)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*GIRL_MAGIC
+CALC_ATTACK(Q_MAHOGIJUTSU)	ATTACK_VAL=AX
+CALC_DEFENS(R_MAHOGIJUTSU)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*TEKI_ATTAKE
+CALC_ATTACK(R_SENTOH)	ATTACK_VAL=AX
+CALC_DEFENS(Q_SENTOH)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*TEKI_MAGIC
+CALC_ATTACK(R_MAHOGIJUTSU)	ATTACK_VAL=AX
+CALC_DEFENS(Q_MAHOGIJUTSU)	DEFENS_VAL=AX
+BATLE_NOW = 2			;2=失敗
+IF ( ATTACK_VAL > DEFENS_VAL )
+	BATLE_NOW = 1		;1=命中
+RET
+
+*TEKI_KAISHIN_DMG
+C1 = AX
+RANDAM(100)
+IF ( MY_KAISHIN >=IRND )	;会心率(%)
+	C1 = C1 * 3
+AX = C1
+RET
+
+*TEKI_DAMEG
+T_DAMEG = AX
+TEKI_DAMEG_CHK
+RET
+
+*TEKI_DAMEG_NONE
+T_DAMEG = 1
+TEKI_DAMEG_CHK
+RET
+
+*TEKI_DAMEG_CHK
+IF ( T_DAMEG < 2 )	T_DAMEG = 2
+R_HP -= T_DAMEG
+IF ( R_HP <= 0 )
+	R_HP = 0
+	FLAG_BATLE=1	;1=娘勝ち
+	RET
+R_SENI -= T_DAMEG	;戦意
+IF ( R_SENI <= 0 )
+	R_SENI = 0
+	RANDAM(30)
+	IF ( IRND<=10 )
+		FLAG_BATLE=4	;4=敵逃げる
+RET
+
+*GIRL_TSUKON_DMG
+C1 = AX
+RANDAM(100)
+IF ( R_TSUKON >=IRND )	;痛恨率(%)
+	C1 = C1 * 3
+AX = C1
+RET
+
+*GIRL_DAMEG
+G_DAMEG = AX
+GIRL_DAMEG_CHK
+RET
+
+*GIRL_DAMEG_NONE
+G_DAMEG = 1
+GIRL_DAMEG_CHK
+RET
+
+*GIRL_DAMEG_CHK
+IF ( G_DAMEG < 2 )	G_DAMEG = 2
+Q_HP -= G_DAMEG		;ＨＰ
+IF ( Q_HP <= 0 )
+	Q_HP = 0
+	FLAG_BATLE=2	;2=敵勝ち
+	RET
+Q_SENI -= G_DAMEG	;戦意
+IF ( Q_SENI <= 0 )
+	Q_SENI = 0
+	RANDAM(30)
+	IF ( IRND<=10 )
+		RANDAM(100)
+		IF ( R_DASSYUTU>=IRND )		;脱出に成功した
+			FLAG_BATLE=3	;3=娘逃げる
+RET
+
+*CALC_ATTACK	;-I-戦闘技術 -O- AX : 攻撃バリュー
+;AX=AX+-30%randam
+C1 = AX
+IRNDPAR(C1,30)
+RET
+
+*CALC_DEFENS	;-I-戦闘技術 -O- AX : 攻撃バリュー
+;AX=AX+-30%randam
+C1 = AX
+IRNDPAR(C1,30)
+RET
+
+*CALC_DAMEG		;-I-攻撃力,防御側の防御力 -O- AX : ダメージ
+;AX = AX+-20%randam - BX
+C1 = AX
+C2 = BX
+IRNDPAR(C1,20)
+AX = AX - C2
+IF ( AX < 0 ) AX = 1
+RET
+
+;**************
+;	敵データ
+;**************
+
+*CHAR_DATA_SET
+
+R_NAME	=	STR_ENTRY_NAME[AX]
+
+IF ( AX =  2 ) MNS_DATA02		RET		;"ホルスト・ハイムマン"
+IF ( AX =  3 ) MNS_DATA03		RET		;"バンバン・ビザロ"
+IF ( AX =  4 ) MNS_DATA04		RET		;"カールフォックス"
+IF ( AX =  5 ) MNS_DATA05		RET		;"ミィーア"
+IF ( AX =  6 ) MNS_DATA06		RET		;"ダムダム"
+IF ( AX =  7 ) MNS_DATA07		RET		;"フランソワ・モーレ"
+IF ( AX =  8 ) MNS_DATA08		RET		;"ドン＝レオ・ジョナサン"
+IF ( AX =  9 ) MNS_DATA09		RET		;"タオ・ランファン"
+IF ( AX = 10 ) MNS_DATA10		RET		;"カタナ・テラー"
+IF ( AX = 11 ) MNS_DATA11		RET		;"ナターシャ・ドリプシコワ"
+IF ( AX = 12 ) MNS_DATA12		RET		;"サラーム・ナセル"
+IF ( AX = 13 ) MNS_DATA13		RET		;"チャン・クーロン"
+IF ( AX = 14 ) MNS_DATA14		RET		;"ジェニファー・ザ・クィーン"
+IF ( AX = 15 ) MNS_DATA15		RET		;"マッスル・ハルバル"
+IF ( AX = 16 ) MNS_DATA16		RET		;"剣士レフトール"
+IF ( AX = 17 ) MNS_DATA17		RET		;"アニータ・カサンドラ"
+IF ( AX = 18 ) MNS_DATA18		RET		;"ウェンディー・ラキシス"
+
+RET
+
+*MNS_DATA02		;"ホルスト・ハイムマン"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=67
+R_KOUGEKI		=58
+R_BOUGYO		=41
+R_TSUKON		=0
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=10
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA03		;"バンバン・ビザロ"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=48
+R_KOUGEKI		=80
+R_BOUGYO		=30
+R_TSUKON		=10
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=0
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA04		;"カールフォックス"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=85
+R_KOUGEKI		=45
+R_BOUGYO		=28
+R_TSUKON		=30
+R_MAHOGIJUTSU	=40
+R_MARYOKU		=0
+R_KOHMARYOKU	=18
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA05		;"ミィーア"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=67
+R_KOUGEKI		=45
+R_BOUGYO		=24
+R_TSUKON		=20
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=24
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA06		;"ダムダム"
+R_HP			=777
+R_MP			=777
+R_SENI			=777
+R_SENTOH		=55
+R_KOUGEKI		=60
+R_BOUGYO		=70
+R_TSUKON		=0
+R_MAHOGIJUTSU	=45
+R_MARYOKU		=70
+R_KOHMARYOKU	=29
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA07		;"フランソワ・モーレ"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=50
+R_KOUGEKI		=45
+R_BOUGYO		=55
+R_TSUKON		=20
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=30
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA08		;"ドン＝レオ・ジョナサン"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=65
+R_KOUGEKI		=75
+R_BOUGYO		=25
+R_TSUKON		=15
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=15
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA09		;"タオ・ランファン"
+R_HP			=777
+R_MP			=777
+R_SENI			=777
+R_SENTOH		=78
+R_KOUGEKI		=35
+R_BOUGYO		=18
+R_TSUKON		=45
+R_MAHOGIJUTSU	=60
+R_MARYOKU		=25
+R_KOHMARYOKU	=22
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA10		;"カタナ・テラー"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=82
+R_KOUGEKI		=45
+R_BOUGYO		=23
+R_TSUKON		=35
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=40
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA11		;"ナターシャ・ドリプシコワ"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=88
+R_KOUGEKI		=70
+R_BOUGYO		=45
+R_TSUKON		=0
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=3
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA12		;"サラーム・ナセル"
+R_HP			=777
+R_MP			=777
+R_SENI			=777
+R_SENTOH		=70
+R_KOUGEKI		=70
+R_BOUGYO		=38
+R_TSUKON		=0
+R_MAHOGIJUTSU	=77
+R_MARYOKU		=80
+R_KOHMARYOKU	=32
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA13		;"チャン・クーロン"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=80
+R_KOUGEKI		=60
+R_BOUGYO		=5
+R_TSUKON		=15
+R_MAHOGIJUTSU	=70
+R_MARYOKU		=0
+R_KOHMARYOKU	=5
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA14		;"ジェニファー・ザ・クィーン"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=45
+R_KOUGEKI		=38
+R_BOUGYO		=20
+R_TSUKON		=20
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=0
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA15		;"マッスル・ハルバル"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=75
+R_KOUGEKI		=89
+R_BOUGYO		=60
+R_TSUKON		=0
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=0
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA16		;"剣士レフトール"
+R_HP			=777
+R_MP			=0
+R_SENI			=777
+R_SENTOH		=90
+R_KOUGEKI		=75
+R_BOUGYO		=46
+R_TSUKON		=30
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=25
+R_DASSYUTU		=9999
+RET
+
+*MNS_DATA17		;"アニータ・カサンドラ"
+R_HP			=	E_ETC[41]			;ｱﾆｰﾀ最大ＨＰ
+R_MP			=	E_ETC[42]			;ｱﾆｰﾀ最大ＭＰ
+R_SENI			=	E_ETC[43]			;ｱﾆｰﾀ戦意
+R_SENTOH		=	E_ETC[44]			;ｱﾆｰﾀ戦闘技術
+R_KOUGEKI		=	E_ETC[45]			;ｱﾆｰﾀ攻撃力
+R_BOUGYO		=	E_ETC[46]			;ｱﾆｰﾀ防御力
+R_TSUKON		=	15
+R_MAHOGIJUTSU	=	E_ETC[47]			;ｱﾆｰﾀ魔法技術
+R_MARYOKU		=	E_ETC[48]			;ｱﾆｰﾀ魔力
+R_KOHMARYOKU	=	E_ETC[49]			;ｱﾆｰﾀ抗魔力
+R_DASSYUTU		=	9999
+RET
+
+*MNS_DATA18		;"ウェンディー・ラキシス"
+R_HP			=	E_ETC[50]			;ｳｪﾝﾃﾞｨｰ最大ＨＰ
+R_MP			=	E_ETC[51]			;ｳｪﾝﾃﾞｨｰ最大ＭＰ
+R_SENI			=	E_ETC[52]			;ｳｪﾝﾃﾞｨｰ戦意
+R_SENTOH		=	E_ETC[53]			;ｳｪﾝﾃﾞｨｰ戦闘技術
+R_KOUGEKI		=	E_ETC[54]			;ｳｪﾝﾃﾞｨｰ攻撃力
+R_BOUGYO		=	E_ETC[55]			;ｳｪﾝﾃﾞｨｰ防御力
+R_TSUKON		=	10
+R_MAHOGIJUTSU	=	E_ETC[56]			;ｳｪﾝﾃﾞｨｰ魔法技術
+R_MARYOKU		=	E_ETC[57]			;ｳｪﾝﾃﾞｨｰ魔力
+R_KOHMARYOKU	=	E_ETC[58]			;ｳｪﾝﾃﾞｨｰ抗魔力
+R_DASSYUTU		=	9999
+RET
+
+
+
+;**************
+;	graph.
+;**************
+
+*GRAPOPEN
+GR_OPEN			;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+IGRP_X = 1
+IGRP_Y = 280
+STR_ENTRY_N_SHORT(R_NAME)
+SI = STR_WORK
+GR_F(3)
+IGRP_TBL1[0]="ＨＰ"
+IGRP_TBL1[1]="ＭＰ"
+IGRP_TBL3[0]=R_HP
+IGRP_TBL3[1]=R_MP
+IGRP_CNT=2
+IGRP_X=1
+IGRP_Y=316
+GRPOPEN(1,2)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+IGRP_X = 55
+IGRP_Y = 280
+STR_ENTRY_N_SHORT(Q_NAME)
+SI = STR_WORK
+GR_F(3)
+IGRP_TBL1[0]="ＨＰ"
+IGRP_TBL1[1]="ＭＰ"
+IGRP_TBL3[0]=Q_HP
+IGRP_TBL3[1]=Q_MP
+IGRP_CNT=2
+IGRP_X=55
+IGRP_Y=316
+GRPOPEN(1,3)		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+RET
+
+*GRAPCLOSE
+GR_CLOSE		;ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+RET
+
+*DISP_HP
+GRPUPD(2,0,R_HP)
+GRPUPD(2,1,R_MP)
+GRPUPD(3,0,Q_HP)
+GRPUPD(3,1,Q_MP)
+RET
+
+*RDM
+;RDM(start,end)
+;-o- AX : randmize
+C1 = AX
+C2 = BX - AX + 1
+;*;RANDAM(C2)
+IRAND999X(C2)		;乱数９９９範囲指定
+AX = IRND + C1 - 1
+RET
+
+
+;
+;	end of "SSTOUR.TXT"
+;
+

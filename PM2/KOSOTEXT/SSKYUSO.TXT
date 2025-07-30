@@ -1,0 +1,121 @@
+;"SSKYUSO.TXT"
+;
+;
+;	収穫祭・休息
+;
+;
+
+.DAY_COUNTER		; 日付カウンタ
+.S_STARTDAY=1		; スケジュール開始日
+.S_ENDDAY=31		; スケジュール終了日
+.DAY_TIMER=10
+
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,1,260,2)		; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+TXLC(9,48,260,2)	; text window locate.
+TXLC(5,5,260,0)		; text window locate.
+WWIVENT(5,0,6,90)	; ivent window locate.
+
+E_EV_SKIP = 1		;イベントスキップ
+SCH_NOW = 1			;スケジュール実行中項目
+
+CLENDER(3)			; カレンダー・更新処理
+CLENDER(2)			; カレンダー・再表示
+
+SYU_KYUSOKU
+
+LOAD("RUNNING")
+
+;**************
+;	休息
+;**************
+
+*SYU_KYUSOKU
+
+ALL_OPEN
+DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1	; 日付カウンタ
+	B_STRESS -= 5			; ストレス
+	URA_FATHER--				;「父との関係」１日あたり1低下します
+	IF ( B_STRESS < 0 ) B_STRESS=0		; ストレス
+	IF ( URA_FATHER < 0 ) URA_FATHER=0	; 父との関係
+	TIMER1(DAY_TIMER)			;
+	GRPUPD(1,0,B_STRESS)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ 更新
+	WAIT1
+
+	BORTH_CHECK
+
+	IF ( DAY_COUNTER ! 1 )
+		CLENDER(3)				;カレンダー・更新処理
+		CLENDER(2)				;カレンダー・再表示
+LOOP DAY_COUNTER
+ALL_CLOSE
+
+RET
+
+*ALL_OPEN
+WWIVENT(1,0,"E009")		; ivent window open.
+GR_OPEN					; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+STRSCLEAR				;
+IGRP_TBL1[0]="ストレス"	IGRP_TBL3[0]=B_STRESS		; ストレス
+IGRP_CNT=1
+IGRP_X=52
+IGRP_Y=192
+GRPOPEN(1,1)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+RET
+
+*ALL_CLOSE
+GR_CLOSE			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+WWIVENT(2,0)		; ivent window close.
+RET
+
+;*BORTH_CHECK
+;IF ( P_BORTHMONTH = VAL_MONTH )			; 誕生月
+;	IF ( P_BORTHDAY = VAL_DAY )			; 誕生日
+;		ALL_CLOSE
+;		EVENT042						; 42 娘の誕生日
+;		IF ( DAY_COUNTER ! 1 )
+;			ALL_OPEN
+;RET
+
+;************************************
+;	誕生日チェック
+;************************************
+
+*BORTH_CHECK
+
+IF ( P_BORTHMONTH = VAL_MONTH  P_BORTHDAY = VAL_DAY )			; 娘の誕生日
+	IF ( P_BORTHMONTH[1] = VAL_MONTH  P_BORTHDAY[1] = VAL_DAY )	; 父の誕生日
+		E_ETC[14]=P_NENREI[1]			;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )			;父との関係値が６０以上
+			ALL_CLOSE
+			EVE4243						;娘の誕生日と父の誕生日の合体
+			IF ( DAY_COUNTER ! 1 )
+				ALL_OPEN
+			RET
+
+IF ( P_BORTHMONTH = VAL_MONTH )			; 誕生月
+	IF ( P_BORTHDAY = VAL_DAY )			; 誕生日
+		ALL_CLOSE
+		EVENT042						; 42 娘の誕生日
+		IF ( DAY_COUNTER ! 1 )
+			ALL_OPEN
+		RET
+
+IF ( P_BORTHMONTH[1] = VAL_MONTH )		; 父の誕生月
+	IF ( P_BORTHDAY[1] = VAL_DAY )		; 父の誕生日
+		E_ETC[14]=P_NENREI[1]			;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )			;父との関係値が６０以上
+			ALL_CLOSE
+			EVENT043					; 43 父の誕生日
+			IF ( DAY_COUNTER ! 1 )
+				ALL_OPEN
+			RET
+RET
+
+
+;
+;	end of "SSKYUSO.TXT"
+;
+

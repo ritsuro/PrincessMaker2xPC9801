@@ -1,0 +1,659 @@
+;"SSRUNS.TXT"
+;
+;
+;	収穫祭スタート
+;
+;
+;19 ライバルを意識する
+;【 概　要 】娘がライバルを意識して，収穫祭イベントに参加したがる．
+;
+
+.IT_EQUIP[50]			;装備
+.REC_TBL[50]			;
+.FLAG_NON_DRESS=0
+.FLAG_NON_PICTURE=0
+.FLAG_GO_SCHEDULE=0		; Go schedule.
+
+TXLC(18,24,260,0)		;text window locate.
+;;TXLC(16,32,152,1)		;text window locate.
+TXLC(16,32,170,1)		;text window locate.
+TXLC(17,17,30,2)		;text window locate.
+
+RUN_SYUKAKUSAI[0]++		;「収穫祭」実行回数
+
+CLENDER(3)				;カレンダー・更新処理
+CLENDER(2)				;カレンダー・再表示
+SYUKAKU_TITLE			;収穫祭タイトル
+
+*SLCT_LOOP
+
+TXOPEN(18)
+*SLCT_LOOP_2
+@C
+どのイベントに参加しますか
+SLCTX("「武闘会」,「王国芸術祭」,「ダンスパーティー」,「お料理コンクール」")
+MSG_PLAN
+IF ( FLAG_GO_SCHEDULE = 0 ) GOTO SLCT_LOOP_2
+TXCLOSE(18)
+
+EVENT019		;ライバルを意識する
+
+IF ( SCH_SYUKAKUSAI = 0 ) SSBATL						;「武闘会」
+IF ( SCH_SYUKAKUSAI = 1 ) SSARTS						;「王国芸術祭」
+IF ( SCH_SYUKAKUSAI = 2 ) SSDANC						;「ダンスパーティー」
+IF ( SCH_SYUKAKUSAI = 3 ) SSCOOK						;「お料理コンクール」
+
+GOTO SLCT_LOOP
+
+;**************
+;	収穫祭 select.
+;**************
+
+*MSG_PLAN
+FLAG_GO_SCHEDULE = 0
+@C
+IF ( ISLCT=0 )
+	武芸者達と勝ち抜き戦で戦って，優勝を競う．
+	SCH_SYUKAKUSAI=0		; 収穫祭スケジュール
+IF ( ISLCT=1 )
+	絵画教室で描いた作品を出品する．絵の得点を競う．
+	SCH_SYUKAKUSAI=1		; 収穫祭スケジュール
+IF ( ISLCT=2 )
+	ダンス勝負をする．芸術値，体力値，色気値で審査員の得票を競う．
+	SCH_SYUKAKUSAI=2		; 収穫祭スケジュール
+IF ( ISLCT=3 )
+	料理値と感受性によって料理を作る．その料理の得点を競う．
+	SCH_SYUKAKUSAI=3		; 収穫祭スケジュール
+
+IF ( SCH_SYUKAKUSAI=1 )		;「王国芸術祭」
+	IF ( FLAG_NON_PICTURE = 1 )
+		TXCLOSE(18)
+		TXOPEN(16)
+		TXFACE("F046")	;執事・困り
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(16)
+		TXOPEN(18)
+		RET
+	IF ( ROOM_PIC >= 5 )	;5=既成の絵
+		TXCLOSE(18)
+		TXOPEN(16)
+		TXFACE("F046")	;執事・困り
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(16)
+		TXOPEN(18)
+		FLAG_NON_PICTURE=1
+		RET
+
+IF ( SCH_SYUKAKUSAI=2 )		;「ダンスパーティー」
+	IF ( FLAG_NON_DRESS >= 2 )
+		TXCLOSE(18)
+		TXOPEN(16)
+		TXGIRL(3)
+		・・・・・・
+		@P
+		TXCLOSE(16)
+		TXOPEN(18)
+		RET
+	IF ( FLAG_NON_DRESS = 1 )
+		FLAG_NON_DRESS = 2
+		TXCLOSE(18)
+		TXOPEN(16)
+		TXFACE("F046")	;執事・困り
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(16)
+		TXOPEN(18)
+		RET
+	DRESS_ALL_COUNT
+	IF ( C3 = 0 )
+		TXCLOSE(18)
+		TXOPEN(16)
+		TXFACE("F046")	;執事・困り
+		「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+		@P
+		TXCLOSE(16)
+		TXOPEN(18)
+		FLAG_NON_DRESS = 1
+		RET
+
+SLCT("スケジュールを実行,取り消し")
+IF ( ISLCT ! 0 ) RET
+FLAG_GO_SCHEDULE = 1
+RET
+
+
+*DRESS_ALL_COUNT
+C3 = 0
+C2 = 0
+C1 = ITEM_MAX			;所有アイテム数
+	ITEM_SRCH(3,C2)		;attribute get.
+	IF ( AX = 3 )		;item attribute 3=dress
+		DRESS_CHK(ITEM_ICON[C2])
+		IF ( BX = 1 )
+			C3++
+	C2++
+LOOP C1
+RET
+
+;**************
+;	収穫祭タイトル
+;**************
+
+*SYUKAKU_TITLE
+PTBK(0)
+PTLD("FRMSYUKL")
+MUSIC(2)		;音楽ﾌｪｰﾄﾞｱｳﾄ
+EFC(1)			;F･O(ﾌｪｰﾄﾞｱｳﾄ)
+PLAY(1007)		;ﾌｧﾝﾌｧｰﾚ
+MUSIC(8,450)	;音楽用ﾀｲﾏｰｾｯﾄ
+GRPCLS			;
+PTX(0,0,0)
+PTLD("FRMSYUKR")
+PTX(40,0,0)
+AREA_BACK
+PTLD("E19SYU")	;
+EFC(16)			;ノーマルカラー
+PTX(23,136,0)
+WAIT1
+PLAY(6)		;P6 ﾒｲﾝ秋
+RET
+
+*AREA_BACK
+PTBK(6)				;TEXT_TOP+32800  #6  32,700byte
+PTCLR
+PTGT(23,136,35,128)
+PTBK(0)
+RET
+
+*AREA_RESTORE
+PTBK(6)				;TEXT_TOP+32800  #6  32,700byte
+PIC(11)				;ﾊﾟﾀｰﾝPUTを仮想VRAM(40*400)へアサイン
+PTX(0,0,0)			;
+PIC(12)				;ﾊﾟﾀｰﾝPUTをVRAMへアサイン
+PIC(13,0,0,23,136,35,128)	;仮想VRAM(40*400)をVRAMへｵｰﾊﾞﾗｯﾌﾟ転送
+PTBK(0)
+RET
+
+*AREA_BACK2
+PTBK(6)				;TEXT_TOP+32800  #6  32,700byte
+PTCLR
+PTGT(23,40,35,128)
+PTBK(0)
+RET
+
+*AREA_RESTORE2
+PTBK(6)				;TEXT_TOP+32800  #6  32,700byte
+PIC(11)				;ﾊﾟﾀｰﾝPUTを仮想VRAM(40*400)へアサイン
+PTX(0,0,0)			;
+PIC(12)				;ﾊﾟﾀｰﾝPUTをVRAMへアサイン
+PIC(13,0,0,23,40,35,128)	;仮想VRAM(40*400)をVRAMへｵｰﾊﾞﾗｯﾌﾟ転送
+PTBK(0)
+RET
+
+;**************
+;	「武闘会」
+;**************
+
+*SSBATL
+
+RUN_SYUKAKUSAI[1]++		;「武闘会」実行回数
+
+E_ETC[59]=0				;最近の武闘会勝った回数
+
+TXOPEN(18)
+TXA(NAME_FIRST)は，執事をともなって街の中央のコロシアムへと急いだ
+@P
+TXCLOSE(18)
+
+MUSIC(2)		;音楽ﾌｪｰﾄﾞｱｳﾄ
+PTLD("E19BATL")	;「武闘会」
+
+AREA_RESTORE
+PLAY(22)		;P22 武闘会
+
+AREA_BACK2
+PTM(23,40,0)
+
+TXLC(1,21,168,0)		;text window locate.
+
+IF ( RUN_SYUKAKUSAI[1]=1 )		;「武闘会」一回目
+	TXOPEN(18)
+	会場には，すでに大勢の戦士達が集まっていた．皆，腕に自慢の猛者ばかりである．
+	@P
+	TXCLOSE(18)
+	TXOPEN(16)
+	TXFACE("F054")		;将軍・普通
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	TXCLOSE(16)
+IF ( RUN_SYUKAKUSAI[1]>1 )		;「武闘会」二回目以降
+	TXOPEN(18)
+	すでに各地から腕自慢の戦士達が集まってきている．
+	TXA(NAME_FIRST)は組み合せ表を見た．
+	@P
+	TXCLOSE(18)
+
+AREA_RESTORE2
+C1 = 1		;1=トーナメント開始,2=トーナメント中
+C2 = 0		;第何試合(1-n)
+C3 = 0		;組み合せ番号(1-n)
+C4 = 0		;勝敗 1=娘勝ち,2=敵勝ち
+LOAD("SSTOUR")
+RET
+
+;**************
+;	「王国芸術祭」
+;**************
+
+*SSARTS
+RUN_SYUKAKUSAI[3]++		;「芸術祭」実行回数
+
+MUSIC(2)		;音楽ﾌｪｰﾄﾞｱｳﾄ
+PTLD("E19ARTS")			;「芸術祭」
+
+AREA_RESTORE
+PLAY(21)			;P21 芸術祭
+
+AREA_BACK2
+PTM(23,40,0)
+
+TXOPEN(16)
+TXFACE("F078")			;係官（巡察官と同じグラフィック）
+IF ( RUN_SYUKAKUSAI[3]=1 )	;「芸術祭」実行回数
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+IF ( RUN_SYUKAKUSAI[3]>1 )		;２回目以降
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+TXCLOSE(16)
+LOAD("SSARTS")
+
+
+;**************
+;	「ダンスパーティー」
+;**************
+
+*SSDANC
+;;GOTO SKIP1
+
+CHANGE_DRESS
+IF ( AX = 0 )			;0=none,1=ok.
+	TXOPEN(16)
+	TXFACE("F046")	;執事・困り
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	TXOPEN(17)
+	TXGIRL(3)
+	・・・・・・
+	@P
+	TXCLOSE(17)
+	TXCLOSE(16)
+	RET
+IF ( AX = 2 ) RET			;2=exit.
+
+TXCLOSE(18)
+
+RUN_SYUKAKUSAI[2]++			;「ダンスパーティー」実行回数
+
+;;*SKIP1
+
+TXOPEN(18)
+TXA(NAME_FIRST)は執事をともなって，ダンスパーティーの会場に向かった．
+@P
+TXCLOSE(18)
+
+MUSIC(2)		;音楽ﾌｪｰﾄﾞｱｳﾄ
+PTLD("E19DANC")	;「ダンスパーティー」
+
+AREA_RESTORE
+PLAY(24)	;P24 舞踏
+
+AREA_BACK2
+PTM(23,40,0)
+
+TXOPEN(16)
+TXFACE("F079")	;女官・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+
+AREA_RESTORE2
+
+C1 = 0			;機能  0=ダンス開始前,1=ダンス終了
+LOAD("SSDANC")
+RET
+
+
+;;ITEM_SRCH(6,rec)		;equipment chenge.(equip,arms,dress)
+;;-i- rec   (BX) : item record.
+
+;***************
+;	着替え
+;	-o- AX : 0=none,1=ok,2=exit.
+;***************
+
+*CHANGE_DRESS
+STRSCLEAR
+C3 = 0
+C2 = 0
+C1=ITEM_MAX				;所有アイテム数
+	ITEM_SRCH(3,C2)		;attribute get.
+	IF ( AX=3 )			;item attribute 3=dress
+		DRESS_CHK(ITEM_ICON[C2])
+		IF ( BX = 1 )
+			IT_EQUIP[C3]=DX					;装備 0=normal,1=now equip
+			ITEMID_TBL1[C3]=ITEM_NAME[C2]	;所有アイテム名前 string
+			ITEMID_TBL2[C3]=ITEM_ICON[C2]	;ＩＣＯＮ
+			ITEMID_TBL3[C3]=ITEM_GOLD[C2]	;金
+			ITEMID_TBL4[C3]=ITEM_HELP[C2]	;所有アイテム説明 string
+			ITEMID_TBL5[C3]=0				;パラメータ値１
+			ITEMID_TBL6[C3]=""				;文字２
+			ITEMID_TBL7[C3]=0				;パラメータ値２
+			REC_TBL[C3]=C2
+			C3++
+	C2++
+LOOP C1
+IF ( C3 = 0 )			;アイテムＩＤ数
+	AX = 0				;0=none.
+	RET
+ITEMID_CNT=C3			;アイテムＩＤ数
+
+TXOPEN(16)
+TXFACE("F039")		;執事・普通
+*CHANGE_DR_LOOP
+@C
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+ITEMSLCT(1)				;マルチアイテム選択
+IF ( ISITM = -1 )
+	TXCLOSE(16)
+	AX = 2				;2=exit.
+	RET
+@C
+
+DRESS_AGE_CHECK(ITEMID_TBL2[ISITM])	;ICON
+IF ( CX = 1 )	;1=年齢制限で着れません
+	C1 = SI		;年齢
+	「TXA(ITEMID_TBL1[ISITM])＊TXPOINT(C1)＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	GOTO CHANGE_DR_LOOP
+IF ( DX = 1 )	;1=太りすぎで着れません
+	「TXA(ITEMID_TBL1[ISITM])＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	GOTO CHANGE_DR_LOOP
+IF ( IT_EQUIP[ISITM]=1 )	;装備 0=normal,1=now equip
+	それは、いま着ています．
+TXA(ITEMID_TBL1[ISITM])でいいですか？
+SLCTX("はい,いいえ")
+IF ( ISLCT=1 ) GOTO CHANGE_DR_LOOP
+TXCLOSE(16)
+ITEM_SRCH(6,REC_TBL[ISITM])	;equipment chenge.(equip,arms,dress)
+RET
+
+;;WWGIRL(2)					;娘のＧが変わる．
+;;GOTO CHANGE_DR_LOOP
+
+*DRESS_CHK
+BX = 0
+IF ( AX = 46 )	BX=1	RET	;46=木綿のドレス
+IF ( AX = 47 )	BX=1	RET	;47=シルクのドレス
+IF ( AX = 48 )	BX=1	RET	;48=レザーのドレス
+IF ( AX = 49 )	BX=1	RET	;49=トゲトゲの服
+IF ( AX = 50 )	BX=1	RET	;50=傾国のローブ
+IF ( AX = 51 )	BX=1	RET	;51=見えないドレス
+IF ( AX = 52 )	BX=1	RET	;52=悪魔のドレス
+IF ( AX = 53 )	BX=1	RET	;53=龍のレオタード
+RET
+
+;"MANILOOP.TXT"も同様
+*DRESS_AGE_CHECK
+;-O- CX : 1=年齢制限で着れません
+;    DX : 1=太りすぎで着れません
+;    SI : 年齢
+C1 = AX
+CX = 0
+DX = 0
+SI = 0
+IF ( C1=47 )			;47=シルクのドレス	*	13
+	IF ( P_NENREI<13 )
+		CX = 1
+		SI = 13
+IF ( C1=48 )			;48=レザーのドレス	*	14
+	IF ( P_NENREI<14 )
+		CX = 1
+		SI = 14
+IF ( C1=49 )			;49=トゲトゲの服	*	13
+	IF ( P_NENREI<13 )
+		CX = 1
+		SI = 13
+IF ( C1=50 )			;50=傾国のローブ		15
+	IF ( P_NENREI<15 )
+		CX = 1
+		SI = 15
+IF ( C1=52 )			;52=悪魔のドレス	*	14
+	IF ( P_NENREI<14 )
+		CX = 1
+		SI = 14
+IF ( C1=53 )			;53=龍のレオタード	*	15
+	IF ( P_NENREI<15 )
+		CX = 1
+		SI = 15
+IF ( GIRL_BODY = 2 )		;体形 1=細,2=太
+	IF ( C1=47 )	DX=1	;47=シルクのドレス
+	IF ( C1=48 )	DX=1	;48=レザーのドレス
+	IF ( C1=49 )	DX=1	;49=トゲトゲの服
+	IF ( C1=52 )	DX=1	;52=悪魔のドレス
+	IF ( C1=53 )	DX=1	;53=龍のレオタード
+RET
+
+;**************
+;	「お料理コンクール」
+;**************
+
+*SSCOOK
+
+RUN_SYUKAKUSAI[4]++		;「お料理コンクール」実行回数
+
+TXOPEN(18)
+街の広場の一角で，恒例『お料理コンクール』が開催されている・・・
+@P
+TXCLOSE(18)
+
+MUSIC(2)		;音楽ﾌｪｰﾄﾞｱｳﾄ
+PTLD("E19COOK")		;「お料理コンクール」
+
+AREA_RESTORE
+PLAY(25)	;P25 料理
+
+AREA_BACK2
+PTM(23,40,0)
+
+TXOPEN(16)
+TXFACE("F117")		;係官・画家のロードン
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(16)
+
+AREA_RESTORE2
+LOAD("SSCOOK")
+RET
+
+
+;************************************
+;19 ライバルを意識する
+;【 概　要 】娘がライバルを意識して，収穫祭イベントに参加したがる．
+;【 いつ？ 】１０月の始め
+;【発生条件】１４歳以降，ライバルが存在する場合に，ライバルの参加イベントに参加さ
+;				せない予定を組む．
+;【 効　果 】もし，１０月の予定にライバルの参加するイベントを組み込まないと，娘が
+;				予定の変更を要求する．
+;				聞き入れる場合は，自動的にそのイベント参加の予定が組まれる．
+;				また，父との関係値が５増える．
+;				聞き入れなければ，娘はがっかりして，ストレスが１０増え，父との関係値
+;				が１０下がる．
+;************************************
+
+*EVENT019
+STRSCLEAR
+
+;;SLCTX("0,1,2,3,4")
+;;E_RIVAL = ISLCT
+
+IF ( E_RIVAL = 1 )					; 1=戦士
+	IF ( SCH_SYUKAKUSAI ! 0 )		; 0=「武闘会」
+		EVNT019						; ライバルを意識する
+
+IF ( E_RIVAL = 2 )					; 2=魔法
+	IF ( SCH_SYUKAKUSAI ! 0 )		; 0=「武闘会」
+		EVNT019						; ライバルを意識する
+
+IF ( E_RIVAL = 3 )					; 3=社交
+	IF ( SCH_SYUKAKUSAI ! 2 )		; 2=「ダンスパーティー」
+		EVNT019						; ライバルを意識する
+
+IF ( E_RIVAL = 4 )					; 4=家事
+	IF ( SCH_SYUKAKUSAI ! 3 )		; 3=「お料理コンクール」
+		EVNT019						; ライバルを意識する
+RET
+
+*EVNT019
+RUN_MONTH[19]++		;「ライバルを意識する」実行回数
+EVNT019MAIN
+RET
+
+;************************************
+;	ライバルを意識する
+;************************************
+
+*EVNT019MAIN
+
+IF ( E_RIVAL = 0 ) RET		;ライバル登場
+							;0=いない,1=戦士,2=魔法,3=社交,4=家事
+
+IF ( E_RIVAL = 1 )					; 1=戦士
+	IF ( SCH_SYUKAKUSAI ! 0 )		; 0=「武闘会」
+		GOTO RIVAL_1_TYPE			; ライバルが戦士タイプの場合
+IF ( E_RIVAL = 2 )					; 2=魔法
+	IF ( SCH_SYUKAKUSAI ! 0 )		; 0=「武闘会」
+		GOTO RIVAL_2_TYPE			; ライバルが魔法タイプの場合
+IF ( E_RIVAL = 3 )					; 3=社交
+	IF ( SCH_SYUKAKUSAI ! 2 )		; 2=「ダンスパーティー」
+		GOTO RIVAL_3_TYPE			;ライバルが社交タイプの場合
+IF ( E_RIVAL = 4 )					; 4=家事
+	IF ( SCH_SYUKAKUSAI ! 3 )		; 3=「お料理コンクール」
+		GOTO RIVAL_4_TYPE			;ライバルが家事タイプの場合
+RET
+
+
+*RIVAL_1_TYPE				;ライバルが戦士タイプの場合
+TXOPEN(17)
+TXGIRL(12)					;娘・不愉快
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(16)
+TXFACE("F042")				;執事・心配
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+C2 = 0			;0=「武闘会」
+GOTO SCHD_SELECTX
+
+
+*RIVAL_2_TYPE				;ライバルが魔法タイプの場合
+TXOPEN(17)
+TXGIRL(12)					;娘・不愉快
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(16)
+TXFACE("F042")				;執事・心配
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+C2 = 0			;0=「武闘会」
+GOTO SCHD_SELECTX
+
+
+*RIVAL_3_TYPE				;ライバルが社交タイプの場合
+TXOPEN(17)
+TXGIRL(3)					;娘・不愉快
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(16)
+TXFACE("F042")				;執事・心配
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+DRESS_ALL_COUNT
+IF ( C3 = 0 )
+	SLCTX("予定を変更する,いやこのままだ")
+	IF ( ISLCT = 1 ) GOTO SCHD_NO_CHANGE
+	TXFACE("F046")	;執事・困り
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	GOTO SCHD_NO_CHANGE
+C2 = 2			;2=「ダンスパーティー」
+GOTO SCHD_SELECTX
+
+
+*RIVAL_4_TYPE				;ライバルが家事タイプの場合
+TXOPEN(17)
+TXGIRL(3)					;娘・不愉快
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXOPEN(16)
+TXFACE("F042")				;執事・心配
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+
+C2 = 3			;3=「お料理コンクール」
+GOTO SCHD_SELECTX
+
+*SCHD_SELECTX
+
+SLCTX("予定を変更する,いやこのままだ")
+IF ( ISLCT = 0 ) GOTO SCHD_CHANGE
+IF ( ISLCT = 1 ) GOTO SCHD_NO_CHANGE
+
+*SCHD_CHANGE		;（自動的に娘の希望通りに予定を変更）
+SCH_SYUKAKUSAI=C2
+URA_FATHER += 5		; 父との関係
+IF ( URA_FATHER >100 ) URA_FATHER = 100
+TXCLOSE(16)
+TXCLOSE(17)
+TXOPEN(18)
+スケジュールを変更しました
+@P
+TXCLOSE(18)
+RET
+
+*SCHD_NO_CHANGE		;いやこのままだの場合
+URA_FATHER -= 10	; 父との関係
+IF ( URA_FATHER < 0 ) URA_FATHER = 0	; 父との関係
+TXSLCT(17)
+@C
+TXGIRL(3)			;娘・悲しい
+「＊＊＊＊＊＊＊＊＊＊」
+@P
+TXA(NAME_FIRST)のストレスが１０上がった．
+B_STRESS += 10					; ストレス
+@P
+TXCLOSE(17)
+TXCLOSE(16)
+RET
+
+;
+;	end of "SSRUNS.TXT"
+;
+
