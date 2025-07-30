@@ -1,0 +1,1110 @@
+; "TEST02.TXT"
+;
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,1,260,2)		; text window locate.
+TXLC(3,31,270,2)	; text window locate.
+WWIVENT(5,0,6,40)	; ivent window locate.
+
+
+.ITEM_SLCT=0	;選択
+.ITEM_KOUKA[50]	;効果
+;.ITEM_TORU[50]	;効果
+.ITEM_ATTRBUTE[20]	;種別
+.WARIBIKI=0		;割引率
+.WARIPRICE=0	;割引価格
+
+.TANA_DAN
+
+.GRP_BASE_XX=2
+.GRP_LEFT_XX=28
+.GRP_RIGHT_XX=54
+
+TXLC(1,4,290,0)		; text window locate.
+TXLC(2,17,148,1)	; text window locate.
+TXLC(5,5,260,0)		; text window locate.
+WWIVENT(5,0,6,40)	; ivent window locate.
+
+STRSCLEAR
+
+WWIVENT(1,0,"E009")	; ivent window open.
+
+PLAY(15)
+
+KAIMONO_NANDEMO			; なんでも屋
+
+TXCLOSE(2)
+WWIVENT(2,0)		; ivent window close.
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+LOAD("MAINLOOP")
+
+
+;************************************
+;	なんでも屋
+;************************************
+
+*KAIMONO_NANDEMO
+
+TXOPEN(2)
+TXFACE("HASHI")
+なんでも屋
+@P
+*NANDEMO_LOOP
+「・・・・へっへっへっ」
+SLCT("店を出る,買物する,１０００Ｇ,100000G,裏パラメータ,イベント条件,ｲﾍﾞﾝﾄ条件２,ｲﾍﾞﾝﾄ実行回数,ｲﾍﾞﾝﾄ実行回数２,その他")
+IF ( ISLCT = -1 ) RET
+IF ( ISLCT = 0 ) RET
+IF ( ISLCT = 1 ) NANDEMO_SHOP	GOTO NANDEMO_NEXT
+;voidvoidvoid
+;voidvoidvoid
+IF ( ISLCT = 4 ) URAURA_OPEN	GOTO NANDEMO_NEXT
+IF ( ISLCT = 5 ) URAURA_2_OPEN	GOTO NANDEMO_NEXT
+IF ( ISLCT = 6 ) URAURA_25_OPEN	GOTO NANDEMO_NEXT
+IF ( ISLCT = 7 ) URAURA_3_OPEN	GOTO NANDEMO_NEXT
+IF ( ISLCT = 8 ) URAURA_4_OPEN	GOTO NANDEMO_NEXT
+IF ( ISLCT = 9 ) SONOTA_MENU	GOTO NANDEMO_NEXT
+
+*SONOTA_MENU
+SLCT("イベント条件設定,おんがく,効果音,１ヶ月進める,一年進める,選べる武闘会,選べる挑戦,選べる道場やぶり")
+IF (ISLCT=0) EVENT_SWITCH	GOTO SONOTA_MENU
+IF (ISLCT=1) PLAYER_ONGAKU	GOTO SONOTA_MENU
+IF (ISLCT=2) PLAYER_SOUND	GOTO SONOTA_MENU
+IF (ISLCT=3) FF_MONTH		GOTO SONOTA_MENU
+IF (ISLCT=4) FF_YEAR		GOTO SONOTA_MENU
+IF (ISLCT=5) MUSYA_SLCT_BATL	GOTO SONOTA_MENU
+IF (ISLCT=6) BUGE_SLCT_BATL		GOTO SONOTA_MENU
+IF (ISLCT=7) DOJO_SLCT_BATL		GOTO SONOTA_MENU
+RET
+
+*FF_YEAR
+C2 = 12
+	FF_MONTH
+LOOP C2
+RET
+
+*FF_MONTH
+
+CLENDER(11)			;カレンダー・今月の計算
+IF ( VAL_DAY ! AX )
+	C1 = AX - VAL_DAY
+		CLENDER(3)					; カレンダー・更新処理
+		CLENDER(2)					; カレンダー・再表示
+	LOOP C1
+	RET
+CLENDER(4)			; カレンダー・翌月の計算
+C1 = CX
+	CLENDER(3)					; カレンダー・更新処理
+	CLENDER(2)					; カレンダー・再表示
+LOOP C1
+RET
+
+*NANDEMO_NEXT
+@2@C
+GOTO NANDEMO_LOOP
+
+*NANDEMO_SHOP
+*NANDEMO_SELECT
+	SLCT("上の棚,下の棚")
+	IF ( ISLCT = -1 ) RET
+	IF ( ISLCT = 0 )
+		TANA_DAN = 2
+		NANDEMO_SET_2
+	IF ( ISLCT = 1 )
+		TANA_DAN = 1
+		NANDEMO_SET
+
+	ITEMST(1);ﾏﾙﾁｱｲﾃﾑ選択
+	IF ( ISITM = -1 ) RET
+
+	ITEM_SLCT=ISITM		;選択
+
+	IF ( TANA_DAN = 1 )
+		NANDEMO_SETSUMEI		;各商品の説明（売り口上）
+	IF ( TANA_DAN = 2 )
+		NANDEMO_SETSUMEI_2		;各商品の説明（売り口上）
+	@2
+	@P
+	PRICE_DOWN
+	P1X100(ITEMID_TBL3[ITEM_SLCT],WARIBIKI)
+	WARIPRICE=ITEMID_TBL3[ITEM_SLCT]-AX
+	「TXA(ITEMID_TBL1[ITEM_SLCT])のお値段はTXGOLD(ITEMID_TBL3[ITEM_SLCT])です」
+	SLCTBAK(5)
+	SLCTX("買う,やめておく,店を出る")
+	ITEMST(99);ｱｲﾃﾑ選択clear.
+	IF ( ISLCT = 2 ) RET
+	IF ( ISLCT=1 )( ISLCT=-1 )
+		@2
+		「ふっふっふっ」
+		@P
+		GOTO NANDEMO_SELECT
+	NANDEMO_BUY
+GOTO NANDEMO_SELECT
+
+*NANDEMO_BUY
+@2
+@C
+GOLDCMP(WARIPRICE)
+IF ( AX = 2 )	;お金が足りない場合
+	「金、無い？」
+	@P
+	RET
+
+IF ( ITEM_MAX >= ITEM_DIM )
+	ITEM_FULL
+	RET
+
+IF ( WARIBIKI ! 0 )	;割引がある場合
+	「ほんとうはTXGOLD(ITEMID_TBL3[ITEM_SLCT])だけどね，
+	お城に顔のきくTXA(NAME_FIRST)さんだもの．
+	TXGOLD(WARIPRICE)にしてあげる、うれしい？」
+
+BX=ITEMID_TBL2[ITEM_SLCT]		;ＩＣＯＮ
+CX=ITEMID_TBL3[ITEM_SLCT]		;定価
+DX=ITEM_ATTRBUTE[ITEM_SLCT]		;種別
+SI=ITEMID_TBL1[ITEM_SLCT]		;所有アイテム名前 string
+DI=ITEM_KOUKA[ITEM_SLCT]		;所有アイテム効果 string
+BP=ITEMID_TBL4[ITEM_SLCT]		;所有アイテム説明 string
+ITEM_INST(1)
+
+;買う場合
+「まいどーありー」
+
+IF(ITEMID_TBL2[ITEM_SLCT]=104)		;ＩＣＯＮ
+	TXOPEN(3)
+	TXGIRL(13)
+	「う～ん☆」
+	@P
+	TXCLOSE(3)
+	@2
+GOLDSUB(WARIPRICE)
+WWPROF(3)			;ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+@P
+RET
+
+*NANDEMO_SETSUMEI		;各商品の説明（売り口上）
+
+@2
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+RET
+
+*NANDEMO_SETSUMEI_2		;各商品の説明（売り口上）	
+
+@2
+IF ( ITEM_SLCT=6 )	;プロティン
+	「ビルドアップに必要なプロティン．ＯＫ？」
+RET
+
+*NANDEMO_SET	; 設定
+STRSCLEAR
+C2 = 0
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+ITEMID_CNT=C2	;アイテムＩＤ数
+RET
+
+
+*NANDEMO_SET_2	; 設定２
+STRSCLEAR
+C2 = 0
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+ITEMID_CNT=C2	;アイテムＩＤ数
+RET
+
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+*PRICE_DOWN
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+RET				;
+
+
+*URAURA_OPEN
+STRSCLEAR
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+SLCTBAK(3)	; SLCTの一時的な退避バンクの変更
+SLCT("WAIT")
+GR_CLOSE
+RET
+
+
+*URAURA_2_OPEN
+STRSCLEAR
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+SLCTBAK(3)	; SLCTの一時的な退避バンクの変更
+SLCT("WAIT")
+GR_CLOSE
+RET
+
+*URAURA_25_OPEN
+
+STRSCLEAR
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+SLCTBAK(3)	; SLCTの一時的な退避バンクの変更
+SLCT("つぎ")
+GR_CLOSE
+IF (ISLCT!0) RET
+
+*URAURA_25_OPEN2
+
+STRSCLEAR
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+SLCTBAK(3)	; SLCTの一時的な退避バンクの変更
+SLCT("つぎ")
+GR_CLOSE
+IF (ISLCT=-1) GOTO URAURA_25_OPEN
+
+STRSCLEAR
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+SLCTBAK(3)	; SLCTの一時的な退避バンクの変更
+SLCT("つぎ")
+GR_CLOSE
+
+IF (ISLCT=-1) GOTO URAURA_25_OPEN2
+
+RET
+
+
+*URAURA_3_OPEN
+STRSCLEAR
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+SLCTBAK(3)	; SLCTの一時的な退避バンクの変更
+SLCT("WAIT")
+GR_CLOSE
+RET
+
+
+*URAURA_4_OPEN
+STRSCLEAR
+GR_OPEN			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+SLCTBAK(3)	; SLCTの一時的な退避バンクの変更
+SLCT("WAIT")
+GR_CLOSE
+RET
+
+*EVENT_SWITCH
+イベント発生条件のフラグを立てる
+SLCT("マーメイドに会う,道場の閉鎖中,父の誕生日")
+IF ( ISLCT = 0 )
+	E_MERMAID=1				;ｲﾍﾞﾝﾄ｢マーメイドに会う｣発生条件
+	「人魚の涙」も買ってください
+	@P
+	RET
+IF ( ISLCT = 1 )
+	E_ETC[11] = 1
+	「道場破り」で「剣術」の稽古が出来ない
+	@P
+	RET
+IF ( ISLCT = 2 )
+	URA_FATHER=100		;父との関係値が６０以上
+RET
+
+
+*PLAYER_SOUND
+SLCT("SE1-SE10,SE11-SE16")
+IF(ISLCT=-1)RET
+IF(ISLCT=0)PLAYER_SOUND01N
+IF(ISLCT=1)PLAYER_SOUND02N
+GOTO PLAYER_SOUND
+
+*PLAYER_SOUND01N
+SLCT("SE1,SE2,SE3,SE4,SE5,SE6,SE7,SE8,SE9,SE10")
+IF(ISLCT=-1)RET
+C1 = ISLCT + 1
+MUSIC(6,C1)
+GOTO PLAYER_SOUND01N
+
+*PLAYER_SOUND02N
+SLCT("SE11,SE12,SE13,SE14,SE15,SE16")
+IF(ISLCT=-1)RET
+C1 = ISLCT + 11
+MUSIC(6,C1)
+GOTO PLAYER_SOUND02N
+
+*PLAYER_ONGAKU
+SLCT("B1-B7,P1-P9,P10-P19,P20-P29,P30-P31,feedout")
+IF(ISLCT=-1)RET
+IF(ISLCT=0)SLCT_MUSIC01N
+IF(ISLCT=1)SLCT_MUSIC02N
+IF(ISLCT=2)SLCT_MUSIC03N
+IF(ISLCT=3)SLCT_MUSIC04N
+IF(ISLCT=4)SLCT_MUSIC05N
+IF(ISLCT=5)MUSIC(2)		;音楽ﾌｪｰﾄﾞｱｳﾄ
+GOTO PLAYER_ONGAKU
+
+*SLCT_MUSIC01N
+SLCT("B1 ｼｮｯｸ1,B2 ｼｮｯｸ2,B3 要人と面会,B4 嬉しい事件,B5 悲しい事件,B6 死亡,B7 ﾌｧﾝﾌｧｰﾚ")
+IF(ISLCT=-1) RET
+IF(ISLCT=0)PLAY(1001)
+IF(ISLCT=1)PLAY(1002)
+IF(ISLCT=2)PLAY(1003)
+IF(ISLCT=3)PLAY(1004)
+IF(ISLCT=4)PLAY(1005)
+IF(ISLCT=5)PLAY(1006)
+IF(ISLCT=6)PLAY(1007)
+GOTO SLCT_MUSIC01N
+
+*SLCT_MUSIC02N
+SLCT("P1 名前入力,P2 ＯＰ1,P3 ＯＰ2,P4 ﾒｲﾝ春,P5 ﾒｲﾝ夏,P6 ﾒｲﾝ秋,P7 ﾒｲﾝ冬,P8 病気,P9 お城")
+IF(ISLCT=-1)RET
+IF(ISLCT=0)PLAY(1)
+IF(ISLCT=1)PLAY(2)
+IF(ISLCT=2)PLAY(3)
+IF(ISLCT=3)PLAY(4)
+IF(ISLCT=4)PLAY(5)
+IF(ISLCT=5)PLAY(6)
+IF(ISLCT=6)PLAY(7)
+IF(ISLCT=7)PLAY(8)
+IF(ISLCT=8)PLAY(9)
+GOTO SLCT_MUSIC02N
+
+*SLCT_MUSIC03N
+SLCT("P10 街,P11 教会,P12 ｱﾙﾊﾞｲﾄ,P13 訓練,P14 武者修行,P15 警戒,P16 人と会う,P17 戦闘,P18 ﾊﾞｶﾝｽ海,P19 ﾊﾞｶﾝｽ山")
+IF(ISLCT=-1)RET
+IF(ISLCT=0)PLAY(10)
+IF(ISLCT=1)PLAY(11)
+IF(ISLCT=2)PLAY(12)
+IF(ISLCT=3)PLAY(13)
+IF(ISLCT=4)PLAY(14)
+IF(ISLCT=5)PLAY(15)
+IF(ISLCT=6)PLAY(16)
+IF(ISLCT=7)PLAY(17)
+IF(ISLCT=8)PLAY(18)
+IF(ISLCT=9)PLAY(19)
+GOTO SLCT_MUSIC03N
+
+*SLCT_MUSIC04N
+SLCT("P20 休息,P21 芸術祭,P22 武闘会,P23 試合,P24 舞踏,P25 料理,P26 表彰,P27 神秘,P28 来客,P29 緊迫")
+IF(ISLCT=-1)RET
+IF(ISLCT=0)PLAY(20)
+IF(ISLCT=1)PLAY(21)
+IF(ISLCT=2)PLAY(22)
+IF(ISLCT=3)PLAY(23)
+IF(ISLCT=4)PLAY(24)
+IF(ISLCT=5)PLAY(25)
+IF(ISLCT=6)PLAY(26)
+IF(ISLCT=7)PLAY(27)
+IF(ISLCT=8)PLAY(28)
+IF(ISLCT=9)PLAY(29)
+GOTO SLCT_MUSIC04N
+
+*SLCT_MUSIC05N
+SLCT("P30 ｴﾝﾃﾞｨﾝｸﾞ,P31 ｸﾚｼﾞｯﾄ")
+IF(ISLCT=-1)RET
+IF(ISLCT=0)PLAY(30)
+IF(ISLCT=1)PLAY(31)
+GOTO SLCT_MUSIC05N
+
+*MUSYA_SLCT_BATL
+C1 = 33333			;機能
+C2 = 1				;第何試合(1-n)
+C3 = 1				;組み合せ番号(1-n)
+C4 = 1				;勝敗 1=娘勝ち,2=敵勝ち
+SLCT(" 2, 3, 4, 5, 6, 7, 8, 9,10,ほか")
+IF(ISLCT=0)	LOAD("SSBATL,SSBT02")
+IF(ISLCT=1)	LOAD("SSBATL,SSBT03")
+IF(ISLCT=2)	LOAD("SSBATL,SSBT04")
+IF(ISLCT=3)	LOAD("SSBATL,SSBT05")
+IF(ISLCT=4)	LOAD("SSBATL,SSBT06")
+IF(ISLCT=5)	LOAD("SSBATL,SSBT07")
+IF(ISLCT=6)	LOAD("SSBATL,SSBT08")
+IF(ISLCT=7)	LOAD("SSBATL,SSBT09")
+IF(ISLCT=8)	LOAD("SSBATL,SSBT10")
+SLCT("11,12,13,14,15,16,17,18")
+IF(ISLCT=0)	LOAD("SSBATL,SSBT11")
+IF(ISLCT=1)	LOAD("SSBATL,SSBT12")
+IF(ISLCT=2)	LOAD("SSBATL,SSBT13")
+IF(ISLCT=3)	LOAD("SSBATL,SSBT14")
+IF(ISLCT=4)	LOAD("SSBATL,SSBT15")
+IF(ISLCT=5)	LOAD("SSBATL,SSBT16")
+IF(ISLCT=6)	LOAD("SSBATL,SSBT17")
+IF(ISLCT=7)	LOAD("SSBATL,SSBT18")
+RET
+
+*BUGE_SLCT_BATL
+C1 = 33333			;機能
+SLCT(" 2, 3, 4, 5, 6, 7, 8, 9,10,ほか")
+IF(ISLCT=0)	LOAD("SSEV022,SSBT02")
+IF(ISLCT=1)	LOAD("SSEV022,SSBT03")
+IF(ISLCT=2)	LOAD("SSEV022,SSBT04")
+IF(ISLCT=3)	LOAD("SSEV022,SSBT05")
+IF(ISLCT=4)	LOAD("SSEV022,SSBT06")
+IF(ISLCT=5)	LOAD("SSEV022,SSBT07")
+IF(ISLCT=6)	LOAD("SSEV022,SSBT08")
+IF(ISLCT=7)	LOAD("SSEV022,SSBT09")
+IF(ISLCT=8)	LOAD("SSEV022,SSBT10")
+SLCT("11,12,13,14,15,16,17,18")
+IF(ISLCT=0)	LOAD("SSEV022,SSBT11")
+IF(ISLCT=1)	LOAD("SSEV022,SSBT12")
+IF(ISLCT=2)	LOAD("SSEV022,SSBT13")
+IF(ISLCT=3)	LOAD("SSEV022,SSBT14")
+IF(ISLCT=4)	LOAD("SSEV022,SSBT15")
+IF(ISLCT=5)	LOAD("SSEV022,SSBT16")
+IF(ISLCT=6)	LOAD("SSEV022,SSBT17")
+IF(ISLCT=7)	LOAD("SSEV022,SSBT18")
+RET
+
+*DOJO_SLCT_BATL
+C1 = 33333			;機能
+SLCT(" 2, 3, 4, 5, 6, 7, 8, 9,10,ほか")
+IF(ISLCT=0)	LOAD("SSEV023,SSBT02")
+IF(ISLCT=1)	LOAD("SSEV023,SSBT03")
+IF(ISLCT=2)	LOAD("SSEV023,SSBT04")
+IF(ISLCT=3)	LOAD("SSEV023,SSBT05")
+IF(ISLCT=4)	LOAD("SSEV023,SSBT06")
+IF(ISLCT=5)	LOAD("SSEV023,SSBT07")
+IF(ISLCT=6)	LOAD("SSEV023,SSBT08")
+IF(ISLCT=7)	LOAD("SSEV023,SSBT09")
+IF(ISLCT=8)	LOAD("SSEV023,SSBT10")
+SLCT("11,12,13,14,15,16,17,18")
+IF(ISLCT=0)	LOAD("SSEV023,SSBT11")
+IF(ISLCT=1)	LOAD("SSEV023,SSBT12")
+IF(ISLCT=2)	LOAD("SSEV023,SSBT13")
+IF(ISLCT=3)	LOAD("SSEV023,SSBT14")
+IF(ISLCT=4)	LOAD("SSEV023,SSBT15")
+IF(ISLCT=5)	LOAD("SSEV023,SSBT16")
+IF(ISLCT=6)	LOAD("SSEV023,SSBT17")
+IF(ISLCT=7)	LOAD("SSEV023,SSBT18")
+RET
+
+*ITEM_FULL	;持物がいっぱいの場合
+TXOPEN(11)
+TXSYU(P_SYUGOSEI)
+TXA(DEF_STR_STAR[P_SYUGOSEI])
+@L
+「TXA(NAME_FAMILY)よ．持物がいっぱいだ．不用なものを売却せよ」
+@P
+TXCLOSE(11)
+RET
+
+;
+;	end of "TEST02.TXT"
+;
+

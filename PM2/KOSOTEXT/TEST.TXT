@@ -1,0 +1,311 @@
+; "TEST.TXT"
+
+;FLAG_BYOUKI =0
+;FLAG_HIKOUKA=1
+
+.AGE	=10	;10-17
+.BODY	=1	;1-2
+.FACE	=1	;1-5
+.BREAST	=1	;0-2
+.DRESS	=1	;1-11
+.DAMEG	=0	;0-1
+
+.ANM_XX=0
+.ANM_XX2=0
+.ANM_YY=0
+.ANM_YY2=0
+
+.ZZZ[11]
+;.ZZ1=0
+;.ZZ2=0
+;.ZZ3=0
+;.ZZ4=0
+;.ZZ5=0
+
+PLAY(15)
+
+START
+
+IF ( GIRL_DAMEG!0 )
+	PLAY(8)		;P8 病気
+IF ( GIRL_DAMEG=0 )
+	IF ( TM_SEASON =1 ) PLAY(4)		;P4 ﾒｲﾝ春
+	IF ( TM_SEASON =2 ) PLAY(5)		;P5 ﾒｲﾝ夏
+	IF ( TM_SEASON =3 ) PLAY(6)		;P6 ﾒｲﾝ秋
+	IF ( TM_SEASON =4 ) PLAY(7)		;P7 ﾒｲﾝ冬
+LOAD("MAINLOOP")
+
+;*****
+;	test.
+;*****
+
+*START
+SLCT("テスト,占師,表情替え,全画面書き換え,年齢替え,娘ﾌｪｲｽ,ｴﾝﾃﾞｨﾝｸﾞ,部屋の絵,色々テスト--->,結婚,収穫祭,ｴﾝﾃﾞｨﾝｸﾞﾊﾟﾗﾒｰﾀ")
+IF ( ISLCT = -1 ) RET
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+IF ( ISLCT = 1 ) LOAD("EVNT005")	GOTO START
+IF ( ISLCT = 2 ) GIRLFACE	GOTO START
+IF ( ISLCT = 3 ) ADVFREAM	GOTO START
+IF ( ISLCT = 4 ) XGIRL		GOTO START
+IF ( ISLCT = 5 ) FACETEST	GOTO START
+;voidvoidvoid
+IF ( ISLCT = 7 ) ROOMPICTURE	GOTO START
+;voidvoidvoid
+IF ( ISLCT = 10 ) LOAD("SSRUNS")
+IF ( ISLCT = 11 )
+	;voidvoidvoid
+	GOTO START
+
+IF ( ISLCT = 8 )
+	SLCT("39:絵を描く,23:道場破り,名前入力,武芸者の挑戦,06:行商人,ｽﾀｯﾌﾛｰﾙ,ｴﾝｶｳﾝﾄoff,ｴﾝｶｳﾝﾄon")
+	IF (ISLCT=-1) GOTO START
+	IF (ISLCT=0) LOAD("EVNT039")
+	IF (ISLCT=1) LOAD("EVNT023")
+	IF (ISLCT=2)
+		PARC(1,"NAMEIN.COM",0,0)	;child process test.
+		;PRV("error:")				;AX : 0=normal,1=error.
+		;LLF
+		;PRV("tasks:",BX)			;child task exit status.
+		;LLF
+	IF (ISLCT=3)
+		TXOPEN(1)
+		＊＊＊＊＊＊＊＊＊＊＊＊
+		@P
+		TXCLOSE(1)
+		;voidvoidvoid
+		C1 = 2		;mode 1=RUNNING.TXT 2=KAIMONO.TXT
+		LOAD("EVNT022")
+	IF (ISLCT=4) LOAD("EVNT006")
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+	;voidvoidvoid
+GOTO START
+
+;voidvoidvoid
+;voidvoidvoid
+
+
+*ADVFREAM
+PALET_SET(0)
+WWFRAME(1)
+CLENDER(6,0,0)	; カレンダー・セットアップ
+CLENDER(1)
+WWPROF(1)	;
+WWGIRL(3)	; girl put.
+RET
+
+*XGIRL
+SLCT("10,11,12,13,14,15,16,17,病気,正常,D病気,D正常")
+
+IF ( ISLCT>=0  ISLCT<=7 )
+	VAL_YEAR = 1210	+ ISLCT	; 年
+	CLENDER(5,P_BORTHYEAR,P_BORTHMONTH,P_BORTHDAY)	;年齢の計算
+	P_NENREI = DX			; 年齢
+
+IF (ISLCT=0) XREDRAW10A
+IF (ISLCT=1) XREDRAW11A
+IF (ISLCT=2) XREDRAW12A
+IF (ISLCT=3) XREDRAW13A
+IF (ISLCT=4) XREDRAW14A
+IF (ISLCT=5) XREDRAW15A
+IF (ISLCT=6) XREDRAW16A
+IF (ISLCT=7) XREDRAW17A
+IF (ISLCT=8) PIC(2)				; 正常->病気
+IF (ISLCT=9) PIC(3)				; 病気->正常
+IF (ISLCT=10) PIC(4)			; 病気
+IF (ISLCT=11) PIC(5)			; 正常
+;;WWGIRL(1,11,1,5,1,1,1) ; direct put.
+IF (ISLCT=-1) RET
+GOTO XGIRL
+
+*XREDRAW10A
+WWGIRL(1,10,1,1,0,1,0) ; direct put.
+RET
+*XREDRAW11A
+WWGIRL(1,11,1,1,0,1,0) ; direct put.
+RET
+*XREDRAW12A
+WWGIRL(1,12,1,1,0,1,0) ; direct put.
+RET
+*XREDRAW13A
+WWGIRL(1,13,1,1,0,1,0) ; direct put.
+RET
+*XREDRAW14A
+WWGIRL(1,14,1,1,0,1,0) ; direct put.
+RET
+*XREDRAW15A
+WWGIRL(1,15,1,1,0,1,0) ; direct put.
+RET
+*XREDRAW16A
+WWGIRL(1,16,1,1,0,1,0) ; direct put.
+RET
+*XREDRAW17A
+WWGIRL(1,17,1,1,0,1,0) ; direct put.
+RET
+
+
+*GIRLFACE
+SLCT("基本,非行,病気,元気,色気")
+IF (ISLCT=-1) RET
+C1 = ISLCT + 1
+WWGIRL(1,P_NENREI,1,C1,0,DRESS_NUM,0) ; direct put.
+GOTO GIRLFACE
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+*FACETEST
+TXOPEN(2)
+C3 = 2
+	C2 = 0
+	C1 = 19
+		TIMER1(20)
+		TXGIRL(C2)
+		PRV("C2=",C2)
+		WAIT1
+		C2++
+	LOOP C1
+	IF ( C3 = 2 )
+		TXCLOSE(2)
+		WWGIRL(1,16,1,1,0,1,0) ; direct put.
+		TXOPEN(2)
+LOOP C3
+TXCLOSE(2)
+RET
+
+
+*ROOMPICTURE
+C2 = 0
+C1 = 6
+	PIC(1,C2)	; 部屋の絵PUT
+	C2++
+LOOP C1
+RET
+
+
+;IRAND2(2,6)
+;IF (AX=2)ZZ1++
+;IF (AX=3)ZZ2++
+;IF (AX=4)ZZ3++
+;IF (AX=5)ZZ4++
+;IF (AX=6)ZZ5++
+;RANDAM(5)
+
+*RANDAM_TEST
+C1 = 1000
+	IRNDPAR(10,50)		; +-%の乱数
+
+	IF (AX=5)ZZZ[0]++
+	IF (AX=6)ZZZ[1]++
+	IF (AX=7)ZZZ[2]++
+	IF (AX=8)ZZZ[3]++
+	IF (AX=9)ZZZ[4]++
+
+	IF (AX=10)ZZZ[5]++
+
+	IF (AX=11)ZZZ[6]++
+	IF (AX=12)ZZZ[7]++
+	IF (AX=13)ZZZ[8]++
+	IF (AX=14)ZZZ[9]++
+LOOP C1
+C1 = 10 C2 = 0
+	C3 = C2 + 5
+	PRV(" ",C3)PRV(":",ZZZ[C2])
+	C2++
+LOOP C1
+LLF
+SLCT("RANDAM_TEST")
+IF (ISLCT=-1)RET
+GOTO RANDAM_TEST
+RET
+
+;
+;	end of "TEST.TXT"
+;
+

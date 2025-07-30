@@ -1,0 +1,149 @@
+; "START.TXT"
+
+
+;DBGFLAG_CONSOLE=1	; デバッグＷＲＩＴＥをＤＯＳコンソールへ
+DBGFLAG_CONSOLE=2	; デバッグＷＲＩＴＥをdebug windowsへ	<=====
+DBGFLAG_ERROR=0		; debug flag error.						<=====
+;INLINECOMPDBG=1	; コンパイル状況をデバッグＷＲＩＴＥへ
+;DBGFLAG_FILE=1		; テキストファイルのロード状況
+;DBGFLAG_FILE=2		; 全ファイルのロード状況
+
+;voidvoidvoid
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+
+SETUP_MENU			;セットアップ・メニュー
+
+TXOPEN(4)
+;;LOAD("OPENING")
+
+C1 = 1				; 1=初期スタートモード
+LOAD("PARAINIT")
+
+;**************
+;	セットアップ・メニュー
+;**************
+
+*SETUP_MENU
+
+.WIDSTRATLOCX	=	32		; start locate x. "PARAINIT.TXT"にもある
+.WIDSTRATLOCY	=	150		; start locate y.
+
+.FLAG_FM_BORD	=	0		; FM音源ﾎﾞｰﾄﾞの有無
+.FLAG_MIDI_BORD	=	0		; MIDIｲﾝﾀｰﾌｪｰｽﾎﾞｰﾄﾞの有無
+
+GRPCLS
+PALET_SET(0)
+
+MUSIC(3)					; 音楽システムPMD起動
+MUSIC(5)            		: 音楽システム初期処理
+
+TIMER1(10)
+PARC(4)	; timer1 wait & keybord check. AX : 0=normal,1=PLUS,2=ESC
+IF ( AX = 1 )
+	RET
+
+SLCPOS(6,WIDSTRATLOCX,WIDSTRATLOCY)
+
+WIDONGEN			; 音源選択
+WIDGAMEN			; 画面選択
+WIDEMS				; ＥＭＳ選択
+
+RET
+
+
+;**************
+;	音源選択
+;	-O- USERSLCT_ONGEN : ユーザー選択音源
+;		0=無し
+;		1=ＦＭ音源
+;		2=ＭＩＤＩ音源
+;**************
+
+*WIDONGEN
+PARC(5)						; 音源ボードの有無
+FLAG_FM_BORD	=	AX		; FM音源ﾎﾞｰﾄﾞの有無
+FLAG_MIDI_BORD	=	BX		; MIDIｲﾝﾀｰﾌｪｰｽﾎﾞｰﾄﾞの有無
+
+IF ( FLAG_MIDI_BORD = 0 )	; MIDIｲﾝﾀｰﾌｪｰｽﾎﾞｰﾄﾞの有無
+	RET
+
+IF ( FLAG_FM_BORD = 1 )		; FM音源ﾎﾞｰﾄﾞの有無
+	SLCTX("ＦＭ音源,ＭＩＤＩ(MT-32),GENERAL MIDI(ＧＭ)")
+	IF ( ISLCT=1 )
+		MUSIC(4)			; 音楽システムMMD起動
+		MUSIC(5)			; 音楽システム初期処理
+		MUSIC(7,0)			; 音楽システムMIDI設定 0=MT
+		MUSIC(0,"INITMT")
+	IF ( ISLCT=2 )
+		MUSIC(4)			; 音楽システムMMD起動
+		MUSIC(5)			; 音楽システム初期処理
+		MUSIC(7,1)			; 音楽システムMIDI設定 1=GM
+		MUSIC(0,"INITGM")
+	RET
+
+SLCTX("ＭＩＤＩ音源を使用する,ＭＩＤＩ音源を使用しない")
+IF ( ISLCT=0 )
+	MUSIC(4)				; 音楽システムMMD起動
+	MUSIC(5)				; 音楽システム初期処理
+
+	SLCTX("ＭＩＤＩ(MT-32),GENERAL MIDI(ＧＭ)")
+	IF ( ISLCT=0 )
+		MUSIC(4)			; 音楽システムMMD起動
+		MUSIC(5)			; 音楽システム初期処理
+		MUSIC(7,0)			; 音楽システムMIDI設定 0=MT
+		MUSIC(0,"INITMT")
+	IF ( ISLCT=1 )
+		MUSIC(4)			; 音楽システムMMD起動
+		MUSIC(5)			; 音楽システム初期処理
+		MUSIC(7,1)			; 音楽システムMIDI設定 1=GM
+		MUSIC(0,"INITGM")
+	RET
+
+RET
+
+;**************
+;	画面選択
+;	-O- USERSLCT_GAMEN : ユーザー選択画面
+;				1=アナログ１６色
+;				2=白黒液晶８階調
+;**************
+
+*WIDGAMEN
+SLCTX("カラー,白黒液晶")
+IF ( ISLCT=1 )
+	P98F(3,3)		; analog switch.  3=B/W
+	RET
+P98F(3,0)			; analog switch. 0=normal
+RET
+
+;**************
+;	ＥＭＳ選択
+;	-O- AX : 0=ＥＭＳ機能を使用する,1=ＥＭＳ機能を使用しない"
+;**************
+
+*WIDEMS
+PARC(6)		;EMSの有無
+IF ( AX = 0 ) RET
+SLCTX("ＥＭＳメモリを全て使用する,ＥＭＳメモリを使用しない")
+IF ( ISLCT=0 )
+	PARC(8,1)		; ﾌﾗｸﾞEMSﾛｰﾄﾞ	1=EMSﾛｰﾄﾞ
+RET
+
+
+;**************
+;
+;**************
+
+;
+;	end of "START.TXT"
+;
+
