@@ -1,0 +1,505 @@
+; "TRG007.TXT"
+
+.S_SECTION		; スケジュール項目
+.S_WORKS		; スケジュール内容
+.S_STARTDAY		; スケジュール開始日
+.S_ENDDAY		; スケジュール終了日
+
+.GG_MAX
+.GG_STR[6]
+.GG_VAL[6]
+.GG_GOLD_HDL
+
+.X_REIGI		=0	; 礼儀作法
+.W_REIGI		=0	; 礼儀作法
+.X_KIHIN		=0	; 気品
+.W_KIHIN		=0	; 気品
+
+.DAY_COUNTER	=0	; 日付カウンタ
+.WORK_DAYS		=0	; 仕事日数
+.SUCCESS_DAYS	=0	; 成功日数
+.SUCCESS_LINE	=0	; 成功基準値
+.SUCCESS_FLAG	=0	; 成功フラグ
+
+.NOW_COUNT	=0		;実行回数
+.NOW_LEVEL	=0		;レベル
+.NEXT_LEVEL	=0		;次のレベル
+.USE_GOLD	=0		;授業料
+.FLAG_NO_PAY=0		;授業料が払えない
+.TOTAL_GOLD	=0		;授業料合計
+
+.FLAG_ALLOPEN=0
+
+.A_TEXT_HDL=6		;アニメ中テキストハンドル
+
+.SLCANM
+.TIMELOP
+.TIMELOPMAX
+.TIMEWAIT1
+.GIRX
+.GIRY
+.ALOCX[10]
+.ALOCY[10]
+.ALOCC[10]
+.ALOCF[10]
+.ALOCCNT[10]
+.TITLES="礼法"
+
+.BAK_V_REIGI				; 礼儀作法
+.BAK_B_KIHIN				; 気品
+
+BAK_V_REIGI = V_REIGI		; 礼儀作法
+BAK_B_KIHIN = B_KIHIN		; 気品
+
+ANIME_INIT
+
+S_STARTDAY	= SCH_STARTDAY[SCH_NOW]		; スケジュール開始日
+S_ENDDAY	= SCH_ENDDAY[SCH_NOW]		; スケジュール終了日
+
+SCH_NOW++		; スケジュール実行中項目
+
+R_REIHO			; 7=礼法
+
+LOAD("RUNNING")
+
+;***************************************
+;
+;		礼法
+;
+;***************************************
+
+*R_REIHO		; 7=礼法
+
+NOW_COUNT = RUN_KITAERU[8]	;「礼儀作法」実行回数
+CK_LVL(NOW_COUNT)			;レベルチェック
+NOW_LEVEL = AX				;レベル
+
+IF ( NOW_LEVEL = 0 )
+	USE_GOLD	=40						;授業料
+	X_REIGI = 1		W_REIGI = 1			;礼儀作法
+	X_KIHIN = 1		W_KIHIN = 1			;気品
+IF ( NOW_LEVEL = 1 )
+	USE_GOLD	=50						;授業料
+	X_REIGI = 1		W_REIGI = 2			;礼儀作法
+	X_KIHIN = 1		W_KIHIN = 2			;気品
+IF ( NOW_LEVEL = 2 )
+	USE_GOLD	=60						;授業料
+	X_REIGI = 1		W_REIGI = 3			;礼儀作法
+	X_KIHIN = 1		W_KIHIN = 3			;気品
+IF ( NOW_LEVEL = 3 )
+	USE_GOLD	=70						;授業料
+	X_REIGI = 2		W_REIGI = 4			;礼儀作法
+	X_KIHIN = 1		W_KIHIN = 4			;気品
+
+TXOPEN(1)
+TXA(NAME_FIRST)は今日からTXA(TITLES)を学びます．
+@P
+TXCLOSE(1)
+
+TXOPEN(2)
+TXFACE("F058")			;GFFF古老バートサス・普通
+
+古老バートサス
+
+IF ( NOW_COUNT = 0 )	;１回目
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+	@C
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+IF ( NOW_COUNT ! 0 )	;２回目以降
+	「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+TXCLOSE(2)
+
+ALL_OPEN
+DAY_COUNTER	= S_ENDDAY - S_STARTDAY + 1		; 日付カウンタ
+
+	TXF(11)
+
+	IF ( VAL_WEEK!0 )					; Sunday
+		WORK_DAYS++
+		TXCLR TXA(TITLES)・TXPOINT(WORK_DAYS)日目
+		GOLDCMP(USE_GOLD)
+		IF ( AX = 2 )
+			FLAG_NO_PAY=1						;授業料が払えない
+			お金が足りません。
+
+		IF ( AX = 3 )
+			SUCCESS_CHK							;
+
+			CHK_RENAI
+
+			IF ( SUCCESS_FLAG = 0 )				;失敗時
+				IF ( S_BYOUKI >= 30 )			;失敗時（病気指数３０以上）
+					＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+				IF ( S_HIKOUKA >= 30  S_BYOUKI<30 )	;失敗時（非行化指数３０以上）
+					＊＊＊＊＊＊＊＊＊＊
+				IF ( S_HIKOUKA<30  S_BYOUKI<30 )
+					＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+				ANIME_WIDW						; ｱﾆﾒｳｲﾝﾄﾞｳ
+
+			IF ( SUCCESS_FLAG ! 0 )				; 成功フラグ
+				＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+				ANIME_WIDW						; ｱﾆﾒｳｲﾝﾄﾞｳ
+				SUCCESS_DAYS++					; 成功日数
+				IRAND2(X_REIGI,W_REIGI)			; 礼儀作法
+				T_REIGI += AX					;
+				IRAND2(X_KIHIN,W_KIHIN)			; 気品
+				B_KIHIN += AX					;
+				CLENDER(13)	;訓練技能値計算
+				GXXD(0,V_REIGI)					; 礼儀作法
+				GXXD(1,B_KIHIN)					; 気品
+			B_STRESS++							; ストレス
+			GXXD(2,B_STRESS)
+			GOLDSUB(USE_GOLD)
+			TOTAL_GOLD+= USE_GOLD				;授業料合計
+			WWPROF(3)							; ﾌﾟﾛﾌｨｰﾙ･ｳｲﾝﾄﾞｳ・所持金
+			GXXDGOLD
+
+	IF ( VAL_WEEK=0 )				; Sunday
+		@C
+		今日は日曜日です．
+		IF ( FLAG_NO_PAY=0 )	ANMTSUNDAY
+
+	TXF(10)
+
+	BORTH_CHECK
+
+	IF ( DAY_COUNTER ! 1 )
+		CLENDER(3)		;カレンダー・更新処理
+		CLENDER(2)		;カレンダー・再表示
+LOOP DAY_COUNTER
+@C
+TXPOINT(WORK_DAYS)日間の鍛練の成果は・・・
+C1 = V_REIGI - BAK_V_REIGI		; 礼儀作法
+C2 = B_KIHIN - BAK_B_KIHIN		; 気品
+IF ( C1 <= 0   C2 <= 0 )
+	まったく成果がなかった・・・・・・
+IF ( C1 > 0 )
+	礼儀作法がTXPOINT(C1)上がった！
+IF ( C2 > 0 )
+	気品がTXPOINT(C2)上がった！
+@P
+ALL_CLOSE
+
+;授業終了時
+TXOPEN(2)
+TXFACE("F058")			;GFFF古老バートサス・普通
+「＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+@P
+IF ( SUCCESS_DAYS <= 2   FLAG_NO_PAY=0  WORK_DAYS >=5 )
+	@C
+	「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+IF ( FLAG_NO_PAY ! 0 )		;授業料が払えない
+	「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+RUN_KITAERU[0]++		;「娘を鍛える」実行回数
+RUN_KITAERU[8]++		;「礼儀作法」実行回数
+CK_LVL(RUN_KITAERU[8])	;レベルチェック
+NEXT_LEVEL = AX			;次のレベル
+
+IF ( NEXT_LEVEL > NOW_LEVEL )	;レベル
+	IF ( NEXT_LEVEL = 1 )		;中級レベルにレベルアップ
+		「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+	IF ( NEXT_LEVEL = 2 )		;上級レベルにレベルアップ
+		「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+
+	IF ( NEXT_LEVEL = 3 )		;ﾏｽﾀｰレベルにレベルアップ
+		「TXA(NAME_FIRST)＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊」
+	@P
+TXCLOSE(2)
+RET
+
+
+*ALL_OPEN
+ANIME_OPEN
+ALL_OPEN2
+FLAG_ALLOPEN=1
+RET
+
+*ALL_OPEN2ND
+TXOPEN(A_TEXT_HDL)
+ALL_OPEN2
+FLAG_ALLOPEN=2
+RET
+
+*ALL_OPEN2
+STRSCLEAR
+GG_STR[0]="礼儀作法"
+GG_STR[1]="気品"
+GG_STR[2]="ストレス"
+GG_VAL[0]=V_REIGI
+GG_VAL[1]=B_KIHIN
+GG_VAL[2]=B_STRESS
+GG_MAX=3
+GXXSTART
+RET
+
+*ALL_CLOSE
+IF ( FLAG_ALLOPEN=1 )
+	FLAG_ALLOPEN=0
+	GR_CLOSE						; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	ANIME_CLOSE
+	RET
+IF ( FLAG_ALLOPEN=2 )
+	FLAG_ALLOPEN=0
+	GR_CLOSE						; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ CLOSE
+	TXCLOSE(A_TEXT_HDL)
+	RET
+RET
+
+; ******************
+;	lib.
+; ******************
+
+*GXXSTART
+;;GR_F(1,16)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN  #16	13,000byte
+GR_F(1,23)			; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ OPEN  PROCWRK_TOP #23 52,200byte
+C3 = 0
+C2 = 0
+IGRP_X=4
+IGRP_Y=340
+IGRP_CNT=0
+C1 = GG_MAX
+	IGRP_TBL1[IGRP_CNT]=GG_STR[C2]
+	IGRP_TBL3[IGRP_CNT]=GG_VAL[C2]
+	IGRP_CNT++ C2++
+	IF ( IGRP_CNT = 2 )
+		C3++ GRPOPEN(1,C3)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+		IGRP_CNT = 0
+		IGRP_X += 24
+LOOP C1
+IF ( IGRP_CNT ! 0 )
+	C3++ GRPOPEN(1,C3)		; ﾊﾟﾗﾒｰﾀ･ｳｲﾝﾄﾞｳ
+IGRP_TBL1[0]="使った金"
+IGRP_TBL3[0]=TOTAL_GOLD
+IGRP_CNT=1
+IGRP_X=4
+IGRP_Y=140
+C3++ GOLDOPEN(1,C3)			; ﾊﾟﾗﾒｰﾀ 所持金ｳｲﾝﾄﾞｳ
+GG_GOLD_HDL=C3
+RET
+
+*GXXD
+C3 = AX
+C4 = BX
+MOD( C3, 2 )	C5 = AX		; 余り
+C6 = C3 / 2 + 1				; handle.
+GRPUPD(C6,C5,C4)			;
+RET
+
+*GXXDGOLD
+GOLDUPD(GG_GOLD_HDL,0,TOTAL_GOLD)
+RET
+
+*SUCCESS_CHK
+SUCCESS_FLAG = 0					; 成功フラグ
+;（体力値の半分～体力値の乱数）＞＝（０～ストレス値の乱数）
+
+IRAND999X(B_STRESS)					; ストレス
+SUCCESS_LINE = IRND					;
+
+C1 = B_TAIRYOKU / 2					; 体力
+IRAND999X(C1)						;
+C2 = B_TAIRYOKU / 2 + IRND			;
+
+IF ( C2 >= SUCCESS_LINE )			;
+	SUCCESS_FLAG = 1				; 成功フラグ
+RET
+
+; ******************
+;	Txxx
+; ******************
+
+*ANIME_INIT
+TIMEWAIT1=8;6
+TIMELOPMAX=5;12
+
+;訓練中
+ALOCX[0]	=272/8
+ALOCY[0]	=113-79
+ALOCC[0]	=0
+ALOCCNT[0]	=13
+.FILM0[13]=3,3,1,2,1,2,1,2,3,3,3,1,2
+;訓練ミス・病気
+ALOCX[1]	=272/8
+ALOCY[1]	=113-79
+ALOCC[1]	=0
+ALOCCNT[1]	=4
+.FILM1[4]=4,4,5,5
+;サボリ
+ALOCX[2]	=272/8
+ALOCY[2]	=113-79
+ALOCC[2]	=0
+ALOCCNT[2]	=4
+.FILM2[4]=6,7,6,7
+;よその子Ａ
+ALOCX[3]	=216/8
+ALOCY[3]	=113-79
+ALOCC[3]	=0
+ALOCCNT[3]	=10
+.FILM3[10]=8,9, 8,9, 8,9, 8,8,8,8
+;よその子Ｂ
+ALOCX[4]	=8/8
+ALOCY[4]	=113-79
+ALOCC[4]	=0
+ALOCCNT[4]	=10
+.FILM4[10]=10,11,10,11, 10,10,10,11,10,11
+;よその子Ｃ
+ALOCX[5]	=72/8
+ALOCY[5]	=113-79
+ALOCC[5]	=0
+ALOCCNT[5]	=13
+.FILM5[13]=12,13,12,12,12,13,12,13,12,13,12,12,13
+;バートサス
+ALOCX[6]	=144/8
+ALOCY[6]	=101-79
+ALOCC[6]	=0
+ALOCCNT[6]	=26
+.FILM6[26]=	14,15,14,15,14,16,14,15,14,15,14,15,14,14,14,14,15,14,16,14,16,14,17,18,17,18
+RET
+
+*ANIME_OPEN
+WWANIME(1,0)			; anime window open.
+WWANIME(3,0,"T008B")	; pictuer load.
+WWANIME(6,0,"T008A")	; anime pattern add load.
+WWANIME(4,0)			; put BG.
+WWANIME(5,0)			; pictuer copy vvram -> CRT.
+TXOPEN(A_TEXT_HDL)
+RET
+
+*ANIME_CLOSE
+WWANIME(2,0)		: anime window close.
+TXCLOSE(A_TEXT_HDL)
+RET
+
+*ANIME_WIDW
+IF ( SUCCESS_FLAG ! 0 )		; 成功フラグ
+	ANMT001(0)				; 0=訓練中
+	GOTO ANIME_WIDW_SHOW
+IF ( S_BYOUKI >= 30 )		; 失敗時（病気指数３０以上）
+	ANMT001(1)				; 1=病気
+	GOTO ANIME_WIDW_SHOW
+IF ( S_HIKOUKA >= 30 )		; 失敗時（非行化指数３０以上）
+	ANMT001(2)				; 2=サボリ
+	GOTO ANIME_WIDW_SHOW
+ANMT001(1)					; 1=訓練ミス
+*ANIME_WIDW_SHOW
+RET
+
+
+*ANMT001
+; AX :	0=訓練中,1=訓練ミス／病気,2=サボリ
+SLCANM = AX
+;*;ALOCC[SLCANM]=0
+
+TIMELOP=TIMELOPMAX
+	WWANIME(4,0)		; put BG.
+	TIMER1(TIMEWAIT1)
+
+	C3 = 4  C4 = 3
+		ANIM_NUM(C4)	APUT(ALOCX[C4],ALOCY[C4],DX)
+		C4++
+	LOOP C3
+	ANIM_NUM(SLCANM)	APUT(ALOCX[SLCANM],ALOCY[SLCANM],DX)
+
+	ALOCC[3]++
+	ALOCC[4]++
+	ALOCC[5]++
+	ALOCC[6]++
+	ALOCC[SLCANM]++
+
+	WAIT1
+	WWANIME(5,0)		; pictuer copy vvram -> CRT.
+LOOP TIMELOP
+RET
+
+*ANMTSUNDAY
+TIMELOP=TIMELOPMAX
+	WWANIME(4,0)		; put BG.
+	TIMER1(TIMEWAIT1)
+	WAIT1
+	WWANIME(5,0)		; pictuer copy vvram -> CRT.
+LOOP TIMELOP
+RET
+
+*ANIM_NUM
+;ANIM_NUM(filmnumber)
+;-O- DX pattern number.
+IF ( ALOCC[AX] >= ALOCCNT[AX] )
+	ALOCC[AX] = 0
+BX = ALOCC[AX]
+IF (AX=0) DX=FILM0[BX]
+IF (AX=1) DX=FILM1[BX]
+IF (AX=2) DX=FILM2[BX]
+IF (AX=3) DX=FILM3[BX]
+IF (AX=4) DX=FILM4[BX]
+IF (AX=5) DX=FILM5[BX]
+IF (AX=6) DX=FILM6[BX]
+DX--	; DX pattern number.
+RET
+
+*APUT
+; anime pattern put vvram.
+; APUT(x,y,pattern)
+GIRX=AX
+GIRY=BX
+SI = CX * 2 + 1
+DX = BX
+CX = AX
+AX = 7
+BX = 0
+;	WWANIME(7,0,ALOCX[0],ALOCY[0],ALOCC[0])
+WWANIME	; anime pattern put vvram.
+RET
+
+
+;************************************
+;	誕生日チェック
+;************************************
+
+*BORTH_CHECK
+
+IF ( P_BORTHMONTH = VAL_MONTH  P_BORTHDAY = VAL_DAY )			; 娘の誕生日
+	IF ( P_BORTHMONTH[1] = VAL_MONTH  P_BORTHDAY[1] = VAL_DAY )	; 父の誕生日
+		E_ETC[14]=P_NENREI[1]			;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )			;父との関係値が６０以上
+			ALL_CLOSE
+			EVE4243						;娘の誕生日と父の誕生日の合体
+			IF ( DAY_COUNTER = 1 )	ALL_OPEN2ND
+			IF ( DAY_COUNTER ! 1 )	ALL_OPEN
+			RET
+
+IF ( P_BORTHMONTH = VAL_MONTH )			; 誕生月
+	IF ( P_BORTHDAY = VAL_DAY )			; 誕生日
+		ALL_CLOSE
+		EVENT042						; 42 娘の誕生日
+		IF ( DAY_COUNTER = 1 )	ALL_OPEN2ND
+		IF ( DAY_COUNTER ! 1 )	ALL_OPEN
+		RET
+
+IF ( P_BORTHMONTH[1] = VAL_MONTH )		; 父の誕生月
+	IF ( P_BORTHDAY[1] = VAL_DAY )		; 父の誕生日
+		E_ETC[14]=P_NENREI[1]			;「父の誕生日」をチェックした年齢
+		IF ( URA_FATHER >=60 )			;父との関係値が６０以上
+			ALL_CLOSE
+			EVENT043					; 43 父の誕生日
+			IF ( DAY_COUNTER = 1 )	ALL_OPEN2ND
+			IF ( DAY_COUNTER ! 1 )	ALL_OPEN
+			RET
+RET
+
+*CHK_RENAI
+IF ( FLAG_RENAI!0 )		;状態・恋愛
+	RANDAM(100)			;２０％の確率
+	IF ( IRND<=20 )
+		SUCCESS_FLAG = 0
+RET
+
+;
+;	end of "TRG007.TXT"
+;
+
