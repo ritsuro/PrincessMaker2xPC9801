@@ -1,0 +1,53 @@
+
+JOB000.TXT  39:  .TITLES="家の手伝い"
+JOB001.TXT  40:  .TITLES="子守"
+JOB002.TXT  40:  .TITLES="宿屋"
+JOB003.TXT  40:  .TITLES="農場"
+JOB004.TXT  40:  .TITLES="教会"
+JOB005.TXT  42:  .TITLES="料理屋"
+JOB006.TXT  40:  .TITLES="木コリ"
+JOB007.TXT  40:  .TITLES="髪結い"
+JOB008.TXT  41:  .TITLES="左官"
+JOB009.TXT  41:  .TITLES="狩人"
+JOB010.TXT  50:  .TITLES="墓守"
+EVNT051.TXT	1:	51 亡霊騎士出現
+JOB011.TXT  40:  .TITLES="家庭教師"
+JOB012.TXT  41:  .TITLES="酒場"
+JOB013.TXT  41:  .TITLES="ヤミ酒場"
+JOB014.TXT  41:  .TITLES="夜の殿堂"
+
+TRG000.TXT  47:  .TITLES="自然科学"
+TRG001.TXT  48:  .TITLES="詩文"
+TRG002.TXT  47:  .TITLES="神学"
+TRG003.TXT  46:  .TITLES="軍学"
+TRG004.TXT  47:  .TITLES="剣術"
+TRG005.TXT  44:  .TITLES="格闘術"
+TRG006.TXT  44:  .TITLES="魔法"
+TRG007.TXT  44:  .TITLES="礼法"
+TRG008.TXT  45:  .TITLES="絵画"
+TRG009.TXT  46:  .TITLES="舞踊"
+
+SSALEND.TXT 1:		収穫祭・終了処理
+SSKYUSO.TXT 1:		収穫祭・休息
+
+RUNNING.TXT	1:
+
+SSBT02.TXT  151:  R_NAME                        ="ホルスト・ハイムマン"
+SSBT03.TXT  139:  R_NAME                        ="バンバン・ビザロ"
+SSBT04.TXT  162:  R_NAME                        ="カールフォックス"
+SSBT05.TXT  154:  R_NAME                        ="ミィーア"
+SSBT06.TXT  196:  R_NAME                        ="ダムダム"
+SSBT07.TXT  140:  R_NAME                        ="フランソワ・モーレ"
+SSBT08.TXT  158:  R_NAME                        ="ドン＝レオ・ジョナサン"
+SSBT09.TXT  187:  R_NAME                        ="タオ・ランファン"
+SSBT10.TXT  160:  R_NAME                        ="カタナ・テラー"
+SSBT11.TXT  158:  R_NAME                        ="ナターシャ・ドリプシコワ"
+SSBT12.TXT  188:  R_NAME                        ="サラーム・ナセル"
+SSBT13.TXT  155:  R_NAME                        ="チャン・クーロン"
+SSBT14.TXT  156:  R_NAME                        ="ジェニファー・ザ・クィーン"
+SSBT15.TXT  161:  R_NAME                        ="マッスル・ハルバル"
+SSBT16.TXT  141:  R_NAME                        ="剣士レフトール"
+SSBT17.TXT  155:  R_NAME                        ="アニータ・カサンドラ"
+SSBT18.TXT  182:  R_NAME                        ="ウェンディー・ラキシス"
+
+

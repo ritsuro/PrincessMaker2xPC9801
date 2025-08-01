@@ -1,0 +1,647 @@
+..\NDOC2\START.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TEST.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TEST02.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TEST99.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\PARAINIT.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\MAINLOOP.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\MAINEVNT.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\MAINBORN.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\KAIMONO.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\KRYORIYA.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SCNSYUGO.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SCNKENKO.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SCNDEATH.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RUNNING.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TRG000.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TRG001.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TRG002.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TRG003.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TRG004.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TRG005.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TRG006.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TRG007.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TRG008.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\TRG009.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB000.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB001.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB002.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB003.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB004.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB005.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB006.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB007.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB008.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB009.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB010.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB011.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB012.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB013.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\JOB014.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SCNKYUSO.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SCNVACAN.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT003.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT004.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT005.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT006.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT007.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT008.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT009.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT010.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT011.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT013.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT014.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT015.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT016.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT017.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT020.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT021.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT022.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT023.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT025.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT026.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT028.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT029.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT030.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT031.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT032.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT033.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT034.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT035.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT036.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT039.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT041.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT042.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT042S.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT043S.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVE4243S.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT044.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT045.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT046.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT047.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT048.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT049.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT051.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNT052.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPGRUN.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPGCMP.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPGMNS.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPGMEN.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPG000.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPG001.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPG002.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPG003.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPGDWN.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPGLOP.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ01N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ02N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ03N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ04N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ05N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ06N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ07N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ08N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ09N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ10N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ11N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ12N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ13N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ14N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ15N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ16N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ17N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ18N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ19N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ20N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ21N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ22N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ23N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ24N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPZ25N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPY01N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPY02N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPY03N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPY04N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPY05N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPY06N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPY07N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPY08N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\RPY09N.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNTBSIN.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNTBSN2.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\EVNTBSN3.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SCNGIRL.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SCNCASTL.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+#
+
+..\NDOC2\SSARTS.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBATL.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSCOOK.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSDANC.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSRUNS.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT02.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT03.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT04.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT05.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT06.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT07.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT08.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT09.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT10.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT11.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT12.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT13.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT14.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT15.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT16.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT17.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBT18.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSTOUR.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSBFIN.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSEV022.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSEV023.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSALEND.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+..\NDOC2\SSKYUSO.TXT	:	$*.TXT
+	COPY $*.TXT $@
+	COPY $*.TXT ..\NDOC
+
+
