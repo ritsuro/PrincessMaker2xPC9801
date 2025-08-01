@@ -1,0 +1,74 @@
+;"PRZ03N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR03N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA03N
+RET
+
+*MSR03N	;北
+R_MS_NUMBER		=3
+R_FACE			="F163"
+R_MONSTOR		="M003"
+R_NAME			="スノーオーク"
+R_CHINOH		=777
+RDM(30,777)
+R_SENTOH=AX
+RDM(50,777)
+R_KOUGEKI=AX
+R_BOUGYO		=77
+R_SOUKOU		=77
+R_SKNAME		="分厚い毛皮"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+RDM(0,777)
+R_KOHMARYOKU=AX
+RDM(40,777)
+R_SENI=AX
+R_DASSYUTU		=77
+R_TSUKON		=77
+RDM(80,777)
+R_MAX_HP=AX
+R_MAX_MP		=0
+RDM(1,77)
+R_GOLD=AX
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+RANDAM(3)
+IF(AX=1)MONSTR[0]="＊＊＊＊＊"
+IF(AX=2)MONSTR[0]="＊＊＊＊＊＊"
+IF(AX=3)MONSTR[0]="＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊"
+RET
+
+
+
+
+
+*KWA03N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ03N.TXT"
+;
+

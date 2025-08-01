@@ -1,0 +1,80 @@
+;"PRZ01N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR01N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA01N
+RET
+
+*MSR01N	;北
+R_MS_NUMBER		=1
+R_FACE			="F161"
+R_MONSTOR		="M001"
+R_NAME			="人さらい"
+R_CHINOH		=777
+R_SENTOH		=777
+RDM(40,777)
+R_KOUGEKI=AX
+R_BOUGYO		=77
+R_SOUKOU		=77
+R_SKNAME		="なめし皮の服"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+RDM(10,777)
+R_KOHMARYOKU=AX
+R_SENI			=77
+R_DASSYUTU		=77
+R_TSUKON		=0
+RDM(60,777)
+R_MAX_HP=AX
+R_MAX_MP		=0
+RDM(10,77)
+R_GOLD=AX
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME	="快癒丸"
+R_ITEM_ICON	=16
+R_ITEM_GOLD	=30
+R_ITEM_ATTR	=0
+R_ITEM_PROG	=""
+R_ITEM_HELP	="ＨＰ回復"
+R_ITEM_PROPA=15
+
+RANDAM(3)
+IF(AX=1)MONSTR[0]="＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+;;IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+;;IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+;;IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+
+MONSTR[4]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊"
+RET
+
+*KWA01N
+AX = 0
+IF ( B_CHINOH >= 200 )	AX=1	;知能100
+RET
+
+;
+;	end of "PRZ01N.TXT"
+;
+

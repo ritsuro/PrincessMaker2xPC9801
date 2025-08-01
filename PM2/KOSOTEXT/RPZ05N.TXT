@@ -1,0 +1,75 @@
+;"PRZ05N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR05N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA05N
+RET
+
+*MSR05N	;北
+R_MS_NUMBER		=5
+R_FACE			="F165"
+R_MONSTOR		="M005"
+R_NAME			="アイスボール"
+R_CHINOH		=777
+R_SENTOH		=777
+R_KOUGEKI		=77
+R_BOUGYO		=77
+R_SOUKOU		=77
+R_SKNAME		="氷の体"
+R_MAHOGIJUTSU	=77
+R_MARYOKU		=77
+R_KOHMARYOKU	=77
+R_SENI			=777
+R_DASSYUTU		=77
+R_TSUKON		=0
+RDM(30,777)
+R_MAX_HP=AX
+RDM(25,777)
+R_MAX_MP=AX
+R_GOLD			=0
+R_SE_ATTACK	=4	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME ="氷のかけら"
+R_ITEM_ICON	=36
+R_ITEM_GOLD	=600
+R_ITEM_ATTR	=4000		;4000番台=効能有
+R_ITEM_PROG	="B_TAIRYOKU+10 B_STRESS-10"
+R_ITEM_HELP	="体力+10 ｽﾄﾚｽ-10"
+R_ITEM_PROPA=15
+
+RANDAM(3)
+IF(AX=1)MONSTR[0]="＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[0]="＊＊＊＊＊＊"
+IF(AX=3)MONSTR[0]="＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[3]="＊＊＊＊＊＊"
+IF(AX=2)MONSTR[3]="＊＊＊＊"
+IF(AX=3)MONSTR[3]="＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊"
+RET
+
+
+*KWA05N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ05N.TXT"
+;
+

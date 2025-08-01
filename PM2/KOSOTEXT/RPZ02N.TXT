@@ -1,0 +1,54 @@
+;"PRZ02N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR02N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA02N
+RET
+
+*MSR02N	;北・東
+R_MS_NUMBER		=2
+R_FACE			="F162"
+R_MONSTOR		="M002"
+R_NAME			="アミーバ"
+R_CHINOH		=777
+RDM(25,777)
+R_SENTOH		=AX
+R_KOUGEKI		=77
+R_BOUGYO		=77
+R_SOUKOU		=77
+R_SKNAME		="ぬめぬめの表皮"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=0
+R_SENI			=777
+R_DASSYUTU		=77
+R_TSUKON		=77
+RDM(20,777)
+R_MAX_HP=AX
+R_MAX_MP		=0
+R_GOLD			=0
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MONSTR[0]="＊＊＊＊＊＊＊"
+MONSTR[1]="＊＊＊＊＊＊"
+MONSTR[2]="＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊"
+RET
+
+*KWA02N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ02N.TXT"
+;
+

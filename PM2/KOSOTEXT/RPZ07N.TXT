@@ -1,0 +1,69 @@
+;"PRZ07N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR07N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA07N
+RET
+
+*MSR07N	;北
+R_MS_NUMBER		=7
+R_FACE			="F167"
+R_MONSTOR		="M007"
+R_NAME			="武神"
+R_CHINOH		=999
+R_SENTOH		=999
+R_KOUGEKI		=999
+R_BOUGYO		=99
+R_SOUKOU		=99
+R_SKNAME		="不思議な光"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=99
+R_SENI			=999
+R_DASSYUTU		=999
+R_TSUKON		=99
+R_MAX_HP		=999
+R_MAX_MP		=0
+R_GOLD			=0
+R_SE_ATTACK	=5	;剣の当たる 5=武神
+
+R_ITEM_NAME	="武神の剣"
+R_ITEM_ICON	=9
+R_ITEM_GOLD	=5000
+R_ITEM_ATTR	=2000
+R_ITEM_PROG	="V_KOUGEKI+30 V_SENTOH+20"
+R_ITEM_HELP	="攻撃+30，戦技+20"
+R_ITEM_PROPA=100
+
+RANDAM(3)
+IF(AX=1)MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[0]="＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RET
+
+*KWA07N
+AX = 0
+IF ( B_CHINOH >= 1 )	AX=1	;知能1
+RET
+
+;
+;	end of "PRZ07N.TXT"
+;
+

@@ -1,0 +1,73 @@
+;"PRZ06N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR06N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA06N
+RET
+
+*MSR06N	;北
+R_MS_NUMBER		=6
+R_FACE			="F166"
+R_MONSTOR		="M006"
+R_NAME			="銀色オオカミ"
+R_CHINOH		=777
+RDM(75,777)
+R_SENTOH=AX
+R_KOUGEKI		=77
+R_BOUGYO		=77
+R_SOUKOU		=77
+R_SKNAME		="銀色の毛皮"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+RDM(75,777)
+R_KOHMARYOKU=AX
+R_SENI			=77
+R_DASSYUTU		=77
+R_TSUKON		=77
+RDM(180,777)
+R_MAX_HP=AX
+R_MAX_MP		=0
+R_GOLD			=0
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+R_ITEM_NAME ="銀色の毛皮"
+R_ITEM_ICON	=30
+R_ITEM_GOLD	=800
+R_ITEM_ATTR	=4000		;4000番台=効能有
+R_ITEM_PROG	="V_KOHMARYOKU+5"
+R_ITEM_HELP	="抗魔+5"
+R_ITEM_PROPA=30
+
+RANDAM(3)
+IF(AX=1)MONSTR[0]="＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[0]="＊＊＊＊"
+IF(AX=3)MONSTR[0]="＊＊＊＊＊＊"
+MONSTR[1]="＊＊＊＊＊＊＊＊＊"
+RANDAM(4)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=4)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[3]="＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[3]="＊＊＊＊＊"
+IF(AX=3)MONSTR[3]="＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊"
+RET
+
+*KWA06N
+AX = 0
+IF ( B_KIHIN >= 220 )	AX=1	;気品120
+RET
+
+;
+;	end of "PRZ06N.TXT"
+;
+

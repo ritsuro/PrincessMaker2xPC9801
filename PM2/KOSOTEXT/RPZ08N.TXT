@@ -1,0 +1,64 @@
+;"PRZ08N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR08N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA08N
+RET
+
+*MSR08N	;東
+R_MS_NUMBER		=8
+R_FACE			="F168"
+R_MONSTOR		="M008"
+R_NAME			="ゾルゲルマンティス"
+R_CHINOH		=777
+RDM(40,777)
+R_SENTOH		=AX
+R_KOUGEKI		=77
+R_BOUGYO		=77
+R_SOUKOU		=77
+R_SKNAME		="固い体"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+R_KOHMARYOKU	=0
+RDM(40,777)
+R_SENI=AX
+R_DASSYUTU		=77
+R_TSUKON		=77
+RDM(45,777)
+R_MAX_HP=AX
+R_MAX_MP		=0
+R_GOLD			=0
+R_SE_ATTACK	=4	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+RANDAM(3)
+IF(AX=1)MONSTR[0]="＊＊＊＊"
+IF(AX=2)MONSTR[0]="＊＊＊＊＊＊"
+IF(AX=3)MONSTR[0]="＊＊＊＊＊＊＊"
+MONSTR[1]="＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[3]="＊＊＊＊"
+IF(AX=2)MONSTR[3]="＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[3]="＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊"
+RET
+
+*KWA08N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ08N.TXT"
+;
+

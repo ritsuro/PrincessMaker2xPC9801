@@ -1,0 +1,60 @@
+;"PRZ09N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR09N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA09N
+RET
+
+*MSR09N	;東
+R_MS_NUMBER		=9
+R_FACE			="F169"
+R_MONSTOR		="M009"
+R_NAME			="レッチコンドル"
+R_CHINOH		=777
+RDM(20,777)
+R_SENTOH=AX
+RDM(35,777)
+R_KOUGEKI=AX
+R_BOUGYO		=77
+R_SOUKOU		=0
+R_SKNAME		="なし"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+RDM(1,777)
+R_KOHMARYOKU=AX
+RDM(5,777)
+R_SENI=AX
+R_DASSYUTU		=77
+R_TSUKON		=77
+RDM(20,777)
+R_MAX_HP=AX
+R_MAX_MP		=0
+R_GOLD			=0
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+RANDAM(3)
+IF(AX=1)MONSTR[0]="＊＊＊＊"
+IF(AX=2)MONSTR[0]="＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[0]="＊＊＊＊＊＊＊＊"
+MONSTR[1]="＊＊＊＊＊＊"
+MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+MONSTR[3]="＊＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊"
+RET
+
+*KWA09N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ09N.TXT"
+;
+

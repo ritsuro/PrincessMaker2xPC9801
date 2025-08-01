@@ -1,0 +1,66 @@
+;"PRZ04N.TXT"
+;
+;	モンスターデータ
+;
+
+*CHECK_MONSTOR			; monstor check.
+MSR04N
+RET
+
+*KAIWA_OK			;会話条件チェック
+KWA04N
+RET
+
+*MSR04N	;北
+R_MS_NUMBER		=4
+R_FACE			="F164"
+R_MONSTOR		="M004"
+R_NAME			="オオカミ"
+R_CHINOH		=777
+RDM(55,777)
+R_SENTOH=AX
+RDM(55,777)
+R_KOUGEKI=AX
+R_BOUGYO		=77
+R_SOUKOU		=77
+R_SKNAME		="しなやかな毛皮"
+R_MAHOGIJUTSU	=0
+R_MARYOKU		=0
+RDM(30,777)
+R_KOHMARYOKU=AX
+RDM(25,777)
+R_SENI=AX
+R_DASSYUTU		=77
+R_TSUKON		=77
+RDM(60,777)
+R_MAX_HP=AX
+R_MAX_MP		=0
+R_GOLD			=0
+R_SE_ATTACK	=3	;剣の当たる(1=皮,2=鉄,3=体毛,4=固い体)
+
+MONSTR[0]="＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[1]="＊＊＊＊＊＊"
+IF(AX=2)MONSTR[1]="＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[1]="＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+IF(AX=3)MONSTR[2]="＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊"
+RANDAM(3)
+IF(AX=1)MONSTR[3]="＊＊＊＊＊＊＊"
+IF(AX=2)MONSTR[3]="＊＊＊＊"
+IF(AX=3)MONSTR[3]="＊＊＊＊＊"
+MONSTR[4]="＊＊＊＊＊＊＊"
+MONSTR[5]="＊＊＊＊＊＊＊＊＊＊"
+RET
+
+*KWA04N
+AX = 0
+IF ( B_KANJUSEI >= 200 )	AX=1	;感受性100
+RET
+
+;
+;	end of "PRZ04N.TXT"
+;
+
