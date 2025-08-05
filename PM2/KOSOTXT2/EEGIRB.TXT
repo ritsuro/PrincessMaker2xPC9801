@@ -1,0 +1,299 @@
+; "EEGIRB.TXT"
+;
+;
+;	娘自身の感想パート
+;
+;
+
+;*;PRF("EEGIRB")
+
+STRSCLEAR
+
+.HEAVY_TRANING		;一番多く実行した訓練
+.HEAVY_T_COUNT		;一番多く実行した訓練実行回数
+.RANK_TRANING		;一番多く実行した訓練の実行回数のランク
+.HEAVY_WORKING		;一番多く実行したバイト
+.HEAVY_W_COUNT		;一番多く実行したバイト実行回数
+.RANK_WORKING		;一番多く実行したバイトの実行回数のランク
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+.TBLNAMESTR[18]
+.TBLGIRLSTR[18]
+
+NARRATION					;ﾅﾚｰｼｮﾝ
+
+PLAY(30)					;P30 ｴﾝﾃﾞｨﾝｸﾞ
+
+KANSOU_GIRL					;娘の感想
+
+TIMER1(180)
+
+LOAD("EEWORK")
+
+;;LOAD("TEST");<=====================================
+;;LOAD("EEGIRB");<=====================================
+
+;**************
+;	ﾅﾚｰｼｮﾝ
+;**************
+
+*NARRATION
+MUSIC(2)	;音楽ﾌｪｰﾄﾞｱｳﾄ
+EFC(23)		; 割り込みＷＨＩＴＥ・ＯＵＴ
+TIMER1(60)
+PTBK(0)
+PTLD("ENDGIRLL")
+WAIT1
+TIMER1(60)
+PTX(0,0,0)
+PTLD("ENDGIRLR")
+PTX(40,0,0)
+
+EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+@G
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+
+@F＊＊＊@R＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+@@
+
+PARC(2,6,70)			; ﾃｷｽﾄ編集ｾﾝﾀﾘﾝｸﾞ
+PARC(2,11, 22)			; ﾃｷｽﾄ行間ｾｯﾄ
+PARC(2,5,  5,152)		; ﾃｷｽﾄ位置ｾｯﾄ
+PARC(2,4)				; ﾃｷｽﾄ編集ﾊﾞｯﾌｧ表示
+
+WAIT1
+EFC(22)		; 割り込みＷＨＩＴＥ・ＩＮ
+RET
+
+;**************
+;	娘の感想
+;	＊＊＊＊＊＊＊
+;**************
+
+*KANSOU_GIRL
+TIMER1(180)
+PTBK(0)
+PTLD("ENDMAILL")
+PTLA("ENDMAILR")
+PTLA("ENDMAINW")
+PIC(14,P_NENREI,8)	; 娘の顔ファイル名
+PTLA
+PTLA("ENDPALET")
+WAIT1
+
+EFC(1)			; F･O
+
+TIMER1(60)		;１拍おく
+PTBK(0)
+PTX(0,0,0)
+PTX(40,0,1)
+PTMF(0,0,2)
+PTX(66,54,4)
+PTPLT(6,0)		; パーツパレットセット
+WAIT1
+
+EFC(16)			; ノーマルカラー
+
+TEXT_EDIT_KANSOU
+
+PARC(2,8,  52)			; ﾃｷｽﾄ編集右端ｶｯﾄ
+
+EDTX(5)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの行数ｶｳﾝﾀ
+C2 = DX
+C1 = DX * 23 / 2 ;+ 100	;
+
+;*;PARC(2,11, 23)			; ﾃｷｽﾄ行間ｾｯﾄ
+;*;PARC(2,5,  0,280)		; ﾃｷｽﾄ位置ｾｯﾄ
+;*;PARC(2,9,  4,C1,2)		; ｽｸﾛｰﾙ送り設定
+;*;PARC(2,10, 10,78,54,284)	; ｽｸﾛｰﾙview設定
+;*;PARC(2,7)				; ｴﾝﾃﾞｨﾝｸﾞ･ﾃｷｽﾄ表示2.ｽｸﾛｰﾙ
+PARC(2,19,C2)				; 文字送り行数設定
+PARC(2,11, 23)				; ﾃｷｽﾄ行間ｾｯﾄ
+PARC(2,5,  0,0)				; ﾃｷｽﾄ位置ｾｯﾄ
+PARC(2,9,  4,C1,2)			; ｽｸﾛｰﾙ送り設定
+PARC(2,10, 10,78,54,284)	; ｽｸﾛｰﾙview設定
+PARC(2,18)					; ｴﾝﾃﾞｨﾝｸﾞ･ﾃｷｽﾄ表示2.文字送り表示
+RET
+
+;;PARC(2,6)				; ﾃｷｽﾄ編集ｾﾝﾀﾘﾝｸﾞ
+;;PARC(2,4)				; ﾃｷｽﾄ編集ﾊﾞｯﾌｧ表示
+;;XDBG(4,1,4096)
+
+
+;**************
+;	娘の感想
+;	＊＊＊＊＊＊＊
+;**************
+
+*TEXT_EDIT_KANSOU
+EDTX(1)					; ﾃｷｽﾄ編集ﾊﾞｯﾌｧの初期化
+@G
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+IF ( S_BYOUKI>=0  S_BYOUKI=<9 )		;病気指数０～９
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+IF ( S_BYOUKI>=10  S_BYOUKI=<49 )		;病気指数１０～４９
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+IF ( S_BYOUKI>=50 )			;病気指数５０以上
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+@G
+＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+
+STRSCLEAR
+TBLNAMESTR[1]="＊＊＊＊＊＊＊"
+TBLNAMESTR[2]="＊＊＊＊＊"
+TBLNAMESTR[3]="＊＊＊＊＊"
+TBLNAMESTR[4]="＊＊＊＊＊"
+TBLNAMESTR[5]="＊＊＊＊＊"
+TBLNAMESTR[6]="＊＊＊＊＊＊"
+TBLNAMESTR[7]="＊＊＊＊＊"
+TBLNAMESTR[8]="＊＊＊＊＊"
+TBLNAMESTR[9]="＊＊＊＊＊"
+TBLNAMESTR[10]="＊＊＊＊＊"
+TBLNAMESTR[11]="＊＊＊＊"
+
+TBLGIRLSTR[1]="＊＊＊＊"
+TBLGIRLSTR[2]="＊＊"
+TBLGIRLSTR[3]="＊＊＊＊"
+TBLGIRLSTR[4]="＊＊＊"
+TBLGIRLSTR[5]="＊＊＊＊＊"
+TBLGIRLSTR[6]="＊＊＊＊＊＊"
+TBLGIRLSTR[7]="＊＊＊＊＊＊＊"
+TBLGIRLSTR[8]="＊＊＊"
+TBLGIRLSTR[9]="＊＊＊"
+TBLGIRLSTR[10]="＊＊＊"
+TBLGIRLSTR[11]="＊＊＊＊＊"
+
+IF ( RANK_TRANING=1 )		;＊＊＊＊＊＊＊＊＊＊＊
+	@G
+	＊＊＊＊＊＊＊＠＠
+	EDTX(3,TBLNAMESTR[HEAVY_TRANING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＠＠
+	EDTX(3,TBLNAMESTR[HEAVY_TRANING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＠＠
+	EDTX(3,TBLGIRLSTR[HEAVY_TRANING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＠＠
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+IF ( RANK_TRANING=2 )		;＊＊＊＊＊＊＊＊＊＊＊
+	@G
+	＊＊＊＊＠＠
+	EDTX(3,TBLNAMESTR[HEAVY_TRANING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＠＠
+	EDTX(3,TBLGIRLSTR[HEAVY_TRANING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＠＠
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+IF ( RANK_TRANING=3 )		;＊＊＊＊＊＊＊＊＊＊＊
+	EDTX(3,TBLNAMESTR[HEAVY_TRANING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+IF ( RANK_TRANING=4 )		;＊＊＊＊＊＊＊＊＊＊＊
+	EDTX(3,TBLNAMESTR[HEAVY_TRANING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+IF ( RANK_TRANING=5 )		;＊＊＊＊＊＊＊＊＊＊＊
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+
+STRSCLEAR
+TBLNAMESTR[2]="＊＊＊＊＊"
+TBLNAMESTR[3]="＊＊＊＊＊"
+TBLNAMESTR[4]="＊＊＊"
+TBLNAMESTR[5]="＊＊＊＊"
+TBLNAMESTR[6]="＊＊＊＊＊＊"
+TBLNAMESTR[7]="＊＊＊＊＊＊"
+TBLNAMESTR[8]="＊＊＊＊＊＊"
+TBLNAMESTR[9]="＊＊＊＊＊＊＊"
+TBLNAMESTR[10]="＊＊"
+TBLNAMESTR[11]="＊＊＊＊＊"
+TBLNAMESTR[12]="＊＊＊＊＊＊＊"
+TBLNAMESTR[13]="＊＊＊＊"
+TBLNAMESTR[14]="＊＊＊＊＊"
+TBLNAMESTR[15]="＊＊＊＊＊＊"
+
+TBLGIRLSTR[2]="＊＊＊＊＊＊＊＊"
+TBLGIRLSTR[3]="＊＊＊＊＊＊＊"
+TBLGIRLSTR[4]="＊＊＊＊＊＊＊＊"
+TBLGIRLSTR[5]="＊＊＊＊＊＊＊"
+TBLGIRLSTR[6]="＊＊＊＊＊＊＊＊"
+TBLGIRLSTR[7]="＊＊＊＊＊＊"
+TBLGIRLSTR[8]="＊＊＊＊＊＊"
+TBLGIRLSTR[9]="＊＊＊＊＊"
+TBLGIRLSTR[10]="＊＊＊＊＊＊＊"
+TBLGIRLSTR[11]="＊＊＊＊＊"
+TBLGIRLSTR[12]="＊＊＊＊＊＊"
+TBLGIRLSTR[13]="＊＊＊＊＊＊＊"
+TBLGIRLSTR[14]="＊＊＊＊＊＊＊"
+TBLGIRLSTR[15]="＊＊"
+
+IF ( RANK_WORKING=1 )	;＊＊＊＊＊＊＊＊＊＊＊＊
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	EDTX(3,TBLGIRLSTR[HEAVY_WORKING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	EDTX(3,TBLNAMESTR[HEAVY_WORKING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+IF ( RANK_WORKING=2 )	;＊＊＊＊＊＊＊＊＊＊＊＊
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	EDTX(3,TBLGIRLSTR[HEAVY_WORKING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	EDTX(3,TBLNAMESTR[HEAVY_WORKING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+IF ( RANK_WORKING=3 )	;＊＊＊＊＊＊＊＊＊＊＊＊
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	EDTX(3,TBLGIRLSTR[HEAVY_WORKING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	＊＊＊＊＊＊＊@@
+	EDTX(3,TBLNAMESTR[HEAVY_WORKING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+IF ( RANK_WORKING=4 )	;＊＊＊＊＊＊＊＊＊＊＊＊
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊@@
+	EDTX(3,TBLGIRLSTR[HEAVY_WORKING])
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+IF ( RANK_WORKING=5 )	;＊＊＊＊＊＊＊＊＊＊＊＊
+	@G
+	＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	@@
+RET
+
+
+;
+;	end of "EEGIRB.TXT"
+;
+
