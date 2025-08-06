@@ -1,0 +1,534 @@
+; "EESTAF.TXT"
+;
+;
+;	ƒXƒ^ƒbƒtƒ[ƒ‹
+;
+;
+
+.HEAVY_TRANING		;ˆê”Ô‘½‚­ŽÀs‚µ‚½ŒP—û
+.HEAVY_T_COUNT		;ˆê”Ô‘½‚­ŽÀs‚µ‚½ŒP—ûŽÀs‰ñ”
+.HEAVY_WORKING		;ˆê”Ô‘½‚­ŽÀs‚µ‚½ƒoƒCƒg
+.HEAVY_W_COUNT		;ˆê”Ô‘½‚­ŽÀs‚µ‚½ƒoƒCƒgŽÀs‰ñ”
+.TENSU_SOGO			;‘‡“_
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+;voidvoidvoid
+
+.SCRL_LENG_0N=0		; ½¸Û°Ù0‘—‚èÝ’è
+.SCRL_LENG_1N=0		; ½¸Û°Ù1‘—‚èÝ’è
+.SCRL_LENG_2N=0		; ½¸Û°Ù2‘—‚èÝ’è
+.SCRL_BASE_XX=20
+.SCRL_BASE_YY=78
+
+.WTIMER_SCRL=	4		;4	;3		;ƒXƒ^ƒbƒtƒ[ƒ‹‚Ì‘—‚èƒXƒs[ƒhi‘½‚¢‚Ù‚Ç’x‚¢j
+
+TIMER1(180)
+PTBK(0)
+PTLD("ENDMAILL")
+PTLA("ENDMAILR")
+PTLA("ENDMAINW")
+PIC(14,P_NENREI,0)	; –º‚ÌŠçƒtƒ@ƒCƒ‹–¼
+PTLA
+PTLA("ENDPALET")
+WAIT1
+EFC(1)			; F¥O
+TIMER1(60)		;‚P”‚¨‚­
+PTBK(0)
+PTX(0,0,0)
+PTX(40,0,1)
+PTMF(0,0,2)
+PTX(66,54,4)
+PTPLT(6,0)		; ƒp[ƒcƒpƒŒƒbƒgƒZƒbƒg
+WAIT1
+
+PARAM_ROLL
+
+PLAY(31)			;P31 ¸Ú¼Þ¯Ä
+
+PIC(18,0,0,79,399,15)	;BOX
+PALET_SET(0)
+PIC(19,13,0,0,0)
+C1 = 6  C2 = 1
+	PIC(20,0,C2,0,0,0) : ƒpƒŒƒbƒg’PF‚o‚t‚s
+	C2++
+LOOP C1
+EFC(16)		; É°ÏÙ¶×°
+STAFF_ROLL
+PARC(10)	; ƒ}ƒEƒXƒ{ƒ^ƒ“‘Ò‚¿
+EFC(1)		; F¥O
+GRPCLS		; graphics clear screen.
+TIMER1(30)
+WAIT1
+PALET_SET(0)
+C1 = 2		; 2=(ÄƒXƒ^[ƒg)
+
+LOAD("PARAINIT")
+
+;;;;LOAD("TEST")
+
+
+;**************
+;	ƒpƒ‰ƒ[ƒ^ƒ[ƒ‹
+;**************
+
+*PARAM_ROLL
+EDTX(1)					; Ã·½Ä•ÒWÊÞ¯Ì§‚Ì‰Šú‰»
+ROLL_DATA_PARAM
+PARC(2,6,40)			; Ã·½Ä•ÒW¾ÝÀØÝ¸Þ
+;PARC(2,8,  40)			; Ã·½Ä•ÒW‰E’[¶¯Ä
+EDTX(5)					; Ã·½Ä•ÒWÊÞ¯Ì§‚Ìs”¶³ÝÀ
+SCRL_LENG_0N = DX * 18 / 2 +75	; ½¸Û°Ù0‘—‚èÝ’è
+;;C2 = DX * 18 + 280	PRV("LINE0=",C2)LLF
+PARC(2,11, 18)			; Ã·½ÄsŠÔ¾¯Ä
+PARC(2,5,  0,280)		; Ã·½ÄˆÊ’u¾¯Ä
+PARC(2,13,3)			; ´ÝÃÞ¨Ý¸Þ¥Ã·½ÄŽæ‚èž‚Ý3.½À¯Ì½¸Û°Ù
+PARC(2,10, 16,SCRL_BASE_YY,40,284)		; ½¸Û°ÙviewÝ’è
+PARC(2,9,WTIMER_SCRL,SCRL_LENG_0N,2)	; ½¸Û°Ù‘—‚èÝ’è
+EFC(21)					; Š„‚èž‚Ý‚eE‚h(Ìª°ÄÞ²Ý)
+PARC(2,12,3)			; ´ÝÃÞ¨Ý¸Þ¥Ã·½Ä‰æ–Ê“]‘—3.½À¯Ì½¸Û°Ù
+
+ROLL_DATA_ONCE			;ÅŒã‚É‚È‚ñ‚©ˆêŒ¾
+
+TIMER1(180)
+WAIT1
+MUSIC(2)				;‰¹ŠyÌª°ÄÞ±³Ä
+EFC(4)					; ‚v‚g‚h‚s‚dE‚n‚t‚s
+
+RET
+
+;**************
+;	ƒXƒ^ƒbƒtƒ[ƒ‹
+;**************
+
+*STAFF_ROLL
+
+;	ƒ[ƒ‹‚O
+
+EDTX(1)					; Ã·½Ä•ÒWÊÞ¯Ì§‚Ì‰Šú‰»
+ROLL_DATA00
+PARC(2,8,  40)			; Ã·½Ä•ÒW‰E’[¶¯Ä
+EDTX(5)					; Ã·½Ä•ÒWÊÞ¯Ì§‚Ìs”¶³ÝÀ
+;SCRL_LENG_0N = DX * 18 -8	; ½¸Û°Ù0‘—‚èÝ’è
+SCRL_LENG_0N = DX * 18 / 2 -4	; ½¸Û°Ù0‘—‚èÝ’è
+
+;;;C2 = DX * 18 + 280	PRV("LINE0=",C2)LLF
+
+PARC(2,11, 18)			; Ã·½ÄsŠÔ¾¯Ä
+PARC(2,5,  0,280)		; Ã·½ÄˆÊ’u¾¯Ä
+
+PARC(2,13,3)			; ´ÝÃÞ¨Ý¸Þ¥Ã·½ÄŽæ‚èž‚Ý3.½À¯Ì½¸Û°Ù
+
+;	ƒ[ƒ‹‚P
+
+EDTX(1)					; Ã·½Ä•ÒWÊÞ¯Ì§‚Ì‰Šú‰»
+ROLL_DATA11
+PARC(2,8, 40)			; Ã·½Ä•ÒW‰E’[¶¯Ä
+EDTX(5)					; Ã·½Ä•ÒWÊÞ¯Ì§‚Ìs”¶³ÝÀ
+;SCRL_LENG_1N = DX * 18 -140		; ½¸Û°Ù1‘—‚èÝ’è
+SCRL_LENG_1N = DX * 18 / 2 -70	;+ 140	; ½¸Û°Ù1‘—‚èÝ’è
+
+;;;C2 = DX * 17 	PRV("LINE1=",C2)LLF
+
+PARC(2,11, 18)			; Ã·½ÄsŠÔ¾¯Ä
+;PARC(2,5,  0,280)		; Ã·½ÄˆÊ’u¾¯Ä
+PARC(2,5,  0,0)		; Ã·½ÄˆÊ’u¾¯Ä
+
+PARC(2,13,1)			; ´ÝÃÞ¨Ý¸Þ¥Ã·½ÄŽæ‚èž‚Ý3.½À¯Ì½¸Û°Ù
+
+;*;;	ƒ[ƒ‹‚Q
+;*;
+;*;EDTX(1)				; Ã·½Ä•ÒWÊÞ¯Ì§‚Ì‰Šú‰»
+;*;ROLL_DATA22
+;*;;;PARC(2,8,  40)		; Ã·½Ä•ÒW‰E’[¶¯Ä
+;*;PARC(2,8,  8)		; Ã·½Ä•ÒW‰E’[¶¯Ä
+;*;EDTX(5)				; Ã·½Ä•ÒWÊÞ¯Ì§‚Ìs”¶³ÝÀ
+;*;SCRL_LENG_2N = DX * 17 / 2 -60 ;+ 60	;½¸Û°Ù2‘—‚èÝ’è
+;*;
+;*;C2 = DX * 17 + 120	PRV("LINE2=",C2)LLF
+;*;
+;*;PARC(2,11, 17)		; Ã·½ÄsŠÔ¾¯Ä
+;*;;;PARC(2,5,  0,246)	; Ã·½ÄˆÊ’u¾¯Ä
+;*;PARC(2,5,  0,8)		; Ã·½ÄˆÊ’u¾¯Ä
+;*;
+;*;PARC(2,13,2)			; ´ÝÃÞ¨Ý¸Þ¥Ã·½ÄŽæ‚èž‚Ý3.½À¯Ì½¸Û°Ù
+
+;ƒXƒNƒ[ƒ‹
+
+PARC(2,10, SCRL_BASE_XX,SCRL_BASE_YY,40,280)		; ½¸Û°ÙviewÝ’è
+PARC(2,9,WTIMER_SCRL,SCRL_LENG_0N,2)	; ½¸Û°Ù‘—‚èÝ’è
+PARC(2,12,3)							; ´ÝÃÞ¨Ý¸Þ¥Ã·½Ä‰æ–Ê“]‘—3.½À¯Ì½¸Û°Ù
+PARC(2,9,WTIMER_SCRL,SCRL_LENG_1N,2)	; ½¸Û°Ù‘—‚èÝ’è
+PARC(2,12,1)							; ´ÝÃÞ¨Ý¸Þ¥Ã·½Ä‰æ–Ê“]‘—3.½À¯Ì½¸Û°Ù
+;*;PARC(2,9,WTIMER_SCRL,SCRL_LENG_2N,2)	; ½¸Û°Ù‘—‚èÝ’è
+;*;PARC(2,12,2)							; ´ÝÃÞ¨Ý¸Þ¥Ã·½Ä‰æ–Ê“]‘—3.½À¯Ì½¸Û°Ù
+
+TIMER1(30)
+WAIT1
+RET
+
+
+*ROLL_DATA_PARAM
+@G
+@RE@F
+
+@@
+IF ( P_BLOOD=0 )	@GŒŒ‰tŒ^E‚`@@
+IF ( P_BLOOD=1 )	@GŒŒ‰tŒ^E‚a@@
+IF ( P_BLOOD=2 )	@GŒŒ‰tŒ^E‚n@@
+IF ( P_BLOOD=3 )	@GŒŒ‰tŒ^E‚`‚a@@
+@G
+@’a¶“ú@@
+EDTX(8,P_BORTHYEAR)
+@G”N@@
+EDTX(8,P_BORTHMONTH)
+@GŒŽ@@
+EDTX(8,P_BORTHDAY)
+@G“ú
+
+@@
+IF ( P_SHIKYU=0 )	@G”’—r‹{@@
+IF ( P_SHIKYU=1 )	@G‹à‹‹{@@
+IF ( P_SHIKYU=2 )	@G‘oŽ™‹{@@
+IF ( P_SHIKYU=3 )	@G‹ŠI‹{@@
+IF ( P_SHIKYU=4 )	@GŽ‚Žq‹{@@
+IF ( P_SHIKYU=5 )	@Gˆ—‹{@@
+IF ( P_SHIKYU=6 )	@G“V”‰‹{@@
+IF ( P_SHIKYU=7 )	@G“Vå¶‹{@@
+IF ( P_SHIKYU=8 )	@Gl”n‹{@@
+IF ( P_SHIKYU=9 )	@G–ã¹‹{@@
+IF ( P_SHIKYU=10 )	@G•ó•r‹{@@
+IF ( P_SHIKYU=11 )	@G‘o‹›‹{@@
+@G
+E@@
+IF (P_SYUGOSEI=0)	@G‘¾—z_@@
+IF (P_SYUGOSEI=1)	@GŒŽ_@@
+IF (P_SYUGOSEI=2)	@G‰Î¯_@@
+IF (P_SYUGOSEI=3)	@G…¯_@@
+IF (P_SYUGOSEI=4)	@G–Ø¯_@@
+IF (P_SYUGOSEI=5)	@G‹à¯_@@
+IF (P_SYUGOSEI=6)	@G“y¯_@@
+IF (P_SYUGOSEI=7)	@G“V‰¤¯_@@
+IF (P_SYUGOSEI=8)	@GŠC‰¤¯_@@
+IF (P_SYUGOSEI=9)	@G–»‰¤¯_@@
+@G
+
+
+g’· @@EDTX(6,P_SHINCHO)
+@G
+cm@‘Ìd @@EDTX(6,P_TAIJYU)
+@G
+kg
+B@@EDTX(6,P_BUST)
+@G
+cm@W@@EDTX(6,P_WAIST)
+@G
+cm@H@@EDTX(6,P_HIP)
+@G
+cm
+
+‘Ì—Ídddddddd@@EDTX(7,B_TAIRYOKU)
+@G
+
+‹Ø—Ídddddddd@@EDTX(7,B_KINRYOKU)
+@G
+
+’m”\dddddddd@@EDTX(7,B_CHINOH)
+@G
+
+‹C•idddddddd@@EDTX(7,B_KIHIN)
+@G
+
+F‹Cdddddddd@@EDTX(7,B_IROKE)
+@G
+
+ƒ‚ƒ‰ƒ‹ddddddd@@EDTX(7,B_MORALS)
+@G
+
+M‹Âdddddddd@@EDTX(7,B_SHINKOH)
+@G
+
+ˆö‹Ædddddddd@@EDTX(7,B_INGYO)
+@G
+
+Š´Žó«ddddddd@@EDTX(7,B_KANJUSEI)
+@G
+
+
+íŽm•]‰¿@@EDTX(7,H_SENSHI)
+@G@@@@@@@@@@@@@@@
+@G
+
+í“¬‹Zp@@EDTX(7,V_SENTOH)
+@G@UŒ‚—Í@@@EDTX(7,V_KOUGEKI)
+@G@–hŒä—Í @@EDTX(7,V_BOUGYO)
+@G
+
+
+–‚–@•]‰¿@@EDTX(7,H_MAHO)
+@G@@@@@@@@@@@@@@@
+@G
+
+–‚–@‹Zp@@EDTX(7,V_MAHOGIJUTSU)
+@G@–‚—Í@@@@EDTX(7,V_MARYOKU)
+@G@R–‚—Í @@EDTX(7,V_KOHMARYOKU)
+@G
+
+
+ŽÐŒð•]‰¿@@EDTX(7,H_SYAKOH)
+@G@@@@@@@@@@@@@@@
+@G
+
+—ç‹Vì–@@@EDTX(7,V_REIGI)
+@G@Œ|p@@@@EDTX(7,V_GEIJYUTSU)
+@G@˜bp@ @@EDTX(7,V_WAJYUTU)
+@G
+
+
+‰ÆŽ–•]‰¿@@EDTX(7,H_KAJI)
+@G@@@@@@@@@@@@@@@
+@G
+
+—¿—@@@@EDTX(7,V_RYOURI)
+@G@‘|œô‘ó@@EDTX(7,V_SOUJISENTAKU)
+@G@‹C‚¾‚Ä @@EDTX(7,V_KIDATE)
+@G
+
+@@
+IF ( HEAVY_T_COUNT>0 )	;ˆê”Ô‘½‚­ŽÀs‚µ‚½ŒP—ûŽÀs‰ñ”
+	@G
+		
+	Å‘½ŽÀsŒP—ûdddd@@
+	IF ( HEAVY_TRANING=1 )	@GduŽ©‘R‰ÈŠwv@@
+	IF ( HEAVY_TRANING=2 )	@GddduŽ•¶v@@
+	IF ( HEAVY_TRANING=3 )	@Gdddu_Šwv@@
+	IF ( HEAVY_TRANING=4 )	@GddduŒRŠwv@@
+	IF ( HEAVY_TRANING=5 )	@GddduŒ•pv@@
+	IF ( HEAVY_TRANING=6 )	@GdduŠi“¬pv@@
+	IF ( HEAVY_TRANING=7 )	@Gdddu–‚–@v@@
+	IF ( HEAVY_TRANING=8 )	@Gdu—ç‹Vì–@v@@
+	IF ( HEAVY_TRANING=9 )	@GddduŠG‰æv@@
+	IF ( HEAVY_TRANING=10 )	@Gdddu•‘—xv@@
+	IF ( HEAVY_TRANING=11 )	@Gdu•ŽÒCsv@@
+
+IF ( HEAVY_W_COUNT>0 )	;ˆê”Ô‘½‚­ŽÀs‚µ‚½ƒoƒCƒgŽÀs‰ñ”
+	@G
+	
+	Å‘½ŽÀsƒAƒ‹ƒoƒCƒgd@@
+	IF ( HEAVY_WORKING=1 )	@Gu‰Æ‚ÌŽè“`‚¢v@@
+	IF ( HEAVY_WORKING=2 )	@GddduŽqŽçv@@
+	IF ( HEAVY_WORKING=3 )	@Gddduh‰®v@@
+	IF ( HEAVY_WORKING=4 )	@Gdddu”_êv@@
+	IF ( HEAVY_WORKING=5 )	@Gdddu‹³‰ïv@@
+	IF ( HEAVY_WORKING=6 )	@Gddu—¿—‰®v@@
+	IF ( HEAVY_WORKING=7 )	@Gddu–ØƒRƒŠv@@
+	IF ( HEAVY_WORKING=8 )	@Gddu”¯Œ‹‚¢v@@
+	IF ( HEAVY_WORKING=9 )	@Gdddu¶Š¯v@@
+	IF ( HEAVY_WORKING=10 )	@GddduŽëlv@@
+	IF ( HEAVY_WORKING=11 )	@Gdddu•æŽçv@@
+	IF ( HEAVY_WORKING=12 )	@Gdu‰Æ’ë‹³Žtv@@
+	IF ( HEAVY_WORKING=13 )	@GddduŽðêv@@
+	IF ( HEAVY_WORKING=14 )	@Gduƒ„ƒ~Žðêv@@
+	IF ( HEAVY_WORKING=15 )	@Gdu–é‚Ì“a“°v@@
+@G
+
+
+ƒ‚ƒ“ƒXƒ^[ŽEC”dd@@EDTX(7,URA_KILL_MONSTR)
+@G
+
+•ê«dddddddd@@EDTX(7,URA_MOTHER_LOVE)
+@G
+
+•ƒ‚Æ‚ÌŠÖŒWddddd@@EDTX(7,URA_FATHER)
+@G
+
+Ž·Ž–‚Æ‚ÌŠÖŒWdddd@@EDTX(7,URA_STEWARD)
+@G
+
+‰¤Žq‚Æ‚ÌŠÖŒWdddd@@EDTX(7,URA_PRINCE)
+@G
+
+
+
+‘‡“_ddddddd @@EDTX(8,TENSU_SOGO)
+@G
+
+
+
+
+
+
+
+
+
+@@
+RET
+
+
+;ÅŒã‚É‚È‚ñ‚©ˆêŒ¾
+
+*ROLL_DATA_ONCE
+IF ( TENSU_SOGO>=1000 )		;‘‡“_‚P‚O‚O‚OˆÈã‚Ìê‡
+	PUT_EFCSTR("–––––––––––––––")
+IF ( TENSU_SOGO>=700  TENSU_SOGO<=999 )	;‘‡“_‚V‚O‚O`‚X‚X‚X
+	PUT_EFCSTR("––––––––––––––––––")
+IF ( TENSU_SOGO>=400  TENSU_SOGO<=699 )	;‘‡“_‚S‚O‚O`‚U‚X‚X
+	PUT_EFCSTR("––––––––––––––––––")
+IF ( TENSU_SOGO>=50   TENSU_SOGO<=399 )	;‘‡“_‚T‚O`‚S‚O‚O
+	PUT_EFCSTR("–––––––––––––––––––")
+IF ( TENSU_SOGO<=49 )						;‘‡“_‚T‚O–¢–ž
+	PUT_EFCSTR("–––––––––––––––––––––")
+RET
+
+*PUT_EFCSTR
+TIMER1(5)
+PIC(16,2,0,1)PIC(15,20,203)	; •W€•¶Žš•`‰æ
+WAIT1
+TIMER1(5)
+PIC(16,3,0,1)PIC(15,20,203)	; •W€•¶Žš•`‰æ
+WAIT1
+TIMER1(5)
+PIC(16,4,0,1)PIC(15,20,203)	; •W€•¶Žš•`‰æ
+WAIT1
+TIMER1(5)
+PIC(16,5,0,1)PIC(15,20,202)	; •W€•¶Žš•`‰æ
+WAIT1
+TIMER1(5)
+PIC(16,6,0,1)PIC(15,20,202)	; •W€•¶Žš•`‰æ
+WAIT1
+TIMER1(5)
+PIC(16,0,0,1)PIC(15,20,202)	; •W€•¶Žš•`‰æ
+WAIT1
+RET
+
+*ROLL_DATA00
+@G
+
+Œ´  ì                  Ôˆä F”ü
+ì  ‰æ
+
+
+
+‚b‚fŠÄ“Â                ‹Ê’J ƒ
+
+
+ƒOƒ‰ƒtƒBƒbƒN            –Ø“‡ N‹M
+                        › ^—Žq
+                        –Ø‰ä _ˆê
+                        ˆÉ² ˜al
+                        ‰Á“¡ ³l
+
+
+
+‰¹  Šy                  ŠŒ´ ³—T
+
+
+
+‰¹Šy^Œø‰Ê‰¹ƒvƒƒOƒ‰ƒ€  ŠŒ´@³—T
+        Music Driver "PMD" Ver.4.0
+      MIDI Music Driver "MMD" Ver.2.0
+
+
+
+ƒeƒXƒgƒvƒŒƒC  ˆÀ“¡ Œ’       ¶“c —Y‘å
+              ÎŒ´ ”ü˜aŽq   ¡‰ª ‚Þ‚Â‚Ý
+              “ü] Œ’Ži     A“c ³Ž¡
+              ”öÎ ’B–ç     ‘¾“c —R”üŽq
+              ‘åŒ© º       ¬–ì“c FL
+              _‘º –õG     “í£ ‰ë–ç
+              ¬—Ñ Œ÷ˆê˜Y   ²“¡ —T‹I
+              ²“¡ ‘P”ü     àV‘º ‰Ø‹v]
+              ŽÂ‘q ½ˆê˜Y   a’J ‘å‹B
+              ŠÖª ‡Žq     ‹ÚàV Œ’ˆê
+              “cì —E“ñ     •x ˆê¬
+              ŠOŽR ¹•½     •Ÿ‰ª ‰p“T
+              “¡“c •       “¡–{ O”Í
+              ¡“c ‹M”V     Žç‰ª ‰ps
+              ‹g¬ —j
+
+
+‰‰o•â²                ‰Á“¡ ³l
+
+
+
+‹ZpŠÇ—                Ô‰¬ C
+                        •“c MF
+
+
+
+ƒAƒh^ƒpƒbƒP[ƒWƒ[ƒN  ¼ˆä ˜a•v
+                        •“c ‰p•F
+                        _“c ‘P”ü
+                        Ôˆä ‹I”üŽq
+
+
+
+ƒpƒuƒŠƒVƒeƒB            ‰–“ü ˆê–í
+                        ˆÉ“¡ ”üá
+
+
+
+ƒ}[ƒPƒeƒBƒ“ƒO          ‘å‹´ –L
+
+
+
+§ìis                ’†ŠÛ ’m”ü
+
+
+
+ƒvƒƒOƒ‰ƒ€              ‹´–{ —§˜Y
+                    EXELOAD  Ver.0.27
+@@
+RET
+*ROLL_DATA11
+@G
+
+ƒpƒuƒŠƒVƒeƒB            ‰–“ü ˆê–í
+                        ˆÉ“¡ ”üá
+
+
+
+ƒ}[ƒPƒeƒBƒ“ƒO          ‘å‹´ –L
+
+
+
+§ìis                ’†ŠÛ ’m”ü
+
+
+
+ƒvƒƒOƒ‰ƒ€              ‹´–{ —§˜Y
+                    EXELOAD  Ver.0.27
+
+
+
+ƒvƒƒfƒ…[ƒX            àV‘º •Žf
+
+
+
+
+
+
+
+
+ŠÄ  “Â                  Ôˆä F”ü
+
+
+
+
+
+
+
+
+
+Šé‰æE»ì             ‚f‚`‚h‚m‚`‚w
+@@
+
+RET
+
+;
+;	end of "EESTAF.TXT"
+;
+
