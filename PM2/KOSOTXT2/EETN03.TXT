@@ -8,8 +8,8 @@
 .WORKS_NUM			;êEã∆
 .WORKS_CLASS		;êEã∆Å@èºÅEí|ÅEî~
 
-WORKS_NUM	=	ENDNM[4]	;êEã∆
-WORKS_CLASS	=	ENDNM[5]	;êEã∆Å@èºÅEí|ÅEî~
+;voidvoidvoid
+;voidvoidvoid
 
 START
 OPEN(1)
