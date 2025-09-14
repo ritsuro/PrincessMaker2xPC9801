@@ -3,6 +3,10 @@
 # top-most EditorConfig file
 root = true
 
+[*.{.ASM,.INC}]
+indent_style = tab
+indent_size = 8
+
 [PM2/KOSOTEXT/*.TXT]
 indent_style = tab
 indent_size = 4
