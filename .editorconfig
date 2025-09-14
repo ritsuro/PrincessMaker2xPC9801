@@ -3,7 +3,7 @@
 # top-most EditorConfig file
 root = true
 
-[*.{.ASM,.INC}]
+[*.{ASM,INC}]
 indent_style = tab
 indent_size = 8
 
