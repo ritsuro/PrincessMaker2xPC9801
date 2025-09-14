@@ -10,3 +10,8 @@ indent_size = 8
 [PM2/KOSOTEXT/*.TXT]
 indent_style = tab
 indent_size = 4
+
+[PM2/KOSOTXT2/*.TXT]
+indent_style = tab
+indent_size = 4
+
