@@ -1,0 +1,60 @@
+; "EETNMT.TXT"
+;
+;
+;	職業の顛末パート
+;
+;
+
+;*;PRF("EETNMT")
+
+STRSCLEAR
+
+.RANK_INGO			;因業値のランク
+.WORK_RANK			;職業ランク
+.WORK_KIND			;職業分類パターン
+.WORKS_NUM			;職業
+.WORKS_CLASS		;職業　松・竹・梅
+.LUCKY_MAN			;特殊な結婚勝者	1=王子,2=父,3=執事,4=魔王,5=ドラゴンユース
+.UNLUCKY_MAN		;敗者の一言
+.WEDD_PATTN			;結婚パターン
+.WEDD_RANK			;結婚のランク
+
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+;voidvoidvoid
+
+.FLAG_PTLD=0
+
+TXF(7,ENDNM[19])		; テキストウインドウ文字送りﾀｲﾏ
+
+;;TIMER1(60)
+;;PTLD("ENDPALET")
+;;PALET_SETONLY(0,1)	; ﾊﾟﾚｯﾄﾃｰﾌﾞﾙｾｯﾄのみ
+;;PTPLT(0,0)			; パーツパレットセット
+;;EFC(14,1,0)			; パレット・オーバラップ
+;;WAIT1
+
+IF (WORK_KIND=1)	LOAD("EETN08")		; 1=芸術
+IF (WORK_KIND=2)	LOAD("EETN09")		; 2=暗黒
+IF (WORK_KIND=3)						; 3=万能
+	IF ( WORKS_NUM>=01  WORKS_NUM<=08 ) ; 女王から学士まで
+		LOAD("EETN01")
+	IF ( WORKS_NUM>=09  WORKS_NUM<=23 ) ; 子守就職から女官まで
+		LOAD("EETN02")
+	IF ( WORKS_NUM>=24  WORKS_NUM<=38 ) ; 子守アルバイトから家事手伝いまで
+		LOAD("EETN03")
+IF (WORK_KIND=4)	LOAD("EETN04")		; 4=戦士
+IF (WORK_KIND=5)	LOAD("EETN05")		; 5=魔法
+IF (WORK_KIND=6)	LOAD("EETN06")		; 6=社交
+LOAD("EETN07")							; 7=家事
+
+;
+;	end of "EETNMT.TXT"
+;
+
